@@ -6,7 +6,7 @@ description: Connect Dotfile as an access review source using a workspace admin 
 Probo reads your Dotfile workspace's members through the Dotfile API so you can review who has access.
 
 :::caution
-Use a workspace API key created by a workspace **admin**. A Dotfile API key is workspace wide and Dotfile documents no scopes or permissions on it, so any workspace API key can call the users endpoint. Dotfile hashes and encrypts the key, so copy it when you create it. You cannot recover a lost key and will have to generate a new one.
+Use a workspace API key (`dotkey.…`) created by a workspace **admin**. A Dotfile API key is workspace wide and Dotfile documents no scopes or permissions on it, so any workspace API key can call the users endpoint. Dotfile hashes and encrypts the key, so copy it when you create it. You cannot recover a lost key and will have to generate a new one.
 :::
 
 ## Prerequisites
@@ -38,7 +38,7 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 1. In the [Dotfile console](https://app.dotfile.com), signed in as a workspace **admin**, go to **Workspace settings** > **API keys**.
 2. Create a new key and give it a name (e.g. `Probo Access Review`). Dotfile documents no scope or permission to set on a key.
-3. Copy the key and store it securely (password manager, secret manager). Dotfile hashes and encrypts it, so you cannot read it again.
+3. Copy the key (`dotkey.…`) and store it securely (password manager, secret manager). Dotfile hashes and encrypts it, so you cannot read it again.
 
 </Steps>
 

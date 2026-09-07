@@ -36,7 +36,7 @@ For each account in a review, Probo shows the following, wherever the provider e
 ## Connection Methods
 
 - **OAuth.** When a provider offers **OAuth** on the **Connections** page, Probo sends you to that provider's consent screen. Availability depends on the provider and your Probo deployment.
-- **API key or client credentials.** You generate a credential on the provider and paste it into Probo. The credential type and required permissions vary, so check the [Connector Directory](/docs/product/access-review/directory).
+- **API key or client credentials.** You generate a credential on the provider and paste it into Probo. The credential type and required permissions vary, so check the [Connector Directory](/docs/product/access-review/directory). Where a provider mints every key with a fixed prefix, the Connect dialog shows that shape as the field's placeholder and refuses a value that does not match it, before Probo calls the provider at all. That catches a half-copied key and the provider's other kinds of credential. It says nothing about whether the key itself works: only the provider can answer that.
 - **Workload identity.** Used by [Amazon Web Services](/docs/product/access-review/aws). You create a read-only IAM role in your AWS account, and Probo assumes it with a short-lived token. Probo stores no AWS credentials.
 - **CSV.** Paste an exported account list for a system Probo cannot connect to directly. See [Create a CSV Access Source](/docs/product/access-review/csv-sources).
 

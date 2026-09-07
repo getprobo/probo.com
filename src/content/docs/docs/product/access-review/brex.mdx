@@ -46,7 +46,7 @@ Brex returns every member of the organization on one endpoint. Probo skips a rec
 
 1. In Brex ([dashboard.brex.com](https://dashboard.brex.com)), signed in as an account admin or card admin, go to **Developer** > **Settings**, and click **Create Token**.
 2. Name it (e.g. `Probo Access Review`), and grant it read access to the **Team** and company profile data. Confirm your selection and click **Allow Access**.
-3. Copy the token. Brex shows it only once.
+3. Copy the token (`bxt_…`). Brex shows it only once.
 4. In Probo, go to **Access Review** > **Connections** and find **Brex**. Click **API Key** on that row. When your deployment also offers OAuth, **API Key** sits in the menu behind the arrow next to the **OAuth** button.
 5. Paste the token and click **Connect**.
 
@@ -56,6 +56,6 @@ Probo names the source after your Brex company's legal name and pulls its users 
 
 ## Troubleshooting
 
-- **Key or token rejected, or no users appear.** Confirm the Business API key (or OAuth authorization) grants read access to Team/Users data; a key scoped only to Expenses, Payments, or another API cannot list users.
+- **Key or token rejected, or no users appear.** A Business API key starts with `bxt_`; Probo refuses a value that does not. Confirm the key (or OAuth authorization) grants read access to Team/Users data, since a key scoped only to Expenses, Payments, or another API cannot list users.
 - **The source keeps the generic name "Brex" instead of your company name.** Resolving the company name requires the `companies.readonly` scope. A Business API key without read access to company data, or an OAuth connection authorized before this scope was requested, will 403 on the lookup. Reconnect through OAuth, or recreate the API key with company data access, to pick up the name.
 - **The source stops syncing after a quiet period.** Brex expires a Business API key after 90 days of inactivity, and revokes a token tied to a user who is no longer active. Create a new token, or reconnect via OAuth, to restore the source.
