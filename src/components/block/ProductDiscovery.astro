@@ -29,6 +29,15 @@ const products = [
     width: 334,
     height: 218,
   },
+  {
+    id: "ai-agents",
+    title: "AI Agents",
+    description: "Your compliance program, inside your AI agent",
+    href: "/products/ai-agents",
+    asset: "/product-discovery/access-decisions.svg",
+    width: 334,
+    height: 218,
+  },
 ];
 ---
 
@@ -152,14 +161,16 @@ const products = [
     height: 216px;
   }
 
-  .product-discovery-card--access-review .product-discovery-halo {
+  .product-discovery-card--access-review .product-discovery-halo,
+  .product-discovery-card--ai-agents .product-discovery-halo {
     top: 149px;
     left: 50%;
     z-index: 0;
     transform: translateX(-50%);
   }
 
-  .product-discovery-card--access-review .product-discovery-art {
+  .product-discovery-card--access-review .product-discovery-art,
+  .product-discovery-card--ai-agents .product-discovery-art {
     top: 162px;
     left: 32px;
     width: 334px;

@@ -1,0 +1,1404 @@
+---
+import "@phosphor-icons/web/regular";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
+import Button from "../../components/ui/Button.svelte";
+import LogosScroll from "../../components/LogosScroll.svelte";
+import LottiePlayer from "../../components/LottiePlayer.svelte";
+import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
+import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
+import AiToolsGallery from "../../components/AiToolsGallery.svelte";
+import aiClients from "../../data/ai-clients.json";
+
+const pageTitle = "AI Agents for Compliance | Probo MCP";
+const pageDescription =
+  "Connect Claude, Cursor, ChatGPT, and any MCP client to more than 350 Probo tools, while scoped tokens keep every agent inside your existing permissions.";
+
+const overviewFeatures = [
+  {
+    icon: "ph-file-code",
+    title: "+350 tools, one connection",
+    description:
+      "Reach every Probo record from a single MCP endpoint, with tools and schemas discovered at connection time.",
+  },
+  {
+    icon: "ph-slack-logo",
+    title: "Works in the tools your team already opens",
+    description:
+      "Connect Claude, Cursor, VS Code, Windsurf, Zed, and OpenCode without building an integration.",
+  },
+  {
+    icon: "ph-signature",
+    title: "Scoped to what each person can already do",
+    description:
+      "Grant read-only or read-write scopes per resource, and never above the user’s own permissions.",
+  },
+  {
+    icon: "ph-key",
+    title: "Skills that know how to use the tools",
+    description:
+      "Install open-source compliance workflows next to the tools, so an agent follows a procedure instead of improvising.",
+  },
+  {
+    icon: "ph-bell-simple",
+    title: "Agents that act, not only report",
+    description:
+      "Create and update records so an agent can carry a piece of compliance work to the end.",
+  },
+];
+
+type ReviewStep = {
+  title: string;
+  lottie: string;
+  illustration: string;
+  overlay: { x: number; y: number; width: number; height: number };
+  reverse?: boolean;
+  bullets: string[];
+};
+
+const reviewSteps: ReviewStep[] = [
+  {
+    title: "Install the plugin, then sign in",
+    lottie: "/lottie/access-review/1.json",
+    illustration: "workflow-connect-systems",
+    overlay: { x: -97.5, y: 104.5, width: 704, height: 456 },
+    bullets: [
+      "Add the marketplace with claude plugin marketplace add getprobo/probo.",
+      "Install with claude plugin install probo@probo, then run claude mcp login probo-us.",
+      "Point at the US endpoint, the EU endpoint, or your own self-hosted origin.",
+    ],
+  },
+  {
+    title: "Connect the client your team already uses",
+    lottie: "/lottie/access-review/2.json",
+    illustration: "workflow-account-context",
+    overlay: { x: 64, y: 64, width: 720, height: 654 },
+    reverse: true,
+    bullets: [
+      "Sign in with interactive OAuth from Claude, Cursor, VS Code, Windsurf, and Zed.",
+      "Use a static scoped token for clients that cannot run an interactive flow.",
+      "Load the same package in Codex, OpenCode, and Cursor from one plugin manifest.",
+    ],
+  },
+  {
+    title: "Scope every agent before it connects",
+    lottie: "/lottie/access-review/3.json",
+    illustration: "workflow-review-decisions",
+    // The SVG includes 29px of shadow to the left of the UI's Figma x=102.
+    overlay: { x: 73, y: 65, width: 439, height: 607 },
+    bullets: [
+      "Grant v1:resource:read for read-only access, or v1:resource to allow writes.",
+      "Keep access at the intersection of the token scopes and the user’s permissions.",
+      "Rotate or replace a token without touching the person’s account.",
+    ],
+  },
+  {
+    title: "Ask questions against live compliance data",
+    lottie: "/lottie/access-review/4.json",
+    illustration: "workflow-audit-evidence",
+    overlay: { x: 36, y: 103, width: 436, height: 458 },
+    reverse: true,
+    bullets: [
+      "Query risks, controls, evidence, audits, and findings in plain language.",
+      "Page through large result sets with cursors instead of truncated answers.",
+      "Read the current state of your program without exporting anything first.",
+    ],
+  },
+  {
+    title: "Let agents do the work, not only describe it",
+    lottie: "/lottie/access-review/1.json",
+    illustration: "workflow-connect-systems",
+    overlay: { x: -97.5, y: 104.5, width: 704, height: 456 },
+    bullets: [
+      "Create and update risks, measures, tasks, documents, and evidence.",
+      "Build agentic workflows without writing an API client first.",
+      "Check the behavior hints that mark each tool read only, destructive, idempotent, or open world.",
+    ],
+  },
+];
+
+const trustedLogos = [
+  {
+    src: "/clients/trace_for_good.svg",
+    alt: "Trace for Good",
+    class: "trusted-logo--trace",
+    width: 1023,
+    height: 154,
+  },
+  {
+    src: "/clients/jimo.svg",
+    alt: "Jimo",
+    class: "trusted-logo--jimo",
+    width: 72,
+    height: 36,
+  },
+  {
+    src: "/clients/lucis.svg",
+    alt: "Lucis",
+    class: "trusted-logo--lucis",
+    width: 246,
+    height: 74,
+  },
+  {
+    src: "/clients/filz.svg",
+    alt: "Filiz",
+    class: "trusted-logo--filiz",
+    width: 598,
+    height: 240,
+  },
+  {
+    src: "/clients/ahrefs.svg",
+    alt: "Ahrefs",
+    class: "trusted-logo--ahrefs",
+    width: 74,
+    height: 19,
+  },
+];
+
+const faqs = [
+  {
+    question: "How do we connect our AI assistant?",
+    answer:
+      "With one endpoint. Point your MCP client at us.probo.com/api/mcp/v1 or eu.probo.com/api/mcp/v1, complete the OAuth flow, and the tools appear.",
+  },
+  {
+    question: "Does it work with self-hosted Probo?",
+    answer:
+      "Yes. Use the same /api/mcp/v1 endpoint on your own Probo origin, with the authentication and permissions of your deployment.",
+  },
+  {
+    question: "Which AI agents and assistants are supported?",
+    answer:
+      "Connect Claude, ChatGPT, Codex, Cursor, VS Code, Windsurf, Zed, OpenCode, or another compatible MCP client. The setup and authentication method depend on the client.",
+  },
+  {
+    question: "What can an AI agent actually do in Probo?",
+    answer:
+      "Agents can query risks, controls, evidence, audits, and findings, and create or update records when you grant the required write scopes.",
+  },
+  {
+    question: "Can the agent change our compliance data?",
+    answer:
+      "Only when both its token scopes and the connected user’s permissions allow it. Use read-only scopes when the agent only needs to inspect data.",
+  },
+  {
+    question: "Can an AI agent see more than the person who connected it?",
+    answer:
+      "No. Access is limited to the intersection of the token scopes and the permissions of the person who connected it.",
+  },
+  {
+    question: "Do we have to update anything when Probo adds tools?",
+    answer:
+      "Clients discover the available tools and their schemas when they connect. Reconnect to discover newly available tools, subject to your granted scopes.",
+  },
+  {
+    question: "Is this a proprietary integration?",
+    answer:
+      "No. Probo uses the open Model Context Protocol, so compatible clients can connect without a proprietary integration.",
+  },
+  {
+    question: "What is the difference between the tools and the skills?",
+    answer:
+      "Tools let an agent read or change Probo records. Skills provide reusable compliance workflows that guide how the agent uses those tools.",
+  },
+  {
+    question: "Can we read, fork, or write our own skills?",
+    answer:
+      "Yes. The compliance skills are open source, so you can read them, adapt them to your procedures, or write your own.",
+  },
+  {
+    question: "Who decides what an agent is allowed to touch?",
+    answer:
+      "You choose the token scopes, and Probo enforces the connected user’s existing permissions on every operation.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
+const softwareApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Probo AI Agents",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: pageDescription,
+  url: "https://www.probo.com/products/ai-agents",
+  publisher: {
+    "@type": "Organization",
+    name: "Probo",
+    url: "https://www.probo.com",
+  },
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareApplicationSchema)}
+  />
+  <main class="-mt-16 overflow-hidden pt-16">
+    <div class="relative isolate overflow-hidden">
+      <div
+        aria-hidden="true"
+        data-node-id="984:327"
+        class="trust-hero-orb pointer-events-none absolute top-[-1314px] left-1/2 z-0 size-[2265px] rounded-full border-[350px] border-[#E6FF03] blur-[96px]"
+      >
+      </div>
+
+      <section class="relative z-10 container py-16 text-center sm:py-24">
+        <div
+          class="border-border-low text-tertiary-foreground animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
+          style="animation-delay: 100ms"
+        >
+          AI Agents with MCP
+        </div>
+        <h1
+          class="mx-auto mb-6 max-w-[600px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
+          aria-label="Your compliance program, inside your AI agent."
+        >
+          <span aria-hidden="true" class="block overflow-hidden">
+            <span
+              class="animate-perspective-in block"
+              style="animation-delay: 150ms">Your compliance program,</span
+            >
+          </span>
+          <span aria-hidden="true" class="block overflow-hidden">
+            <span
+              class="animate-perspective-in block"
+              style="animation-delay: 200ms">inside your AI agent.</span
+            >
+          </span>
+        </h1>
+        <p
+          class="text-muted-foreground animate-perspective-in mx-auto mb-8 max-w-[468px] text-base"
+          style="animation-delay: 350ms"
+        >
+          {pageDescription}
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button
+            href="/docs/developers/api/mcp"
+            variant="secondary"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 400ms">Read the docs</Button
+          >
+          <Button
+            href="/contact"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 450ms">Book a demo</Button
+          >
+        </div>
+      </section>
+
+      <section class="relative z-10 container pb-0">
+        <div class="access-review-browser">
+          <img
+            src="/access-review/hero-access-review.svg"
+            alt=""
+            aria-hidden="true"
+            width="1146"
+            height="786"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            class="motion-safe:animate-slide-in"
+            style="animation-delay: 600ms"
+          />
+        </div>
+        <div
+          class="mx-auto flex w-full max-w-[636px] items-center gap-6 pt-8"
+          data-connect-tools
+        >
+          <p
+            class="text-muted-foreground shrink-0 text-sm leading-5 whitespace-nowrap"
+          >
+            Connect your AI tools
+          </p>
+          <LogosScroll
+            client:visible
+            class="h-6 min-w-0 flex-1 overflow-hidden"
+            label="Compatible AI clients"
+            gap={32}
+            fadeEdges
+          >
+            {
+              aiClients.map((client) => (
+                <div class="flex h-6 shrink-0 items-center gap-2 whitespace-nowrap">
+                  <img
+                    src={client.src}
+                    alt=""
+                    width={client.width}
+                    height="24"
+                    loading="lazy"
+                    decoding="async"
+                    class="block h-6 max-w-none shrink-0 object-contain"
+                    style={`width: ${client.width}px`}
+                  />
+                  <span class="text-sm leading-5 font-medium text-[#21201c]">
+                    {client.name}
+                  </span>
+                </div>
+              ))
+            }
+          </LogosScroll>
+        </div>
+      </section>
+    </div>
+
+    <section class="container pt-16 pb-0 text-center sm:pt-32">
+      <h2
+        class="mx-auto max-w-[552px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance text-[#141e12]"
+        data-trust-reveal
+      >
+        Everything in Probo, available to your AI agents.
+      </h2>
+      <p
+        class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+        data-trust-reveal
+        style="--trust-reveal-delay: 100ms"
+      >
+        Install one plugin to give an agent more than 350 tools, ready-made
+        compliance workflows, and the same permissions the person behind it
+        already has.
+      </p>
+
+      <div class="overview-feature-grid mt-16">
+        {
+          overviewFeatures.map((feature, index) => (
+            <div
+              class="overview-feature"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <i
+                class:list={["ph overview-feature-icon", feature.icon]}
+                aria-hidden="true"
+              />
+              <div class="overview-feature-copy">
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section id="how-it-works" class="pt-16 pb-0 sm:pt-32">
+      <div class="container mb-12 text-center sm:mb-16">
+        <h2
+          class="mx-auto max-w-[600px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          Give AI agents access without widening it.
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Choose the scopes when you create the token, and keep every agent
+          inside the permissions its owner already holds.
+        </p>
+      </div>
+
+      <div class="space-y-8 sm:space-y-12">
+        {
+          reviewSteps.map((feature, index) => (
+            <div
+              class:list={[
+                "container grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-16",
+              ]}
+              data-trust-reveal={index === 0 ? undefined : true}
+              style={`--trust-reveal-delay: ${index * 80}ms`}
+            >
+              <div
+                class:list={[
+                  "bg-subtle relative isolate mx-auto aspect-[508/664] w-full max-w-[508px] overflow-hidden rounded-2xl",
+                  feature.reverse && "lg:order-2",
+                ]}
+                data-review-visual
+                data-review-asset-visual
+                style={`--review-asset-x: ${feature.reverse ? "104px" : "-96px"}; --review-asset-y: ${index === 0 || feature.reverse ? "0px" : "64px"}; --review-asset-scale: ${index === 0 ? 1 : 0.98}; --review-asset-duration: ${feature.reverse ? "820ms" : "860ms"};`}
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 z-0"
+                  aria-hidden="true"
+                >
+                  <LottiePlayer
+                    client:visible
+                    src={feature.lottie}
+                    label={`${feature.title} animation`}
+                    class="size-full origin-center scale-[1.12] transform-gpu"
+                  />
+                </div>
+                <img
+                  src={`/access-review/${feature.illustration}-ui.svg`}
+                  alt=""
+                  aria-hidden="true"
+                  width={feature.overlay.width}
+                  height={feature.overlay.height}
+                  loading="lazy"
+                  decoding="async"
+                  class="review-asset pointer-events-none absolute z-10 block h-auto max-w-none"
+                  style={`left: ${(feature.overlay.x / 508) * 100}%; top: ${(feature.overlay.y / 664) * 100}%; width: ${(feature.overlay.width / 508) * 100}%;`}
+                />
+              </div>
+
+              <div
+                class:list={[
+                  "mx-auto w-full max-w-[508px] min-w-0",
+                  feature.reverse ? "lg:order-1 lg:pr-16" : "lg:pl-16",
+                ]}
+                data-trust-reveal={index === 0 ? true : undefined}
+              >
+                <h3
+                  class:list={[
+                    "mb-6 font-semibold",
+                    feature.reverse
+                      ? "text-[20px] leading-7 tracking-[-0.4px]"
+                      : "text-[24px] leading-8 tracking-[-0.6px]",
+                  ]}
+                >
+                  {feature.title}
+                </h3>
+                <ul class="text-muted-foreground space-y-3 text-[16px] leading-6">
+                  {feature.bullets.map((bullet) => (
+                    <li class="flex gap-2">
+                      <i
+                        class="ph ph-check inline-flex size-6 shrink-0 items-center justify-center text-[24px] leading-none text-current"
+                        aria-hidden="true"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section
+      class="container pt-16 sm:pt-32"
+      aria-labelledby="ai-tools-heading"
+    >
+      <h2
+        id="ai-tools-heading"
+        class="mx-auto mb-16 max-w-[560px] text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+      >
+        350+ tools across 21 categories
+      </h2>
+      <AiToolsGallery client:load />
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="pb-12 text-center sm:pb-16">
+        <h2
+          class="text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+          data-trust-reveal
+        >
+          Trusted by 130+ companies
+        </h2>
+        <p
+          class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Compliance teams use Probo to answer security questions, update risk
+          registers, and prepare audits from the AI tools they already work in.
+        </p>
+      </div>
+
+      <div class="trusted-showcase">
+        <div
+          class="trusted-photo-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          <Image
+            src={BlaxelFounders}
+            alt="Paul Sinai and the Blaxel team"
+            width={528}
+            height={528}
+            densities={[1, 2]}
+            class="trusted-photo"
+            loading="lazy"
+          />
+        </div>
+
+        <div
+          class="trusted-quote-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 180ms"
+        >
+          <span class="trusted-quote-halo" aria-hidden="true"></span>
+          <div class="trusted-quote-content">
+            <blockquote class="trusted-quote">
+              &ldquo;Probo handled our SOC 2 and compliance, so we could focus
+              on building.&rdquo;
+            </blockquote>
+
+            <div class="trusted-author">
+              <div class="trusted-author-copy">
+                <div class="trusted-author-name">Paul Sinai</div>
+                <div class="trusted-author-role">
+                  CEO &amp; Co-founder of Blaxel
+                </div>
+              </div>
+              <Image
+                src={PaulSinai}
+                alt="Paul Sinai"
+                width={48}
+                height={48}
+                densities={[1, 2]}
+                class="trusted-avatar"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <div class="trusted-logo-block">
+            <p>Trusted by teams building compliance-ready workflows</p>
+            <div class="trusted-logo-rail" aria-label="Trusted companies">
+              <LogosScroll class="trusted-logo-ticker" client:load>
+                {
+                  trustedLogos.map((logo) => (
+                    <span class:list={["trusted-logo-item", logo.class]}>
+                      <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={logo.width}
+                        height={logo.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  ))
+                }
+              </LogosScroll>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container pt-16 sm:pt-32">
+      <h2
+        class="mb-6 text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+        data-trust-reveal
+      >
+        Frequently asked questions
+      </h2>
+      <div class="faq-accordion mx-auto max-w-[768px]" data-faq-accordion>
+        {
+          faqs.map((faq, index) => (
+            <div
+              class="faq-item"
+              data-faq-item
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 60}ms`}
+            >
+              <h3>
+                <button
+                  class="faq-trigger"
+                  type="button"
+                  id={`ai-agents-faq-trigger-${index}`}
+                  aria-expanded="false"
+                  aria-controls={`ai-agents-faq-panel-${index}`}
+                  data-faq-trigger
+                >
+                  <span>{faq.question}</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <i class="ph ph-plus faq-icon-plus" />
+                    <i class="ph ph-minus faq-icon-minus" />
+                  </span>
+                </button>
+              </h3>
+              <div
+                class="faq-panel"
+                id={`ai-agents-faq-panel-${index}`}
+                role="region"
+                aria-labelledby={`ai-agents-faq-trigger-${index}`}
+                aria-hidden="true"
+                data-faq-panel
+              >
+                <div class="faq-panel-inner">
+                  <p>{faq.answer}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+    <ProductDiscovery />
+  </main>
+</Layout>
+
+<script>
+  const initAiAgentsAnimations = () => {
+    const assetVisuals = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-review-asset-visual]"),
+    );
+    const revealTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-trust-reveal]"),
+    );
+
+    if (assetVisuals.length === 0 && revealTargets.length === 0) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      assetVisuals.forEach((visual) => {
+        visual.classList.add("is-visible");
+      });
+      revealTargets.forEach((target) => {
+        target.classList.add("is-visible");
+      });
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    const assetObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          assetObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.35 },
+    );
+
+    revealTargets.forEach((target) => {
+      if (target.dataset.revealReady === "true") {
+        return;
+      }
+
+      target.dataset.revealReady = "true";
+      target.classList.add("is-awaiting-reveal");
+      revealObserver.observe(target);
+    });
+
+    assetVisuals.forEach((visual) => {
+      if (visual.dataset.motionReady === "true") {
+        return;
+      }
+
+      visual.dataset.motionReady = "true";
+      visual.classList.add("is-awaiting-animation");
+      assetObserver.observe(visual);
+    });
+  };
+
+  const initAiAgentsFaq = () => {
+    const faqAccordions = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-faq-accordion]"),
+    );
+
+    faqAccordions.forEach((faqAccordion) => {
+      if (faqAccordion.dataset.faqReady === "true") {
+        return;
+      }
+
+      faqAccordion.dataset.faqReady = "true";
+
+      const faqItems = Array.from(
+        faqAccordion.querySelectorAll<HTMLElement>("[data-faq-item]"),
+      );
+
+      const setFaqItemState = (item: HTMLElement, shouldOpen: boolean) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+        const panel = item.querySelector<HTMLElement>("[data-faq-panel]");
+
+        if (!trigger || !panel) {
+          return;
+        }
+
+        item.classList.toggle("is-open", shouldOpen);
+        trigger.setAttribute("aria-expanded", String(shouldOpen));
+        panel.setAttribute("aria-hidden", String(!shouldOpen));
+      };
+
+      faqItems.forEach((item, index) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+
+        if (!trigger) {
+          return;
+        }
+
+        trigger.addEventListener("click", () => {
+          const shouldOpen = !item.classList.contains("is-open");
+
+          faqItems.forEach((faqItem) => {
+            setFaqItemState(faqItem, faqItem === item && shouldOpen);
+          });
+        });
+
+        trigger.addEventListener("keydown", (event) => {
+          const lastIndex = faqItems.length - 1;
+          const nextIndex =
+            event.key === "ArrowDown"
+              ? Math.min(index + 1, lastIndex)
+              : event.key === "ArrowUp"
+                ? Math.max(index - 1, 0)
+                : event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? lastIndex
+                    : index;
+
+          if (nextIndex === index) {
+            return;
+          }
+
+          event.preventDefault();
+          faqItems[nextIndex]
+            ?.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+            ?.focus();
+        });
+      });
+    });
+  };
+
+  const initAiAgentsPage = () => {
+    initAiAgentsAnimations();
+    initAiAgentsFaq();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAiAgentsPage, {
+      once: true,
+    });
+  } else {
+    initAiAgentsPage();
+  }
+</script>
+
+<style>
+  .access-review-browser {
+    position: relative;
+    aspect-ratio: 1080 / 720;
+  }
+
+  /* Figma's SVG includes 33px of shadow beyond the 1080×720 browser. */
+  .access-review-browser img {
+    position: absolute;
+    top: -4.583333%;
+    left: -3.055556%;
+    width: 106.111111%;
+    max-width: none;
+    height: auto;
+  }
+
+  .trust-hero-orb {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    transform-origin: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .trust-hero-orb {
+      animation: trust-hero-orb-scale-in cubic-bezier(0.785, 0.135, 0.15, 0.86)
+        3s both;
+      animation-delay: -1200ms;
+    }
+  }
+
+  @keyframes trust-hero-orb-scale-in {
+    from {
+      transform: translateX(-50%) scale(0);
+    }
+
+    to {
+      transform: translateX(-50%) scale(1);
+    }
+  }
+
+  [data-trust-reveal],
+  :global([data-product-discovery] [data-trust-reveal]) {
+    --trust-reveal-delay: 0ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-trust-reveal].is-awaiting-reveal,
+    :global([data-product-discovery] [data-trust-reveal].is-awaiting-reveal) {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    [data-trust-reveal].is-visible,
+    :global([data-product-discovery] [data-trust-reveal].is-visible) {
+      animation: trust-reveal-slide-in var(--spring-smooth) 850ms
+        var(--trust-reveal-delay) both;
+    }
+  }
+
+  @keyframes trust-reveal-slide-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  [data-review-asset-visual] {
+    --review-asset-x: 0px;
+    --review-asset-y: 42px;
+    --review-asset-duration: 760ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-review-asset-visual].is-awaiting-animation .review-asset {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    [data-review-asset-visual].is-visible .review-asset {
+      animation: review-asset-enter var(--review-asset-duration)
+        cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+    }
+  }
+
+  @keyframes review-asset-enter {
+    0% {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    42% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  .overview-feature-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 48px;
+  }
+
+  .overview-feature {
+    display: flex;
+    width: min(100%, 328px);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .overview-feature-icon {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    color: #343330;
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .overview-feature-copy {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .overview-feature-copy h3,
+  .overview-feature-copy p {
+    width: 100%;
+  }
+
+  .overview-feature-copy h3 {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .overview-feature-copy p {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .overview-feature-copy a {
+    color: #343330;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 640px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 48px;
+      row-gap: 56px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .overview-feature-grid {
+      position: relative;
+      display: block;
+      width: 100%;
+      max-width: 1080px;
+      height: 346px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature {
+      position: absolute;
+      width: 328px;
+    }
+
+    .overview-feature:nth-child(1) {
+      top: 0;
+      left: 0;
+    }
+
+    .overview-feature:nth-child(1) .overview-feature-copy h3 {
+      max-width: 276px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature:nth-child(2) {
+      top: 0;
+      left: 376px;
+    }
+
+    .overview-feature:nth-child(3) {
+      top: 0;
+      left: 752px;
+    }
+
+    .overview-feature:nth-child(4) {
+      top: 201px;
+      left: 188px;
+    }
+
+    .overview-feature:nth-child(5) {
+      top: 201px;
+      left: 564px;
+    }
+
+    .overview-feature:nth-child(6) {
+      top: 201px;
+      left: 752px;
+    }
+  }
+
+  .trusted-showcase {
+    display: grid;
+    width: 100%;
+    max-width: 1080px;
+    gap: 24px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .trusted-photo-card,
+  .trusted-quote-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f6f9f5;
+  }
+
+  .trusted-photo-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  .trusted-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+
+  .trusted-quote-card {
+    display: flex;
+    min-height: 420px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 72px 20px 32px;
+    text-align: center;
+  }
+
+  .trusted-quote-halo {
+    position: absolute;
+    top: -423px;
+    left: 50%;
+    z-index: 0;
+    width: 1010px;
+    height: 1010px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .trusted-quote-halo::before {
+    position: absolute;
+    inset: -17%;
+    content: "";
+    background: url("/trust-center/quote-ellipse.svg") center / 100% 100%
+      no-repeat;
+    transform: rotate(180deg) scaleY(-1);
+  }
+
+  .trusted-quote-content,
+  .trusted-logo-block {
+    position: relative;
+    z-index: 1;
+  }
+
+  .trusted-quote-content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-quote {
+    margin: 0;
+    color: #141e12;
+    font-size: 22px;
+    line-height: 30px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    text-align: center;
+    text-wrap: balance;
+    word-break: break-word;
+  }
+
+  .trusted-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .trusted-author-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .trusted-author-name {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .trusted-author-role {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .trusted-avatar {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .trusted-logo-block {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-logo-block p {
+    color: #6b716a;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .trusted-logo-rail {
+    width: 792px;
+    max-width: calc(100vw - 48px);
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker) {
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker .splide__track),
+  :global(.trusted-logo-ticker .splide__list) {
+    height: 24px;
+  }
+
+  :global(.trusted-logo-ticker .splide__slide) {
+    display: flex;
+    height: 24px;
+    align-items: center;
+  }
+
+  .trusted-logo-item {
+    display: flex;
+    height: 24px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    opacity: 0.6;
+  }
+
+  .trusted-logo-item img {
+    display: block;
+    width: 100%;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .trusted-logo--trace {
+    width: 190.5px;
+  }
+
+  .trusted-logo--jimo {
+    width: 78px;
+  }
+
+  .trusted-logo--lucis {
+    width: 109.5px;
+  }
+
+  .trusted-logo--filiz {
+    width: 115.5px;
+  }
+
+  .trusted-logo--ahrefs {
+    width: 123px;
+  }
+
+  @media (min-width: 1024px) {
+    .trusted-showcase {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .trusted-quote-card {
+      min-height: auto;
+      aspect-ratio: 1 / 1;
+      padding: 96px 32px 32px;
+    }
+
+    .trusted-quote {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border-low);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 0;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+  }
+
+  .faq-trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: padding 220ms ease;
+  }
+
+  .faq-trigger:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 4px;
+  }
+
+  .faq-trigger span:first-child {
+    flex: 1;
+  }
+
+  .faq-icon {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+
+  .faq-icon i {
+    position: absolute;
+    font-size: 16px;
+    line-height: 1;
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease;
+  }
+
+  .faq-icon-minus {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-trigger {
+    padding-bottom: 8px;
+  }
+
+  .faq-item.is-open .faq-icon-plus {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-icon-minus {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms ease;
+  }
+
+  .faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-panel p {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0 40px 16px 0;
+    color: #6b716a;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .faq-item.is-open .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-panel,
+    .faq-icon i,
+    .faq-trigger {
+      transition: none;
+    }
+  }
+</style>
+
+<style>
+  .overview-feature-grid {
+    display: grid;
+    height: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 56px 48px;
+  }
+  .overview-feature {
+    position: static;
+    width: 100%;
+  }
+  @media (min-width: 1024px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .overview-feature:nth-child(-n + 3) {
+      grid-column: span 2;
+    }
+    .overview-feature:nth-child(4) {
+      grid-column: 2 / span 2;
+    }
+    .overview-feature:nth-child(5) {
+      grid-column: 4 / span 2;
+    }
+  }
+  @media (max-width: 1023px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 639px) {
+    .overview-feature-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
