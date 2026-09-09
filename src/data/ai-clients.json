@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Claude",
+    "href": "/docs/developers/api/mcp/claude-ai",
+    "src": "/ai-clients/claude.svg",
+    "width": 24
+  },
+  {
+    "name": "Cursor",
+    "href": "/docs/developers/api/mcp/cursor",
+    "src": "/ai-clients/cursor.svg",
+    "width": 24
+  },
+  {
+    "name": "VS Code",
+    "href": "/docs/developers/api/mcp/vscode",
+    "src": "/ai-clients/vs-code.svg",
+    "width": 24
+  },
+  {
+    "name": "Windsurf",
+    "href": "/docs/developers/api/mcp/windsurf",
+    "src": "/ai-clients/windsurf.svg",
+    "width": 24
+  },
+  {
+    "name": "Zed",
+    "href": "/docs/developers/api/mcp/zed",
+    "src": "/ai-clients/zed.svg",
+    "width": 24
+  },
+  {
+    "name": "OpenCode",
+    "href": "/docs/developers/api/mcp/opencode",
+    "src": "/ai-clients/opencode.svg",
+    "width": 24
+  }
+]

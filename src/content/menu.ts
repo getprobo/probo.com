@@ -2,6 +2,7 @@ export type MenuIconName =
   | "article"
   | "book-open-text"
   | "briefcase"
+  | "claude"
   | "clock-counter-clockwise"
   | "code"
   | "compass"
@@ -58,6 +59,12 @@ export const menuGroups: MenuGroup[] = [
         description: "Monitor user access across all your systems",
         href: "/products/access-review",
         icon: "list-checks",
+      },
+      {
+        label: "AI Agents",
+        description: "Your compliance program, inside your AI agent",
+        href: "/products/ai-agents",
+        icon: "claude",
       },
       {
         label: "Open-source platform",

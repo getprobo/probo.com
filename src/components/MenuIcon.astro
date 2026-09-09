@@ -10,4 +10,21 @@ interface Props {
 const { name, class: className } = Astro.props;
 ---
 
-<Icon name={name} size={24} class:list={["block size-6", className]} />
+{
+  name === "claude" ? (
+    <span
+      class:list={["menu-icon-claude block size-6", className]}
+      aria-hidden="true"
+    />
+  ) : (
+    <Icon name={name} size={24} class:list={["block size-6", className]} />
+  )
+}
+
+<style>
+  .menu-icon-claude {
+    background: currentColor;
+    -webkit-mask: url("/ai-clients/claude.svg") center / contain no-repeat;
+    mask: url("/ai-clients/claude.svg") center / contain no-repeat;
+  }
+</style>
