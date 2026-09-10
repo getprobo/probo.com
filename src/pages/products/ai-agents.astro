@@ -61,8 +61,8 @@ const reviewSteps: ReviewStep[] = [
   {
     title: "Install the plugin, then sign in",
     lottie: "/lottie/access-review/1.json",
-    illustration: "workflow-connect-systems",
-    overlay: { x: -97.5, y: 104.5, width: 704, height: 456 },
+    illustration: "workflow-install-plugin-ui.webp",
+    overlay: { x: 36, y: 82, width: 436, height: 500 },
     bullets: [
       "Add the marketplace with claude plugin marketplace add getprobo/probo.",
       "Install with claude plugin install probo@probo, then run claude mcp login probo-us.",
@@ -72,8 +72,8 @@ const reviewSteps: ReviewStep[] = [
   {
     title: "Connect the client your team already uses",
     lottie: "/lottie/access-review/2.json",
-    illustration: "workflow-account-context",
-    overlay: { x: 64, y: 64, width: 720, height: 654 },
+    illustration: "workflow-connect-clients-ui.svg",
+    overlay: { x: 62, y: 127, width: 384, height: 410 },
     reverse: true,
     bullets: [
       "Sign in with interactive OAuth from Claude, Cursor, VS Code, Windsurf, and Zed.",
@@ -84,9 +84,8 @@ const reviewSteps: ReviewStep[] = [
   {
     title: "Scope every agent before it connects",
     lottie: "/lottie/access-review/3.json",
-    illustration: "workflow-review-decisions",
-    // The SVG includes 29px of shadow to the left of the UI's Figma x=102.
-    overlay: { x: 73, y: 65, width: 439, height: 607 },
+    illustration: "workflow-agent-permissions-ui.svg",
+    overlay: { x: 39, y: 64, width: 430, height: 635 },
     bullets: [
       "Grant v1:resource:read for read-only access, or v1:resource to allow writes.",
       "Keep access at the intersection of the token scopes and the user’s permissions.",
@@ -96,8 +95,8 @@ const reviewSteps: ReviewStep[] = [
   {
     title: "Ask questions against live compliance data",
     lottie: "/lottie/access-review/4.json",
-    illustration: "workflow-audit-evidence",
-    overlay: { x: 36, y: 103, width: 436, height: 458 },
+    illustration: "workflow-query-compliance-ui.svg",
+    overlay: { x: 48, y: 96, width: 881, height: 660 },
     reverse: true,
     bullets: [
       "Query risks, controls, evidence, audits, and findings in plain language.",
@@ -108,8 +107,8 @@ const reviewSteps: ReviewStep[] = [
   {
     title: "Let agents do the work, not only describe it",
     lottie: "/lottie/access-review/1.json",
-    illustration: "workflow-connect-systems",
-    overlay: { x: -97.5, y: 104.5, width: 704, height: 456 },
+    illustration: "workflow-take-action-ui.svg",
+    overlay: { x: 96, y: 55, width: 451, height: 554 },
     bullets: [
       "Create and update risks, measures, tasks, documents, and evidence.",
       "Build agentic workflows without writing an API client first.",
@@ -308,7 +307,7 @@ const softwareApplicationSchema = {
       <section class="relative z-10 container pb-0">
         <div class="access-review-browser">
           <img
-            src="/access-review/hero-access-review.svg"
+            src="/ai-agents/hero-ai-agents.svg"
             alt=""
             aria-hidden="true"
             width="1146"
@@ -448,7 +447,7 @@ const softwareApplicationSchema = {
                   />
                 </div>
                 <img
-                  src={`/access-review/${feature.illustration}-ui.svg`}
+                  src={`/ai-agents/${feature.illustration}`}
                   alt=""
                   aria-hidden="true"
                   width={feature.overlay.width}
