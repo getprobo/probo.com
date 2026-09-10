@@ -12,6 +12,7 @@ const accessReviewConnectorItems = [
   { label: "Amazon Web Services", slug: "docs/product/access-review/aws" },
   { label: "Anthropic", slug: "docs/product/access-review/anthropic" },
   { label: "Apollo.io", slug: "docs/product/access-review/apollo" },
+  { label: "Attio", slug: "docs/product/access-review/attio" },
   { label: "authentik", slug: "docs/product/access-review/authentik" },
   { label: "Better Stack", slug: "docs/product/access-review/better-stack" },
   { label: "Brevo", slug: "docs/product/access-review/brevo" },
