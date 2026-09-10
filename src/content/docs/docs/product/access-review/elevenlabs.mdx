@@ -1,0 +1,62 @@
+---
+title: ElevenLabs
+description: Connect ElevenLabs as an access source using an API key granted the Workspace Members Read permission, so Probo can list your workspace members and review who holds an admin seat in the workspace.
+---
+
+Probo reads your ElevenLabs workspace members through the ElevenLabs API so you can review who has access.
+
+:::caution
+Use an API key that carries the **Workspace Members: Read** access (`workspace_members_read`), created under **Developers** > **API Keys**. A key whose scope restriction leaves that permission out is refused when Probo asks for the member list, so the source cannot sync.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- An ElevenLabs account that can create API keys for the workspace you want to review
+- An API key granted the **Workspace Members: Read** permission. ElevenLabs lets you restrict a key to selected endpoints, so select that permission explicitly
+- A key that does not expire. ElevenLabs lets a user API key carry an expiry as short as 15 minutes, and a connector whose key expires stops syncing without any change on the Probo side. A service account key, available to multi-seat workspaces, does not expire
+
+## Collected Fields
+
+| Probo field | ElevenLabs field                                         | Notes                                                                                                                       |
+| ----------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `first_name`                                             | ElevenLabs stores only a first name. A member who has not set one is listed under their email address                       |
+| Email       | `email`                                                  |                                                                                                                             |
+| Role        | `seat_type`, `is_owner`                                  | `workspace_admin`, `workspace_member` and `workspace_lite_member` map to Workspace Admin, Workspace Member and Workspace Lite Member. An owner also carries Owner, since ownership sits on top of a seat |
+| Admin       | `is_owner`, `seat_type`                                  | Flagged for the workspace owner and for anyone holding the `workspace_admin` seat                                            |
+| Status      | `is_locked`                                              | A locked member is listed as inactive. They keep their seat and their history, so they stay in the campaign rather than disappearing from it |
+| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                             |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                             |
+| External ID | `user_id`                                                | Stable identifier used to track the account across reviews                                                                  |
+| Created at  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                             |
+
+The members endpoint returns the whole workspace in one response, and that response includes locked members. A campaign therefore covers everyone in the workspace, with no paging to follow.
+
+## Step 1: Create an API Key
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+<Steps>
+
+1. In the ElevenLabs dashboard, open **Developers** and go to **API Keys**.
+2. Click **Create Key** and name it, for example `Probo Access Review`.
+3. Under the key's access restrictions, grant **Workspace Members: Read**. Leave the credit quota and IP allowlist as they are unless your policy requires them, and do not set an expiry, or the connector stops syncing when the key expires.
+4. Copy the key and store it securely. ElevenLabs shows it only once.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **ElevenLabs**, click **API Key**, paste the key, and click **Connect**.
+
+</Steps>
+
+Probo pulls the workspace members into your campaigns.
+
+## Troubleshooting
+
+- **Key rejected.** ElevenLabs refuses a key it will not accept with a `400` and an authentication error, where most APIs answer `401`. Probo treats both as a rejected credential. Check that the key was copied whole and has not been revoked.
+- **No members appear.** The key needs the **Workspace Members: Read** permission. A key without it authenticates but cannot read the roster. Edit the key under **Developers** > **API Keys**, or create a new key with the permission selected.

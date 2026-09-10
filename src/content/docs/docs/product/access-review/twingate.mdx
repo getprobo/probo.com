@@ -1,0 +1,66 @@
+---
+title: Twingate
+description: Connect Twingate as an access source using a read-only API token and your network name, so Probo can list the users on your Twingate network along with their role and account state.
+---
+
+Probo reads the users on your Twingate network through the Twingate API so you can review who has access.
+
+:::caution
+Use an API token generated under **Settings** > **API** in the Twingate Admin Console. **Read only** is enough, and is the level to prefer: Probo never writes to Twingate. If the token is restricted to source addresses, Probo's requests will be refused unless your allowlist covers them, so leave the default address range in place.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- Access to your Twingate Admin Console settings, where you generate API tokens
+- A **Read only** API token
+- Your Twingate **Network name**, the label in front of `.twingate.com` in your Admin Console address. For `acme.twingate.com` the network name is `acme`
+
+## Collected Fields
+
+| Probo field | Twingate field                                           | Notes                                                                                                                       |
+| ----------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `firstName`, `lastName`                                  | A user with neither is listed under their email address                                                                     |
+| Email       | `email`                                                  |                                                                                                                             |
+| Role        | `role`                                                   | `ADMIN`, `DEVOPS`, `SUPPORT`, `HELPDESK`, `ACCESS_REVIEWER`, `BILLING` and `MEMBER` map to Admin, DevOps, Support, Helpdesk, Access Reviewer, Billing and Member. A role Twingate adds later is passed through as Twingate spells it |
+| Admin       | `isAdmin`                                                | Twingate reports this alongside the role and sets it for administrative roles beyond `ADMIN`, a `DEVOPS` user included, so Probo passes the flag through rather than reading it off the role |
+| Status      | `state`                                                  | `ACTIVE` is listed as active. `PENDING` (invited but not joined) and `DISABLED` are listed as inactive                       |
+| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                             |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                             |
+| External ID | `id`                                                     | Stable identifier used to track the account across reviews                                                                  |
+| Created at  | `createdAt`                                              | When the user was added to the network                                                                                      |
+
+Probo also reads Twingate's `type` field. A user provisioned by your identity provider is recorded as signing in through SSO. For a user an administrator added by hand, Probo records no sign-in method, because the field describes how the record was created and not how the person authenticates.
+
+Service accounts are a separate type in Twingate and are not part of this roster. A Twingate campaign therefore covers people, not machine credentials.
+
+## Step 1: Create an API Token
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+<Steps>
+
+1. In the Twingate Admin Console, go to **Settings** > **API**.
+2. Click **Generate Token** and name it, for example `Probo Access Review`.
+3. Choose the **Read only** permission level.
+4. Leave the source address restriction at its default so Probo can reach the API.
+5. Copy the token and store it securely.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **Twingate**, click **API Key**, paste the token, enter your **Network name** (the label in front of `.twingate.com` in your Admin Console address), and click **Connect**.
+
+</Steps>
+
+Probo names the source after your Twingate network and pulls its users into your campaigns.
+
+## Troubleshooting
+
+- **Key rejected.** Confirm the token was copied whole and has not been revoked, and that any source address restriction on it allows Probo's requests.
+- **Connection fails with the token accepted elsewhere.** Check the **Network name**. A network that does not exist fails the connection instead of returning an empty campaign, so a typo shows up as soon as you connect.
+- **A large network fails to sync.** Twingate limits reads to 60 a minute per account by default, so Probo spaces its requests to stay inside that limit. Probo also gives one source two minutes to return its roster, which together put the practical ceiling at roughly ten thousand users. Past that the sync fails rather than returning a partial list, so a campaign never runs on an incomplete roster.

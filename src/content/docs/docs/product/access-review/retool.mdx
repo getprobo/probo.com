@@ -1,0 +1,69 @@
+---
+title: Retool
+description: Connect Retool as an access source using an API access token carrying the Users Read scope, so Probo can list your organization's users along with their seat, admin status and two-factor state.
+---
+
+Probo reads your Retool organization's users through the Retool API so you can review who has access.
+
+:::caution
+Use an **API access token** carrying the **Users > Read** scope, created under **Settings** > **Retool API**. A token without that scope authenticates and is then refused on the users endpoint, because Retool checks scopes per endpoint rather than per token, and it names the missing scope when it refuses.
+
+Retool gates that scope behind its **Enterprise** plan. Its pricing page gives Business "limited access" to the platform APIs and reserves "full access to all API scopes" for Enterprise, and the token dialog bears that out: neither Team nor Business lists a Users scope at all. On those plans no token can read the roster and this connector cannot be used.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- A Retool **organization admin** account. Only organization admins can create API access tokens
+- A Retool **Enterprise** plan. The **Users** scope this connector needs is absent from the token dialog on Team and on Business, so confirm the dialog offers it before going further
+- An access token granted the **Users > Read** scope. Scopes are chosen when the token is created and cannot be changed afterwards, since the only action Retool offers on an existing token is deleting it
+- Self-hosted only: the **Base URL** of your Retool instance. Retool Cloud customers leave this empty, because a cloud token already identifies the organization it belongs to
+
+## Collected Fields
+
+| Probo field | Retool field                                             | Notes                                                                                                                                      |
+| ----------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `first_name`, `last_name`                                | Either may be empty. A user with neither is listed under their email address                                                               |
+| Email       | `email`                                                  |                                                                                                                                            |
+| Role        | `is_admin`, `seat_type`, `user_type`                     | Three separate things a reviewer acts on differently, so each is listed on its own: Admin for an organization admin, the seat (Builder, Internal User, External User), and the account kind when it is not the ordinary one (Mobile, Embed) |
+| Admin       | `is_admin`                                               | Flagged when Retool reports the user as an organization admin                                                                              |
+| Status      | `active`                                                 | A deactivated user is listed as inactive                                                                                                   |
+| MFA         | `two_factor_auth_enabled`                                | Retool reports this for every user, so a Retool campaign always shows whether two-factor authentication is on                               |
+| Last login  | `last_active`                                            | Empty for a user who has never signed in                                                                                                   |
+| External ID | `id`                                                     | Stable identifier used to track the account across reviews                                                                                 |
+| Created at  | `created_at`                                             | When the user was created in the organization                                                                                              |
+
+Group membership comes from a separate Retool endpoint and is not part of the roster. A Retool campaign therefore covers organization-level access, not per-app permissions.
+
+## Step 1: Create an API Access Token
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+<Steps>
+
+1. In Retool, signed in as an organization admin, go to **Settings** > **Retool API**.
+2. Click **Create new** and name the token, for example `Probo Access Review`.
+3. Under scopes, select **Users > Read**. If the dialog offers no Users scope, the organization is not on Enterprise and the connector cannot read its roster.
+4. Copy the token and store it securely. Retool shows it only once, and the scopes cannot be changed later.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **Retool**, click **API Key**, and paste the token.
+3. On Retool Cloud, leave **Base URL (leave empty for Retool Cloud)** empty. On a self-hosted instance, enter the address you use to reach Retool, for example `https://retool.example.com`.
+4. Click **Connect**.
+
+</Steps>
+
+Probo pulls your Retool users into your campaigns.
+
+## Troubleshooting
+
+- **Key rejected.** Confirm the token was copied whole and has not been revoked.
+- **The token dialog offers no Users scope.** The scope is Enterprise only. A Team plan offers **Retool RPC** and **Custom Component Libraries**; Business adds **Apps**, **User Invites** and **User Attributes**. None of those reads the roster, and a token created on Business with every scope selected is still refused with `missing one of "users:read"`. No other endpoint substitutes either: `/user_invites` returns invitations rather than current members, and the usage endpoints need a `usage` scope that dialog does not offer. Until the organization is on Enterprise, use a CSV source.
+- **No members appear.** The token needs the **Users > Read** scope. Retool names the missing scope when it refuses, and a token's scopes cannot be edited, so create a new token that carries it.
+- **Self-hosted instance does not connect.** Probo calls the **Base URL** from its own infrastructure, so it cannot reach an instance that is only available on a private network. Self-hosted Retool serves the API from version 3.18 onward.

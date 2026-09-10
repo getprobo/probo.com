@@ -1,0 +1,63 @@
+---
+title: New Relic
+description: Connect New Relic as an access source using a user key and your account region, so Probo can list your organization's users across every authentication domain along with their group membership.
+---
+
+Probo reads your New Relic organization's users through NerdGraph so you can review who has access.
+
+:::caution
+Use a **user key**, created under **API keys** in the user menu. A **license key** or an **ingest key** will **not** work, because those authenticate telemetry sent to New Relic rather than queries made against it. The user key also has to belong to someone who can read user management, which in New Relic means the **Authentication Domain Manager** role.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- A New Relic user who can read user management for the organization. New Relic requires two things together: a **Core** or **Full platform** user, holding the **Authentication Domain Manager** role. A key created by an account missing either one authenticates but cannot list the organization's users
+- A user key created by that account
+- The **Region** your New Relic account is in: `us`, `eu` or `jp`. NerdGraph runs one endpoint per region and refuses a key presented to any other one, and the key itself does not say which region it belongs to
+
+## Collected Fields
+
+| Probo field | New Relic field                                          | Notes                                                                                                                                                |
+| ----------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Name        | `name`                                                   | A user with no name is listed under their email address                                                                                              |
+| Email       | `email`                                                  |                                                                                                                                                      |
+| Role        | group `displayName`                                      | New Relic keeps what a user may do in the groups they belong to, so the groups are the roles. The user type (Basic, Core, Full platform) is not collected as a role: New Relic documents it as a billing factor and states it is not a way to set permissions |
+| Admin       | group `displayName`                                      | Flagged for members of New Relic's built-in **Admin** group, matched exactly. A custom group with a similar name grants nothing by that fact alone, so it is not treated as administrative |
+| Status      | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                      |
+| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                      |
+| Last login  | `lastActive`                                             | When the user was last active in New Relic. Empty for a user who has never signed in                                                                 |
+| External ID | `id`                                                     | Stable identifier used to track the account across reviews                                                                                           |
+| Created at  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                      |
+
+Probo reads every authentication domain in the organization, so a campaign covers users who sign in with a password as well as users who sign in through your identity provider.
+
+## Step 1: Create a User Key
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+<Steps>
+
+1. In New Relic, open the user menu and go to **API keys**.
+2. Click **Create a key** and choose **User** as the key type.
+3. Name the key, for example `Probo Access Review`, and create it.
+4. Copy the key and store it securely.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **New Relic**, click **API Key**, paste the key, fill in **Region (us, eu or jp)** with the region the key's New Relic account is in, and click **Connect**.
+
+</Steps>
+
+Probo names the source after your New Relic organization and pulls its users into your campaigns.
+
+## Troubleshooting
+
+- **Key rejected.** Confirm the key is a user key, not a license or ingest key, and that it has not been deleted.
+- **Connection refused after the key is accepted.** This is usually the wrong **Region**. Each endpoint refuses a key belonging to another region's account. Reconnect with the region that matches the account the key came from.
+- **No members appear.** Listing the organization's users needs both a Core or Full platform account type and the **Authentication Domain Manager** role. Ask a New Relic administrator to grant whichever is missing to the key's owner, or to create the key from an account that has both.
