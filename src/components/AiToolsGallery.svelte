@@ -359,12 +359,32 @@
   <div class="gallery-visual" aria-hidden="true">
     <img class="gallery-orb" src="/ai-agents/orb.svg" alt="" />
     <div class="gallery-prompt-card">
-      <div class="gallery-prompt-field">
-        <p>
+      <div class="gallery-composer">
+        <p class="gallery-prompt-field">
           <span class="gallery-prompt-copy">{displayed}</span><i
             class:blinking={!editing}
           ></i>
         </p>
+        <div class="gallery-composer-toolbar">
+          <span class="gallery-composer-action">
+            <i class="ph ph-plus"></i>
+          </span>
+          <div class="gallery-composer-controls">
+            <div class="gallery-composer-model">
+              <span>Opus 5</span>
+              <span class="gallery-composer-mode">
+                Extended
+                <i class="ph ph-caret-down"></i>
+              </span>
+            </div>
+            <span class="gallery-composer-action">
+              <i class="ph ph-microphone"></i>
+            </span>
+            <span class="gallery-composer-submit">
+              <i class="ph ph-arrow-up"></i>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -419,7 +439,7 @@
     position: relative;
   }
   .gallery-visual {
-    height: 344px;
+    height: 420px;
     position: relative;
     overflow: hidden;
     border-radius: 10px;
@@ -427,39 +447,48 @@
   }
   .gallery-orb {
     position: absolute;
-    width: 126.9%;
+    z-index: 2;
+    width: 155.3%;
     max-width: none;
     height: auto;
-    top: 50%;
+    top: -77.4%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
   }
   .gallery-prompt-card {
     position: absolute;
-    top: -150px;
+    z-index: 1;
+    top: -56px;
     left: calc(50% - 12px);
     display: flex;
-    width: 61.6%;
+    width: 61.574%;
     height: 413px;
-    padding: 24px;
+    padding: 32px;
     align-items: flex-end;
     transform: translateX(-50%);
-    border-radius: 12px;
+    border-radius: 52px;
     background: #fff;
   }
-  .gallery-prompt-field {
+  .gallery-composer {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: 110px;
-    padding: 12px;
+    height: 136px;
+    padding: 16px;
     border: 1px solid rgba(31, 24, 0, 0.13);
-    border-radius: 8px;
+    border-radius: 20px;
     background: rgba(255, 255, 255, 0.9);
     color: #21201c;
-    font-size: 16px;
-    line-height: 22px;
-    text-align: left;
+    font-family: "Inter", sans-serif;
   }
-  .gallery-prompt-field p {
+  .gallery-prompt-field {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
@@ -475,6 +504,52 @@
   }
   .gallery-prompt-field i.blinking {
     animation: caret-blink 1s step-end infinite;
+  }
+  .gallery-composer-toolbar,
+  .gallery-composer-controls,
+  .gallery-composer-model,
+  .gallery-composer-mode,
+  .gallery-composer-action,
+  .gallery-composer-submit {
+    display: flex;
+    align-items: center;
+  }
+  .gallery-composer-toolbar {
+    flex: 0 0 auto;
+    justify-content: space-between;
+  }
+  .gallery-composer-controls {
+    gap: 10px;
+  }
+  .gallery-composer-model {
+    gap: 6px;
+    color: #21201c;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .gallery-composer-mode {
+    gap: 4px;
+    color: rgba(8, 8, 0, 0.63);
+  }
+  .gallery-composer-mode i {
+    color: #919191;
+    font-size: 12px;
+  }
+  .gallery-composer-action,
+  .gallery-composer-submit {
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: #343330;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .gallery-composer-submit {
+    background: #b96748;
+    color: #fff;
   }
   @keyframes caret-blink {
     0%,
@@ -589,11 +664,11 @@
   @keyframes gallery-orb-enter {
     from {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(1.035);
+      transform: translateX(-50%) scale(1.035);
     }
     to {
       opacity: 1;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
     }
   }
   @keyframes gallery-card-enter {
@@ -641,22 +716,44 @@
       font-size: 18px;
     }
     .gallery-visual {
-      height: 260px;
+      height: 320px;
+    }
+    .gallery-orb {
+      width: 215%;
+      top: -56%;
     }
     .gallery-prompt-card {
-      top: -110px;
-      width: 76%;
-      height: 320px;
+      top: -44px;
+      left: 50%;
+      width: 86%;
+      height: 292px;
       padding: 16px;
+      border-radius: 40px;
+    }
+    .gallery-composer {
+      height: 152px;
+      padding: 12px;
+      border-radius: 18px;
     }
     .gallery-prompt-field {
-      height: 154px;
-      padding: 10px;
       font-size: 13px;
       line-height: 18px;
     }
     .gallery-prompt-field i {
       height: 19px;
+    }
+    .gallery-composer-model {
+      gap: 4px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+    .gallery-composer-controls {
+      gap: 4px;
+    }
+    .gallery-composer-action,
+    .gallery-composer-submit {
+      width: 28px;
+      height: 28px;
     }
     .gallery-viewport {
       -webkit-mask-image: linear-gradient(
