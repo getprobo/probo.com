@@ -33,7 +33,7 @@ The sequence diagram below follows the same lifecycle as the numbered steps that
 4. **Use on demand.** Probo decrypts a credential only inside the application when it must authenticate an authorized request to the provider, for example during an access review sync. Listing connectors for display does not decrypt credentials.
 5. **Disconnect and delete.** Removing a source deletes the connector record and its encrypted credential from Probo. Disconnecting also stops new fetches from that integration. Revoke or rotate the token on the provider side as well so the old credential cannot be reused outside Probo.
 
-Some integrations use a **deployment-managed token** (for example the Crisp marketplace plugin). In that model Probo does not copy the shared plugin token into your organization's stored connection; you prove ownership of the resource separately. Check the connector guide for your provider.
+Some integrations use a **deployment-managed token** (for example the Crisp marketplace plugin). In that model Probo does not copy the shared plugin token into your organization's stored connection. Instead you approve an app installation at the provider, and Probo confirms that installation with the provider before the connection completes. Check the connector guide for your provider.
 
 ## Credential encryption
 

@@ -1,64 +1,75 @@
 ---
 title: Crisp
-description: Connect Crisp as an access review source by installing the Probo Marketplace plugin and verifying your Website ID to list your operators.
+description: Connect Crisp as an access review source by installing the Probo Access Review plugin from Probo, then approving it on the Crisp website you want to review.
 ---
+
+import { Steps, Badge } from "@astrojs/starlight/components";
 
 Probo reads your Crisp website's operators (your team members, not your visitors) through the Crisp plugin API so you can review who has access.
 
 :::caution
-This connector does not use an API key you create or paste. Probo connects through its own Crisp Marketplace plugin: you install the **Probo Access Review** plugin on your website, then paste a Probo-provided verification code into the plugin's settings to prove you control the website. Without the plugin installed and the code saved, the connection will **not** complete.
+This connector asks you for no API key. You do not create a credential or paste a value anywhere. Probo connects through its own Crisp Marketplace plugin. You start the connection in Probo and approve the plugin on the Crisp website you want to review, and Crisp sends you back to Probo. Probo confirms the installation with Crisp before the connection completes, so only someone who can approve a plugin on that website can create a connection.
 :::
 
 ## Prerequisites
 
 - Probo organization administrator access
-- **Owner** access to the Crisp website, so you can install a plugin and edit its settings (Crisp operators are either Owner or Member)
-- The **Probo Access Review** plugin installed on the Crisp website you want to review
-- Your Crisp **Website ID**, from **Settings** > **Workspace Settings** > **Setup & Integrations**
+- Access to the Crisp website you want to review, with rights to install a plugin on it (Crisp operators are either Owner or Member)
+- A Crisp account you are already signed in to, so the approval screen can list the websites you can choose from
 
 ## Collected Fields
 
-The Probo column lists every field. The Crisp column shows the operator field Probo reads or marks a field as **Not supported** when Crisp does not provide it.
+The Probo column lists every field shown in the review. The Crisp column shows the operator field Probo reads or marks a field as **Not supported** when Crisp does not provide it. Probo also records each operator's job title from `title`.
 
-| Probo field | Crisp field                                              | Notes                                                      |
-| ----------- | -------------------------------------------------------- | ---------------------------------------------------------- |
-| Name        | `first_name` and `last_name`                             | Falls back to the email                                    |
-| Email       | `email`                                                  |                                                            |
-| Role        | `role`                                                   | `owner` → Owner, `member` → Member                         |
-| Admin       | `role`                                                   | Flagged as an administrator when `role` is `owner`         |
-| Status      | <Badge text="Not supported" class="badge-unsupported" /> |                                                            |
-| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                            |
-| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                            |
-| External ID | `user_id`                                                | Stable identifier used to track the account across reviews |
-| Created at  | <Badge text="Not supported" class="badge-unsupported" /> |                                                            |
+| Probo field | Crisp field                                              | Notes                                                                                                                                       |
+| ----------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `first_name` and `last_name`                             | Falls back to the email                                                                                                                     |
+| Email       | `email`                                                  | An operator with no email is skipped                                                                                                        |
+| Role        | `role`                                                   | `owner` becomes Owner and `member` becomes Member, ignoring case. Any other value is kept as sent, after trimming. A blank role yields none |
+| Admin       | `role`                                                   | Flagged as an administrator when `role` is `owner`                                                                                          |
+| Status      | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                             |
+| MFA         | `has_token`                                              | Enabled when true, Disabled when false, Unknown when absent                                                                                 |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                             |
+| External ID | `user_id`                                                | Stable identifier used to track the account across reviews                                                                                  |
+| Created at  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                             |
 
-## Step 1: Install the Probo Plugin on Your Crisp Website
+Probo lists joined operators only. Operators who were invited but have not accepted, and Crisp Marketplace plugin developers attached to the website, both come back from the same Crisp endpoint, and Probo leaves them out of the review.
 
-import { Steps, Badge } from "@astrojs/starlight/components";
-
-<Steps>
-
-1. In your Crisp dashboard (signed in as an **Owner**), install the **Probo Access Review** plugin on the website you want to review.
-2. Copy your **Website ID** from **Settings** > **Workspace Settings** > **Setup & Integrations**.
-
-</Steps>
-
-## Step 2: Connect in Probo
+## Step 1: Start the Install from Probo
 
 <Steps>
 
 1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Crisp**, click **API Key**, and enter your **Website ID**.
-3. Probo shows a **verification code**. Copy it.
-4. In your Crisp dashboard, open the **Probo Access Review** plugin's settings, paste the code into the **Probo Verification Code** field, and save.
-5. Back in Probo, click **Connect**. Probo reads the code back through the plugin, confirms it matches, and connects the website.
+2. Find **Crisp** and click **App Install**.
 
 </Steps>
 
-Probo names the source after your Crisp website and pulls its operators into your campaigns.
+Probo sends you to Crisp without opening a dialog or asking you for a value.
+
+## Step 2: Approve the Plugin in Crisp
+
+<Steps>
+
+1. Crisp shows **Link Crisp with Probo Access Review**. Click **Continue**.
+2. Choose the website you want Probo to review.
+3. Crisp installs the **Probo Access Review** plugin and returns you to Probo.
+
+</Steps>
+
+Finish signed in to the same Probo account that started the connection, with a session that is still valid. Probo ties the installation link to the person who started it, so returning as anyone else is refused. Staying in the same browser is the simplest way to meet that, though it is the account that matters, not the browser.
+
+Probo checks the installation with Crisp. It then names the source after your Crisp website and pulls its operators into your campaigns. The installation link works once, so start again from Probo if you need to connect another website.
 
 ## Troubleshooting
 
-- **"Install and configure the Probo plugin" error.** The Probo Access Review plugin must be installed on the exact website whose Website ID you entered.
-- **Verification code mismatch.** Paste the exact code Probo shows for this website into the plugin's **Probo Verification Code** setting and save it before clicking **Connect**. The code is tied to your organization and this website.
-- **No operators appear.** Confirm the **Website ID** matches the website you are reviewing. Probo lists operators (agents), not visitors.
+Each entry quotes the message Probo shows on the connections page after a failed installation.
+
+- **"This installation link was already used. Start the connection again from Probo."** Each installation link works only once. Return to **Access Review** > **Connections** and click **App Install** again.
+- **"The installation could not be verified. Start the connection again from Probo."** Crisp did not confirm the installation for that website. Click **App Install** again and approve the plugin on the website you want to review.
+- **"The provider could not be reached to verify the installation. Please try again in a moment."** Probo could not reach Crisp to confirm the installation, usually because Crisp was busy or briefly unavailable. Nothing was spent, so click **App Install** again. If the same message keeps appearing, Probo's own Crisp credential may need attention, so contact your Probo administrator.
+- **"Something went wrong while finishing the installation. Please try again."** Probo could not save the connection. Click **App Install** again, and contact your Probo administrator if it persists.
+- **"You no longer have permission to connect this provider for this organization."** Your access to this organization changed while you were in Crisp. Ask an administrator to restore it, then start again from Probo.
+- **An authorization error instead of the connections page.** Probo refused the return trip because you came back as a different account, your session had expired, or your permission was withdrawn before Crisp sent you back. Sign in again as the account that started the connection and click **App Install** again.
+- **"invalid connector install callback".** The installation link was malformed or more than ten minutes old. Start again from Probo.
+- **Crisp is not listed in Connections.** The connector is enabled per deployment. Contact your Probo administrator if Crisp does not appear.
+- **No operators appear.** Confirm you approved the plugin on the website you meant to review. Operators are read when a campaign that includes the Crisp source runs, so add the source to a campaign and start it. Probo lists operators (agents), not visitors.
