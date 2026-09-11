@@ -34,78 +34,243 @@ const products = [
     title: "AI Agents",
     description: "Your compliance program, inside your AI agent",
     href: "/products/ai-agents",
-    asset: "/product-discovery/access-decisions.svg",
-    width: 334,
-    height: 218,
+    asset: "/product-discovery/ai-agents-composer-provided-2x.png",
+    width: 598,
+    height: 120,
   },
 ];
 ---
 
 <section
-  class="container py-16 sm:py-32"
+  class="splide container py-16 sm:py-32"
   aria-labelledby="product-discovery-heading"
   data-product-discovery
 >
-  <h2
-    id="product-discovery-heading"
-    class="text-foreground mb-8 text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px]"
-    data-trust-reveal
-  >
-    Discover what else Probo can do
-  </h2>
+  <div class="mb-8 flex items-center justify-between gap-6">
+    <h2
+      id="product-discovery-heading"
+      class="text-foreground text-[1.875rem] leading-9 font-semibold tracking-[-1px]"
+      data-trust-reveal
+    >
+      Discover what else Probo can do
+    </h2>
+    <div
+      class="splide__arrows product-discovery-controls flex shrink-0 overflow-hidden rounded-full border border-[rgba(2,42,2,0.07)]"
+    >
+      <button
+        class="splide__arrow splide__arrow--prev product-discovery-control product-discovery-prev"
+        type="button"
+        aria-label="Previous product"
+      >
+        <Icon name="caret-right" size={24} class="rotate-180" />
+      </button>
+      <button
+        class="splide__arrow splide__arrow--next product-discovery-control product-discovery-next"
+        type="button"
+        aria-label="Next product"
+      >
+        <Icon name="caret-right" size={24} />
+      </button>
+    </div>
+  </div>
   <div
-    class="mx-auto grid max-w-[420px] grid-cols-1 gap-6 lg:max-w-none lg:grid-cols-3"
+    class="splide__track"
+    data-trust-reveal
+    style="--trust-reveal-delay: 70ms"
   >
-    {
-      products.map((product, index) => (
-        <a
-          href={product.href}
-          aria-labelledby={`product-discovery-${product.id}`}
-          data-trust-reveal
-          style={`--trust-reveal-delay: ${index * 70}ms`}
-          class:list={[
-            "product-discovery-card relative isolate block h-[420px] min-w-0 overflow-hidden rounded-2xl bg-[#f6f9f5] p-8",
-            `product-discovery-card--${product.id}`,
-          ]}
-        >
-          <div class="relative z-3 flex flex-col gap-2">
-            <div class="flex items-start gap-2">
-              <h3
-                id={`product-discovery-${product.id}`}
-                class="text-foreground min-w-0 flex-1 text-[1.25rem] leading-7 font-semibold tracking-[-0.4px]"
-              >
-                {product.title}
-              </h3>
-              <Icon
-                name="arrow-right"
-                size={24}
-                class="product-discovery-arrow shrink-0 text-[#343330]"
+    <ul class="splide__list">
+      {
+        products.map((product) => (
+          <li class="splide__slide">
+            <a
+              href={product.href}
+              aria-labelledby={`product-discovery-${product.id}`}
+              class:list={[
+                "product-discovery-card relative isolate block h-[420px] min-w-0 overflow-hidden rounded-2xl bg-[#f6f9f5] p-8",
+                `product-discovery-card--${product.id}`,
+              ]}
+            >
+              <div class="relative z-3 flex flex-col gap-2">
+                <div class="flex items-start gap-2">
+                  <h3
+                    id={`product-discovery-${product.id}`}
+                    class="text-foreground min-w-0 flex-1 text-[1.25rem] leading-7 font-semibold tracking-[-0.4px]"
+                  >
+                    {product.title}
+                  </h3>
+                  <Icon
+                    name="arrow-right"
+                    size={24}
+                    class="product-discovery-arrow shrink-0 text-[#343330]"
+                  />
+                </div>
+                <p class="text-muted-foreground text-[1rem] leading-6 tracking-normal">
+                  {product.description}
+                </p>
+              </div>
+              <span class="product-discovery-halo" aria-hidden="true" />
+              <img
+                class="product-discovery-art"
+                src={product.asset}
+                alt=""
+                width={product.width}
+                height={product.height}
+                loading="lazy"
+                decoding="async"
               />
-            </div>
-            <p class="text-muted-foreground text-[1rem] leading-6 tracking-normal">
-              {product.description}
-            </p>
-          </div>
-          <span class="product-discovery-halo" aria-hidden="true" />
-          <img
-            class="product-discovery-art"
-            src={product.asset}
-            alt=""
-            width={product.width}
-            height={product.height}
-            loading="lazy"
-            decoding="async"
-          />
-        </a>
-      ))
-    }
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
 
+<script>
+  import Splide from "@splidejs/splide";
+  import "@splidejs/splide/css/core";
+
+  const carousels = new Map<HTMLElement, Splide>();
+
+  function mountDiscovery() {
+    document
+      .querySelectorAll<HTMLElement>("[data-product-discovery]")
+      .forEach((root) => {
+        if (carousels.has(root)) return;
+        const carousel = new Splide(root, {
+          type: "loop",
+          perPage: 3,
+          perMove: 1,
+          gap: 24,
+          pagination: false,
+          speed: 500,
+          easing: "cubic-bezier(0.19, 1, 0.22, 1)",
+          waitForTransition: false,
+          keyboard: "focused",
+          mediaQuery: "min",
+          breakpoints: {
+            0: { perPage: 1 },
+            640: { perPage: 2 },
+            1024: { perPage: 3 },
+          },
+          reducedMotion: { speed: 0, rewindSpeed: 0 },
+        });
+        let fadeFrame = 0;
+        let direction = 1;
+        let dragPosition = 0;
+        const updateFades = () => {
+          const bounds =
+            carousel.Components.Elements.track.getBoundingClientRect();
+          carousel.Components.Slides.get().forEach(({ slide }) => {
+            const rect = slide.getBoundingClientRect();
+            const outside = Math.max(
+              bounds.left - rect.left,
+              rect.right - bounds.right,
+              0,
+            );
+            const distance = rect.width + 24;
+            const progress = Math.max(0, Math.min(1, 1 - outside / distance));
+            const outgoing =
+              direction > 0
+                ? rect.left < bounds.left
+                : rect.right > bounds.right;
+            slide.style.opacity = String(
+              outgoing ? progress * progress : 1 - Math.pow(1 - progress, 4),
+            );
+            slide.style.pointerEvents = outside > 1 ? "none" : "";
+          });
+        };
+        const stopFades = () => {
+          cancelAnimationFrame(fadeFrame);
+          updateFades();
+        };
+        const animateFades = () => {
+          cancelAnimationFrame(fadeFrame);
+          const tick = () => {
+            updateFades();
+            fadeFrame = requestAnimationFrame(tick);
+          };
+          tick();
+        };
+        carousel.on("ready resized updated", updateFades);
+        carousel.on("move", (_index, previous, destination) => {
+          direction = destination > previous ? 1 : -1;
+          animateFades();
+        });
+        carousel.on("drag", () => {
+          dragPosition = carousel.Components.Move.getPosition();
+          animateFades();
+        });
+        carousel.on("dragging", () => {
+          const position = carousel.Components.Move.getPosition();
+          if (position !== dragPosition)
+            direction = position < dragPosition ? 1 : -1;
+          dragPosition = position;
+        });
+        carousel.on("scroll", animateFades);
+        carousel.on("moved dragged scrolled", stopFades);
+        carousel.on("destroy", () => cancelAnimationFrame(fadeFrame));
+        carousel.mount();
+        carousels.set(root, carousel);
+      });
+  }
+
+  mountDiscovery();
+  document.addEventListener("astro:page-load", mountDiscovery);
+  document.addEventListener("astro:before-swap", () => {
+    carousels.forEach((carousel) => carousel.destroy());
+    carousels.clear();
+  });
+</script>
+
 <style>
+  [data-product-discovery] .splide__track {
+    overflow: visible;
+  }
+
+  [data-product-discovery] .product-discovery-control {
+    position: static;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    transform: none;
+    display: grid;
+    place-items: center;
+    padding: 10px;
+    color: #141e12;
+    cursor: pointer;
+  }
+
+  [data-product-discovery] .product-discovery-control :global(svg) {
+    display: block;
+  }
+
+  [data-product-discovery] .product-discovery-control:hover {
+    background: #f6f9f5;
+  }
+
+  [data-product-discovery] .product-discovery-control:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: -4px;
+    border-radius: 999px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-product-discovery] .product-discovery-control {
+      transition:
+        background-color 180ms ease-out,
+        transform 220ms cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    }
+    [data-product-discovery] .product-discovery-control:active {
+      transform: scale(0.92);
+    }
+  }
+
   .product-discovery-card:focus-visible {
     outline: 2px solid var(--color-foreground);
-    outline-offset: 4px;
+    outline-offset: -4px;
   }
 
   .product-discovery-halo {
@@ -161,20 +326,40 @@ const products = [
     height: 216px;
   }
 
-  .product-discovery-card--access-review .product-discovery-halo,
-  .product-discovery-card--ai-agents .product-discovery-halo {
+  .product-discovery-card--access-review .product-discovery-halo {
     top: 149px;
     left: 50%;
     z-index: 0;
     transform: translateX(-50%);
   }
 
-  .product-discovery-card--access-review .product-discovery-art,
-  .product-discovery-card--ai-agents .product-discovery-art {
+  .product-discovery-card--access-review .product-discovery-art {
     top: 162px;
     left: 32px;
     width: 334px;
     height: 218px;
+  }
+
+  .product-discovery-card--ai-agents .product-discovery-halo {
+    bottom: 50px;
+    left: 50px;
+    z-index: 0;
+  }
+
+  .product-discovery-card--ai-agents .product-discovery-halo::before {
+    inset: -171.695px;
+    border: 0;
+    border-radius: 0;
+    background: url("/product-discovery/ai-agents-orb.svg") center / 100% 100%
+      no-repeat;
+    filter: none;
+  }
+
+  .product-discovery-card--ai-agents .product-discovery-art {
+    top: 211px;
+    left: 22px;
+    width: 598px;
+    height: 120px;
   }
 
   @media (prefers-reduced-motion: no-preference) {
