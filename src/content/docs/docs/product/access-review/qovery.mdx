@@ -6,7 +6,7 @@ description: Connect Qovery as an access review source using an organization API
 Probo reads your Qovery organization's members through the Qovery API so you can review who has access.
 
 :::caution
-Create an organization **API token** in the Qovery Console under **Settings** > **API token**. Qovery documents these as tokens for third-party applications and scripts, sent as `Authorization: Token <token>`. That is the header Probo uses. A signed-in user's JWT, which the Console sends as `Authorization: Bearer`, is a different credential with a limited lifetime and will **not** work. Give the token the **Admin** role, because a token only carries the permissions of the role it is created with.
+Create an organization **API token** (`qov_…`) in the Qovery Console under **Settings** > **API token**. Qovery documents these as tokens for third-party applications and scripts, sent as `Authorization: Token <token>`. That is the header Probo uses. A signed-in user's JWT, which the Console sends as `Authorization: Bearer`, is a different credential with a limited lifetime and will **not** work. Give the token the **Admin** role, because a token only carries the permissions of the role it is created with.
 :::
 
 ## Prerequisites
@@ -58,7 +58,7 @@ Probo names the source after your organization and pulls its members into your c
 
 ## Troubleshooting
 
-- **Token rejected.** Qovery answers a missing or invalid token with a 401. Confirm the value is an organization API token that is still listed under **Settings** > **API token**, and not a Console session token, which the API accepts only as a `Bearer` credential.
+- **Token rejected.** Qovery answers a missing or invalid token with a 401. Confirm the value starts with `qov_`, or `sk-qov-` for an API policy token, and is an organization token that is still listed under **Settings** > **API token**, and not a Console session token, which the API accepts only as a `Bearer` credential.
 - **No members appear.** A token carries only the permissions of the role it was created with, and Qovery reserves member management for the Owner and Admin roles. A token created with a narrower role can be refused at the members endpoint. Recreate the token with the **Admin** role, and confirm the **Organization ID** belongs to the same organization as the token.
 - **Organization ID unknown.** Open the organization in the Console and read the UUID that follows `/organization/` in the URL, or call `GET https://api.qovery.com/organization` with the token to list the organizations it can see, each with its `id`.
 - **Token creation is unavailable.** Only the Owner, Admin and DevOps built-in roles can generate API tokens. A custom role cannot, so ask someone holding one of those roles to create the token.

@@ -1,17 +1,16 @@
 ---
 title: Google Cloud
 description: Connect Google Cloud as an access review source using Workload Identity Federation so Probo can list IAM members and roles without storing service account keys.
-badge:
-  text: Coming soon
-  variant: caution
 ---
 
-Probo reads the IAM members and role bindings of your Google Cloud project or organization so you can review who has access. It lists users, groups, service accounts, and their assigned roles. Each source covers your configured scope, giving you visibility into access permissions across your environment.
+import { Steps } from "@astrojs/starlight/components";
 
-Workload Identity Federation is the strongest access pattern Probo uses for your Google Cloud account. You configure a Workload Identity Pool and grant read-only IAM access to Probo's identity. Probo never stores Google Cloud service account keys or permanent credentials. The only values it stores are your pool and provider identifiers, which are not secrets.
+Probo reads the identities of one Google Cloud project so you can review who has access. It lists the IAM users, groups, and service accounts of that project. Each source covers a single project, so Probo does not list the other projects in your organization.
+
+Workload Identity Federation is the strongest access pattern Probo uses for your Google Cloud project. You create a read-only service account and keep control of it. Probo never stores Google Cloud service account keys or permanent credentials. The only values it stores are the workload identity provider resource and the service account email, which are not secrets.
 
 :::note
-Copy the issuer URL and audience from the connect page instead of retyping them. Google Cloud compares OIDC claims case-sensitively, so one wrong character would stop Probo from exchanging tokens.
+Copy the issuer URL from the connect page instead of retyping it. Google Cloud compares that URL case-sensitively, so one wrong character would stop Probo from exchanging tokens.
 :::
 
 ## How Access Works
@@ -19,8 +18,110 @@ Copy the issuer URL and audience from the connect page instead of retyping them.
 Workload Identity Federation is the pattern Google Cloud recommends for third-party access. There is no long-lived service account key that you would have to download, paste into Probo, or rotate later.
 
 1. You create a Workload Identity Pool and OIDC Provider in your Google Cloud project. Its attribute condition accepts only your Probo organization's issuer and subject.
-2. On each sync, Probo signs a token in memory. That token is valid for five minutes. Google Cloud Security Token Service (STS) exchanges it for a short-lived federated access token.
+2. On each sync, Probo signs a token in memory that is valid for five minutes. Google Cloud Security Token Service (STS) exchanges it for a short-lived federated access token, and Probo impersonates the audit service account.
 3. The token and the session both stay in memory. Probo never writes them to disk and never stores them with the connector.
 4. You can revoke access from Google Cloud at any time. Disable or delete the Workload Identity Pool, provider, or IAM binding, and Probo can no longer request access tokens. Any existing short-lived token expires automatically within the hour.
 
-Google Cloud Audit Logs attributes every API call to your federated principal, so you can track and verify every read operation Probo performs.
+Google Cloud Audit Logs attributes every API call to your federated principal, so you can attribute each read to your Probo organization.
+
+## Prerequisites
+
+- Permission to create an access source in your Probo organization
+- Permission in the Google Cloud project to create a Workload Identity Pool, an OIDC provider, and a service account, so you can apply the Terraform module Probo provides
+- The **workload identity provider** resource and the **service account email**, which are the only values you paste into Probo
+
+## Collected Fields
+
+### Users
+
+Probo lists `user:` members on the project IAM policy.
+
+| Probo field | Google Cloud field              | Notes                                                                                                                                                                                                         |
+| ----------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | IAM member email                | A project binding has no display name, so the email identifies the user                                                                                                                                       |
+| Email       | `user:` member                  | The Google account on the binding                                                                                                                                                                             |
+| Role        | Project IAM roles               | Role names bound to the member                                                                                                                                                                                |
+| Admin       | Project IAM roles               | Flagged when `roles/owner` is present. Left unknown otherwise, because a custom role can grant the same access                                                                                                |
+| Status      | Project IAM policy              | Unknown, because a user has no enabled flag on the project policy                                                                                                                                             |
+| MFA         | Admin SDK `isEnrolledIn2Sv`     | Enabled when the user has 2-Step Verification. Unknown unless you assign a Users-read admin role to `probo-audit` in the Google Admin console                                                                 |
+| Last login  | Cloud Audit Logs Admin Activity | The most recent Admin Activity event for the user. Cloud Logging keeps 90 days of that history, so a user with no action in that window stays empty                                                           |
+| External ID | IAM principal                   | `user:<email>`. Stable identifier used to track the account across reviews                                                                                                                                    |
+| Created at  | —                               | Google Cloud IAM does not expose a created-at attribute on a project binding                                                                                                                                  |
+
+### Groups
+
+Probo lists `group:` members on the project IAM policy.
+
+| Probo field | Google Cloud field | Notes                                                                                        |
+| ----------- | ------------------ | -------------------------------------------------------------------------------------------- |
+| Name        | IAM member email   | A project binding has no display name, so the email identifies the group                     |
+| Email       | `group:` member    | The group address on the binding                                                             |
+| Role        | Project IAM roles  | Role names bound to the group                                                                |
+| Admin       | Project IAM roles  | Flagged when `roles/owner` is present. Left unknown otherwise                                |
+| Status      | Project IAM policy | Unknown, because a group has no enabled flag on the project policy                           |
+| MFA         | —                  | Not collected, because a group has no 2-Step Verification state                              |
+| Last login  | —                  | Not collected, because a group does not sign in                                              |
+| External ID | IAM principal      | `group:<email>`. Stable identifier used to track the account across reviews                  |
+| Created at  | —                  | Google Cloud IAM does not expose a created-at attribute on a project binding                 |
+
+### Service Accounts
+
+Probo lists `serviceAccount:` members on the project policy, plus every service account that lives in the project.
+
+| Probo field | Google Cloud field                                 | Notes                                                                                                                                                            |
+| ----------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | Service account `displayName`                      | Empty when the account has no display name                                                                                                                       |
+| Email       | Service account email                              |                                                                                                                                                                  |
+| Role        | Project IAM roles                                  | Empty when the account has no project binding                                                                                                                    |
+| Admin       | Project IAM roles                                  | Flagged when `roles/owner` is present. Left unknown otherwise, because a custom role can grant the same access                                                   |
+| Status      | Service account `disabled`                         | Active when the account is not disabled. Unknown when the account cannot be listed                                                                               |
+| MFA         | —                                                  | Not collected, because a service account has no 2-Step Verification                                                                                              |
+| Last login  | Policy Analyzer `serviceAccountLastAuthentication` | Falls back to Admin Activity if Policy Analyzer is denied, and stays empty if there is no activity in the 90-day window                                          |
+| External ID | Service account unique ID                          | Falls back to `serviceAccount:<email>` when the unique ID is missing. Stable identifier used to track the account across reviews                                 |
+| Created at  | —                                                  | Google Cloud IAM does not expose a created-at attribute on a service account listing                                                                             |
+
+Service accounts with a user-managed key are recorded with an API-key auth method.
+
+Neither MFA nor last login is an attribute on the IAM binding, so Probo reads them from elsewhere in the project. MFA comes from 2-Step Verification in Google Workspace or Cloud Identity, and last login comes from Admin Activity and Policy Analyzer. The Terraform module already grants those project reads. MFA still needs the extra Users-read role in the Google Admin console.
+
+## Step 1: Deploy the Audit Role
+
+The connect page prefills the issuer, the audience, the subject, and a suggested service account name (`probo-audit`). **Install via Terraform** copies a module snippet for `getprobo/audit-role/gcp`. The module creates a Workload Identity Pool, an OIDC provider, and a read-only service account. The account attaches `roles/iam.securityReviewer` and `roles/iam.serviceAccountViewer`, plus `roles/logging.viewAccessor` on the `_Required`/`_AllLogs` view and `roles/policyanalyzer.activityAnalysisViewer`.
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **Google Cloud** and click **Workload Identity**.
+3. On the **Connect GCP** page, click **Install via Terraform**. The button copies a module snippet for `getprobo/audit-role/gcp`. Paste the issuer URL into it rather than retyping it.
+4. Before you apply, enable `iam.googleapis.com`, `cloudresourcemanager.googleapis.com`, `sts.googleapis.com`, `iamcredentials.googleapis.com`, and `logging.googleapis.com` in the project.
+5. Apply the module in the project you want to review. When the apply finishes, copy the `workload_identity_provider` and `service_account_email` outputs.
+
+</Steps>
+
+You can also create the pool, provider, and service account yourself. Use the issuer, audience, and subject shown on the connect page. The provider attribute condition must pin `assertion.sub` with exact equality. Do not set `allowed_audiences`: an empty list tells Google Cloud to accept the default provider URL, which is the audience Probo signs.
+
+The module covers one project and does not walk folders or the organization. To review another project, apply the module there and connect another source.
+
+Human identities on the project are Google Workspace or Cloud Identity users. Cloud IAM cannot grant Directory reads, so the module does not cover MFA. After you apply, a Super Admin can assign a Users-read admin role to `probo-audit` in the Google Admin console (**Account** > **Admin roles** > **Assign service accounts**). Probo then reads 2-Step Verification with the same token. If you do not need MFA on this source, skip that step and those accounts stay MFA unknown.
+
+For Cloud de Confiance (S3NS), point the root `google` provider at that universe. The service account email then ends in `.s3ns.iam.gserviceaccount.com`; paste that email so Probo dials `*.s3nsapis.fr`.
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. Stay on the **Connect GCP** page. You can also reopen it from **Access Review** > **Connections** > **Google Cloud** > **Workload Identity**.
+2. Paste the **Workload identity provider** (for example `projects/123456789012/locations/global/workloadIdentityPools/probo/providers/probo`) and the **Service account email** (for example `probo-audit@PROJECT_ID.iam.gserviceaccount.com`), then click **Connect**.
+
+</Steps>
+
+Probo first names the source with the project number, for example `Google Cloud / 123456789012`. A background worker then replaces that number with the project display name, or with the project ID when Google Cloud returns no name.
+
+## Troubleshooting
+
+- **Probo could not impersonate the audit service account.** Make sure the module is applied in the project you connect, and that the issuer and subject match the values on the connect page. Copy those values rather than retyping them.
+- **Workload identity provider rejected.** Probo needs a provider resource, for example `projects/123456789012/locations/global/workloadIdentityPools/probo/providers/probo`. A project ID or a service account email in that field would be refused.
+- **Service account email rejected.** Probo needs a service account email, for example `probo-audit@PROJECT_ID.iam.gserviceaccount.com`.
+- **MFA stays unknown.** The service account has no Users-read admin role in the Google Admin console. Assign that role if you want MFA on this source, or leave it unknown.
+- **Last login stays empty.** The identity has no Admin Activity in the last 90 days, the `_Required` bucket is not in `global`, or the account cannot read that view. If Cloud Logging moved `_Required`, set `required_bucket_location` on the module.
+- **The source name still shows the project number.** The worker that resolves the name has not run yet. When it runs, it prefers the project display name, then the project ID.

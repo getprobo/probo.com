@@ -1,0 +1,131 @@
+---
+title: "How to run a user access review across 60+ tools in minutes"
+date: 2026-09-07
+excerpt: "Access reviews stall on decisions, not data. How Probo pulls 60+ tools into one campaign, and how the access-review skill applies your rubric and writes the justifications."
+author:
+  name: "Arthur Mayoux"
+ogImage: "/blog/access-review-campaign-entries.png"
+faqs:
+  - question: "Do I need the agent to use Probo access reviews?"
+    answer: "No. The web app runs the entire campaign, from connecting sources to exporting the PDF. The skill earns its place once the volume is high enough that reading every entry and writing every justification by hand is the bottleneck, which for most teams is somewhere past a hundred accounts."
+  - question: "Can it approve everything and close the campaign for me?"
+    answer: "No, by design. It will not close or cancel a campaign, and anything the rubric finds ambiguous waits for you. If you want a tool that rubber-stamps a review, this is the wrong one."
+  - question: "What if one of our systems has no connector?"
+    answer: "Export a CSV and import it. It sits alongside the connected sources in the same campaign and gets reviewed the same way."
+  - question: "How often should we run one?"
+    answer: "Quarterly is the common baseline for SOC 2 and ISO 27001. Run an extra campaign after anything material: a reorg, a layoff, an acquisition, or a contractor engagement ending."
+  - question: "Does this replace offboarding?"
+    answer: "No. An access review is a periodic backstop that catches what offboarding missed. If it consistently finds terminated users still holding access, the problem is upstream in your offboarding process, not in your review."
+---
+
+It is the end of the quarter and your auditor wants evidence that someone actually looked at who has access to what.
+
+So you start exporting. Google Workspace users, GitHub org members, AWS IAM, Okta, Slack, the billing tool, the observability stack, the two AI tools someone expensed in March. Every one a different CSV with different column names.
+
+Then the real work starts, and it is not the exporting.
+
+## Key takeaways
+
+- **Collecting access data is the easy part.** The bottleneck is deciding, account by account, whether the access is still justified, and writing down why.
+- **Probo pulls access from 60+ providers into one campaign,** freezes it as a point-in-time snapshot, and flags the accounts worth arguing about.
+- **The access-review skill does the pass you would do by hand.** It reads every entry, applies a published rubric, records the unambiguous decisions and writes the justification note for each one.
+- **You still get the judgment calls.** Anything the rubric cannot settle comes back to you with the flags, a suggested decision and the reason it is unclear.
+
+## The part nobody budgets for
+
+Most teams treat an access review as a data collection problem. Export everything, drop it in a spreadsheet, done.
+
+It is not. A spreadsheet of 400 accounts is not evidence. Evidence is 400 decisions, each with a reviewer attached and a reason recorded, frozen at a point in time so an auditor can check it six months later.
+
+That is why access reviews slip. The export takes an afternoon. The decisions take three weeks.
+
+## What Probo does with the data
+
+[Access Review](/products/access-review) brings accounts from across your stack into one [campaign](/docs/product/access-review/overview).
+
+**Connect once.** OAuth, API key, or client credentials, depending on the provider. 60+ integrations today, including Google Cloud, AWS, Azure, GitHub, Okta, authentik, Cloudflare, Tailscale, 1Password, Supabase, Brex, Mercury, HubSpot, OpenAI and Anthropic. Browse the full [connector directory](/docs/product/access-review/directory). If a system has no connector, [import a CSV](/docs/product/access-review/csv-sources) and review it beside the connected sources.
+
+**Freeze the picture.** When a campaign starts, Probo takes a snapshot. Access that changes mid-review does not quietly rewrite your evidence.
+
+**See what actually matters.** Every entry carries role, admin rights, MFA status, auth method, account type and last login. Probo flags the accounts that deserve attention: orphaned, dormant, over-privileged, shared, [terminated users](/blog/2026-08-17-offboarding-access-review-automation), contractors past their end date.
+
+**Diff against last quarter.** Entries are tagged new, removed or unchanged, so you review what moved instead of re-reading the whole list.
+
+**Close with proof an auditor accepts.** Approve, revoke, defer or escalate, in bulk or one at a time, with a note required on anything that is not a plain approval. Export the campaign as a PDF when you close it.
+
+![Access review campaign showing Cloudflare, GitHub, and Google Workspace entries with privileged access flags, MFA status, and approve, modify, or revoke decisions](/blog/access-review-campaign-entries.png)
+
+## What the agent actually does
+
+The [Probo Agent Plugin](/blog/2026-08-14-agent-plugins-probo) ships an `access-review` skill that runs over [MCP](/docs/developers/api/mcp/tools/catalog/access-reviews). It is not a different way to click the same buttons. It does the pass you would otherwise do by hand, entry by entry.
+
+For each pending account it reads the full signal set: the flags, whether the account is still active, whether it is an admin, MFA status, auth method, account type, last login, roles, and which tool the entry came from. Then it applies a [published rubric](https://github.com/getprobo/probo/blob/main/packages/skills/skills/access-review/references/decision-rubric.md) and sorts every entry into one of three piles.
+
+**Auto.** Terminated user, revoke. Contractor engagement ended, revoke. Active service account with no danger flags, approve. Active user, no flags, not an admin, approve. These get recorded in batches without asking you.
+
+**Ambiguous.** Orphaned but still active. A shared account nobody owns. A segregation of duties conflict. An admin who has not logged in for 90 days. MFA disabled on privileged access. These come back to you with the flags, a suggested decision and the reason the rubric would not settle it. Nothing is written until you confirm.
+
+**Skip.** Logged in the notes, no write.
+
+### It writes the justifications
+
+This is where the time actually goes, and it is the part I would not have guessed.
+
+Probo requires a note on every revoke, defer and escalate. The API rejects an empty one. That rule is correct, because an unexplained revocation is not evidence, it is just a deletion. But it also means a review with 100 revocations is 100 short pieces of writing, and that is the part people quietly skip or fill with "no longer needed" a hundred times.
+
+The agent writes each one against the actual signals it read. "Terminated user, access no longer required." "Orphaned account still active, needs an owner." "Admin access dormant, confirm business need."
+
+Those notes are the difference between a review that survives sampling and one that does not.
+
+### It applies the same standard at entry 400 as at entry 1
+
+A human reviewing four hundred accounts on a Friday afternoon is not the same reviewer they were on Monday morning. Standards drift. The last hundred get rubber-stamped.
+
+That drift is invisible in your export and obvious to an auditor who samples it. A rubric applied by a machine does not get tired at row 300.
+
+### It survives being interrupted
+
+Real access reviews are never one sitting. You get halfway through, hit an escalation that needs the head of engineering, and the thing sits for three days.
+
+The skill keeps working memory in `.probo/access-reviews/<campaign>.md`: a pagination cursor, a session log, a table of every decision with its rationale and whether it was automatic or confirmed by you, and a separate table of what is still waiting on your answer. Come back Thursday and it resumes exactly where it stopped, without re-reviewing what is already decided.
+
+![Terminal running the Probo access-review skill, with a batch summary and an escalation presented for confirmation](/blog/access-review-skill-terminal.png)
+
+## The guardrails matter more than the automation
+
+The skill is deliberately narrow. It reviews entries. It does not create, start, cancel or close campaigns, because deciding that a review is finished is not a job for an agent.
+
+It cannot record a revoke, defer or escalate without a note. It will not invent an entry ID or a decision, and it is explicitly barred from guessing which tool an account came from based on the email or the role, because that is exactly the kind of plausible-looking error that poisons an audit trail. If a call fails mid-batch it stops without advancing the cursor, so you never end up with a half-written review and no way to tell which half.
+
+Those constraints are the reason it is safe to point at your evidence.
+
+## What "in minutes" honestly means
+
+If 300 of your 400 entries are active employees with no flags and no admin rights, they are read, decided, justified and written in a couple of batches. That part is genuinely minutes rather than weeks.
+
+What does not compress is the twenty entries that need a human. The deploy account nobody will claim. The admin who has not logged in since February. The contractor whose engagement technically ended but who is still finishing one thing.
+
+That is the correct outcome. An access review where a machine approves everything is not a review, it is a rubber stamp with extra steps. The win is that your attention goes to the twenty instead of the four hundred, and that the four hundred still arrive at your auditor with a written reason each.
+
+**The agent clears the queue. It does not own the decision.**
+
+## Frequently Asked Questions
+
+**Do I need the agent to use Probo access reviews?**
+No. The web app runs the entire campaign, from connecting sources to exporting the PDF. The skill earns its place once the volume is high enough that reading every entry and writing every justification by hand is the bottleneck, which for most teams is somewhere past a hundred accounts.
+
+**Can it approve everything and close the campaign for me?**
+No, by design. It will not close or cancel a campaign, and anything the rubric finds ambiguous waits for you. If you want a tool that rubber-stamps a review, this is the wrong one.
+
+**What if one of our systems has no connector?**
+Export a CSV and [import it](/docs/product/access-review/csv-sources). It sits alongside the connected sources in the same campaign and gets reviewed the same way.
+
+**How often should we run one?**
+Quarterly is the common baseline for [SOC 2](/blog/2025-10-28-what-is-soc2) and [ISO 27001](/blog/2025-10-08-soc2-or-iso27001). Run an extra campaign after anything material: a reorg, a layoff, an acquisition, or a contractor engagement ending.
+
+**Does this replace offboarding?**
+No. An access review is a periodic backstop that catches what [offboarding](/blog/2026-08-17-offboarding-access-review-automation) missed. If it consistently finds terminated users still holding access, the problem is upstream in your offboarding process, not in your review.
+
+Access reviews are one of those controls that look trivial on a checklist and quietly eat a week every quarter. Most of that week is not investigation. It is reading four hundred rows and writing a hundred short justifications, and that is work a machine can do consistently and you cannot.
+
+If you would rather not run it at all, that is what [done-for-you compliance](/blog/2025-10-17-what-is-hands-off-compliance) is for.

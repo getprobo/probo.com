@@ -1,0 +1,14 @@
+---
+title: "GCP Access Review Connector"
+description: "Access Review now supports Google Cloud Platform as a connector, listing project IAM principals and service accounts with best-effort MFA and last-activity signals from a dedicated setup page in the console."
+date: 2026-09-07
+images: ["/changelog/2026-09-07-gcp-access-review-connector-1.png"]
+imagesLayout: "logos"
+tags: ["Access Review"]
+---
+
+Access Review adds Google Cloud Platform as a connector. You give it a service account through workload identity federation, and it pulls back project IAM principals and service accounts.
+
+For each identity it does its best to surface last activity and MFA status. Users get Admin Activity logs and Directory 2-Step Verification enrollment, service accounts get Policy Analyzer with a Cloud Audit Logs fallback. When a signal isn't available, it just says so instead of guessing.
+
+Setting it up now has its own page in the console: a dedicated connect flow with a Terraform module reference, matching the pattern we shipped for AWS. Find it from the provider catalog or right next to the AWS connector in setup.
