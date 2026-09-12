@@ -388,6 +388,10 @@ export const n8nResourceItems = [
     slug: "docs/developers/api/n8n/resources/task",
   },
   {
+    label: "Task Activity",
+    slug: "docs/developers/api/n8n/resources/task-activity",
+  },
+  {
     label: "Task Comment",
     slug: "docs/developers/api/n8n/resources/task-comment",
   },
