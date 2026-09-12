@@ -1,4 +1,5 @@
 /sitemap.xml /sitemap-index.xml 301
+/security.txt /.well-known/security.txt 301
 /subprocessors https://compliance.probo.com/subprocessors 301
 /compliance-guides /hub 301
 /compliance-guides/soc2 /hub/soc2 301

@@ -22,8 +22,10 @@ export function generateSecurityTxt(): AstroIntegration {
         const content = [
           "Contact: mailto:security@probo.com",
           `Expires: ${expires.toISOString().replace(/\.\d+Z$/, "Z")}`,
-          "Canonical: https://www.probo.com/.well-known/security.txt",
+          "Policy: https://www.probo.com/docs/deployment/infrastructure-security",
           "Preferred-Languages: en",
+          "Hiring: https://www.probo.com/careers",
+          "Canonical: https://www.probo.com/.well-known/security.txt",
           "",
         ].join("\n");
 
