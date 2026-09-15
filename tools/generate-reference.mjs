@@ -144,6 +144,7 @@ async function generateMcpReference() {
     join(docsRoot, "api/mcp/tools"),
     new Set(["index.mdx"]),
   );
+  await updateMcpOverviewToolCount(tools.length);
 
   return [...categories.keys()]
     .sort((left, right) => left.localeCompare(right))
@@ -151,6 +152,36 @@ async function generateMcpReference() {
       label: category,
       slug: `docs/developers/api/mcp/tools/catalog/${slugify(category)}`,
     }));
+}
+
+async function updateMcpOverviewToolCount(toolCount) {
+  const path = join(docsRoot, "api/mcp/overview.mdx");
+  const current = await readFile(path, "utf8");
+  const descriptionPattern = /the \d+ available tools/;
+  const bodyPattern = /exposes \*\*\d+ tools\*\*/;
+
+  if (!descriptionPattern.test(current) || !bodyPattern.test(current)) {
+    throw new Error(
+      `${relative(root, path)} is missing the MCP tool-count phrasing expected by docs:generate`,
+    );
+  }
+
+  const updated = current
+    .replace(descriptionPattern, `the ${toolCount} available tools`)
+    .replace(bodyPattern, `exposes **${toolCount} tools**`);
+
+  if (checkOnly) {
+    if (updated !== current) {
+      throw new Error(
+        `${relative(root, path)} is stale; run npm run docs:generate`,
+      );
+    }
+    return;
+  }
+
+  if (updated !== current) {
+    await writeFile(path, updated);
+  }
 }
 
 function normalizeMcpTool(tool, index, specificationPath, locations) {
