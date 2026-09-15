@@ -1,10 +1,9 @@
 ---
 title: Microsoft Azure
 description: Connect Microsoft Azure as an access review source using Workload Identity Federation so Probo can list Azure RBAC role assignments on a subscription without storing client secrets.
-badge:
-  text: Coming soon
-  variant: caution
 ---
+
+import { Steps } from "@astrojs/starlight/components";
 
 Probo reads the identities of one Azure subscription so you can review who has access. It lists the users, groups, and service principals that hold Azure RBAC roles on that subscription. Each source covers a single subscription, so Probo does not list the other subscriptions in your tenant.
 
@@ -24,3 +23,110 @@ Workload Identity Federation is the pattern Microsoft recommends for third-party
 4. You can revoke access from Azure at any time. Delete the federated credential, the app registration, or the RBAC assignment, and Probo can no longer request access tokens. Any existing short-lived token expires automatically within the hour.
 
 Azure Activity Log attributes every API call to your federated app, so you can track and verify every read operation Probo performs.
+
+## Prerequisites
+
+- Permission to create an access source in your Probo organization
+- Permission in Azure to create an app registration, a federated credential, and a Reader assignment, so you can apply the Terraform module Probo provides
+- The **directory (tenant) ID**, **application (client) ID**, **subscription ID**, and **Azure environment**, which are the only values you paste into Probo
+
+## Collected Fields
+
+Probo lists principals that hold Azure RBAC at subscription scope, including assignments inherited from a management group. It does not list assignments on resource groups or resources.
+
+### Users
+
+Probo lists `User` and `AgentUser` principals on the subscription.
+
+| Probo field | Azure field                                              | Notes                                                                                                                                                                       |
+| ----------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | Graph `displayName`                                      | Empty when directory read is denied                                                                                                                                         |
+| Email       | Graph `mail`                                             | Falls back to `userPrincipalName` when mail is empty                                                                                                                        |
+| Role        | Azure RBAC role names                                    | Role names bound at subscription scope                                                                                                                                      |
+| Admin       | Azure RBAC role definitions                              | Flagged when Owner, User Access Administrator, or Role Based Access Control Administrator is present. Left unknown otherwise, because a custom role can grant the same access |
+| Status      | Graph `accountEnabled`                                   | Active when the account is enabled. Unknown when directory read is denied                                                                                                   |
+| MFA         | Graph `userRegistrationDetails.isMfaCapable`             | Enabled when the user can complete MFA. Unknown unless directory read is granted and the tenant has Entra ID P1 or P2                                                       |
+| Last login  | Graph `signInActivity`                                   | The most recent successful sign-in, then the last sign-in time. Empty when Graph has no activity, the tenant has no Entra ID P1 or P2, or directory read is denied          |
+| External ID | Entra object ID                                          | Stable identifier used to track the account across reviews                                                                                                                  |
+| Created at  | —                                                        | Azure RBAC does not expose a created-at attribute on a role assignment                                                                                                      |
+
+Users are recorded with an SSO auth method.
+
+### Groups
+
+Probo lists `Group` and `ForeignGroup` principals on the subscription.
+
+| Probo field | Azure field             | Notes                                                                                                                                                                       |
+| ----------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | Graph `displayName`     | Empty when directory read is denied                                                                                                                                         |
+| Email       | Graph `mail`            | Empty when the group has no mail address                                                                                                                                    |
+| Role        | Azure RBAC role names   | Role names bound at subscription scope                                                                                                                                      |
+| Admin       | Azure RBAC role definitions | Flagged when Owner, User Access Administrator, or Role Based Access Control Administrator is present. Left unknown otherwise                                                |
+| Status      | —                       | Unknown, because a group has no enabled flag on this path                                                                                                                   |
+| MFA         | —                       | Not collected, because a group has no MFA state                                                                                                                             |
+| Last login  | —                       | Not collected, because a group does not sign in                                                                                                                             |
+| External ID | Entra object ID         | Stable identifier used to track the account across reviews                                                                                                                  |
+| Created at  | —                       | Azure RBAC does not expose a created-at attribute on a role assignment                                                                                                      |
+
+### Service Principals
+
+Probo lists `ServicePrincipal`, `AgentServicePrincipal`, and `Device` principals on the subscription. Devices are recorded as service accounts.
+
+| Probo field | Azure field             | Notes                                                                                                                                                                       |
+| ----------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | Graph `displayName`     | Empty when directory read is denied. A device often stays empty, because Graph `getByIds` only asks for user, group, and service principal                                  |
+| Email       | —                       | Not collected, because a service principal has no mail on this path                                                                                                         |
+| Role        | Azure RBAC role names   | Role names bound at subscription scope                                                                                                                                      |
+| Admin       | Azure RBAC role definitions | Flagged when Owner, User Access Administrator, or Role Based Access Control Administrator is present. Left unknown otherwise, because a custom role can grant the same access |
+| Status      | Graph `accountEnabled`  | Active when the account is enabled. Unknown when Graph cannot resolve the object                                                                                            |
+| MFA         | —                       | Not collected, because a service principal has no MFA state                                                                                                                 |
+| Last login  | —                       | Not collected, because this path does not read service-principal sign-in                                                                                                    |
+| External ID | Entra object ID         | Stable identifier used to track the account across reviews                                                                                                                  |
+| Created at  | —                       | Azure RBAC does not expose a created-at attribute on a role assignment                                                                                                      |
+
+Neither MFA nor last login is an attribute on the role assignment, so Probo reads them from Microsoft Graph. MFA comes from authentication-method registration, and last login comes from sign-in activity. The Terraform module grants those Graph reads only when `grant_directory_read` is true. Those reads also need Entra ID P1 or P2. On Azure China or Azure Government DoD, Graph can omit those APIs, and those columns stay unknown.
+
+## Step 1: Deploy the Audit Role
+
+The connect page prefills the issuer, the audience (`api://AzureADTokenExchange`), the subject, and a suggested application name (`Probo Access Review`). **Install via Terraform** copies a module snippet for `getprobo/audit-role/azurerm`. The module creates an app registration, a federated credential, a service principal, and a Reader assignment on the subscription. When `grant_directory_read` is true, it also assigns Graph `Directory.Read.All` and `AuditLog.Read.All`.
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **Microsoft Azure** and click **Workload Identity**.
+3. On the **Connect Azure** page, click **Install via Terraform**. The button copies a module snippet for `getprobo/audit-role/azurerm`. Paste the issuer URL into it rather than retyping it.
+4. Replace `SUBSCRIPTION_ID` with the subscription UUID you want to review.
+5. Apply the module in that subscription. When the apply finishes, copy the `tenant_id`, `client_id`, and `subscription_id` outputs.
+
+</Steps>
+
+You can also create the app, federated credential, and assignment yourself. Use the issuer, audience, and subject shown on the connect page. The federated credential must pin issuer and subject with exact equality. Do not add a second audience: Entra accepts only `api://AzureADTokenExchange`. Do not use a flexible federated credential. Those credentials support only GitHub, GitLab, and Terraform Cloud as issuers.
+
+The module covers one subscription and does not walk management groups or resource groups. To review another subscription, apply the module there and connect another source.
+
+The copied snippet sets `grant_directory_read` to false, so a subscription operator can apply it without directory admin consent. Directory grants need a Global Administrator or Privileged Role Administrator. Until that flag is true, Probo resolves principals as GUIDs and leaves MFA unknown. If you do not need names, MFA, or last login on this source, keep the flag false.
+
+For Azure Government or Azure China, set `environment` on the root `azurerm` and `azuread` providers. This module has no provider block. GCC uses the public cloud. GCC High uses Government. DoD uses Government DoD.
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. Stay on the **Connect Azure** page. You can also reopen it from **Access Review** > **Connections** > **Microsoft Azure** > **Workload Identity**.
+2. Paste the **Directory (tenant) ID**, **Application (client) ID**, and **Subscription ID** (for example `11111111-1111-1111-1111-111111111111`), choose the **Azure environment**, then click **Connect**.
+
+</Steps>
+
+Probo first names the source with the subscription ID, for example `Microsoft Azure / 11111111-1111-1111-1111-111111111111`. A background worker then replaces that ID with the subscription display name, or keeps the ID when Azure returns no name.
+
+Federation can take a few minutes to propagate. If Connect reports a disconnected connector, wait and try again.
+
+## Troubleshooting
+
+- **Probo could not assume the audit identity.** Make sure the module is applied in the subscription you connect, and that the issuer and subject match the values on the connect page. Copy those values rather than retyping them. Federation can take a few minutes.
+- **Tenant, client, or subscription ID rejected.** Probo needs a GUID for each field, for example `11111111-1111-1111-1111-111111111111`.
+- **Names stay as GUIDs.** The module was applied with `grant_directory_read` set to false, or Graph `Directory.Read.All` was denied. Set the flag to true if you want names on this source, or leave them as GUIDs.
+- **MFA stays unknown.** The tenant has no Entra ID P1 or P2, Graph `AuditLog.Read.All` is missing, or the principal is not a user. Assign those grants if you want MFA on this source, or leave it unknown.
+- **Last login stays empty.** The user has no Graph sign-in activity, the tenant has no Entra ID P1 or P2, or directory read is denied.
+- **The source name still shows the subscription ID.** The worker that resolves the name has not run yet. When it runs, it prefers the subscription display name, then the subscription ID.
+- **Connect fails on a GCC tenant.** GCC uses Azure Public. Only GCC High and DoD use Government.
