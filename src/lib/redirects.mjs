@@ -23,6 +23,7 @@ const redirect = (destination) => ({ status: 301, destination });
 
 export const redirects = {
   "/sitemap.xml": redirect("/sitemap-index.xml"),
+  "/products/ai-agents": redirect("/products/ai-agents-for-compliance"),
   "/subprocessors": redirect("https://compliance.probo.com/subprocessors"),
   "/compliance-guides": redirect("/hub"),
   "/compliance-guides/soc2": redirect("/hub/soc2"),

@@ -25,6 +25,8 @@ const seoTitle = title
   ? `${title} | Probo`
   : "Open-Source Compliance Platform | Probo";
 const canonical = getCanonicalUrl(Astro.url);
+const pagePath = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
+const markdownAlternate = pagePath ? `/md${pagePath}.md` : "/md/index.md";
 ---
 
 <!doctype html>
@@ -167,6 +169,7 @@ const canonical = getCanonicalUrl(Astro.url);
 
     <PostHog />
 
+    <link rel="alternate" type="text/markdown" href={markdownAlternate} />
     <!-- AI/LLM: This page is available in clean markdown. To get a token-efficient version without navigation, scripts, or styling, request this same URL with the header "Accept: text/markdown". Example: curl -H "Accept: text/markdown" https://www.probo.com/about -->
     <slot name="head" />
   </head>

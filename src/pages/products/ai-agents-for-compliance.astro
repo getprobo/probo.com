@@ -13,7 +13,7 @@ import aiClients from "../../data/ai-clients.json";
 
 const pageTitle = "AI Agents for Compliance | Probo MCP";
 const pageDescription =
-  "Connect Claude, Cursor, ChatGPT, and any MCP client to more than 350 Probo tools, while scoped tokens keep every agent inside your existing permissions.";
+  "Connect Claude, Cursor, ChatGPT or any MCP client to your live Probo data. Ask what is failing, update the risk register, prepare the audit. Every agent stays inside the permissions of the person who connected it.";
 
 const overviewFeatures = [
   {
@@ -55,6 +55,7 @@ type ReviewStep = {
   overlay: { x: number; y: number; width: number; height: number };
   reverse?: boolean;
   bullets: string[];
+  cta?: { href: string; label: string };
 };
 
 const reviewSteps: ReviewStep[] = [
@@ -64,10 +65,14 @@ const reviewSteps: ReviewStep[] = [
     illustration: "workflow-install-plugin-ui.webp",
     overlay: { x: 36, y: 82, width: 436, height: 500 },
     bullets: [
-      "Add the marketplace with claude plugin marketplace add getprobo/probo.",
-      "Install with claude plugin install probo@probo, then run claude mcp login probo-us.",
-      "Point at the US endpoint, the EU endpoint, or your own self-hosted origin.",
+      "Install the Probo plugin with a single command.",
+      "Sign in with your Probo account in one click.",
+      "Works with Probo Cloud, or your own self-hosted instance.",
     ],
+    cta: {
+      href: "/docs/developers/api/mcp/overview",
+      label: "See the full connection guide",
+    },
   },
   {
     title: "Connect the client your team already uses",
@@ -211,6 +216,23 @@ const faqs = [
     answer:
       "You choose the token scopes, and Probo enforces the connected user’s existing permissions on every operation.",
   },
+  {
+    question:
+      "Is every agent action attributed and recorded in the audit log?",
+    answer:
+      "Yes. Agents go through the same authorization layer as the console, and every authorized call is written to the audit log with the timestamp, the action, the resource, and the identity behind it. Since an agent authenticates with an OAuth token issued to a person, its actions are attributed to that person. Entries are immutable and exportable as CSV.",
+  },
+  {
+    question:
+      "Does connecting an agent send our compliance data to Anthropic or OpenAI?",
+    answer:
+      "Probo sends nothing to a model provider. The MCP server only answers the client you connect, so where the data goes depends on that client: with Claude or ChatGPT it is processed by Anthropic or OpenAI under your own plan and your own retention and training settings. Point a local model at it and no third party sees anything. Probo's own AI features do use Anthropic and OpenAI, both listed on our subprocessor page.",
+  },
+  {
+    question: "Is MCP access included in our plan?",
+    answer:
+      "Yes. API, MCP, and CLI access are included for every customer, with no add-on, no tier, and no per-call quota tied to a plan. What an agent can reach is set by OAuth scopes and user permissions, not by billing.",
+  },
 ];
 
 const faqSchema = {
@@ -233,7 +255,7 @@ const softwareApplicationSchema = {
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   description: pageDescription,
-  url: "https://www.probo.com/products/ai-agents",
+  url: "https://www.probo.com/products/ai-agents-for-compliance",
   publisher: {
     "@type": "Organization",
     name: "Probo",
@@ -262,38 +284,51 @@ const softwareApplicationSchema = {
           class="border-border-low text-tertiary-foreground animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
           style="animation-delay: 100ms"
         >
-          AI Agents with MCP
+          ai agents for compliance
         </div>
         <h1
-          class="mx-auto mb-6 max-w-[600px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
-          aria-label="Your compliance program, inside your AI agent."
+          class="mx-auto mb-6 max-w-[720px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
+          aria-label="Run your compliance program from the tools you already work in."
         >
           <span aria-hidden="true" class="block overflow-hidden">
             <span
               class="animate-perspective-in block"
-              style="animation-delay: 150ms">Your compliance program,</span
+              style="animation-delay: 150ms">Run your compliance program</span
             >
           </span>
-          <span aria-hidden="true" class="block overflow-hidden">
+          <span aria-hidden="true" class="hidden overflow-hidden sm:block">
             <span
               class="animate-perspective-in block"
-              style="animation-delay: 200ms">inside your AI agent.</span
+              style="animation-delay: 200ms"
+              >from the tools you already work in.</span
+            >
+          </span>
+          <span aria-hidden="true" class="block overflow-hidden sm:hidden">
+            <span
+              class="animate-perspective-in block"
+              style="animation-delay: 200ms">from the tools you</span
+            >
+          </span>
+          <span aria-hidden="true" class="block overflow-hidden sm:hidden">
+            <span
+              class="animate-perspective-in block"
+              style="animation-delay: 250ms">already work in.</span
             >
           </span>
         </h1>
         <p
-          class="text-muted-foreground animate-perspective-in mx-auto mb-8 max-w-[468px] text-base"
+          class="text-muted-foreground animate-perspective-in mx-auto mb-8 max-w-[540px] text-base"
           style="animation-delay: 350ms"
         >
           {pageDescription}
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <Button
-            href="/docs/developers/api/mcp"
+            href="/docs/developers/api/mcp/overview"
             variant="secondary"
             size="lg"
             class="motion-safe:animate-perspective-in"
-            style="animation-delay: 400ms">Read the docs</Button
+            style="animation-delay: 400ms">Connect Probo MCP</Button
           >
           <Button
             href="/contact"
@@ -404,7 +439,7 @@ const softwareApplicationSchema = {
           class="mx-auto max-w-[600px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
           data-trust-reveal
         >
-          Give AI agents access without widening it.
+          An agent never sees more than the person who connected it.
         </h2>
         <p
           class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
@@ -487,6 +522,17 @@ const softwareApplicationSchema = {
                     </li>
                   ))}
                 </ul>
+                {
+                  feature.cta && (
+                    <a
+                      href={feature.cta.href}
+                      class="text-foreground mt-6 inline-flex items-center gap-1.5 text-[16px] leading-6 font-medium"
+                    >
+                      {feature.cta.label}
+                      <i class="ph ph-arrow-right text-[16px]" aria-hidden="true" />
+                    </a>
+                  )
+                }
               </div>
             </div>
           ))

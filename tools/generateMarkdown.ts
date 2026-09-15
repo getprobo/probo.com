@@ -156,11 +156,20 @@ function htmlToMarkdown(html: string): string {
   content = content.replace(/<img[^>]*>/gi, "");
   content = content.replace(/<picture[\s\S]*?<\/picture>/gi, "");
 
-  // Convert headings
-  content = content.replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, "\n# $1\n");
-  content = content.replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, "\n## $1\n");
-  content = content.replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, "\n### $1\n");
-  content = content.replace(/<h4[^>]*>([\s\S]*?)<\/h4>/gi, "\n#### $1\n");
+  // Convert headings, preferring aria-label when the visible text is split
+  // across animation clones (product heroes) or icon buttons (FAQ triggers).
+  content = ["h1", "h2", "h3", "h4"].reduce((html, tag, index) => {
+    const hashes = "#".repeat(index + 1);
+    const pattern = new RegExp(`<${tag}([^>]*)>([\\s\\S]*?)</${tag}>`, "gi");
+    return html.replace(pattern, (_, attrs: string, inner: string) => {
+      const label = attrs.match(/aria-label="([^"]*)"/i)?.[1];
+      const text = (label || inner)
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      return text ? `\n${hashes} ${text}\n` : "";
+    });
+  }, content);
 
   // Convert links
   content = content.replace(
@@ -171,8 +180,16 @@ function htmlToMarkdown(html: string): string {
   // Convert strong/bold
   content = content.replace(/<(strong|b)[^>]*>([\s\S]*?)<\/\1>/gi, "**$2**");
 
-  // Convert em/italic
-  content = content.replace(/<(em|i)[^>]*>([\s\S]*?)<\/\1>/gi, "*$2*");
+  // Convert em/italic, but drop Phosphor icon <i> tags
+  content = content.replace(
+    /<(em|i)([^>]*)>([\s\S]*?)<\/\1>/gi,
+    (_match, tag: string, attrs: string, inner: string) => {
+      if (tag.toLowerCase() === "i" && /class="[^"]*\bph\b/.test(attrs)) {
+        return "";
+      }
+      return inner.trim() ? `*${inner}*` : "";
+    },
+  );
 
   // Convert list items
   content = content.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, "- $1\n");
@@ -209,6 +226,8 @@ function htmlToMarkdown(html: string): string {
   content = content.replace(/&mdash;/g, "—");
   content = content.replace(/&ndash;/g, "–");
   content = content.replace(/&rarr;/g, "→");
+  content = content.replace(/&ldquo;|&rdquo;/g, '"');
+  content = content.replace(/&lsquo;|&rsquo;/g, "'");
 
   // Add title as H1 if not already present
   if (rawTitle && !content.trim().startsWith("# ")) {
@@ -417,18 +436,27 @@ export function generateMarkdown(): AstroIntegration {
           writeFileSync(outPath, md);
         }
 
-        // Process hub pages from built HTML
-        const hubDir = join(distDir, "hub");
-        if (existsSync(hubDir)) {
-          const hubFiles = findFiles(hubDir, ".html");
-          for (const file of hubFiles) {
-            const slug = basename(file, ".html");
-            const outPath = join(mdDir, "hub", `${slug}.md`);
-            const content = readFileSync(file, "utf-8");
-            const md = htmlToMarkdown(content);
-            mkdirSync(dirname(outPath), { recursive: true });
-            writeFileSync(outPath, md);
+        // Convert remaining built HTML pages (product pages, hub, etc.)
+        // without replacing markdown already produced from MDX.
+        const htmlPages = findFiles(distDir, ".html");
+        for (const file of htmlPages) {
+          const relPath = relative(distDir, file);
+          if (
+            relPath === "404.html" ||
+            relPath.endsWith("/404.html") ||
+            relPath.startsWith("md/")
+          ) {
+            continue;
           }
+
+          const outPath = join(mdDir, relPath.replace(/\.html$/, ".md"));
+          if (existsSync(outPath)) {
+            continue;
+          }
+
+          const md = htmlToMarkdown(readFileSync(file, "utf-8"));
+          mkdirSync(dirname(outPath), { recursive: true });
+          writeFileSync(outPath, md);
         }
 
         // Copy hand-written marketing page markdowns

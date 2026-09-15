@@ -2,7 +2,7 @@
 
 > Probo is an open-source compliance management platform with expert-led services that help companies become and stay compliant.
 
-Probo combines compliance software with dedicated compliance officers who manage policies, controls, risk assessments, vendor reviews, evidence, and audit coordination. Probo supports frameworks including SOC 2, ISO 27001, ISO 27701, ISO 42001, GDPR, HIPAA, CCPA, FERPA, CASA, NIS2, and DORA. Probo is open source and backed by Y Combinator (W25).
+Probo combines compliance software with dedicated compliance officers who manage policies, controls, risk assessments, vendor reviews, evidence, and audit coordination. Probo supports frameworks including SOC 2, ISO 27001, ISO 27701, ISO 42001, GDPR, HIPAA, CCPA, FERPA, CASA, NIS2, and DORA. Probo is open source and backed by Y Combinator (W25). Probo exposes an official MCP server, so AI agents can read and write compliance data under the connected user's own permissions.
 
 ## LLM resources
 
@@ -14,9 +14,12 @@ For a token-efficient Markdown version of a supported page, request its canonica
 
 `curl -H "Accept: text/markdown" https://www.probo.com/docs/product/getting-started/product-overview`
 
+`curl -H "Accept: text/markdown" https://www.probo.com/products/ai-agents-for-compliance`
+
 ## Product and services
 
 - [Probo homepage](https://www.probo.com/): Expert-led compliance, done for you.
+- [AI Agents for Compliance](https://www.probo.com/products/ai-agents-for-compliance): Run your compliance program from Claude, Cursor, ChatGPT, or any MCP client.
 - [Compliance Portal](https://www.probo.com/products/compliance-portal): Share security and compliance documents with customers.
 - [Access Review](https://www.probo.com/products/access-review): Review access across connected systems and preserve audit evidence.
 - [Open-source deployment](https://www.probo.com/docs/deployment/self-hosting): Run Probo on your own infrastructure.
