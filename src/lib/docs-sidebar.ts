@@ -33,6 +33,7 @@ const accessReviewConnectorItems = [
   { label: "Langfuse", slug: "docs/product/access-review/langfuse" },
   { label: "Mercury", slug: "docs/product/access-review/mercury" },
   { label: "Metabase", slug: "docs/product/access-review/metabase" },
+  { label: "Microsoft Azure", slug: "docs/product/access-review/azure" },
   { label: "Neon", slug: "docs/product/access-review/neon" },
   { label: "Nuki", slug: "docs/product/access-review/nuki" },
   { label: "Okta", slug: "docs/product/access-review/okta" },

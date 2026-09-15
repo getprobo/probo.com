@@ -1,0 +1,26 @@
+---
+title: Microsoft Azure
+description: Connect Microsoft Azure as an access review source using Workload Identity Federation so Probo can list Azure RBAC role assignments on a subscription without storing client secrets.
+badge:
+  text: Coming soon
+  variant: caution
+---
+
+Probo reads the identities of one Azure subscription so you can review who has access. It lists the users, groups, and service principals that hold Azure RBAC roles on that subscription. Each source covers a single subscription, so Probo does not list the other subscriptions in your tenant.
+
+Workload Identity Federation is the strongest access pattern Probo uses for your Azure subscription. You configure an app registration with a federated credential and grant read-only Azure RBAC access to Probo's identity. Probo never stores Azure client secrets or permanent credentials. The only values it stores are your tenant ID, application (client) ID, subscription ID, and environment, which are not secrets.
+
+:::note
+Copy the issuer URL and audience from the connect page instead of retyping them. Microsoft Entra ID compares OIDC claims case-sensitively, so one wrong character would stop Probo from exchanging tokens.
+:::
+
+## How Access Works
+
+Workload Identity Federation is the pattern Microsoft recommends for third-party access. There is no long-lived client secret that you would have to download, paste into Probo, or rotate later.
+
+1. You create an app registration in Microsoft Entra ID and add a federated credential. Its subject and issuer accept only your Probo organization's issuer and subject.
+2. On each sync, Probo signs a token in memory. That token is valid for five minutes. Microsoft Entra ID exchanges it for a short-lived access token for Azure Resource Manager.
+3. The token and the session both stay in memory. Probo never writes them to disk and never stores them with the connector.
+4. You can revoke access from Azure at any time. Delete the federated credential, the app registration, or the RBAC assignment, and Probo can no longer request access tokens. Any existing short-lived token expires automatically within the hour.
+
+Azure Activity Log attributes every API call to your federated app, so you can track and verify every read operation Probo performs.
