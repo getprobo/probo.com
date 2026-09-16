@@ -62,8 +62,7 @@ export const menuGroups: MenuGroup[] = [
       },
       {
         label: "AI Agents",
-        description:
-          "Run your compliance program from the tools you already work in",
+        description: "Run compliance from the tools you use",
         href: "/products/ai-agents-for-compliance",
         icon: "claude",
       },
