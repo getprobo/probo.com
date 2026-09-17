@@ -425,7 +425,7 @@ function categoryForTool(name) {
       "Compliance portal",
       /CompliancePortal|Commitment|CustomDomain|ComplianceCustom|ResourceAlias|MailingList/,
     ],
-    ["Cookie consent", /Cookie|Tracker/],
+    ["Cookie consent", /Cookie|Tracker|GVL/],
     ["Documents and approvals", /Document|Signature/],
     [
       "Statements of applicability",
