@@ -11,7 +11,7 @@ import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
 import AiToolsGallery from "../../components/AiToolsGallery.svelte";
 import aiClients from "../../data/ai-clients.json";
 
-const pageTitle = "AI Agents for Compliance | Probo MCP";
+const pageTitle = "AI Agents for Compliance";
 const pageDescription =
   "Connect Claude, Cursor, ChatGPT or any MCP client to your live Probo data. Ask what is failing, update the risk register, prepare the audit. Every agent stays inside the permissions of the person who connected it.";
 
@@ -217,8 +217,7 @@ const faqs = [
       "You choose the token scopes, and Probo enforces the connected user’s existing permissions on every operation.",
   },
   {
-    question:
-      "Is every agent action attributed and recorded in the audit log?",
+    question: "Is every agent action attributed and recorded in the audit log?",
     answer:
       "Yes. Agents go through the same authorization layer as the console, and every authorized call is written to the audit log with the timestamp, the action, the resource, and the identity behind it. Since an agent authenticates with an OAuth token issued to a person, its actions are attributed to that person. Entries are immutable and exportable as CSV.",
   },
@@ -522,17 +521,18 @@ const softwareApplicationSchema = {
                     </li>
                   ))}
                 </ul>
-                {
-                  feature.cta && (
-                    <a
-                      href={feature.cta.href}
-                      class="text-foreground mt-6 inline-flex items-center gap-1.5 text-[16px] leading-6 font-medium"
-                    >
-                      {feature.cta.label}
-                      <i class="ph ph-arrow-right text-[16px]" aria-hidden="true" />
-                    </a>
-                  )
-                }
+                {feature.cta && (
+                  <a
+                    href={feature.cta.href}
+                    class="text-foreground mt-6 inline-flex items-center gap-1.5 text-[16px] leading-6 font-medium"
+                  >
+                    {feature.cta.label}
+                    <i
+                      class="ph ph-arrow-right text-[16px]"
+                      aria-hidden="true"
+                    />
+                  </a>
+                )}
               </div>
             </div>
           ))

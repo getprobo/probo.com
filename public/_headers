@@ -1,3 +1,10 @@
+# Markdown mirrors are for LLMs, not search indexing
+/md/*
+  X-Robots-Tag: noindex, nofollow
+
+/*.md
+  X-Robots-Tag: noindex, nofollow
+
 # Security headers - applied to every response
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://t.probo.com https://tally.so; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google.com; connect-src 'self' https://*.probo.com https://api.github.com https://api.openstatus.dev; frame-src https://tally.so https://www.youtube.com https://lists.probo.com https://n8n-preview-service.internal.n8n.cloud; form-action 'self' https://lists.probo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'

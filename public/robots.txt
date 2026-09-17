@@ -1,3 +1,15 @@
+User-agent: Googlebot
+Disallow: /md/
+Disallow: /*.md$
+Disallow: /llms-docs.txt
+Disallow: /llms-full.txt
+
+User-agent: Bingbot
+Disallow: /md/
+Disallow: /*.md$
+Disallow: /llms-docs.txt
+Disallow: /llms-full.txt
+
 User-agent: *
 Content-Signal: ai-train=yes, search=yes, ai-input=yes
 Allow: /

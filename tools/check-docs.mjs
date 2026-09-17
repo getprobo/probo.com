@@ -7,7 +7,7 @@ import {
   n8nResourceItems,
 } from "../src/lib/generated-reference-manifest.mjs";
 import { docsSidebarGroups } from "../src/lib/docs-sidebar.ts";
-import { cloudflareRedirectLines } from "../src/lib/redirects.mjs";
+import { cloudflareRedirectLines, redirects } from "../src/lib/redirects.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const contentRoot = resolve(root, "src/content/docs");
@@ -78,9 +78,7 @@ for (const file of files) {
     "/docs/getting-started/",
   ]) {
     const escaped = legacyPrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const internalLink = new RegExp(
-      `(?:\\]\\(|href=["'])${escaped}`,
-    );
+    const internalLink = new RegExp(`(?:\\]\\(|href=["'])${escaped}`);
     if (internalLink.test(content)) {
       errors.push(
         `${displayPath(file)}: links to legacy route prefix ${legacyPrefix}`,
@@ -152,6 +150,24 @@ for (const redirectLine of cloudflareRedirectLines()) {
   if (!cloudflareRedirects.split("\n").includes(redirectLine)) {
     errors.push(
       `public/_redirects: missing generated redirect; run npm run redirects:generate (${redirectLine})`,
+    );
+  }
+}
+
+for (const [from, { destination }] of Object.entries(redirects)) {
+  if (
+    from.includes("*") ||
+    from.includes("[") ||
+    !destination.startsWith("/docs") ||
+    destination.startsWith("/md/") ||
+    destination.endsWith(".md")
+  ) {
+    continue;
+  }
+  const route = normalizeRoute(destination);
+  if (!routes.has(route)) {
+    errors.push(
+      `src/lib/redirects.mjs: ${from} redirects to unpublished page ${destination}`,
     );
   }
 }

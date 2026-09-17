@@ -6,11 +6,12 @@
  * must collapse to a couple of rules rather than one per page.
  * @param {string} fromPrefix
  * @param {string} toPrefix
+ * @param {string} [exactDestination]
  * @returns {Record<string, { status: 301; destination: string }>}
  */
-function movedDocsRedirects(fromPrefix, toPrefix) {
+function movedDocsRedirects(fromPrefix, toPrefix, exactDestination = toPrefix) {
   return {
-    [fromPrefix]: redirect(toPrefix),
+    [fromPrefix]: redirect(exactDestination),
     [`${fromPrefix}/*`]: { status: 301, destination: `${toPrefix}/:splat` },
   };
 }
@@ -21,7 +22,48 @@ function movedDocsRedirects(fromPrefix, toPrefix) {
  */
 const redirect = (destination) => ({ status: 301, destination });
 
-export const redirects = {
+/**
+ * Mirror HTML docs redirects under /md/*.md so leftover markdown URLs
+ * resolve to the same final document instead of 404ing.
+ * @param {Record<string, { status: 301; destination: string }>} htmlRedirects
+ * @returns {Record<string, { status: 301; destination: string }>}
+ */
+function markdownDocsMirrors(htmlRedirects) {
+  const prefixes = [
+    "/docs/getting-started",
+    "/docs/cli",
+    "/docs/api",
+    "/docs/api/overview",
+    "/docs/api/graphql",
+    "/docs/self-hosting",
+    "/docs/configuration",
+    "/docs/developers/cli",
+    "/docs/developers/api",
+    "/docs/developers/api/overview",
+    "/docs/developers/api/graphql",
+    "/docs/deployment/configuration",
+  ];
+  /** @type {Record<string, { status: 301; destination: string }>} */
+  const extra = {};
+  for (const [from, rule] of Object.entries(htmlRedirects)) {
+    const fromPrefix = from.endsWith("/*") ? from.slice(0, -2) : from;
+    if (!prefixes.includes(fromPrefix) && !prefixes.includes(from)) {
+      continue;
+    }
+    if (from.includes("[") || rule.destination.startsWith("https://")) continue;
+    if (from.endsWith("/*")) {
+      extra[`/md${from}`] = {
+        status: 301,
+        destination: `/md${rule.destination}`,
+      };
+    } else {
+      extra[`/md${from}.md`] = redirect(`/md${rule.destination}.md`);
+    }
+  }
+  return extra;
+}
+
+const htmlRedirects = {
   "/sitemap.xml": redirect("/sitemap-index.xml"),
   "/products/ai-agents": redirect("/products/ai-agents-for-compliance"),
   "/subprocessors": redirect("https://compliance.probo.com/subprocessors"),
@@ -44,12 +86,29 @@ export const redirects = {
   "/fr/stories/[id]": redirect("/stories/[id]"),
   "/fr/terms": redirect("/terms"),
   "/fr/yc": redirect("/yc"),
+  "/docs/developers/cli": redirect("/docs/developers/cli/overview"),
+  "/docs/developers/api": redirect("/docs/developers/api-overview"),
+  "/docs/developers/api/overview": redirect("/docs/developers/api-overview"),
+  "/docs/developers/api/graphql": redirect("/docs/developers/graphql"),
+  "/docs/deployment/configuration": redirect(
+    "/docs/deployment/configuration/overview",
+  ),
+  "/docs/api/overview": redirect("/docs/developers/api-overview"),
+  "/docs/api/graphql": redirect("/docs/developers/graphql"),
   ...movedDocsRedirects(
     "/docs/getting-started",
     "/docs/product/getting-started",
   ),
-  ...movedDocsRedirects("/docs/cli", "/docs/developers/cli"),
-  ...movedDocsRedirects("/docs/api", "/docs/developers/api"),
+  ...movedDocsRedirects(
+    "/docs/cli",
+    "/docs/developers/cli",
+    "/docs/developers/cli/overview",
+  ),
+  ...movedDocsRedirects(
+    "/docs/api",
+    "/docs/developers/api",
+    "/docs/developers/api-overview",
+  ),
   ...Object.fromEntries(
     [
       ["controls", "control"],
@@ -71,6 +130,7 @@ export const redirects = {
   ...movedDocsRedirects(
     "/docs/configuration",
     "/docs/deployment/configuration",
+    "/docs/deployment/configuration/overview",
   ),
   "/docs/product/probo-agent/contributing": redirect(
     "/docs/developers/api/agent/contributing",
@@ -115,6 +175,11 @@ export const redirects = {
       redirect(`/docs/developers/api/mcp/tools/catalog/${to}`),
     ]),
   ),
+};
+
+export const redirects = {
+  ...htmlRedirects,
+  ...markdownDocsMirrors(htmlRedirects),
 };
 
 export function cloudflareRedirectLines() {

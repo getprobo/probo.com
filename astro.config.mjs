@@ -7,10 +7,17 @@ import starlight from "@astrojs/starlight";
 import sitemap from "@astrojs/sitemap";
 import { removeHtmlExtension } from "./vite-plugin-remove-html.mjs";
 import { docsSidebar } from "./src/lib/docs-sidebar.ts";
+import { redirects } from "./src/lib/redirects.mjs";
 import { generateMarkdown } from "./tools/generateMarkdown";
 import { generateSecurityTxt } from "./tools/generateSecurityTxt";
 import { unified } from "@astrojs/markdown-remark";
 import { remarkRequireImageAlt } from "./src/lib/remark-require-image-alt";
+
+const sitemapExcludedPaths = new Set(
+  Object.keys(redirects)
+    .filter((from) => !from.includes("*") && !from.includes("["))
+    .map((from) => from.replace(/\/+$/, "") || "/"),
+);
 
 // Post-enforce fallback: when vite-plugin-svelte cannot resolve a Svelte
 // virtual CSS module (e.g. during dev re-optimization), return empty CSS so
@@ -125,6 +132,15 @@ export default defineConfig({
     svelte(),
     sitemap({
       filter(page) {
+        const path = new URL(page).pathname.replace(/\/+$/, "") || "/";
+        if (
+          path === "/md" ||
+          path.startsWith("/md/") ||
+          path.endsWith(".md") ||
+          sitemapExcludedPaths.has(path)
+        ) {
+          return false;
+        }
         if (page.endsWith("/yc") || page.endsWith("/yc/")) {
           return false;
         }
@@ -152,6 +168,7 @@ export default defineConfig({
         return true;
       },
       serialize(item) {
+        item.url = item.url.replace(/\/+$/, "") || item.url;
         if (item.url === "https://www.probo.com") {
           item.changefreq = /** @type {import('sitemap').EnumChangefreq} */ (
             "weekly"

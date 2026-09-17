@@ -6,6 +6,8 @@ export async function onRequest(context: {
   };
 }): Promise<Response> {
   const url = new URL(context.request.url);
+  const isMarkdownPath =
+    url.pathname.endsWith(".md") || url.pathname.startsWith("/md/");
   const isMarkdownAlternate =
     url.pathname.endsWith(".md") && !url.pathname.startsWith("/md/");
 
@@ -13,7 +15,7 @@ export async function onRequest(context: {
     url.pathname.startsWith("/api/") ||
     url.pathname.startsWith("/_astro/") ||
     url.pathname.startsWith("/static/") ||
-    (url.pathname.match(/\.\w+$/) && !isMarkdownAlternate)
+    (url.pathname.match(/\.\w+$/) && !isMarkdownPath)
   ) {
     return context.next();
   }
@@ -34,21 +36,35 @@ export async function onRequest(context: {
       );
 
       if (response.ok) {
-        const headers = new Headers(response.headers);
-        headers.set("Content-Type", "text/markdown; charset=utf-8");
-        addVaryAccept(headers);
-
-        return new Response(response.body, {
-          status: response.status,
-          statusText: response.statusText,
-          headers,
-        });
+        return withMarkdownHeaders(response, true);
       }
     }
   }
 
   const response = await context.next();
+  if (isMarkdownPath) {
+    return withMarkdownHeaders(response, response.ok);
+  }
+
   const headers = new Headers(response.headers);
+  addVaryAccept(headers);
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+function withMarkdownHeaders(
+  response: Response,
+  asMarkdown: boolean,
+): Response {
+  const headers = new Headers(response.headers);
+  if (asMarkdown) {
+    headers.set("Content-Type", "text/markdown; charset=utf-8");
+  }
+  headers.set("X-Robots-Tag", "noindex, nofollow");
   addVaryAccept(headers);
 
   return new Response(response.body, {

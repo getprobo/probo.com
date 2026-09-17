@@ -311,6 +311,7 @@ export function generateMarkdown(): AstroIntegration {
 
           response.statusCode = 200;
           response.setHeader("Content-Type", "text/markdown; charset=utf-8");
+          response.setHeader("X-Robots-Tag", "noindex, nofollow");
           response.end(mdxToMarkdown(readFileSync(sourcePath, "utf-8")));
         });
       },
