@@ -1,0 +1,1451 @@
+---
+import "@phosphor-icons/web/regular";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
+import Button from "../../components/ui/Button.svelte";
+import LogosScroll from "../../components/LogosScroll.svelte";
+import LottiePlayer from "../../components/LottiePlayer.svelte";
+import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
+import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
+import toolLogos from "../../data/access-review-tools.json";
+
+const pageTitle = "Cookie Banner";
+const pageDescription =
+  "Show every visitor the consent their law requires, in their own language, block trackers until they agree, and keep a record your auditor can read.";
+
+const overviewFeatures = [
+  {
+    icon: "ph-magnifying-glass",
+    title: "See what your site really loads",
+    description:
+      "Find every cookie and script in real visitor sessions, including the pages behind your login.",
+  },
+  {
+    icon: "ph-map-pin",
+    title: "Consent that matches the jurisdiction",
+    description:
+      "Resolve each visitor's regulation from their location, then show opt-in, opt-out, or notice automatically.",
+  },
+  {
+    icon: "ph-shield-check",
+    title: "Nothing loads before consent",
+    description:
+      "Block scripts, iframes, and pixels until the visitor allows the category they belong to.",
+  },
+  {
+    icon: "ph-paint-brush",
+    title: "A banner that looks like yours",
+    description:
+      "Set your own colors, fonts, and wording, and speak your visitor's language in 14 translations.",
+  },
+  {
+    icon: "ph-file-text",
+    title: "Proof for every decision",
+    description:
+      "Record the action, category choices, banner version, regulation, and country on each consent record.",
+  },
+];
+
+type ReviewStep = {
+  title: string;
+  lottie: string;
+  illustration: string;
+  reverse?: boolean;
+  bullets: string[];
+};
+
+const reviewSteps: ReviewStep[] = [
+  {
+    title: "See what your site really loads",
+    lottie: "/lottie/access-review/1.json",
+    illustration: "workflow-tracker-detection",
+    bullets: [
+      "Discover trackers from real visitor sessions, not from a crawler's guess.",
+      "Cover the pages behind your login without sharing an account.",
+      "Catch new trackers as they appear, instead of only at scan time.",
+    ],
+  },
+  {
+    title: "Resolve the regulation by location",
+    lottie: "/lottie/access-review/2.json",
+    illustration: "workflow-regional-consent",
+    reverse: true,
+    bullets: [
+      "Detect each visitor's country and state from their IP address.",
+      "Apply the matching law, from GDPR to CCPA and APPI.",
+      "Fall back to GDPR when the country cannot be resolved.",
+    ],
+  },
+  {
+    title: "Block resources until consent",
+    lottie: "/lottie/access-review/3.json",
+    illustration: "workflow-resource-blocking",
+    bullets: [
+      "Tag any script, iframe, pixel, or stylesheet with its category.",
+      "Hold every tagged resource inactive until the visitor allows that category.",
+      "Catch tags that other scripts inject after the page has loaded.",
+    ],
+  },
+  {
+    title: "Match your brand and language",
+    lottie: "/lottie/access-review/4.json",
+    illustration: "workflow-brand-language",
+    reverse: true,
+    bullets: [
+      "Set your colors, fonts, and corners in a visual theme editor.",
+      "Speak 14 built-in languages, chosen from the visitor's browser automatically.",
+      "Rewrite any label, in any language, without touching your site code.",
+    ],
+  },
+  {
+    title: "Keep proof of every choice",
+    lottie: "/lottie/access-review/1.json",
+    illustration: "workflow-consent-proof",
+    bullets: [
+      "Record the action, category choices, banner version, and timestamp.",
+      "Store the resolved regulation and country code on each record.",
+      "Anonymize the IP address before storage, and never keep the full address.",
+    ],
+  },
+];
+
+const publishCards = [
+  {
+    illustration: "capability-categories",
+    title: "Cookie Categories",
+    description:
+      "Group trackers by purpose, reorder them, and add the custom categories your site needs.",
+  },
+  {
+    illustration: "capability-inventory",
+    title: "Cookie Inventory",
+    description:
+      "List every cookie your site sets, with its purpose and how long it lasts.",
+  },
+  {
+    illustration: "capability-theme",
+    title: "Banner Theme",
+    description:
+      "Set your colors, fonts, and corners, and preview the result before it goes live.",
+  },
+  {
+    illustration: "capability-translations",
+    title: "Translations",
+    description:
+      "Edit every label and description in 14 built-in languages, and add any other locale.",
+  },
+  {
+    illustration: "capability-policy",
+    title: "Cookie Policy",
+    description:
+      "Generate a cookie policy from your live configuration, and let it rewrite itself whenever your trackers change.",
+  },
+  {
+    illustration: "capability-records",
+    title: "Consent Records",
+    description:
+      "Look up any decision with its regulation, country, banner version, and timestamp.",
+  },
+];
+
+const trustedLogos = [
+  {
+    src: "/clients/trace_for_good.svg",
+    alt: "Trace for Good",
+    class: "trusted-logo--trace",
+    width: 1023,
+    height: 154,
+  },
+  {
+    src: "/clients/jimo.svg",
+    alt: "Jimo",
+    class: "trusted-logo--jimo",
+    width: 72,
+    height: 36,
+  },
+  {
+    src: "/clients/lucis.svg",
+    alt: "Lucis",
+    class: "trusted-logo--lucis",
+    width: 246,
+    height: 74,
+  },
+  {
+    src: "/clients/filz.svg",
+    alt: "Filiz",
+    class: "trusted-logo--filiz",
+    width: 598,
+    height: 240,
+  },
+  {
+    src: "/clients/ahrefs.svg",
+    alt: "Ahrefs",
+    class: "trusted-logo--ahrefs",
+    width: 74,
+    height: 19,
+  },
+];
+
+const faqs = [
+  {
+    question: "How long does it take to set up?",
+    answer:
+      "Just a few minutes. Create the banner, publish a version, paste one script tag into your page, and activate it. Tagging your existing third-party scripts takes a little longer.",
+  },
+  {
+    question: "Do we have to pick a consent mode for each country?",
+    answer:
+      "No. Probo resolves the regulation from the visitor's IP address and derives the presentation, buttons, and copy from it. There is no default consent mode to configure.",
+  },
+  {
+    question: "Does it cover US state laws as well as GDPR?",
+    answer:
+      "Yes. Opt-in covers GDPR, UK GDPR, FADP, Law 25, LGPD, and more, while opt-out covers CCPA, nineteen other US state laws, PIPEDA, and APPI. Mexico gets a notice.",
+  },
+  {
+    question: "Do you need access to our app to find our cookies?",
+    answer:
+      "No. Install the banner on your app the same way you install it on your site, and it reports what it sees in real sessions. There is no crawler to configure and no account to hand over.",
+  },
+  {
+    question: "Can we block Google Analytics until a visitor consents?",
+    answer:
+      "Yes. Tag the Google Analytics script with your analytics category, and the banner holds it until the visitor allows that category. The same works for pixels, embeds, and stylesheets.",
+  },
+  {
+    question: "Does it work with Google Consent Mode v2?",
+    answer:
+      "Yes. Map each category to Google consent types in the console, and the SDK sends the default and update calls to gtag or dataLayer. Turn it off when your own CMP already handles it.",
+  },
+  {
+    question: "Does it respect Global Privacy Control?",
+    answer:
+      "Yes. Probo reads the browser signal, records it as a rejection of non-necessary categories without asking again, and can show a GPC badge beside the settings link.",
+  },
+  {
+    question: "Can we match the banner to our branding?",
+    answer:
+      "Yes. Set your colors, fonts, corner radius, and shadow in the visual theme editor, and watch each change in a live preview. Dark mode follows the visitor system setting.",
+  },
+  {
+    question: "What languages does the banner speak?",
+    answer:
+      "Fourteen out of the box, including German, French, Spanish, Japanese, and Chinese. Each visitor gets their own, picked up from your page or their browser, and you can add any other language yourself.",
+  },
+  {
+    question: "Who edits the wording, and does it need a deploy?",
+    answer:
+      "Your team, in the console, with no deploy. Edit any label or category description, preview it, then publish. The new wording reaches visitors without a code change.",
+  },
+  {
+    question: "What do you store about each visitor?",
+    answer:
+      "Just what an audit needs. Each record holds the action, category choices, banner version, regulation, country, user agent, and an anonymized IP address. The full address is never written.",
+  },
+  {
+    question: "Can we manage banners from code?",
+    answer:
+      "Yes. Use the prb CLI, 32 MCP tools, n8n nodes, or GraphQL to create banners, move trackers between categories, publish versions, and export consent records. The banner itself is MIT licensed and ships with no dependencies.",
+  },
+  {
+    question: "Do we have to write our own cookie policy?",
+    answer:
+      "No. Probo drafts one from your published banner, with a table of every tracker, its purpose, and how long it lasts, and rewrites it each time you publish. You can put it straight on your Compliance Portal.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
+const softwareApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Probo Cookie Banner",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: pageDescription,
+  url: "https://www.probo.com/products/cookie-banner",
+  publisher: {
+    "@type": "Organization",
+    name: "Probo",
+    url: "https://www.probo.com",
+  },
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareApplicationSchema)}
+  />
+  <main class="-mt-16 overflow-hidden pt-16">
+    <div class="relative isolate overflow-hidden">
+      <div
+        aria-hidden="true"
+        data-node-id="984:327"
+        class="trust-hero-orb pointer-events-none absolute top-[-1314px] left-1/2 z-0 size-[2265px] rounded-full border-[350px] border-[#E6FF03] blur-[96px]"
+      >
+      </div>
+
+      <section class="relative z-10 container py-16 text-center sm:py-24">
+        <div
+          class="border-border-low text-tertiary-foreground animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
+          style="animation-delay: 100ms"
+        >
+          Cookie Banner
+        </div>
+        <h1
+          class="mx-auto mb-6 max-w-[600px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
+          aria-label="Cookie consent that follows your visitors."
+        >
+          <span aria-hidden="true" class="block overflow-hidden">
+            <span
+              class="animate-perspective-in block"
+              style="animation-delay: 150ms"
+              >Cookie consent that follows your visitors.</span
+            >
+          </span>
+        </h1>
+        <p
+          class="text-muted-foreground animate-perspective-in mx-auto mb-8 max-w-[420px] text-base"
+          style="animation-delay: 350ms"
+        >
+          {pageDescription}
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button
+            href="/contact"
+            size="lg"
+            class="animate-perspective-in"
+            style="animation-delay: 400ms"
+          >
+            Book a demo
+          </Button>
+          <Button
+            href="/docs/product/cookie-banner/quickstart"
+            variant="secondary"
+            size="lg"
+            class="animate-perspective-in"
+            style="animation-delay: 450ms"
+          >
+            See it in action
+          </Button>
+        </div>
+      </section>
+
+      <section class="relative z-10 container pb-0">
+        <div class="access-review-browser">
+          <img
+            src="/cookie-banner/hero-cookie-banner.svg"
+            alt=""
+            aria-hidden="true"
+            width="1146"
+            height="786"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            class="motion-safe:animate-slide-in"
+            style="animation-delay: 600ms"
+          />
+        </div>
+        <div
+          class="mx-auto flex w-full max-w-[636px] items-center gap-6 pt-8"
+          data-connect-tools
+        >
+          <p
+            class="text-muted-foreground shrink-0 text-sm leading-5 whitespace-nowrap"
+          >
+            Connect your tools
+          </p>
+          <LogosScroll
+            client:visible
+            class="h-6 min-w-0 flex-1 overflow-hidden"
+            label="Connected tools"
+            gap={32}
+            fadeEdges
+          >
+            {
+              toolLogos.map((logo) => (
+                <div class="flex h-6 shrink-0 items-center gap-2 whitespace-nowrap">
+                  <img
+                    src={logo.src}
+                    alt=""
+                    width={logo.width}
+                    height="24"
+                    loading="lazy"
+                    decoding="async"
+                    class="block h-6 max-w-none shrink-0 object-contain"
+                    style={`width: ${logo.width}px`}
+                  />
+                  <span class="text-sm leading-5 font-medium text-[#21201c]">
+                    {logo.alt}
+                  </span>
+                </div>
+              ))
+            }
+          </LogosScroll>
+        </div>
+      </section>
+    </div>
+
+    <section class="container pt-16 pb-0 text-center sm:pt-32">
+      <h2
+        class="mx-auto max-w-[552px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance text-[#141e12]"
+        data-trust-reveal
+      >
+        One banner that follows the law wherever your visitors are.
+      </h2>
+      <p
+        class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+        data-trust-reveal
+        style="--trust-reveal-delay: 100ms"
+      >
+        Let each visitor's location decide the banner, so they see the least
+        their law allows: opt-in, opt-out, or notice.
+      </p>
+
+      <div class="overview-feature-grid mt-16">
+        {
+          overviewFeatures.map((feature, index) => (
+            <div
+              class="overview-feature"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <i
+                class:list={["ph overview-feature-icon", feature.icon]}
+                aria-hidden="true"
+              />
+              <div class="overview-feature-copy">
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section id="how-it-works" class="pt-16 pb-0 sm:pt-32">
+      <div class="container mb-12 text-center sm:mb-16">
+        <h2
+          class="mx-auto max-w-[600px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          Cover every jurisdiction without writing a country table
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Resolve the law from the visitor's location, hold trackers until the
+          category is allowed, and keep the banner on brand throughout.
+        </p>
+      </div>
+
+      <div class="space-y-8 sm:space-y-12">
+        {
+          reviewSteps.map((feature, index) => (
+            <div
+              class:list={[
+                "container grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-16",
+              ]}
+              data-trust-reveal={index === 0 ? undefined : true}
+              style={`--trust-reveal-delay: ${index * 80}ms`}
+            >
+              <div
+                class:list={[
+                  "bg-subtle relative isolate mx-auto aspect-[508/664] w-full max-w-[508px] overflow-hidden rounded-2xl",
+                  feature.reverse && "lg:order-2",
+                ]}
+                data-review-visual
+                data-review-asset-visual
+                style={`--review-asset-x: ${feature.reverse ? "104px" : "-96px"}; --review-asset-y: ${index === 0 || feature.reverse ? "0px" : "64px"}; --review-asset-scale: ${index === 0 ? 1 : 0.98}; --review-asset-duration: ${feature.reverse ? "820ms" : "860ms"};`}
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 z-0"
+                  aria-hidden="true"
+                >
+                  <LottiePlayer
+                    client:visible
+                    src={feature.lottie}
+                    label={`${feature.title} animation`}
+                    class="size-full origin-center scale-[1.12] transform-gpu"
+                  />
+                </div>
+                <img
+                  src={`/cookie-banner/${feature.illustration}.webp`}
+                  srcset={`/cookie-banner/${feature.illustration}.webp 508w, /cookie-banner/${feature.illustration}-2x.webp 1016w, /cookie-banner/${feature.illustration}-3x.webp 1524w`}
+                  sizes="(min-width: 548px) 508px, calc(100vw - 40px)"
+                  alt=""
+                  aria-hidden="true"
+                  width="508"
+                  height="664"
+                  loading="lazy"
+                  decoding="async"
+                  class="review-asset pointer-events-none absolute inset-0 z-10 block h-auto w-full"
+                />
+              </div>
+
+              <div
+                class:list={[
+                  "mx-auto w-full max-w-[508px] min-w-0",
+                  feature.reverse ? "lg:order-1 lg:pr-16" : "lg:pl-16",
+                ]}
+                data-trust-reveal={index === 0 ? true : undefined}
+              >
+                <h3
+                  class:list={[
+                    "mb-6 font-semibold",
+                    feature.reverse
+                      ? "text-[20px] leading-7 tracking-[-0.4px]"
+                      : "text-[24px] leading-8 tracking-[-0.6px]",
+                  ]}
+                >
+                  {feature.title}
+                </h3>
+                <ul class="text-muted-foreground space-y-3 text-[16px] leading-6">
+                  {feature.bullets.map((bullet) => (
+                    <li class="flex gap-2">
+                      <i
+                        class="ph ph-check inline-flex size-6 shrink-0 items-center justify-center text-[24px] leading-none text-current"
+                        aria-hidden="true"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="mb-16 text-center">
+        <h2
+          class="mx-auto max-w-[560px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          Everything you need to run consent, in one place
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Keep your cookie inventory, categories, wording, and branding
+          together, with a record of every choice a visitor made.
+        </p>
+      </div>
+
+      <div class="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          publishCards.map((card, index) => (
+            <article
+              class="mx-auto flex w-full max-w-[508px] flex-col gap-6"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <div
+                class="aspect-square w-full overflow-hidden"
+                data-review-asset-visual
+              >
+                <img
+                  src={`/cookie-banner/${card.illustration}.webp`}
+                  srcset={`/cookie-banner/${card.illustration}.webp 344w, /cookie-banner/${card.illustration}-2x.webp 688w, /cookie-banner/${card.illustration}-3x.webp 1032w`}
+                  sizes="(min-width: 1120px) 344px, (min-width: 1024px) calc((100vw - 88px) / 3), (min-width: 640px) calc((100vw - 64px) / 2), (min-width: 548px) 508px, calc(100vw - 40px)"
+                  alt=""
+                  aria-hidden="true"
+                  width="344"
+                  height="344"
+                  loading="lazy"
+                  decoding="async"
+                  class="review-asset block aspect-square h-auto w-full"
+                />
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="text-[20px] leading-7 font-semibold tracking-[-0.4px]">
+                  {card.title}
+                </h3>
+                <p class="text-muted-foreground text-[16px] leading-6">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="pb-12 text-center sm:pb-16">
+        <h2
+          class="text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+          data-trust-reveal
+        >
+          Trusted by 130+ companies
+        </h2>
+        <p
+          class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Engineering and privacy teams use Probo to inventory their trackers,
+          gate them behind consent, and prove each decision.
+        </p>
+      </div>
+
+      <div class="trusted-showcase">
+        <div
+          class="trusted-photo-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          <Image
+            src={BlaxelFounders}
+            alt="Paul Sinai and the Blaxel team"
+            width={528}
+            height={528}
+            densities={[1, 2]}
+            class="trusted-photo"
+            loading="lazy"
+          />
+        </div>
+
+        <div
+          class="trusted-quote-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 180ms"
+        >
+          <span class="trusted-quote-halo" aria-hidden="true"></span>
+          <div class="trusted-quote-content">
+            <blockquote class="trusted-quote">
+              &ldquo;Probo handled our SOC 2 and compliance, so we could focus
+              on building.&rdquo;
+            </blockquote>
+
+            <div class="trusted-author">
+              <div class="trusted-author-copy">
+                <div class="trusted-author-name">Paul Sinai</div>
+                <div class="trusted-author-role">
+                  CEO &amp; Co-founder of Blaxel
+                </div>
+              </div>
+              <Image
+                src={PaulSinai}
+                alt="Paul Sinai"
+                width={48}
+                height={48}
+                densities={[1, 2]}
+                class="trusted-avatar"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <div class="trusted-logo-block">
+            <p>Trusted by teams building compliance-ready workflows</p>
+            <div class="trusted-logo-rail" aria-label="Trusted companies">
+              <LogosScroll class="trusted-logo-ticker" client:load>
+                {
+                  trustedLogos.map((logo) => (
+                    <span class:list={["trusted-logo-item", logo.class]}>
+                      <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={logo.width}
+                        height={logo.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  ))
+                }
+              </LogosScroll>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container pt-16 sm:pt-32">
+      <h2
+        class="mb-6 text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+        data-trust-reveal
+      >
+        Questions, answered
+      </h2>
+      <div class="faq-accordion mx-auto max-w-[768px]" data-faq-accordion>
+        {
+          faqs.map((faq, index) => (
+            <div
+              class="faq-item"
+              data-faq-item
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 60}ms`}
+            >
+              <h3>
+                <button
+                  class="faq-trigger"
+                  type="button"
+                  id={`cookie-banner-faq-trigger-${index}`}
+                  aria-expanded="false"
+                  aria-controls={`cookie-banner-faq-panel-${index}`}
+                  data-faq-trigger
+                >
+                  <span>{faq.question}</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <i class="ph ph-plus faq-icon-plus" />
+                    <i class="ph ph-minus faq-icon-minus" />
+                  </span>
+                </button>
+              </h3>
+              <div
+                class="faq-panel"
+                id={`cookie-banner-faq-panel-${index}`}
+                role="region"
+                aria-labelledby={`cookie-banner-faq-trigger-${index}`}
+                aria-hidden="true"
+                data-faq-panel
+              >
+                <div class="faq-panel-inner">
+                  <p>{faq.answer}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+    <ProductDiscovery />
+  </main>
+</Layout>
+
+<script>
+  const initCookieBannerAnimations = () => {
+    const assetVisuals = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-review-asset-visual]"),
+    );
+    const revealTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-trust-reveal]"),
+    );
+
+    if (assetVisuals.length === 0 && revealTargets.length === 0) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      assetVisuals.forEach((visual) => {
+        visual.classList.add("is-visible");
+      });
+      revealTargets.forEach((target) => {
+        target.classList.add("is-visible");
+      });
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    const assetObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          assetObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.35 },
+    );
+
+    revealTargets.forEach((target) => {
+      if (target.dataset.revealReady === "true") {
+        return;
+      }
+
+      target.dataset.revealReady = "true";
+      target.classList.add("is-awaiting-reveal");
+      revealObserver.observe(target);
+    });
+
+    assetVisuals.forEach((visual) => {
+      if (visual.dataset.motionReady === "true") {
+        return;
+      }
+
+      visual.dataset.motionReady = "true";
+      visual.classList.add("is-awaiting-animation");
+      assetObserver.observe(visual);
+    });
+  };
+
+  const initCookieBannerFaq = () => {
+    const faqAccordions = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-faq-accordion]"),
+    );
+
+    faqAccordions.forEach((faqAccordion) => {
+      if (faqAccordion.dataset.faqReady === "true") {
+        return;
+      }
+
+      faqAccordion.dataset.faqReady = "true";
+
+      const faqItems = Array.from(
+        faqAccordion.querySelectorAll<HTMLElement>("[data-faq-item]"),
+      );
+
+      const setFaqItemState = (item: HTMLElement, shouldOpen: boolean) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+        const panel = item.querySelector<HTMLElement>("[data-faq-panel]");
+
+        if (!trigger || !panel) {
+          return;
+        }
+
+        item.classList.toggle("is-open", shouldOpen);
+        trigger.setAttribute("aria-expanded", String(shouldOpen));
+        panel.setAttribute("aria-hidden", String(!shouldOpen));
+      };
+
+      faqItems.forEach((item, index) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+
+        if (!trigger) {
+          return;
+        }
+
+        trigger.addEventListener("click", () => {
+          const shouldOpen = !item.classList.contains("is-open");
+
+          faqItems.forEach((faqItem) => {
+            setFaqItemState(faqItem, faqItem === item && shouldOpen);
+          });
+        });
+
+        trigger.addEventListener("keydown", (event) => {
+          const lastIndex = faqItems.length - 1;
+          const nextIndex =
+            event.key === "ArrowDown"
+              ? Math.min(index + 1, lastIndex)
+              : event.key === "ArrowUp"
+                ? Math.max(index - 1, 0)
+                : event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? lastIndex
+                    : index;
+
+          if (nextIndex === index) {
+            return;
+          }
+
+          event.preventDefault();
+          faqItems[nextIndex]
+            ?.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+            ?.focus();
+        });
+      });
+    });
+  };
+
+  const initCookieBannerPage = () => {
+    initCookieBannerAnimations();
+    initCookieBannerFaq();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCookieBannerPage, {
+      once: true,
+    });
+  } else {
+    initCookieBannerPage();
+  }
+</script>
+
+<style>
+  .access-review-browser {
+    position: relative;
+    aspect-ratio: 1080 / 720;
+  }
+
+  /* Figma's SVG includes 33px of shadow beyond the 1080×720 browser. */
+  .access-review-browser img {
+    position: absolute;
+    top: -4.583333%;
+    left: -3.055556%;
+    width: 106.111111%;
+    max-width: none;
+    height: auto;
+  }
+
+  .trust-hero-orb {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    transform-origin: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .trust-hero-orb {
+      animation: trust-hero-orb-scale-in cubic-bezier(0.785, 0.135, 0.15, 0.86)
+        3s both;
+      animation-delay: -1200ms;
+    }
+  }
+
+  @keyframes trust-hero-orb-scale-in {
+    from {
+      transform: translateX(-50%) scale(0);
+    }
+
+    to {
+      transform: translateX(-50%) scale(1);
+    }
+  }
+
+  [data-trust-reveal],
+  :global([data-product-discovery] [data-trust-reveal]) {
+    --trust-reveal-delay: 0ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-trust-reveal].is-awaiting-reveal,
+    :global([data-product-discovery] [data-trust-reveal].is-awaiting-reveal) {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    [data-trust-reveal].is-visible,
+    :global([data-product-discovery] [data-trust-reveal].is-visible) {
+      animation: trust-reveal-slide-in var(--spring-smooth) 850ms
+        var(--trust-reveal-delay) both;
+    }
+  }
+
+  @keyframes trust-reveal-slide-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  [data-review-asset-visual] {
+    --review-asset-x: 0px;
+    --review-asset-y: 42px;
+    --review-asset-duration: 760ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-review-asset-visual].is-awaiting-animation .review-asset {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    [data-review-asset-visual].is-visible .review-asset {
+      animation: review-asset-enter var(--review-asset-duration)
+        cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+    }
+  }
+
+  @keyframes review-asset-enter {
+    0% {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    42% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  .overview-feature-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 48px;
+  }
+
+  .overview-feature {
+    display: flex;
+    width: min(100%, 328px);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .overview-feature-icon {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    color: #343330;
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .overview-feature-copy {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .overview-feature-copy h3,
+  .overview-feature-copy p {
+    width: 100%;
+  }
+
+  .overview-feature-copy h3 {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .overview-feature-copy p {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .overview-feature-copy a {
+    color: #343330;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 640px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 48px;
+      row-gap: 56px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .overview-feature-grid {
+      position: relative;
+      display: block;
+      width: 100%;
+      max-width: 1080px;
+      height: 346px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature {
+      position: absolute;
+      width: 328px;
+    }
+
+    .overview-feature:nth-child(1) {
+      top: 0;
+      left: 0;
+    }
+
+    .overview-feature:nth-child(1) .overview-feature-copy h3 {
+      max-width: 276px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature:nth-child(2) {
+      top: 0;
+      left: 376px;
+    }
+
+    .overview-feature:nth-child(3) {
+      top: 0;
+      left: 752px;
+    }
+
+    .overview-feature:nth-child(4) {
+      top: 201px;
+      left: 0;
+    }
+
+    .overview-feature:nth-child(5) {
+      top: 201px;
+      left: 376px;
+    }
+
+    .overview-feature:nth-child(6) {
+      top: 201px;
+      left: 752px;
+    }
+  }
+
+  .trusted-showcase {
+    display: grid;
+    width: 100%;
+    max-width: 1080px;
+    gap: 24px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .trusted-photo-card,
+  .trusted-quote-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f6f9f5;
+  }
+
+  .trusted-photo-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  .trusted-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+
+  .trusted-quote-card {
+    display: flex;
+    min-height: 420px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 72px 20px 32px;
+    text-align: center;
+  }
+
+  .trusted-quote-halo {
+    position: absolute;
+    top: -423px;
+    left: 50%;
+    z-index: 0;
+    width: 1010px;
+    height: 1010px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .trusted-quote-halo::before {
+    position: absolute;
+    inset: -17%;
+    content: "";
+    background: url("/trust-center/quote-ellipse.svg") center / 100% 100%
+      no-repeat;
+    transform: rotate(180deg) scaleY(-1);
+  }
+
+  .trusted-quote-content,
+  .trusted-logo-block {
+    position: relative;
+    z-index: 1;
+  }
+
+  .trusted-quote-content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-quote {
+    margin: 0;
+    color: #141e12;
+    font-size: 22px;
+    line-height: 30px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    text-align: center;
+    text-wrap: balance;
+    word-break: break-word;
+  }
+
+  .trusted-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .trusted-author-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .trusted-author-name {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .trusted-author-role {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .trusted-avatar {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .trusted-logo-block {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-logo-block p {
+    color: #6b716a;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .trusted-logo-rail {
+    width: 792px;
+    max-width: calc(100vw - 48px);
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker) {
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker .splide__track),
+  :global(.trusted-logo-ticker .splide__list) {
+    height: 24px;
+  }
+
+  :global(.trusted-logo-ticker .splide__slide) {
+    display: flex;
+    height: 24px;
+    align-items: center;
+  }
+
+  .trusted-logo-item {
+    display: flex;
+    height: 24px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    opacity: 0.6;
+  }
+
+  .trusted-logo-item img {
+    display: block;
+    width: 100%;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .trusted-logo--trace {
+    width: 190.5px;
+  }
+
+  .trusted-logo--jimo {
+    width: 78px;
+  }
+
+  .trusted-logo--lucis {
+    width: 109.5px;
+  }
+
+  .trusted-logo--filiz {
+    width: 115.5px;
+  }
+
+  .trusted-logo--ahrefs {
+    width: 123px;
+  }
+
+  @media (min-width: 1024px) {
+    .trusted-showcase {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .trusted-quote-card {
+      min-height: auto;
+      aspect-ratio: 1 / 1;
+      padding: 96px 32px 32px;
+    }
+
+    .trusted-quote {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border-low);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 0;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+  }
+
+  .faq-trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: padding 220ms ease;
+  }
+
+  .faq-trigger:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 4px;
+  }
+
+  .faq-trigger span:first-child {
+    flex: 1;
+  }
+
+  .faq-icon {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+
+  .faq-icon i {
+    position: absolute;
+    font-size: 16px;
+    line-height: 1;
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease;
+  }
+
+  .faq-icon-minus {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-trigger {
+    padding-bottom: 8px;
+  }
+
+  .faq-item.is-open .faq-icon-plus {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-icon-minus {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms ease;
+  }
+
+  .faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-panel p {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0 40px 16px 0;
+    color: #6b716a;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .faq-item.is-open .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-panel,
+    .faq-icon i,
+    .faq-trigger {
+      transition: none;
+    }
+  }
+</style>

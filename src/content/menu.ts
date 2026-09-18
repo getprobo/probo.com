@@ -67,6 +67,12 @@ export const menuGroups: MenuGroup[] = [
         icon: "claude",
       },
       {
+        label: "Cookie Banner",
+        description: "Consent that follows every visitor's law",
+        href: "/products/cookie-banner",
+        icon: "shield-check",
+      },
+      {
         label: "Open-source platform",
         description: "Deploy Probo on your own infrastructure",
         href: "/docs/deployment/self-hosting/docker-compose",
