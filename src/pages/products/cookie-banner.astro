@@ -8,7 +8,6 @@ import LogosScroll from "../../components/LogosScroll.svelte";
 import LottiePlayer from "../../components/LottiePlayer.svelte";
 import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
 import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
-import toolLogos from "../../data/access-review-tools.json";
 
 const pageTitle = "Cookie Banner";
 const pageDescription =
@@ -118,16 +117,16 @@ const publishCards = [
       "Group trackers by purpose, reorder them, and add the custom categories your site needs.",
   },
   {
-    illustration: "capability-theme",
-    title: "Banner Theme",
-    description:
-      "Set your colors, fonts, and corners, and preview the result before it goes live.",
-  },
-  {
     illustration: "capability-inventory",
     title: "Cookie Inventory",
     description:
       "List every cookie your site sets, with its purpose and how long it lasts.",
+  },
+  {
+    illustration: "capability-theme",
+    title: "Banner Theme",
+    description:
+      "Set your colors, fonts, and corners, and preview the result before it goes live.",
   },
   {
     illustration: "capability-translations",
@@ -384,43 +383,6 @@ const softwareApplicationSchema = {
             class="motion-safe:animate-slide-in"
             style="animation-delay: 600ms"
           />
-        </div>
-        <div
-          class="mx-auto flex w-full max-w-[636px] items-center gap-6 pt-8"
-          data-connect-tools
-        >
-          <p
-            class="text-muted-foreground shrink-0 text-sm leading-5 whitespace-nowrap"
-          >
-            Connect your tools
-          </p>
-          <LogosScroll
-            client:visible
-            class="h-6 min-w-0 flex-1 overflow-hidden"
-            label="Connected tools"
-            gap={32}
-            fadeEdges
-          >
-            {
-              toolLogos.map((logo) => (
-                <div class="flex h-6 shrink-0 items-center gap-2 whitespace-nowrap">
-                  <img
-                    src={logo.src}
-                    alt=""
-                    width={logo.width}
-                    height="24"
-                    loading="lazy"
-                    decoding="async"
-                    class="block h-6 max-w-none shrink-0 object-contain"
-                    style={`width: ${logo.width}px`}
-                  />
-                  <span class="text-sm leading-5 font-medium text-[#21201c]">
-                    {logo.alt}
-                  </span>
-                </div>
-              ))
-            }
-          </LogosScroll>
         </div>
       </section>
     </div>
