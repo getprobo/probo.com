@@ -179,6 +179,11 @@ export default defineConfig({
             "weekly"
           );
           item.priority = 0.9;
+        } else if (item.url.includes("/products/")) {
+          item.changefreq = /** @type {import('sitemap').EnumChangefreq} */ (
+            "weekly"
+          );
+          item.priority = 0.8;
         } else if (item.url.includes("/blog/")) {
           item.changefreq = /** @type {import('sitemap').EnumChangefreq} */ (
             "weekly"

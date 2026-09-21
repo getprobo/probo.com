@@ -266,17 +266,36 @@ const faqSchema = {
     },
   })),
 };
+
+const softwareApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Probo Cookie Banner",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: pageDescription,
+  url: "https://www.probo.com/products/cookie-banner",
+  publisher: {
+    "@type": "Organization",
+    name: "Probo",
+    url: "https://www.probo.com",
+  },
+};
 ---
 
 <Layout
   title={pageTitle}
   description={pageDescription}
-  ogImage="/cookie-banner/hero-cookie-banner-2x.webp"
-  ogImageWidth={2292}
-  ogImageHeight={1280}
+  ogImage="/cookie-banner/hero-cookie-banner.webp"
+  ogImageWidth={1146}
+  ogImageHeight={640}
   ogImageAlt="Probo Cookie Banner consent preferences interface"
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareApplicationSchema)}
+  />
   <main class="-mt-16 overflow-hidden pt-16">
     <div class="relative isolate overflow-hidden">
       <div
@@ -344,7 +363,7 @@ const faqSchema = {
             Book a demo
           </Button>
           <Button
-            href="/docs/product/cookie-banner/quickstart"
+            href="/products/cookie-banner#"
             variant="secondary"
             size="lg"
             class="motion-safe:animate-perspective-in"

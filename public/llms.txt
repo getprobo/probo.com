@@ -16,12 +16,15 @@ For a token-efficient Markdown version of a supported page, request its canonica
 
 `curl -H "Accept: text/markdown" https://www.probo.com/products/ai-agents-for-compliance`
 
+`curl -H "Accept: text/markdown" https://www.probo.com/products/cookie-banner`
+
 ## Product and services
 
 - [Probo homepage](https://www.probo.com/): Expert-led compliance, done for you.
 - [AI Agents for Compliance](https://www.probo.com/products/ai-agents-for-compliance): Run your compliance program from Claude, Cursor, ChatGPT, or any MCP client.
 - [Compliance Portal](https://www.probo.com/products/compliance-portal): Share security and compliance documents with customers.
 - [Access Review](https://www.probo.com/products/access-review): Review access across connected systems and preserve audit evidence.
+- [Cookie Banner](https://www.probo.com/products/cookie-banner): Open-source cookie banner for GDPR, CCPA, and global privacy laws.
 - [Open-source deployment](https://www.probo.com/docs/deployment/self-hosting): Run Probo on your own infrastructure.
 - [Download Probo Agent](https://www.probo.com/download): Install the desktop agent.
 
