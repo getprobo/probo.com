@@ -9,9 +9,9 @@ import LottiePlayer from "../../components/LottiePlayer.svelte";
 import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
 import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
 
-const pageTitle = "Cookie Banner";
+const pageTitle = "Open-Source Cookie Banner for GDPR & CCPA";
 const pageDescription =
-  "Show every visitor the consent their law requires, in their own language, block trackers until they agree, and keep a record your auditor can read.";
+  "Deploy a regulation-aware cookie banner that supports GDPR, CCPA, and global privacy laws, blocks trackers, and records every consent decision.";
 
 const overviewFeatures = [
   {
@@ -266,29 +266,17 @@ const faqSchema = {
     },
   })),
 };
-
-const softwareApplicationSchema = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "Probo Cookie Banner",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
-  description: pageDescription,
-  url: "https://www.probo.com/products/cookie-banner",
-  publisher: {
-    "@type": "Organization",
-    name: "Probo",
-    url: "https://www.probo.com",
-  },
-};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  ogImage="/cookie-banner/hero-cookie-banner-2x.webp"
+  ogImageWidth={2292}
+  ogImageHeight={1280}
+  ogImageAlt="Probo Cookie Banner consent preferences interface"
+>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(softwareApplicationSchema)}
-  />
   <main class="-mt-16 overflow-hidden pt-16">
     <div class="relative isolate overflow-hidden">
       <div
@@ -373,8 +361,7 @@ const softwareApplicationSchema = {
             src="/cookie-banner/hero-cookie-banner.webp"
             srcset="/cookie-banner/hero-cookie-banner.webp 1146w, /cookie-banner/hero-cookie-banner-2x.webp 2292w"
             sizes="(min-width: 1280px) 1146px, calc(100vw - 2rem)"
-            alt=""
-            aria-hidden="true"
+            alt="Probo Cookie Banner showing visitor consent preferences"
             width="1146"
             height="640"
             loading="eager"
@@ -1096,17 +1083,12 @@ const softwareApplicationSchema = {
 
     .overview-feature:nth-child(4) {
       top: 201px;
-      left: 0;
+      left: 188px;
     }
 
     .overview-feature:nth-child(5) {
       top: 201px;
-      left: 376px;
-    }
-
-    .overview-feature:nth-child(6) {
-      top: 201px;
-      left: 752px;
+      left: 564px;
     }
   }
 
