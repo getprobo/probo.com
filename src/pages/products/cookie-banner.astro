@@ -301,7 +301,7 @@ const softwareApplicationSchema = {
 
       <section class="relative z-10 container py-16 text-center sm:py-24">
         <div
-          class="border-border-low text-tertiary-foreground animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
+          class="border-border-low text-tertiary-foreground motion-safe:animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
           style="animation-delay: 100ms"
         >
           Cookie Banner
@@ -310,16 +310,39 @@ const softwareApplicationSchema = {
           class="mx-auto mb-6 max-w-[600px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
           aria-label="Cookie consent that follows your visitors."
         >
-          <span aria-hidden="true" class="block overflow-hidden">
+          <span aria-hidden="true" class="hidden overflow-hidden sm:block">
             <span
-              class="animate-perspective-in block"
-              style="animation-delay: 150ms"
-              >Cookie consent that follows your visitors.</span
+              class="motion-safe:animate-perspective-in block"
+              style="animation-delay: 150ms">Cookie consent that</span
+            >
+          </span>
+          <span aria-hidden="true" class="block overflow-hidden sm:hidden">
+            <span
+              class="motion-safe:animate-perspective-in block"
+              style="animation-delay: 150ms">Cookie consent</span
+            >
+          </span>
+          <span aria-hidden="true" class="hidden overflow-hidden sm:block">
+            <span
+              class="motion-safe:animate-perspective-in block"
+              style="animation-delay: 200ms">follows your visitors.</span
+            >
+          </span>
+          <span aria-hidden="true" class="block overflow-hidden sm:hidden">
+            <span
+              class="motion-safe:animate-perspective-in block"
+              style="animation-delay: 200ms">that follows</span
+            >
+          </span>
+          <span aria-hidden="true" class="block overflow-hidden sm:hidden">
+            <span
+              class="motion-safe:animate-perspective-in block"
+              style="animation-delay: 250ms">your visitors.</span
             >
           </span>
         </h1>
         <p
-          class="text-muted-foreground animate-perspective-in mx-auto mb-8 max-w-[420px] text-base"
+          class="text-muted-foreground motion-safe:animate-perspective-in mx-auto mb-8 max-w-[420px] text-base"
           style="animation-delay: 350ms"
         >
           {pageDescription}
@@ -328,7 +351,7 @@ const softwareApplicationSchema = {
           <Button
             href="/contact"
             size="lg"
-            class="animate-perspective-in"
+            class="motion-safe:animate-perspective-in"
             style="animation-delay: 400ms"
           >
             Book a demo
@@ -337,7 +360,7 @@ const softwareApplicationSchema = {
             href="/docs/product/cookie-banner/quickstart"
             variant="secondary"
             size="lg"
-            class="animate-perspective-in"
+            class="motion-safe:animate-perspective-in"
             style="animation-delay: 450ms"
           >
             See it in action
@@ -348,11 +371,13 @@ const softwareApplicationSchema = {
       <section class="relative z-10 container pb-0">
         <div class="access-review-browser">
           <img
-            src="/cookie-banner/hero-cookie-banner.svg"
+            src="/cookie-banner/hero-cookie-banner.webp"
+            srcset="/cookie-banner/hero-cookie-banner.webp 1146w, /cookie-banner/hero-cookie-banner-2x.webp 2292w"
+            sizes="(min-width: 1280px) 1146px, calc(100vw - 2rem)"
             alt=""
             aria-hidden="true"
             width="1146"
-            height="786"
+            height="640"
             loading="eager"
             decoding="async"
             fetchpriority="high"
@@ -901,16 +926,11 @@ const softwareApplicationSchema = {
 <style>
   .access-review-browser {
     position: relative;
-    aspect-ratio: 1080 / 720;
+    aspect-ratio: 1146 / 640;
   }
 
-  /* Figma's SVG includes 33px of shadow beyond the 1080×720 browser. */
   .access-review-browser img {
-    position: absolute;
-    top: -4.583333%;
-    left: -3.055556%;
-    width: 106.111111%;
-    max-width: none;
+    width: 100%;
     height: auto;
   }
 
