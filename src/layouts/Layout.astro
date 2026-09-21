@@ -10,6 +10,9 @@ const {
   title,
   description,
   ogImage,
+  ogImageWidth = 1200,
+  ogImageHeight = 630,
+  ogImageAlt,
   noIndex,
   ogType = "website",
 } = Astro.props;
@@ -19,6 +22,9 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  ogImageAlt?: string;
   ogType?: "website" | "article";
 }
 const seoTitle = title
@@ -109,11 +115,11 @@ const markdownAlternate = pagePath ? `/md${pagePath}.md` : "/md/index.md";
         ? `https://www.probo.com${ogImage}`
         : "https://www.probo.com/og.png"}
     />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content={ogImageWidth} />
+    <meta property="og:image:height" content={ogImageHeight} />
     <meta
       property="og:image:alt"
-      content={title || "Probo - Open-Source Compliance Platform"}
+      content={ogImageAlt || title || "Probo - Open-Source Compliance Platform"}
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@getprobo" />

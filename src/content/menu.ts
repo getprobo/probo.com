@@ -6,6 +6,7 @@ export type MenuIconName =
   | "clock-counter-clockwise"
   | "code"
   | "compass"
+  | "cookie"
   | "github-logo"
   | "handshake"
   | "heart"
@@ -65,6 +66,12 @@ export const menuGroups: MenuGroup[] = [
         description: "Run compliance from the tools you use",
         href: "/products/ai-agents-for-compliance",
         icon: "claude",
+      },
+      {
+        label: "Cookie Banner",
+        description: "Consent that follows every visitor's law",
+        href: "/products/cookie-banner",
+        icon: "cookie",
       },
       {
         label: "Open-source platform",
