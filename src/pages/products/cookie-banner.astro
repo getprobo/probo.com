@@ -66,24 +66,24 @@ const reviewSteps: ReviewStep[] = [
     ],
   },
   {
-    title: "Resolve the regulation by location",
-    lottie: "/lottie/access-review/2.json",
-    illustration: "workflow-regional-consent",
-    reverse: true,
-    bullets: [
-      "Detect each visitor's country and state from their IP address.",
-      "Apply the matching law, from GDPR to CCPA and APPI.",
-      "Fall back to GDPR when the country cannot be resolved.",
-    ],
-  },
-  {
     title: "Block resources until consent",
     lottie: "/lottie/access-review/3.json",
     illustration: "workflow-resource-blocking",
+    reverse: true,
     bullets: [
       "Tag any script, iframe, pixel, or stylesheet with its category.",
       "Hold every tagged resource inactive until the visitor allows that category.",
       "Catch tags that other scripts inject after the page has loaded.",
+    ],
+  },
+  {
+    title: "Resolve the regulation by location",
+    lottie: "/lottie/access-review/2.json",
+    illustration: "workflow-regional-consent",
+    bullets: [
+      "Detect each visitor's country and state from their IP address.",
+      "Apply the matching law, from GDPR to CCPA and APPI.",
+      "Fall back to GDPR when the country cannot be resolved.",
     ],
   },
   {
@@ -481,14 +481,7 @@ const faqSchema = {
                 ]}
                 data-trust-reveal={index === 0 ? true : undefined}
               >
-                <h3
-                  class:list={[
-                    "mb-6 font-semibold",
-                    feature.reverse
-                      ? "text-[20px] leading-7 tracking-[-0.4px]"
-                      : "text-[24px] leading-8 tracking-[-0.6px]",
-                  ]}
-                >
+                <h3 class="mb-6 text-[24px] leading-8 font-semibold tracking-[-0.6px]">
                   {feature.title}
                 </h3>
                 <ul class="text-muted-foreground space-y-3 text-[16px] leading-6">
