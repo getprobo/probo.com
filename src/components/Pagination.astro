@@ -8,69 +8,116 @@ type Props = {
 
 const { currentPage, lastPage, url } = Astro.props;
 const pages = Array.from({ length: lastPage }, (_, i) => i + 1);
-const className =
-  "text-center bg-highlight size-8 rounded-full grid place-items-center text-sm font-medium aria-disabled:opacity-60";
-const urlForPage = (page: number) => {
-  if (page === 1) {
-    return url;
-  }
-  return `${url}/page/${page}`;
-};
+const control =
+  "text-foreground grid size-8 place-items-center rounded-full text-sm font-medium transition-colors";
+const idle = "bg-highlight hover:bg-active";
+const current = "bg-foreground text-level-0";
+const urlForPage = (page: number) => (page === 1 ? url : `${url}/page/${page}`);
+const previousPage = currentPage - 1;
+const nextPage = currentPage + 1;
 ---
 
 {
   lastPage > 1 && (
-    <nav class="flex items-center justify-center gap-2 py-10 sm:py-20">
-      <a
-        href={url}
-        class={clsx(className, "mr-4")}
-        aria-disabled={currentPage === 1}
-      >
-        <svg
-          width={16}
-          height={16}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 16 16"
-        >
-          <path
-            fill="#141E12"
-            fill-rule="evenodd"
-            d="M10.57 2.23a.8.8 0 0 1 0 1.14L5.93 8l4.64 4.63a.8.8 0 0 1-1.14 1.14l-5.2-5.2a.8.8 0 0 1 0-1.14l5.2-5.2a.8.8 0 0 1 1.14 0Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </a>
-      {pages.map((page) => (
+    <nav
+      class="flex items-center justify-center gap-2 py-10 sm:py-16"
+      aria-label="Pagination"
+    >
+      {previousPage < 1 ? (
+        <span class={clsx(control, idle, "mr-2 opacity-40")} aria-hidden="true">
+          <svg
+            width={16}
+            height={16}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              d="M10.57 2.23a.8.8 0 0 1 0 1.14L5.93 8l4.64 4.63a.8.8 0 0 1-1.14 1.14l-5.2-5.2a.8.8 0 0 1 0-1.14l5.2-5.2a.8.8 0 0 1 1.14 0Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+      ) : (
         <a
-          href={urlForPage(page)}
-          class={className}
-          aria-disabled={currentPage === page}
+          href={urlForPage(previousPage)}
+          class={clsx(control, idle, "mr-2")}
+          aria-label="Previous page"
         >
-          {page}
+          <svg
+            width={16}
+            height={16}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              d="M10.57 2.23a.8.8 0 0 1 0 1.14L5.93 8l4.64 4.63a.8.8 0 0 1-1.14 1.14l-5.2-5.2a.8.8 0 0 1 0-1.14l5.2-5.2a.8.8 0 0 1 1.14 0Z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </a>
-      ))}
-      <a
-        href={urlForPage(lastPage)}
-        class={clsx(className, "ml-4")}
-        aria-disabled={currentPage === lastPage}
-      >
-        <svg
-          class="rotate-180"
-          width={16}
-          height={16}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 16 16"
+      )}
+      {pages.map((page) =>
+        page === currentPage ? (
+          <span class={clsx(control, current)} aria-current="page">
+            {page}
+          </span>
+        ) : (
+          <a
+            href={urlForPage(page)}
+            class={clsx(control, idle)}
+            aria-label={`Page ${page}`}
+          >
+            {page}
+          </a>
+        ),
+      )}
+      {nextPage > lastPage ? (
+        <span class={clsx(control, idle, "ml-2 opacity-40")} aria-hidden="true">
+          <svg
+            class="rotate-180"
+            width={16}
+            height={16}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              d="M10.57 2.23a.8.8 0 0 1 0 1.14L5.93 8l4.64 4.63a.8.8 0 0 1-1.14 1.14l-5.2-5.2a.8.8 0 0 1 0-1.14l5.2-5.2a.8.8 0 0 1 1.14 0Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+      ) : (
+        <a
+          href={urlForPage(nextPage)}
+          class={clsx(control, idle, "ml-2")}
+          aria-label="Next page"
         >
-          <path
-            fill="#141E12"
-            fill-rule="evenodd"
-            d="M10.57 2.23a.8.8 0 0 1 0 1.14L5.93 8l4.64 4.63a.8.8 0 0 1-1.14 1.14l-5.2-5.2a.8.8 0 0 1 0-1.14l5.2-5.2a.8.8 0 0 1 1.14 0Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </a>
+          <svg
+            class="rotate-180"
+            width={16}
+            height={16}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              d="M10.57 2.23a.8.8 0 0 1 0 1.14L5.93 8l4.64 4.63a.8.8 0 0 1-1.14 1.14l-5.2-5.2a.8.8 0 0 1 0-1.14l5.2-5.2a.8.8 0 0 1 1.14 0Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      )}
     </nav>
   )
 }

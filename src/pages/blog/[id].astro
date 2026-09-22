@@ -1,20 +1,33 @@
 ---
-import { getCollection, render } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import Prose from "../../components/Prose.astro";
 import Sharer from "../../components/block/Sharer.svelte";
 import WrittenBy from "../../components/block/WrittenBy.astro";
 import Newsletter from "../../components/block/Newsletter.astro";
-import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import { getCanonicalUrl } from "../../lib/i18n.ts";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  newer: CollectionEntry<"blog"> | null;
+  older: CollectionEntry<"blog"> | null;
+}
+
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
-  return posts.map((post) => ({
+  const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
+  return posts.map((post, index) => ({
     params: { id: post.id },
-    props: { post },
+    props: {
+      post,
+      newer: posts[index - 1] ?? null,
+      older: posts[index + 1] ?? null,
+    },
   }));
 }
-const { post } = Astro.props;
+const { post, newer, older } = Astro.props;
+const postHref = (id: string) => `/blog/${id.split("/").at(-1)}`;
 const { Content } = await render(post);
 const dateFormatter = Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -50,6 +63,31 @@ const articleSchema = {
     "@type": "WebPage",
     "@id": getCanonicalUrl(Astro.url),
   },
+};
+
+const site = Astro.site ?? new URL("https://www.probo.com");
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: new URL("/", site).toString(),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Blog",
+      item: new URL("/blog", site).toString(),
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: post.data.title,
+    },
+  ],
 };
 
 // FAQ Schema (only if post has faqs in frontmatter)
@@ -93,28 +131,35 @@ const faqSchema = post.data.faqs
     content="https://www.probo.com/about"
   />
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbSchema)}
+  />
   {
     faqSchema && (
       <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
     )
   }
   <main class="@container container my-10 max-w-[720px] sm:my-20">
-    <Breadcrumbs
-      items={[{ label: "Blog", href: "/blog" }, { label: post.data.title }]}
-      class="animate-fade-in animation-delay-100 mb-4"
-    />
     <a
       href="/blog"
-      class="text-quaternary animate-fade-in animation-delay-200 mb-4 flex items-center gap-2"
+      class="text-muted-foreground hover:text-foreground animate-slide-in mb-8 inline-flex items-center gap-1 text-sm transition-colors"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-        ><path
-          fill="#C3C8C2"
-          fill-rule="evenodd"
-          d="M18.566 10.234a.8.8 0 0 1 0 1.132L13.93 16l4.635 4.634a.8.8 0 0 1-1.132 1.132l-5.2-5.2a.8.8 0 0 1 0-1.132l5.2-5.2a.8.8 0 0 1 1.132 0Z"
-          clip-rule="evenodd"></path></svg
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
       >
-      Back to Blog
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+      Blog
     </a>
     <div class="text-muted-foreground animate-fade-in animation-delay-100 mb-5">
       {dateFormatter.format(new Date(post.data.date))}, by {
@@ -158,7 +203,66 @@ const faqSchema = post.data.faqs
       title={post.data.title}
       class="my-10 sm:mt-20"
     />
-    <WrittenBy class="my-10 sm:mb-20" author={post.data.author.name} />
-    <Newsletter />
+    <WrittenBy class="my-10" author={post.data.author.name} />
+    {
+      (older || newer) && (
+        <nav
+          aria-label="Blog"
+          class="animate-slide-in animation-delay-300 mt-6 grid grid-cols-1 gap-8 border-t pt-8 sm:grid-cols-2"
+        >
+          {older ? (
+            <a href={postHref(older.id)} class="group min-w-0">
+              <span class="text-tertiary-foreground text-xxs mb-1 flex items-center gap-0.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+                Older
+              </span>
+              <span class="group-hover:text-muted-foreground block font-medium tracking-[-0.01em] transition-colors">
+                {older.data.title}
+              </span>
+            </a>
+          ) : (
+            <div />
+          )}
+          {newer && (
+            <a href={postHref(newer.id)} class="group min-w-0 sm:text-right">
+              <span class="text-tertiary-foreground text-xxs mb-1 flex items-center gap-0.5 sm:justify-end">
+                Newer
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </span>
+              <span class="group-hover:text-muted-foreground block font-medium tracking-[-0.01em] transition-colors">
+                {newer.data.title}
+              </span>
+            </a>
+          )}
+        </nav>
+      )
+    }
+    <Newsletter class="mt-16" />
   </main>
 </Layout>

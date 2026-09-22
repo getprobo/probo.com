@@ -1,10 +1,11 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
+import BlogIndex from "../../../components/BlogIndex.astro";
+import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import WrittenBy from "../../../components/block/WrittenBy.astro";
 import type { Page } from "astro";
-import Pagination from "../../../components/Pagination.astro";
 import { pageSize } from "../../../content.config.ts";
+
 export async function getStaticPaths({ paginate }: { paginate: any }) {
   const allPosts = (await getCollection("blog")).sort(
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
@@ -13,63 +14,19 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
 }
 
 type Props = {
-  page: Page;
+  page: Page<CollectionEntry<"blog">>;
 };
 
 const { page } = Astro.props;
-
-const dateFormatter = Intl.DateTimeFormat("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
 ---
 
 <Layout
   title={`Blog, page ${page.currentPage}`}
   description="More articles about compliance, security certifications, SOC 2, ISO 27001, and building trust from the Probo blog."
 >
-  <main class="container my-10 sm:my-20">
-    <h1 class="text-h2 mb-3 font-medium">
-      Blog<span class="hidden">, page {page.currentPage}</span>
-    </h1>
-    <p class="text-muted-foreground mb-10 text-base sm:mb-16">
-      The latest news from Probo
-    </p>
-    <div
-      class="flex flex-col items-start gap-10 sm:grid sm:grid-cols-[1fr_320px] sm:gap-30"
-    >
-      <section>
-        {
-          page.data.map((post: any) => (
-            <article class="border-b pt-6 pb-6 first:pt-0 last:border-b-0 sm:pt-10 sm:pb-10 sm:first:pt-0">
-              <div class="text-muted-foreground">
-                {dateFormatter.format(new Date(post.data.date))}, by{" "}
-                {post.data.author.name}
-              </div>
-              <h2>
-                <a
-                  href={`/blog/${post.id.split("/").at(-1)}`}
-                  class="text-h4 mt-4 mb-2 block font-medium hover:underline"
-                >
-                  {post.data.title}
-                </a>
-              </h2>
-              <p class="text-muted-foreground text-lg whitespace-pre-line">
-                {post.data.excerpt}
-              </p>
-            </article>
-          ))
-        }
-        <Pagination
-          currentPage={page.currentPage}
-          lastPage={page.lastPage}
-          url="/blog"
-        />
-      </section>
-      <aside class="sticky top-20">
-        <WrittenBy />
-      </aside>
-    </div>
-  </main>
+  <BlogIndex
+    posts={page.data}
+    currentPage={page.currentPage}
+    lastPage={page.lastPage}
+  />
 </Layout>

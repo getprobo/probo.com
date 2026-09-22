@@ -1,0 +1,186 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import Pagination from "./Pagination.astro";
+import AntoinePortrait from "../assets/antoine-bourchardy.png";
+import ArthurPortrait from "../assets/arthur-mayoux-blog.svg";
+import BryanPortrait from "../assets/bryan_firmin.svg";
+import EmilePortrait from "../assets/emile_blog.svg";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+  currentPage: number;
+  lastPage: number;
+}
+
+const { posts, currentPage, lastPage } = Astro.props;
+const featured = currentPage === 1 ? posts[0] : undefined;
+const list = featured ? posts.slice(1) : posts;
+
+const dateFormatter = Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const authors = [
+  {
+    name: "Antoine Bouchardy",
+    role: "CEO",
+    href: "https://www.linkedin.com/in/antoinebouchardy/",
+    image: AntoinePortrait,
+  },
+  {
+    name: "Bryan Frimin",
+    role: "CTO",
+    href: "https://www.linkedin.com/in/gearnode/",
+    image: BryanPortrait,
+  },
+  {
+    name: "Arthur Mayoux",
+    role: "Chief of Staff",
+    href: "https://www.linkedin.com/in/arthurmayoux/",
+    image: ArthurPortrait,
+  },
+  {
+    name: "Émile Ré",
+    role: "Founding engineer",
+    href: undefined,
+    image: EmilePortrait,
+  },
+];
+
+const postHref = (id: string) => `/blog/${id.split("/").at(-1)}`;
+---
+
+<main class="container my-10 max-w-[860px] sm:my-16">
+  <header class="animate-slide-in">
+    <h1 class="text-h2 font-medium">
+      Blog{currentPage > 1 && <span class="hidden">, page {currentPage}</span>}
+    </h1>
+    <p class="text-muted-foreground mt-3 text-base">
+      The latest news from Probo
+    </p>
+    <ul class="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+      {
+        authors.map((author) => (
+          <li class="flex items-center gap-3">
+            <Image
+              src={author.image}
+              alt=""
+              width={96}
+              height={96}
+              class="size-12 shrink-0 rounded-2xl object-cover object-top"
+            />
+            <div class="min-w-0">
+              {author.href ? (
+                <a
+                  href={author.href}
+                  class="hover:text-success block text-sm leading-snug font-medium"
+                >
+                  {author.name}
+                </a>
+              ) : (
+                <p class="text-sm leading-snug font-medium">{author.name}</p>
+              )}
+              <p class="text-muted-foreground text-xs">{author.role}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+
+  <div class="animate-slide-in animation-delay-100 mt-12 border-t sm:mt-16">
+    {
+      featured && (
+        <article>
+          <a
+            href={postHref(featured.id)}
+            class="group focus-visible:ring-foreground/15 block py-10 focus-visible:ring-2 focus-visible:outline-none sm:py-12"
+          >
+            <p class="text-success text-xs font-medium">Latest</p>
+            <h2 class="text-h3 mt-3 font-medium">{featured.data.title}</h2>
+            <p class="text-muted-foreground mt-4 text-lg whitespace-pre-line">
+              {featured.data.excerpt}
+            </p>
+            <div class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+              <p class="text-muted-foreground">
+                <time datetime={featured.data.date.toISOString()}>
+                  {dateFormatter.format(featured.data.date)}
+                </time>
+                <span> · </span>
+                {featured.data.author.name}
+              </p>
+              <span class="text-foreground inline-flex items-center gap-1.5 font-medium sm:ml-auto">
+                Read article
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    fill-rule="evenodd"
+                    d="M5.43 2.23a.8.8 0 0 1 1.14 0l5.2 5.2a.8.8 0 0 1 0 1.14l-5.2 5.2a.8.8 0 0 1-1.14-1.14L10.07 8 5.43 3.37a.8.8 0 0 1 0-1.14Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </span>
+            </div>
+          </a>
+        </article>
+      )
+    }
+
+    <ul class:list={[featured && "border-t"]}>
+      {
+        list.map((post) => (
+          <li class="border-b last:border-b-0">
+            <a
+              href={postHref(post.id)}
+              class="group focus-visible:ring-foreground/15 hover:bg-highlight -mx-4 grid gap-2 rounded-2xl px-4 py-8 transition-colors focus-visible:ring-2 focus-visible:outline-none sm:grid-cols-[11rem_1fr] sm:gap-10 sm:py-9"
+            >
+              <p class="text-muted-foreground text-sm sm:pt-1">
+                <time datetime={post.data.date.toISOString()} class="block">
+                  {dateFormatter.format(post.data.date)}
+                </time>
+                <span class="mt-1 block">{post.data.author.name}</span>
+              </p>
+              <div class="min-w-0">
+                <h2 class="text-h4 flex items-start justify-between gap-4 font-medium">
+                  <span>{post.data.title}</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    class="mt-1 hidden shrink-0 opacity-0 transition duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 sm:block"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      fill-rule="evenodd"
+                      d="M5.43 2.23a.8.8 0 0 1 1.14 0l5.2 5.2a.8.8 0 0 1 0 1.14l-5.2 5.2a.8.8 0 0 1-1.14-1.14L10.07 8 5.43 3.37a.8.8 0 0 1 0-1.14Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </h2>
+                <p class="text-muted-foreground mt-2 text-base whitespace-pre-line">
+                  {post.data.excerpt}
+                </p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <Pagination currentPage={currentPage} lastPage={lastPage} url="/blog" />
+  </div>
+</main>
