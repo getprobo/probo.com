@@ -1,0 +1,14 @@
+---
+title: "Azure Access Review Connector"
+description: "Connect an Azure subscription to Access Reviews and see RBAC assignments, last login, and MFA state for every principal, enriched from Entra ID, all through a single workload identity setup."
+date: 2026-09-15
+images: ["/changelog/2026-09-15-azure-access-review-connector-1.png"]
+imagesLayout: "logos"
+tags: ["Access Review"]
+---
+
+Access Reviews gains Azure. Point the connector at one subscription and it pulls every RBAC assignment, then enriches each principal with last login and MFA state from Entra ID, so you can see at a glance who can touch what.
+
+Setup is one workload identity. Probo spins up an audit role through a portable Terraform azurerm module, so the install matches the AWS and GCP connectors and needs no per-permission fiddling. The source shows up everywhere connectors do: the console, GraphQL, MCP, and the CLI.
+
+Where Entra ID is optional Premium P1/P2, the enrichment comes free. The full picture for Azure access now sits in the same review flow you already run for everyone else.

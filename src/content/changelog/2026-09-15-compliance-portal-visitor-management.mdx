@@ -1,0 +1,13 @@
+---
+title: "Manage Compliance Portal Visitors"
+description: "Add compliance portal visitors by member or email, then deactivate and reactivate them without ever revoking their grants, so access is controlled by the visitor's own state instead of their wider membership."
+date: 2026-09-15
+images: ["/changelog/2026-09-15-compliance-portal-visitor-management-1.png"]
+tags: ["Compliance Portal"]
+---
+
+Managing who can reach the compliance portal is now a cleaner flow. Operators can add a visitor by member or by email, and deactivate or reactivate them in place. Grants survive a deactivation, so removing someone from the visitor list no longer means tearing up and rebuilding their access.
+
+The trigger changed too. Portal access is now gated on the visitor's own access state rather than their org membership, so deactivating an employee no longer locks them out of visitor grants they were separately given. Re-adding a visitor sends the portal-URL grant email once, only while they are active.
+
+Wording moves from Invite to Add across the console, CLI, n8n, and MCP, and the add flow is a popover with stable typeahead so it stays fast even on long lists. Visitors who have not signed in just show as not visited.
