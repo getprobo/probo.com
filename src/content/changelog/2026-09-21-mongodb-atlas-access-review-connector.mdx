@@ -1,0 +1,14 @@
+---
+title: "MongoDB Atlas Access Review Connector"
+description: "Access reviews can now pull the MongoDB Atlas roster directly. Connect a service account from your own Atlas organization and review every organization-level principal, from active members to API keys."
+date: 2026-09-21
+images: ["/changelog/2026-09-21-mongodb-atlas-access-review-connector-1.webp"]
+imagesLayout: "logos"
+tags: ["Access Review"]
+---
+
+Access reviews now cover MongoDB Atlas. Connect a service account from your own Atlas organization and Probo pulls the full roster of organization-level principals: active members, open invitations, service accounts, and programmatic API keys.
+
+Probo registers nothing on its side. You create the service account in Atlas, keep the credential in your own organization, and hand Probo the client id and secret. The connector reads your roster directly, so the review reflects what Atlas actually holds.
+
+That matters because Atlas access tends to sprawl. API keys are easy to mint and easy to forget, invitations linger, and service accounts accumulate. With the roster in Access Reviews, you can put every one of those principals through the same review cycles as the rest of your organization, without a separate audit pass.
