@@ -1,11 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import Pagination from "./Pagination.astro";
-import AntoinePortrait from "../assets/antoine-bourchardy.png";
-import ArthurPortrait from "../assets/arthur-mayoux-blog.svg";
-import BryanPortrait from "../assets/bryan_firmin.svg";
-import EmilePortrait from "../assets/emile_blog.svg";
 
 interface Props {
   posts: CollectionEntry<"blog">[];
@@ -23,33 +18,6 @@ const dateFormatter = Intl.DateTimeFormat("en-US", {
   day: "numeric",
 });
 
-const authors = [
-  {
-    name: "Antoine Bouchardy",
-    role: "CEO",
-    href: "https://www.linkedin.com/in/antoinebouchardy/",
-    image: AntoinePortrait,
-  },
-  {
-    name: "Bryan Frimin",
-    role: "CTO",
-    href: "https://www.linkedin.com/in/gearnode/",
-    image: BryanPortrait,
-  },
-  {
-    name: "Arthur Mayoux",
-    role: "Chief of Staff",
-    href: "https://www.linkedin.com/in/arthurmayoux/",
-    image: ArthurPortrait,
-  },
-  {
-    name: "Émile Ré",
-    role: "Founding engineer",
-    href: undefined,
-    image: EmilePortrait,
-  },
-];
-
 const postHref = (id: string) => `/blog/${id.split("/").at(-1)}`;
 ---
 
@@ -61,37 +29,9 @@ const postHref = (id: string) => `/blog/${id.split("/").at(-1)}`;
     <p class="text-muted-foreground mt-3 text-base">
       The latest news from Probo
     </p>
-    <ul class="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
-      {
-        authors.map((author) => (
-          <li class="flex items-center gap-3">
-            <Image
-              src={author.image}
-              alt=""
-              width={96}
-              height={96}
-              class="size-12 shrink-0 rounded-2xl object-cover object-top"
-            />
-            <div class="min-w-0">
-              {author.href ? (
-                <a
-                  href={author.href}
-                  class="hover:text-success block text-sm leading-snug font-medium"
-                >
-                  {author.name}
-                </a>
-              ) : (
-                <p class="text-sm leading-snug font-medium">{author.name}</p>
-              )}
-              <p class="text-muted-foreground text-xs">{author.role}</p>
-            </div>
-          </li>
-        ))
-      }
-    </ul>
   </header>
 
-  <div class="animate-slide-in animation-delay-100 mt-12 border-t sm:mt-16">
+  <div class="animate-slide-in animation-delay-100 mt-10 border-t sm:mt-12">
     {
       featured && (
         <article>
