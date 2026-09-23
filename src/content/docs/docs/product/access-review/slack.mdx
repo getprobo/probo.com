@@ -1,0 +1,54 @@
+---
+title: Slack
+description: Connect Slack as an access review source with OAuth so Probo can list your workspace members with their role and two-factor authentication status.
+---
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+Probo reads your Slack workspace members through the `users.list` API. For each member it records the role and whether two-factor authentication is turned on. Slack connects through OAuth only, so there is no API key to create or paste.
+
+:::caution
+Connect Slack while signed in as a workspace **Admin**, **Owner**, or **Primary Owner**. Probo acts with the user token of the person who authorizes it, and Slack only returns a member's two-factor authentication status when the caller is a workspace admin. Probo refuses the connection unless the person who authorizes it is an Admin, Owner, or Primary Owner.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- The **Admin**, **Owner**, or **Primary Owner** role in the Slack workspace you want to review
+
+## Collected Fields
+
+| Probo field | Slack field                                                                        | Notes                                                                                                                                              |
+| ----------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `real_name`                                                                        |                                                                                                                                                    |
+| Email       | `profile.email`                                                                    | Members without an email address are not listed, which in practice leaves out bots and apps                                                        |
+| Role        | `is_primary_owner`, `is_owner`, `is_admin`, `is_restricted`, `is_ultra_restricted` | One of `Primary Owner`, `Owner`, `Admin`, `Restricted` (multi-channel guest), `Ultra Restricted` (single-channel guest), or `Member`               |
+| Admin       | `is_admin`, `is_owner`, `is_primary_owner`                                         | Admin when any of the three is true                                                                                                                |
+| Status      | `deleted`                                                                          | Inactive when the member is deactivated                                                                                                            |
+| MFA         | `has_2fa`                                                                          | Enabled or Disabled. Unknown when Slack leaves the field out, as it can for deactivated members, and for every member when the token cannot see it |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" />                           |                                                                                                                                                    |
+| External ID | `id`                                                                               | Slack member ID, used to track the account across reviews                                                                                          |
+| Created at  | <Badge text="Not supported" class="badge-unsupported" />                           |                                                                                                                                                    |
+
+Probo also records each member's job title from `profile.title`.
+
+Probo reads MFA only from the `has_2fa` value Slack reports. If your members sign in to Slack through an identity provider, check their MFA status in that provider as well.
+
+## Connect Slack
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **Slack** and click **OAuth**.
+3. Sign in to Slack as a workspace admin or owner, pick the workspace you want to review, then click **Allow**. Probo requests the **`users:read`** and **`users:read.email`** user scopes.
+
+</Steps>
+
+Probo names the source `Slack / <workspace name>` and pulls its members into your campaigns. Each connection covers one workspace. To review several workspaces of an Enterprise Grid organization, connect each workspace separately.
+
+## Troubleshooting
+
+- **"Slack must be connected by a workspace admin or owner, the only role Slack shares MFA status with."** The person who authorized Probo is not an admin or owner of the workspace. Click **OAuth** again and authorize as an **Admin**, **Owner**, or **Primary Owner**.
+- **The source says Slack is disconnected.** The token was revoked, for example because the person who authorized Probo left the workspace or removed the app, or the connection predates MFA collection and still uses a bot token, which cannot read it. Click **Reconnect** and authorize as a workspace admin or owner.
+- **The source says Slack refused this request.** The person who authorized the connection is no longer an admin or owner, so Slack stopped returning MFA status to their token. Click **Reconnect** and authorize as a current admin or owner.
+- **A member is missing.** Probo skips Slackbot and every member without an email address, which in practice leaves out bots and apps.
