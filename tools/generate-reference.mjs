@@ -436,6 +436,7 @@ function categoryForTool(name) {
     ["Identity and provisioning", /SCIM|User|Membership/],
     ["Devices", /Device/],
     ["Frameworks and controls", /Framework|Control/],
+    ["Linear", /Linear/],
     ["Measures, tasks, and evidence", /Measure|Task|Evidence/],
     ["Risks", /Risk|TreatmentPlan/],
     ["Audits and findings", /Audit|Finding/],
