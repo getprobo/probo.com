@@ -363,11 +363,12 @@ const softwareApplicationSchema = {
             Book a demo
           </Button>
           <Button
-            href="/products/cookie-banner#"
+            type="button"
             variant="secondary"
             size="lg"
             class="motion-safe:animate-perspective-in"
             style="animation-delay: 450ms"
+            data-open-cookie-settings
           >
             See it in action
           </Button>
@@ -870,9 +871,33 @@ const softwareApplicationSchema = {
     });
   };
 
+  const initOpenCookieSettings = () => {
+    const trigger = document.querySelector<HTMLButtonElement>(
+      "[data-open-cookie-settings]",
+    );
+    if (!trigger || trigger.dataset.cookieSettingsReady === "true") {
+      return;
+    }
+
+    trigger.dataset.cookieSettingsReady = "true";
+    trigger.addEventListener("click", () => {
+      const open = () => {
+        document.querySelector<HTMLElement>("probo-settings-link")?.click();
+      };
+
+      if (customElements.get("probo-settings-link")) {
+        open();
+        return;
+      }
+
+      void customElements.whenDefined("probo-settings-link").then(open);
+    });
+  };
+
   const initCookieBannerPage = () => {
     initCookieBannerAnimations();
     initCookieBannerFaq();
+    initOpenCookieSettings();
   };
 
   if (document.readyState === "loading") {
