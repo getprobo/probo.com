@@ -1,11 +1,11 @@
 ---
 title: Security
-description: Learn why Probo Agent is a push-only posture reporter rather than an MDM, with fixed local checks, agent-initiated API calls, and signed updates.
+description: Learn why Device Agent is a push-only posture reporter rather than an MDM, with fixed local checks, agent-initiated API calls, and signed updates.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
-Probo Agent is a **posture reporter**, not a device management tool. It enrolls a device, runs a fixed set of local security checks, and pushes the results to your Probo organization. It is deliberately **not** an MDM: the Probo server cannot send commands to the device, install software, change settings, or run arbitrary checks.
+Device Agent is a **posture reporter**, not a device management tool. It enrolls a device, runs a fixed set of local security checks, and pushes the results to your Probo organization. It is deliberately **not** an MDM: the Probo server cannot send commands to the device, install software, change settings, or run arbitrary checks.
 
 ## Design philosophy
 
@@ -62,7 +62,7 @@ Do not put enrollment tokens in URLs, chat, or logs. Prefer the desktop enroll f
 
 When auto-update is enabled, the agent checks GitHub Releases under the `probo-agent/v*` tag, verifies release artifacts with **Cosign / Sigstore**, and only then replaces its binary. Verification pins the signing identity to Probo’s release workflow on a tagged commit. Failed verification aborts the update.
 
-You can disable automatic upgrades at install time (`--no-auto-update` / `PROBO_NO_AUTO_UPDATE`). See [Commands](/docs/product/probo-agent/commands).
+You can disable automatic upgrades at install time (`--no-auto-update` / `PROBO_NO_AUTO_UPDATE`). See [Commands](/docs/product/device-agent/commands).
 
 ## Implementation
 
@@ -82,9 +82,9 @@ Language choice and a lean dependency set support the push-only model; they do n
 
 ## Compared to MDM
 
-Mobile Device Management products are built to **control** endpoints: push configuration profiles, enforce settings, install apps, lock or wipe devices, and often run remote actions. Probo Agent is built to **observe** endpoints for compliance evidence.
+Mobile Device Management products are built to **control** endpoints: push configuration profiles, enforce settings, install apps, lock or wipe devices, and often run remote actions. Device Agent is built to **observe** endpoints for compliance evidence.
 
-Use your existing MDM (or configuration management) if you need remote control. Use Probo Agent when you need continuous posture evidence in Probo without giving the compliance platform a command channel onto the machine.
+Use your existing MDM (or configuration management) if you need remote control. Use Device Agent when you need continuous posture evidence in Probo without giving the compliance platform a command channel onto the machine.
 
 ## Next steps
 
@@ -102,21 +102,21 @@ Use your existing MDM (or configuration management) if you need remote control. 
   <LinkCard
     title="macOS"
     description="Signed package, then enroll from the Probo console"
-    href="/docs/product/probo-agent/macos"
+    href="/docs/product/device-agent/macos"
   />
   <LinkCard
     title="Windows"
     description="Signed MSI, then enroll from the Probo console"
-    href="/docs/product/probo-agent/windows"
+    href="/docs/product/device-agent/windows"
   />
   <LinkCard
     title="Linux"
     description="install.sh or CLI enrollment"
-    href="/docs/product/probo-agent/linux"
+    href="/docs/product/device-agent/linux"
   />
   <LinkCard
     title="FreeBSD"
     description="install.sh or CLI enrollment"
-    href="/docs/product/probo-agent/freebsd"
+    href="/docs/product/device-agent/freebsd"
   />
 </CardGrid>

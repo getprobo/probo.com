@@ -8,7 +8,7 @@ import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 import protocolLifecycle from "./protocol-lifecycle.mermaid?raw";
 
 The Device Agent API is the JSON protocol used by the official
-[`probo-agent`](/docs/product/probo-agent/overview). You can implement this
+[`probo-agent`](/docs/product/device-agent/overview). You can implement this
 protocol to enroll devices and report posture from operating systems,
 appliances, or environments that the official agent does not yet support.
 
@@ -54,7 +54,7 @@ schedules, and the two ways an agent enrollment ends.
 Heartbeat and posture intervals are separate values returned by every
 successful heartbeat. Treat each as its own timer. The server returns
 scheduling metadata, but it never sends work to the device. See
-[Probo Agent security](/docs/product/probo-agent/security) for the security
+[Device Agent security](/docs/product/device-agent/security) for the security
 boundary and threat model.
 
 ## Implementation checklist
@@ -83,7 +83,7 @@ Use the official agent as a working reference when implementing the protocol:
 - [`pkg/deviceagent`](https://github.com/getprobo/probo/tree/main/pkg/deviceagent)
 
 Prefer contributing to the official agent when the change belongs in the shared
-binary. See [Contributing to Probo Agent](/docs/developers/api/agent/contributing)
+binary. See [Contributing to Device Agent](/docs/developers/api/agent/contributing)
 for source paths, DCO requirements, and the security review timeline. Pull
 requests that touch the device agent can take longer to merge because we review
 them extensively for endpoint security.

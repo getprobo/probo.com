@@ -1,6 +1,7 @@
 /sitemap.xml /sitemap-index.xml 301
 /sitemap-0.xml /sitemap-index.xml 301
 /products/ai-agents /products/ai-agents-for-compliance 301
+/products/probo-agent /device-agent 301
 /subprocessors https://compliance.probo.com/subprocessors 301
 /compliance-guides /hub 301
 /compliance-guides/soc2 /hub/soc2 301
@@ -47,9 +48,11 @@
 /docs/configuration /docs/deployment/configuration/overview 301
 /docs/configuration/* /docs/deployment/configuration/:splat 301
 /docs/product/probo-agent/contributing /docs/developers/api/agent/contributing 301
-/docs/product/probo-agent/installation /docs/product/probo-agent/macos 301
-/docs/product/probo-agent/desktop-install /docs/product/probo-agent/macos 301
-/docs/product/probo-agent/server-install /docs/product/probo-agent/linux 301
+/docs/product/probo-agent/installation /docs/product/device-agent/macos 301
+/docs/product/probo-agent/desktop-install /docs/product/device-agent/macos 301
+/docs/product/probo-agent/server-install /docs/product/device-agent/linux 301
+/docs/product/probo-agent /docs/product/device-agent/overview 301
+/docs/product/probo-agent/* /docs/product/device-agent/:splat 301
 /docs/product/access-review/infrastructure-security /docs/deployment/infrastructure-security 301
 /docs/product/access-review/clerk /docs/product/access-review/directory 301
 /docs/developers/api/mcp/tools/assets /docs/developers/api/mcp/tools/catalog/assets-and-data 301

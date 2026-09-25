@@ -75,9 +75,9 @@ export const menuGroups: MenuGroup[] = [
         icon: "cookie",
       },
       {
-        label: "Probo Agent",
+        label: "Device Agent",
         description: "Continuous security posture for every device",
-        href: "/products/probo-agent",
+        href: "/device-agent",
         icon: "monitor",
       },
       {
@@ -131,7 +131,7 @@ export const menuGroups: MenuGroup[] = [
       },
       {
         label: "Download",
-        description: "Get the Probo Agent",
+        description: "Get the Device Agent",
         href: "/download",
         icon: "code",
       },

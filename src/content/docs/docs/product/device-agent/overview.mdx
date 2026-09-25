@@ -1,11 +1,11 @@
 ---
-title: Probo Agent Overview
-description: Learn what Probo Agent does, from enrolling devices and running as an OS service to collecting posture checks and auto-updating from signed releases.
+title: Device Agent Overview
+description: Learn what Device Agent does, from enrolling devices and running as an OS service to collecting posture checks and auto-updating from signed releases.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
-Probo Agent (`probo-agent`) is a lightweight device posture agent. It runs as a managed OS service, enrolls a device against your Probo organization, and periodically reports security posture checks over the [Device Agent API](/docs/developers/api/agent/overview) (`/api/agent/v1`).
+Device Agent (`probo-agent`) is a lightweight device posture agent. It runs as a managed OS service, enrolls a device against your Probo organization, and periodically reports security posture checks over the [Device Agent API](/docs/developers/api/agent/overview) (`/api/agent/v1`).
 
 ## What it does
 
@@ -15,7 +15,7 @@ Probo Agent (`probo-agent`) is a lightweight device posture agent. It runs as a 
 - **Heartbeats and reports** posture results to Probo on a server-configured interval
 - **Auto-updates** from signed GitHub Releases (`probo-agent/v*`), with Cosign/Sigstore verification before installing a new binary
 
-It is **not** an MDM. The Probo server cannot push arbitrary checks, shell commands, or device control actions to the agent. See [Security](/docs/product/probo-agent/security).
+It is **not** an MDM. The Probo server cannot push arbitrary checks, shell commands, or device control actions to the agent. See [Security](/docs/product/device-agent/security).
 
 ## Supported platforms
 
@@ -26,7 +26,7 @@ It is **not** an MDM. The Probo server cannot push arbitrary checks, shell comma
 | Linux    | `install.sh`, CLI archive | CLI (`install.sh` or `probo-agent install`)                  |
 | FreeBSD  | `install.sh`, CLI archive | CLI (`install.sh` or `probo-agent install`)                  |
 
-See [Install](/docs/product/probo-agent/install) to pick a platform, or go straight to [macOS](/docs/product/probo-agent/macos), [Windows](/docs/product/probo-agent/windows), [Linux](/docs/product/probo-agent/linux), or [FreeBSD](/docs/product/probo-agent/freebsd).
+See [Install](/docs/product/device-agent/install) to pick a platform, or go straight to [macOS](/docs/product/device-agent/macos), [Windows](/docs/product/device-agent/windows), [Linux](/docs/product/device-agent/linux), or [FreeBSD](/docs/product/device-agent/freebsd).
 
 ## How enrollment works
 
@@ -59,12 +59,12 @@ Use `probo-agent collect` to run the checks locally without pushing results.
   <LinkCard
     title="Install"
     description="Choose the install and enrollment path for your OS"
-    href="/docs/product/probo-agent/install"
+    href="/docs/product/device-agent/install"
   />
   <LinkCard
     title="Security"
     description="Push-only design, fixed checks, and why this is not an MDM"
-    href="/docs/product/probo-agent/security"
+    href="/docs/product/device-agent/security"
   />
   <LinkCard
     title="Contributing"

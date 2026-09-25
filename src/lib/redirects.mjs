@@ -67,6 +67,7 @@ const htmlRedirects = {
   "/sitemap.xml": redirect("/sitemap-index.xml"),
   "/sitemap-0.xml": redirect("/sitemap-index.xml"),
   "/products/ai-agents": redirect("/products/ai-agents-for-compliance"),
+  "/products/probo-agent": redirect("/device-agent"),
   "/subprocessors": redirect("https://compliance.probo.com/subprocessors"),
   "/compliance-guides": redirect("/hub"),
   "/compliance-guides/soc2": redirect("/hub/soc2"),
@@ -137,13 +138,18 @@ const htmlRedirects = {
     "/docs/developers/api/agent/contributing",
   ),
   "/docs/product/probo-agent/installation": redirect(
-    "/docs/product/probo-agent/macos",
+    "/docs/product/device-agent/macos",
   ),
   "/docs/product/probo-agent/desktop-install": redirect(
-    "/docs/product/probo-agent/macos",
+    "/docs/product/device-agent/macos",
   ),
   "/docs/product/probo-agent/server-install": redirect(
-    "/docs/product/probo-agent/linux",
+    "/docs/product/device-agent/linux",
+  ),
+  ...movedDocsRedirects(
+    "/docs/product/probo-agent",
+    "/docs/product/device-agent",
+    "/docs/product/device-agent/overview",
   ),
   "/docs/product/access-review/infrastructure-security": redirect(
     "/docs/deployment/infrastructure-security",

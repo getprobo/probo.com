@@ -1,15 +1,15 @@
 ---
 import "@phosphor-icons/web/regular";
 import { Image } from "astro:assets";
-import Layout from "../../layouts/Layout.astro";
-import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
-import Button from "../../components/ui/Button.svelte";
-import LogosScroll from "../../components/LogosScroll.svelte";
-import LottiePlayer from "../../components/LottiePlayer.svelte";
-import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
-import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
+import Layout from "../layouts/Layout.astro";
+import ProductDiscovery from "../components/block/ProductDiscovery.astro";
+import Button from "../components/ui/Button.svelte";
+import LogosScroll from "../components/LogosScroll.svelte";
+import LottiePlayer from "../components/LottiePlayer.svelte";
+import PaulSinai from "../assets/testimonial/paul-sinai.jpg";
+import BlaxelFounders from "../assets/stories/blaxel-header.jpg";
 
-const pageTitle = "Probo Agent | Device Security Posture & Audit Evidence";
+const pageTitle = "Device Agent | Device Security Posture & Audit Evidence";
 const pageDescription =
   "Enroll every laptop and server in minutes, then let disk encryption, firewall, and password checks report automatically, while your team keeps a live record for the audit.";
 
@@ -34,7 +34,7 @@ const overviewFeatures = [
   },
   {
     icon: "ph-eye",
-    title: "Never an MDM",
+    title: "Not a MDM",
     description:
       "Keep the agent purely observational, since it can never push commands, wipe, or lock a device.",
   },
@@ -202,7 +202,7 @@ const faqs = [
       "Yes. Install with the install.sh script or the CLI, and pass the server URL and an enrollment token on the command line.",
   },
   {
-    question: "Can Probo Agent lock, wipe, or remotely control a device?",
+    question: "Can Device Agent lock, wipe, or remotely control a device?",
     answer:
       "No. The agent is a posture reporter, not an MDM, so the server can never push shell commands, scripts, or device-control actions to it.",
   },
@@ -257,7 +257,7 @@ const faqSchema = {
   ogImage="/probo-agent/hero-probo-agent-2x.webp"
   ogImageWidth={2292}
   ogImageHeight={1572}
-  ogImageAlt="Probo Agent device inventory and security posture"
+  ogImageAlt="Device Agent device inventory and security posture"
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="-mt-16 overflow-hidden pt-16" data-probo-agent-page>
@@ -273,7 +273,7 @@ const faqSchema = {
           class="border-border-low text-tertiary-foreground motion-safe:animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
           style="animation-delay: 100ms"
         >
-          Probo Agent
+          Device Agent
         </div>
         <h1
           class="mx-auto mb-6 max-w-[680px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
@@ -303,7 +303,7 @@ const faqSchema = {
             Book a demo
           </Button>
           <Button
-            href="/docs/product/probo-agent/overview"
+            href="/docs/product/device-agent/overview"
             variant="secondary"
             size="lg"
             class="motion-safe:animate-perspective-in"
@@ -320,7 +320,7 @@ const faqSchema = {
             src="/probo-agent/hero-probo-agent.webp"
             srcset="/probo-agent/hero-probo-agent.webp 1146w, /probo-agent/hero-probo-agent-2x.webp 2292w"
             sizes="(min-width: 1280px) 1146px, calc(100vw - 2rem)"
-            alt="Probo Agent device inventory with a focused security posture report"
+            alt="Device Agent device inventory with a focused security posture report"
             width="1146"
             height="786"
             loading="eager"
@@ -386,9 +386,8 @@ const faqSchema = {
           data-trust-reveal
           style="--trust-reveal-delay: 100ms"
         >
-          Enroll each device with a one-time token, run the same nine checks
-          everywhere, and report results over an agent-initiated connection
-          only.
+          Enroll each device once, get the same nine checks everywhere,
+          everytime.
         </p>
       </div>
 
@@ -535,7 +534,7 @@ const faqSchema = {
           data-trust-reveal
           style="--trust-reveal-delay: 100ms"
         >
-          Security and IT teams use Probo Agent to track every laptop and
+          Security and IT teams use Device Agent to track every laptop and
           server, catch posture drift early, and hand auditors a live record
           instead of a spreadsheet.
         </p>

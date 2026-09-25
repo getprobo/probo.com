@@ -56,7 +56,7 @@ For a token-efficient Markdown version of a supported page, request its canonica
 - [Access reviews](https://www.probo.com/docs/product/access-review/overview)
 - [Compliance Portal](https://www.probo.com/docs/product/compliance-portal)
 - [Cookie consent](https://www.probo.com/docs/product/cookie-banner/overview)
-- [Probo Agent](https://www.probo.com/docs/product/probo-agent/overview)
+- [Device Agent](https://www.probo.com/docs/product/device-agent/overview)
 
 ## Developer documentation
 

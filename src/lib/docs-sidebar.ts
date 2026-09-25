@@ -317,27 +317,27 @@ export const docsSidebarGroups = [
   {
     id: "probo-agent",
     sectionId: "product",
-    label: "Probo Agent",
+    label: "Device Agent",
     items: [
-      { label: "Overview", slug: "docs/product/probo-agent/overview" },
+      { label: "Overview", slug: "docs/product/device-agent/overview" },
       {
         label: "Security",
-        slug: "docs/product/probo-agent/security",
+        slug: "docs/product/device-agent/security",
       },
       {
         label: "Install",
         collapsed: true,
         items: [
-          { label: "Overview", slug: "docs/product/probo-agent/install" },
-          { label: "macOS", slug: "docs/product/probo-agent/macos" },
-          { label: "Windows", slug: "docs/product/probo-agent/windows" },
-          { label: "Linux", slug: "docs/product/probo-agent/linux" },
-          { label: "FreeBSD", slug: "docs/product/probo-agent/freebsd" },
+          { label: "Overview", slug: "docs/product/device-agent/install" },
+          { label: "macOS", slug: "docs/product/device-agent/macos" },
+          { label: "Windows", slug: "docs/product/device-agent/windows" },
+          { label: "Linux", slug: "docs/product/device-agent/linux" },
+          { label: "FreeBSD", slug: "docs/product/device-agent/freebsd" },
         ],
       },
       {
         label: "Commands",
-        slug: "docs/product/probo-agent/commands",
+        slug: "docs/product/device-agent/commands",
       },
     ],
   },
