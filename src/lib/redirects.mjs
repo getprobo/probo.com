@@ -65,6 +65,7 @@ function markdownDocsMirrors(htmlRedirects) {
 
 const htmlRedirects = {
   "/sitemap.xml": redirect("/sitemap-index.xml"),
+  "/sitemap-0.xml": redirect("/sitemap-index.xml"),
   "/products/ai-agents": redirect("/products/ai-agents-for-compliance"),
   "/subprocessors": redirect("https://compliance.probo.com/subprocessors"),
   "/compliance-guides": redirect("/hub"),

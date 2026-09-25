@@ -19,6 +19,11 @@ const sitemapExcludedPaths = new Set(
     .map((from) => from.replace(/\/+$/, "") || "/"),
 );
 
+/** @param {string} url */
+function sitemapSection(url) {
+  return new URL(url).pathname.split("/")[1];
+}
+
 // Post-enforce fallback: when vite-plugin-svelte cannot resolve a Svelte
 // virtual CSS module (e.g. during dev re-optimization), return empty CSS so
 // @tailwindcss/vite does not receive the raw .svelte source and crash.
@@ -131,6 +136,16 @@ export default defineConfig({
     mdx(),
     svelte(),
     sitemap({
+      chunks: {
+        docs: (item) =>
+          sitemapSection(item.url) === "docs" ? item : undefined,
+        changelog: (item) =>
+          sitemapSection(item.url) === "changelog" ? item : undefined,
+        blog: (item) =>
+          ["blog", "hub", "stories"].includes(sitemapSection(item.url))
+            ? item
+            : undefined,
+      },
       filter(page) {
         const path = new URL(page).pathname.replace(/\/+$/, "") || "/";
         if (
