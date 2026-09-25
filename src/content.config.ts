@@ -138,7 +138,6 @@ const changelog = defineCollection({
           "Integrations",
           "Infra",
           "Console",
-          "Console",
         ]),
       )
       .default([]),
