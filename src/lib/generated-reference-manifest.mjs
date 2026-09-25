@@ -50,6 +50,10 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/config",
   },
   {
+    label: "Connector",
+    slug: "docs/developers/cli/commands/connector",
+  },
+  {
     label: "Consent Record",
     slug: "docs/developers/cli/commands/consent-record",
   },
@@ -298,6 +302,10 @@ export const n8nResourceItems = [
   {
     label: "Compliance Portal",
     slug: "docs/developers/api/n8n/resources/compliance-portal",
+  },
+  {
+    label: "Connector",
+    slug: "docs/developers/api/n8n/resources/connector",
   },
   {
     label: "Control",
