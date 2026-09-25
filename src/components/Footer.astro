@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Logo from "../assets/probo-logo.svg";
+import { menuGroups } from "../content/menu";
 import Frameworks from "./block/Frameworks.astro";
 import OpenStatus from "../components/OpenStatus.svelte";
 import Newsletter from "./block/Newsletter.astro";
@@ -8,6 +9,10 @@ import AskAi from "./AskAi.astro";
 import { Toaster } from "svelte-sonner";
 
 const menus = [
+  {
+    label: "Products",
+    items: menuGroups.find((group) => group.label === "Products")!.items,
+  },
   {
     label: "Resources",
     items: [
@@ -54,7 +59,7 @@ type Props = {
 
 <footer class="bg-level-0 space-y-10 py-10 sm:py-20">
   <div
-    class="container flex grid-cols-[520fr_560fr] flex-col-reverse gap-8 sm:grid"
+    class="container flex grid-cols-[400fr_680fr] flex-col-reverse gap-8 sm:grid"
   >
     <div class="text-tertiary-foreground space-y-4 sm:max-w-[320px]">
       <a href="/" class="block">
@@ -63,7 +68,7 @@ type Props = {
       <Newsletter variant="footer" />
     </div>
 
-    <div class="grid grid-cols-2 gap-6 text-xs sm:grid-cols-3">
+    <div class="grid grid-cols-2 gap-6 text-xs sm:grid-cols-2 lg:grid-cols-4">
       {
         menus.map((menu) => (
           <div class="space-y-3">

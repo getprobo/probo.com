@@ -11,6 +11,7 @@ export type MenuIconName =
   | "handshake"
   | "heart"
   | "list-checks"
+  | "monitor"
   | "paint-brush"
   | "quotes"
   | "shield-check"
@@ -28,7 +29,7 @@ export type MenuFeature = {
   href: string;
   asset: string;
   alt: string;
-  variant: "product" | "story" | "guide";
+  variant: "product" | "story" | "guide" | "illustration";
 };
 
 export type MenuGroup = {
@@ -72,6 +73,12 @@ export const menuGroups: MenuGroup[] = [
         description: "Consent that follows every visitor's law",
         href: "/products/cookie-banner",
         icon: "cookie",
+      },
+      {
+        label: "Probo Agent",
+        description: "Continuous security posture for every device",
+        href: "/products/probo-agent",
+        icon: "monitor",
       },
       {
         label: "Open-source platform",

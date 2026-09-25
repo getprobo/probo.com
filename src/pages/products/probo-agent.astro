@@ -8,120 +8,150 @@ import LogosScroll from "../../components/LogosScroll.svelte";
 import LottiePlayer from "../../components/LottiePlayer.svelte";
 import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
 import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
-import AiToolsGallery from "../../components/AiToolsGallery.svelte";
-import aiClients from "../../data/ai-clients.json";
 
-const pageTitle = "AI Agents for Compliance";
+const pageTitle = "Probo Agent | Device Security Posture & Audit Evidence";
 const pageDescription =
-  "Connect Claude, Cursor, ChatGPT or any MCP client to your live Probo data. Ask what is failing, update the risk register, prepare the audit. Every agent stays inside the permissions of the person who connected it.";
+  "Enroll every laptop and server in minutes, then let disk encryption, firewall, and password checks report automatically, while your team keeps a live record for the audit.";
 
 const overviewFeatures = [
   {
-    icon: "ph-file-code",
-    title: "+350 tools, one connection",
+    icon: "ph-monitor",
+    title: "Continuous posture for every device",
     description:
-      "Reach every Probo record from a single MCP endpoint, with tools and schemas discovered at connection time.",
+      "Track nine security checks across every laptop and server you enroll, from disk encryption to malware protection.",
   },
   {
-    icon: "ph-slack-logo",
-    title: "Works in the tools your team already opens",
+    icon: "ph-user-plus",
+    title: "Self-service enrollment",
     description:
-      "Connect Claude, Cursor, VS Code, Windsurf, Zed, and OpenCode without building an integration.",
+      "Let employees install the agent and enroll their own laptop in a few clicks, with no IT ticket required.",
   },
   {
-    icon: "ph-signature",
-    title: "Scoped to what each person can already do",
+    icon: "ph-stack",
+    title: "The same nine checks everywhere",
     description:
-      "Grant read-only or read-write scopes per resource, and never above the user’s own permissions.",
+      "Run identical checks on macOS, Windows, Linux, and FreeBSD, so posture data means the same thing across your fleet.",
   },
   {
-    icon: "ph-key",
-    title: "Skills that know how to use the tools",
+    icon: "ph-eye",
+    title: "Never an MDM",
     description:
-      "Install open-source compliance workflows next to the tools, so an agent follows a procedure instead of improvising.",
+      "Keep the agent purely observational, since it can never push commands, wipe, or lock a device.",
   },
   {
-    icon: "ph-bell-simple",
-    title: "Agents that act, not only report",
+    icon: "ph-file-text",
+    title: "Evidence ready for your auditor",
     description:
-      "Create and update records so an agent can carry a piece of compliance work to the end.",
+      "Give auditors a per-device history of every check, with timestamps and correlation IDs for each report.",
   },
 ];
-
-type ReviewStep = {
-  title: string;
-  lottie: string;
-  illustration: string;
-  overlay: { x: number; y: number; width: number; height: number };
-  reverse?: boolean;
-  bullets: string[];
-  cta?: { href: string; label: string };
-};
-
-const reviewSteps: ReviewStep[] = [
+const reviewSteps = [
   {
-    title: "Install the plugin, then sign in",
+    title: "Enroll a device in minutes",
     lottie: "/lottie/access-review/1.json",
-    illustration: "workflow-install-plugin-ui.webp",
-    overlay: { x: 36, y: 82, width: 436, height: 500 },
-    bullets: [
-      "Install the Probo plugin with a single command.",
-      "Sign in with your Probo account in one click.",
-      "Works with Probo Cloud, or your own self-hosted instance.",
+    foregroundParts: [
+      {
+        asset: "workflow-enrollment-foreground.svg",
+        x: 41,
+        y: 41,
+        width: 421,
+        height: 623,
+      },
     ],
-    cta: {
-      href: "/docs/developers/api/mcp/overview",
-      label: "See the full connection guide",
-    },
+    motion: "enrollment",
+    reverse: false,
+    bullets: [
+      "Install the agent in one click on macOS or Windows.",
+      "Let your employees enroll themselves through their employee portal.",
+      "No technical commands. People install the app and follow the instructions.",
+    ],
   },
   {
-    title: "Connect the client your team already uses",
+    title: "Run the same nine checks everywhere",
     lottie: "/lottie/access-review/2.json",
-    illustration: "workflow-connect-clients-ui.svg",
-    overlay: { x: 62, y: 127, width: 384, height: 410 },
+    foregroundParts: [
+      {
+        asset: "workflow-posture-checks-foreground.svg",
+        x: 27,
+        y: 83,
+        width: 454,
+        height: 440,
+      },
+    ],
+    motion: "posture",
     reverse: true,
     bullets: [
-      "Sign in with interactive OAuth from Claude, Cursor, VS Code, Windsurf, and Zed.",
-      "Use a static scoped token for clients that cannot run an interactive flow.",
-      "One install brings the tools and the ready-made compliance skills to every client.",
+      "Check disk encryption, firewall, password policy, and six more signals on every device.",
+      "Keep checks identical across macOS, Windows, Linux, and FreeBSD.",
+      "Stop the server from adding, changing, or removing any check remotely.",
     ],
   },
   {
-    title: "Decide what each agent can touch",
+    title: "Hand your auditor a paper trail",
     lottie: "/lottie/access-review/3.json",
-    illustration: "workflow-agent-permissions-ui.svg",
-    overlay: { x: 39, y: 64, width: 430, height: 635 },
-    bullets: [
-      "Set access per resource: read and write, read only, or no access at all.",
-      "An agent can never do more than the person who connected it, whatever you grant.",
-      "Revoke an agent in seconds, without locking the person out of their account.",
+    foregroundParts: [
+      {
+        asset: "workflow-report-history-list.svg",
+        x: 19,
+        y: 367,
+        width: 403,
+        height: 297,
+      },
+      {
+        asset: "workflow-report-history-report.svg",
+        x: 166,
+        y: 34,
+        width: 402,
+        height: 452,
+      },
     ],
-  },
-  {
-    title: "Ask your compliance program a question",
-    lottie: "/lottie/access-review/4.json",
-    illustration: "workflow-query-compliance-ui.svg",
-    overlay: { x: 48, y: 96, width: 881, height: 660 },
-    reverse: true,
+    motion: "history",
+    reverse: false,
     bullets: [
-      '"Which controls have no evidence attached?" Ask in plain language across risks, controls, evidence, audits, and findings.',
-      "Get the whole list back, not the first twenty rows.",
-      "See where your program stands right now, without exporting anything first.",
-    ],
-  },
-  {
-    title: "An agent does the work. You approve it.",
-    lottie: "/lottie/access-review/1.json",
-    illustration: "workflow-take-action-ui.svg",
-    overlay: { x: 96, y: 55, width: 451, height: 554 },
-    bullets: [
-      "Create risks, tasks, documents and evidence, and link them to each other in one go.",
-      "Automate a recurring compliance task without asking an engineer to build an integration.",
-      "Every tool declares whether it only reads or changes something, so you can require approval before anything is written.",
+      "Push heartbeats and check results to Probo on a set schedule.",
+      "Give every device a report history with timestamps and correlation IDs.",
+      "Let an admin revoke a device the moment it leaves the fleet.",
     ],
   },
 ];
-
+const publishCards = [
+  {
+    illustration: "capability-devices",
+    title: "Devices",
+    description:
+      "List every enrolled laptop and server with its owner, platform, and last check-in.",
+  },
+  {
+    illustration: "capability-current-postures",
+    title: "Current Postures",
+    description:
+      "Show the live state of all nine checks for each individual device.",
+  },
+  {
+    illustration: "capability-report-history",
+    title: "Report History",
+    description:
+      "Keep a timestamped log of every check result, tagged with its own correlation ID.",
+  },
+  {
+    illustration: "capability-enrollment-tokens",
+    title: "Enrollment Tokens",
+    description:
+      "Issue a one-time token per device, so nobody reuses or shares a credential.",
+  },
+  {
+    illustration: "capability-device-agent-api",
+    title: "Device Agent API",
+    description:
+      "Handle enroll, heartbeat, posture, and unenroll requests over agent-initiated HTTPS only.",
+  },
+  {
+    illustration: "capability-agent-cli",
+    title: "Agent CLI",
+    description:
+      "Run install, status, collect, and update from the command line on servers.",
+  },
+];
 const trustedLogos = [
   {
     src: "/clients/trace_for_good.svg",
@@ -162,78 +192,51 @@ const trustedLogos = [
 
 const faqs = [
   {
-    question: "How do we connect our AI assistant?",
+    question: "How long does enrollment take?",
     answer:
-      "With one endpoint. Point your MCP client at us.probo.com/api/mcp/v1 or eu.probo.com/api/mcp/v1, complete the OAuth flow, and the tools appear.",
+      "Just a few minutes. Install the package, then finish enrollment in the browser, and posture checks start reporting shortly after.",
   },
   {
-    question: "Does it work with self-hosted Probo?",
+    question: "Do you support Linux and FreeBSD servers, not just laptops?",
     answer:
-      "Yes. Use the same /api/mcp/v1 endpoint on your own Probo origin, with the authentication and permissions of your deployment.",
+      "Yes. Install with the install.sh script or the CLI, and pass the server URL and an enrollment token on the command line.",
   },
   {
-    question: "Which AI agents and assistants are supported?",
+    question: "Can Probo Agent lock, wipe, or remotely control a device?",
     answer:
-      "Connect Claude, ChatGPT, Codex, Cursor, VS Code, Windsurf, Zed, OpenCode, or another compatible MCP client. The setup and authentication method depend on the client.",
+      "No. The agent is a posture reporter, not an MDM, so the server can never push shell commands, scripts, or device-control actions to it.",
   },
   {
-    question: "What can an AI agent actually do in Probo?",
+    question: "What does the agent actually check?",
     answer:
-      "Agents can query risks, controls, evidence, audits, and findings, and create or update records when you grant the required write scopes.",
+      "Nine signals. Disk encryption, screen lock, firewall, time sync, OS version, automatic updates, password policy, remote login, and malware protection.",
   },
   {
-    question: "Can the agent change our compliance data?",
+    question: "Can an employee enroll their own laptop?",
     answer:
-      "Only when both its token scopes and the connected user’s permissions allow it. Use read-only scopes when the agent only needs to inspect data.",
+      "Yes. On macOS and Windows, they can install and enroll themselves through their Probo employee portal.",
   },
   {
-    question: "Can an AI agent see more than the person who connected it?",
+    question: "Does the agent open a channel the server can call back into?",
     answer:
-      "No. Access is limited to the intersection of the token scopes and the permissions of the person who connected it.",
+      "No. Every request is agent-initiated over HTTPS through four endpoints, enroll, heartbeat, postures, and unenroll, with no WebSocket or command queue.",
   },
   {
-    question: "Do we have to update anything when Probo adds tools?",
+    question: "Does the agent stay up to date on its own?",
     answer:
-      "Clients discover the available tools and their schemas when they connect. Reconnect to discover newly available tools, subject to your granted scopes.",
+      "Yes. It checks GitHub Releases for the latest signed build and installs it in place, with every release verified through Cosign and Sigstore.",
   },
   {
-    question: "Is this a proprietary integration?",
+    question: "Can we remove or revoke a device ourselves?",
     answer:
-      "No. Probo uses the open Model Context Protocol, so compatible clients can connect without a proprietary integration.",
+      "Yes. Run probo-agent uninstall on the device, or revoke it from the Devices list in Probo, and it stops reporting once revoked.",
   },
   {
-    question: "What is the difference between the tools and the skills?",
+    question: "Who can see this data, and is the agent open source?",
     answer:
-      "Tools let an agent read or change Probo records. Skills provide reusable compliance workflows that guide how the agent uses those tools.",
-  },
-  {
-    question: "Can we read, fork, or write our own skills?",
-    answer:
-      "Yes. The compliance skills are open source, so you can read them, adapt them to your procedures, or write your own.",
-  },
-  {
-    question: "Who decides what an agent is allowed to touch?",
-    answer:
-      "You choose the token scopes, and Probo enforces the connected user’s existing permissions on every operation.",
-  },
-  {
-    question: "Is every agent action attributed and recorded in the audit log?",
-    answer:
-      "Yes. Agents go through the same authorization layer as the console, and every authorized call is written to the audit log with the timestamp, the action, the resource, and the identity behind it. Since an agent authenticates with an OAuth token issued to a person, its actions are attributed to that person. Entries are immutable and exportable as CSV.",
-  },
-  {
-    question:
-      "Does connecting an agent send our compliance data to Anthropic or OpenAI?",
-    answer:
-      "Probo sends nothing to a model provider. The MCP server only answers the client you connect, so where the data goes depends on that client: with Claude or ChatGPT it is processed by Anthropic or OpenAI under your own plan and your own retention and training settings. Point a local model at it and no third party sees anything. Probo's own AI features do use Anthropic and OpenAI, both listed on our subprocessor page.",
-  },
-  {
-    question: "Is MCP access included in our plan?",
-    answer:
-      "Yes. API, MCP, and CLI access are included for every customer, with no add-on, no tier, and no per-call quota tied to a plan. What an agent can reach is set by OAuth scopes and user permissions, not by billing.",
+      "Only the owner user in your organization can see this data. The agent is open source, written in Go, and every release is signed, so your security team can audit exactly what it collects.",
   },
 ];
-
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -246,104 +249,78 @@ const faqSchema = {
     },
   })),
 };
-
-const softwareApplicationSchema = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "Probo AI Agents",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
-  description: pageDescription,
-  url: "https://www.probo.com/products/ai-agents-for-compliance",
-  publisher: {
-    "@type": "Organization",
-    name: "Probo",
-    url: "https://www.probo.com",
-  },
-};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  ogImage="/probo-agent/hero-probo-agent-2x.webp"
+  ogImageWidth={2292}
+  ogImageHeight={1572}
+  ogImageAlt="Probo Agent device inventory and security posture"
+>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(softwareApplicationSchema)}
-  />
-  <main class="-mt-16 overflow-hidden pt-16">
+  <main class="-mt-16 overflow-hidden pt-16" data-probo-agent-page>
     <div class="relative isolate overflow-hidden">
       <div
         aria-hidden="true"
-        data-node-id="984:327"
         class="trust-hero-orb pointer-events-none absolute top-[-1314px] left-1/2 z-0 size-[2265px] rounded-full border-[350px] border-[#E6FF03] blur-[96px]"
       >
       </div>
 
       <section class="relative z-10 container py-16 text-center sm:py-24">
         <div
-          class="border-border-low text-tertiary-foreground animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
+          class="border-border-low text-tertiary-foreground motion-safe:animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
           style="animation-delay: 100ms"
         >
-          ai agents for compliance
+          Probo Agent
         </div>
         <h1
-          class="mx-auto mb-6 max-w-[720px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
-          aria-label="Run your compliance program from the tools you already work in."
+          class="mx-auto mb-6 max-w-[680px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
         >
-          <span aria-hidden="true" class="block overflow-hidden">
-            <span
-              class="animate-perspective-in block"
-              style="animation-delay: 150ms">Run your compliance program</span
-            >
-          </span>
-          <span aria-hidden="true" class="hidden overflow-hidden sm:block">
-            <span
-              class="animate-perspective-in block"
-              style="animation-delay: 200ms"
-              >from the tools you already work in.</span
-            >
-          </span>
-          <span aria-hidden="true" class="block overflow-hidden sm:hidden">
-            <span
-              class="animate-perspective-in block"
-              style="animation-delay: 200ms">from the tools you</span
-            >
-          </span>
-          <span aria-hidden="true" class="block overflow-hidden sm:hidden">
-            <span
-              class="animate-perspective-in block"
-              style="animation-delay: 250ms">already work in.</span
-            >
-          </span>
+          <span
+            class="motion-safe:animate-perspective-in block"
+            style="animation-delay: 150ms">Your devices, with proof</span
+          >
+          <span
+            class="motion-safe:animate-perspective-in block"
+            style="animation-delay: 200ms">they're secure.</span
+          >
         </h1>
         <p
-          class="text-muted-foreground animate-perspective-in mx-auto mb-8 max-w-[540px] text-base"
+          class="text-muted-foreground motion-safe:animate-perspective-in mx-auto mb-8 max-w-[420px] text-base"
           style="animation-delay: 350ms"
         >
           {pageDescription}
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <Button
-            href="/docs/developers/api/mcp/overview"
-            variant="secondary"
-            size="lg"
-            class="motion-safe:animate-perspective-in"
-            style="animation-delay: 400ms">Connect Probo MCP</Button
-          >
-          <Button
             href="/contact"
             size="lg"
             class="motion-safe:animate-perspective-in"
-            style="animation-delay: 450ms">Book a demo</Button
+            style="animation-delay: 400ms"
           >
+            Book a demo
+          </Button>
+          <Button
+            href="/docs/product/probo-agent/overview"
+            variant="secondary"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 450ms"
+          >
+            Read the docs
+          </Button>
         </div>
       </section>
 
       <section class="relative z-10 container pb-0">
         <div class="access-review-browser">
           <img
-            src="/ai-agents/hero-ai-agents.svg"
-            alt=""
-            aria-hidden="true"
+            src="/probo-agent/hero-probo-agent.webp"
+            srcset="/probo-agent/hero-probo-agent.webp 1146w, /probo-agent/hero-probo-agent-2x.webp 2292w"
+            sizes="(min-width: 1280px) 1146px, calc(100vw - 2rem)"
+            alt="Probo Agent device inventory with a focused security posture report"
             width="1146"
             height="786"
             loading="eager"
@@ -353,43 +330,6 @@ const softwareApplicationSchema = {
             style="animation-delay: 600ms"
           />
         </div>
-        <div
-          class="mx-auto flex w-full max-w-[636px] items-center gap-6 pt-8"
-          data-connect-tools
-        >
-          <p
-            class="text-muted-foreground shrink-0 text-sm leading-5 whitespace-nowrap"
-          >
-            Connect your AI tools
-          </p>
-          <LogosScroll
-            client:visible
-            class="h-6 min-w-0 flex-1 overflow-hidden"
-            label="Compatible AI clients"
-            gap={32}
-            fadeEdges
-          >
-            {
-              aiClients.map((client) => (
-                <div class="flex h-6 shrink-0 items-center gap-2 whitespace-nowrap">
-                  <img
-                    src={client.src}
-                    alt=""
-                    width={client.width}
-                    height="24"
-                    loading="lazy"
-                    decoding="async"
-                    class="block h-6 max-w-none shrink-0 object-contain"
-                    style={`width: ${client.width}px`}
-                  />
-                  <span class="text-sm leading-5 font-medium text-[#21201c]">
-                    {client.name}
-                  </span>
-                </div>
-              ))
-            }
-          </LogosScroll>
-        </div>
       </section>
     </div>
 
@@ -398,16 +338,17 @@ const softwareApplicationSchema = {
         class="mx-auto max-w-[552px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance text-[#141e12]"
         data-trust-reveal
       >
-        Everything in Probo, available to your AI agents.
+        Give every device in your fleet a documented, continuous security
+        posture.
       </h2>
       <p
         class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
         data-trust-reveal
         style="--trust-reveal-delay: 100ms"
       >
-        Install one plugin to give an agent more than 350 tools, ready-made
-        compliance workflows, and the same permissions the person behind it
-        already has.
+        Enroll laptops and servers in minutes, then watch nine posture checks
+        report automatically, so your team always knows what state your fleet is
+        in.
       </p>
 
       <div class="overview-feature-grid mt-16">
@@ -438,15 +379,16 @@ const softwareApplicationSchema = {
           class="mx-auto max-w-[600px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
           data-trust-reveal
         >
-          An agent never sees more than the person who connected it.
+          Fleet visibility without the MDM baggage
         </h2>
         <p
           class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
           data-trust-reveal
           style="--trust-reveal-delay: 100ms"
         >
-          Choose the scopes when you create the token, and keep every agent
-          inside the permissions its owner already holds.
+          Enroll each device with a one-time token, run the same nine checks
+          everywhere, and report results over an agent-initiated connection
+          only.
         </p>
       </div>
 
@@ -457,17 +399,14 @@ const softwareApplicationSchema = {
               class:list={[
                 "container grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-16",
               ]}
-              data-trust-reveal={index === 0 ? undefined : true}
-              style={`--trust-reveal-delay: ${index * 80}ms`}
             >
               <div
                 class:list={[
                   "bg-subtle relative isolate mx-auto aspect-[508/664] w-full max-w-[508px] overflow-hidden rounded-2xl",
                   feature.reverse && "lg:order-2",
                 ]}
-                data-review-visual
                 data-review-asset-visual
-                style={`--review-asset-x: ${feature.reverse ? "104px" : "-96px"}; --review-asset-y: ${index === 0 || feature.reverse ? "0px" : "64px"}; --review-asset-scale: ${index === 0 ? 1 : 0.98}; --review-asset-duration: ${feature.reverse ? "820ms" : "860ms"};`}
+                data-review-motion={feature.motion}
               >
                 <div
                   class="pointer-events-none absolute inset-0 z-0"
@@ -480,17 +419,23 @@ const softwareApplicationSchema = {
                     class="size-full origin-center scale-[1.12] transform-gpu"
                   />
                 </div>
-                <img
-                  src={`/ai-agents/${feature.illustration}`}
-                  alt=""
+                <div
+                  class="review-asset pointer-events-none absolute inset-0 z-10"
                   aria-hidden="true"
-                  width={feature.overlay.width}
-                  height={feature.overlay.height}
-                  loading="lazy"
-                  decoding="async"
-                  class="review-asset pointer-events-none absolute z-10 block h-auto max-w-none"
-                  style={`left: ${(feature.overlay.x / 508) * 100}%; top: ${(feature.overlay.y / 664) * 100}%; width: ${(feature.overlay.width / 508) * 100}%;`}
-                />
+                >
+                  {feature.foregroundParts.map((part) => (
+                    <img
+                      src={`/probo-agent/${part.asset}`}
+                      alt=""
+                      width={part.width}
+                      height={part.height}
+                      loading="lazy"
+                      decoding="async"
+                      class="absolute block h-auto max-w-none"
+                      style={`left: ${(part.x / 508) * 100}%; top: ${(part.y / 664) * 100}%; width: ${(part.width / 508) * 100}%;`}
+                    />
+                  ))}
+                </div>
               </div>
 
               <div
@@ -498,7 +443,8 @@ const softwareApplicationSchema = {
                   "mx-auto w-full max-w-[508px] min-w-0",
                   feature.reverse ? "lg:order-1 lg:pr-16" : "lg:pl-16",
                 ]}
-                data-trust-reveal={index === 0 ? true : undefined}
+                data-trust-reveal
+                style={`--trust-reveal-delay: ${index * 80}ms`}
               >
                 <h3 class="mb-6 text-[24px] leading-8 font-semibold tracking-[-0.6px]">
                   {feature.title}
@@ -514,18 +460,6 @@ const softwareApplicationSchema = {
                     </li>
                   ))}
                 </ul>
-                {feature.cta && (
-                  <a
-                    href={feature.cta.href}
-                    class="text-foreground mt-6 inline-flex items-center gap-1.5 text-[16px] leading-6 font-medium"
-                  >
-                    {feature.cta.label}
-                    <i
-                      class="ph ph-arrow-right text-[16px]"
-                      aria-hidden="true"
-                    />
-                  </a>
-                )}
               </div>
             </div>
           ))
@@ -533,24 +467,59 @@ const softwareApplicationSchema = {
       </div>
     </section>
 
-    <section
-      class="container pt-16 sm:pt-32"
-      aria-labelledby="ai-tools-heading"
-    >
-      <h2
-        id="ai-tools-heading"
-        class="mx-auto text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
-      >
-        +350 tools across 21 categories, ready at connection.
-      </h2>
-      <p
-        class="text-muted-foreground mx-auto mt-2 mb-16 max-w-[504px] text-center text-[16px] leading-6"
-      >
-        Discover the full catalog the moment your client connects, from risk
-        registers and control mappings to audits, access reviews, and privacy
-        records.
-      </p>
-      <AiToolsGallery client:load />
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="mb-16 text-center">
+        <h2
+          class="mx-auto max-w-[560px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          All your device evidence, organized for security review
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Organize enrolled devices, live posture checks, report history, and
+          enrollment tokens into one place instead of screenshots and
+          spreadsheets.
+        </p>
+      </div>
+
+      <div class="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          publishCards.map((card, index) => (
+            <article
+              class="mx-auto flex w-full max-w-[508px] flex-col gap-6"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <div class="aspect-square w-full overflow-hidden">
+                <img
+                  src={`/probo-agent/${card.illustration}.webp`}
+                  srcset={`/probo-agent/${card.illustration}.webp 344w, /probo-agent/${card.illustration}-2x.webp 688w, /probo-agent/${card.illustration}-3x.webp 1032w`}
+                  sizes="(min-width: 1120px) 344px, (min-width: 1024px) calc((100vw - 88px) / 3), (min-width: 640px) calc((100vw - 64px) / 2), (min-width: 548px) 508px, calc(100vw - 40px)"
+                  alt=""
+                  aria-hidden="true"
+                  width="344"
+                  height="344"
+                  loading="lazy"
+                  decoding="async"
+                  class="review-asset block aspect-square h-auto w-full"
+                />
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="text-[20px] leading-7 font-semibold tracking-[-0.4px]">
+                  {card.title}
+                </h3>
+                <p class="text-muted-foreground text-[16px] leading-6">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
     </section>
 
     <section class="container pt-16 pb-0 sm:pt-32">
@@ -566,8 +535,9 @@ const softwareApplicationSchema = {
           data-trust-reveal
           style="--trust-reveal-delay: 100ms"
         >
-          Compliance teams use Probo to answer security questions, update risk
-          registers, and prepare audits from the AI tools they already work in.
+          Security and IT teams use Probo Agent to track every laptop and
+          server, catch posture drift early, and hand auditors a live record
+          instead of a spreadsheet.
         </p>
       </div>
 
@@ -649,7 +619,7 @@ const softwareApplicationSchema = {
         class="mb-6 text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
         data-trust-reveal
       >
-        Frequently asked questions
+        Questions, answered
       </h2>
       <div class="faq-accordion mx-auto max-w-[768px]" data-faq-accordion>
         {
@@ -664,9 +634,9 @@ const softwareApplicationSchema = {
                 <button
                   class="faq-trigger"
                   type="button"
-                  id={`ai-agents-faq-trigger-${index}`}
+                  id={`probo-agent-faq-trigger-${index}`}
                   aria-expanded="false"
-                  aria-controls={`ai-agents-faq-panel-${index}`}
+                  aria-controls={`probo-agent-faq-panel-${index}`}
                   data-faq-trigger
                 >
                   <span>{faq.question}</span>
@@ -678,9 +648,9 @@ const softwareApplicationSchema = {
               </h3>
               <div
                 class="faq-panel"
-                id={`ai-agents-faq-panel-${index}`}
+                id={`probo-agent-faq-panel-${index}`}
                 role="region"
-                aria-labelledby={`ai-agents-faq-trigger-${index}`}
+                aria-labelledby={`probo-agent-faq-trigger-${index}`}
                 aria-hidden="true"
                 data-faq-panel
               >
@@ -698,7 +668,7 @@ const softwareApplicationSchema = {
 </Layout>
 
 <script>
-  const initAiAgentsAnimations = () => {
+  const initProboAgentAnimations = () => {
     const assetVisuals = Array.from(
       document.querySelectorAll<HTMLElement>("[data-review-asset-visual]"),
     );
@@ -752,6 +722,15 @@ const softwareApplicationSchema = {
       { threshold: 0.35 },
     );
 
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        revealObserver.disconnect();
+        assetObserver.disconnect();
+      },
+      { once: true },
+    );
+
     revealTargets.forEach((target) => {
       if (target.dataset.revealReady === "true") {
         return;
@@ -773,7 +752,7 @@ const softwareApplicationSchema = {
     });
   };
 
-  const initAiAgentsFaq = () => {
+  const initProboAgentFaq = () => {
     const faqAccordions = Array.from(
       document.querySelectorAll<HTMLElement>("[data-faq-accordion]"),
     );
@@ -845,33 +824,31 @@ const softwareApplicationSchema = {
     });
   };
 
-  const initAiAgentsPage = () => {
-    initAiAgentsAnimations();
-    initAiAgentsFaq();
+  const initProboAgentPage = () => {
+    if (!document.querySelector("[data-probo-agent-page]")) return;
+    initProboAgentAnimations();
+    initProboAgentFaq();
   };
 
+  document.addEventListener("astro:page-load", initProboAgentPage);
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAiAgentsPage, {
+    document.addEventListener("DOMContentLoaded", initProboAgentPage, {
       once: true,
     });
   } else {
-    initAiAgentsPage();
+    initProboAgentPage();
   }
 </script>
 
 <style>
   .access-review-browser {
     position: relative;
-    aspect-ratio: 1080 / 720;
+    aspect-ratio: 1146 / 786;
   }
 
-  /* Figma's SVG includes 33px of shadow beyond the 1080×720 browser. */
   .access-review-browser img {
-    position: absolute;
-    top: -4.583333%;
-    left: -3.055556%;
-    width: 106.111111%;
-    max-width: none;
+    width: 100%;
     height: auto;
   }
 
@@ -930,39 +907,30 @@ const softwareApplicationSchema = {
     }
   }
 
-  [data-review-asset-visual] {
-    --review-asset-x: 0px;
-    --review-asset-y: 42px;
-    --review-asset-duration: 760ms;
-  }
-
   @media (prefers-reduced-motion: no-preference) {
+    [data-review-motion="enrollment"] {
+      --review-asset-from: translate3d(0, 12px, 0);
+    }
+
+    [data-review-motion="posture"] {
+      --review-asset-from: translate3d(10px, 0, 0);
+    }
+
+    [data-review-motion="history"] {
+      --review-asset-from: translate3d(0, -10px, 0);
+    }
+
     [data-review-asset-visual].is-awaiting-animation .review-asset {
-      opacity: 0;
-      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
-        scale(var(--review-asset-scale, 0.98));
+      opacity: 0.82;
+      transform: var(--review-asset-from);
     }
 
     [data-review-asset-visual].is-visible .review-asset {
-      animation: review-asset-enter var(--review-asset-duration)
-        cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
-    }
-  }
-
-  @keyframes review-asset-enter {
-    0% {
-      opacity: 0;
-      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
-        scale(var(--review-asset-scale, 0.98));
-    }
-
-    42% {
       opacity: 1;
-    }
-
-    100% {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
+      transform: translate3d(0, 0, 0);
+      transition:
+        transform 560ms cubic-bezier(0.19, 1, 0.22, 1),
+        opacity 320ms ease-out;
     }
   }
 
@@ -1081,11 +1049,6 @@ const softwareApplicationSchema = {
     .overview-feature:nth-child(5) {
       top: 201px;
       left: 564px;
-    }
-
-    .overview-feature:nth-child(6) {
-      top: 201px;
-      left: 752px;
     }
   }
 
@@ -1407,43 +1370,6 @@ const softwareApplicationSchema = {
     .faq-icon i,
     .faq-trigger {
       transition: none;
-    }
-  }
-</style>
-
-<style>
-  .overview-feature-grid {
-    display: grid;
-    height: auto;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 56px 48px;
-  }
-  .overview-feature {
-    position: static;
-    width: 100%;
-  }
-  @media (min-width: 1024px) {
-    .overview-feature-grid {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-    .overview-feature:nth-child(-n + 3) {
-      grid-column: span 2;
-    }
-    .overview-feature:nth-child(4) {
-      grid-column: 2 / span 2;
-    }
-    .overview-feature:nth-child(5) {
-      grid-column: 4 / span 2;
-    }
-  }
-  @media (max-width: 1023px) {
-    .overview-feature-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (max-width: 639px) {
-    .overview-feature-grid {
-      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

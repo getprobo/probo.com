@@ -47,6 +47,15 @@ const products = [
     width: 431,
     height: 222,
   },
+  {
+    id: "probo-agent",
+    title: "Probo Agent",
+    description: "Monitor device security posture continuously",
+    href: "/products/probo-agent",
+    asset: "/product-discovery/probo-agent-posture-3x.png",
+    width: 313,
+    height: 259,
+  },
 ];
 ---
 
@@ -382,6 +391,28 @@ const products = [
     left: 22px;
     width: 598px;
     height: 120px;
+  }
+
+  .product-discovery-card--probo-agent .product-discovery-halo {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .product-discovery-card--probo-agent .product-discovery-halo::before {
+    inset: -171.695px;
+    border: 0;
+    border-radius: 0;
+    background: url("/product-discovery/probo-agent-orb.svg") center / 100% 100%
+      no-repeat;
+    filter: none;
+  }
+
+  .product-discovery-card--probo-agent .product-discovery-art {
+    top: 162px;
+    left: 32px;
+    width: 313px;
+    height: 259px;
   }
 
   @media (prefers-reduced-motion: no-preference) {

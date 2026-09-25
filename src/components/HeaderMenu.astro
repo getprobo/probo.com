@@ -58,18 +58,36 @@ const menuId = "desktop-navigation-menu";
           <div
             data-menu-panel
             data-menu-index={index}
+            data-products-panel={group.label === "Products" ? "" : undefined}
             role="group"
             aria-labelledby={`${menuId}-trigger-${index}`}
-            class="absolute inset-0 grid grid-cols-2 items-start gap-8 p-3"
+            class="absolute top-0 grid h-full grid-cols-[minmax(0,1fr)_420px] items-start gap-8 p-3"
             hidden
           >
-            <div class="flex min-w-0 flex-col items-start gap-6 self-start px-2 py-5">
+            <div
+              class:list={[
+                "flex min-w-0 flex-col items-start self-start px-2",
+                group.label === "Products" ? "gap-2 py-3" : "gap-6 py-5",
+              ]}
+            >
               {group.showLabel !== false && (
                 <p class="text-muted-foreground px-3 text-sm font-medium">
                   {group.label}
                 </p>
               )}
-              <div class="flex w-full flex-col">
+              <div
+                class:list={[
+                  "w-full",
+                  group.label === "Products"
+                    ? "grid grid-flow-col grid-cols-2 gap-x-8"
+                    : "flex flex-col",
+                ]}
+                style={
+                  group.label === "Products"
+                    ? `grid-template-rows: repeat(${Math.ceil(group.items.length / 2)}, auto)`
+                    : undefined
+                }
+              >
                 {group.items.map((item) => (
                   <a
                     href={item.href}
@@ -93,15 +111,15 @@ const menuId = "desktop-navigation-menu";
 
             <a
               href={group.feature.href}
-              class="bg-subtle group/feature relative block aspect-square min-w-0 overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-current"
+              class="bg-subtle group/feature relative block size-105 shrink-0 overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-current"
               aria-label={`${group.feature.eyebrow}: ${group.feature.title}`}
             >
               <img
                 data-feature-image
                 data-src={group.feature.asset}
                 alt={group.feature.alt}
-                width="1080"
-                height="720"
+                width={group.feature.variant === "illustration" ? 344 : 1080}
+                height={group.feature.variant === "illustration" ? 420 : 720}
                 decoding="async"
                 fetchpriority="low"
                 class:list={[
@@ -110,6 +128,8 @@ const menuId = "desktop-navigation-menu";
                     "navigation-feature-media--story inset-0 size-full object-cover",
                   group.feature.variant === "product" &&
                     "navigation-feature-media--product top-25 left-6 h-180 w-270 rounded-[15px] object-cover object-top-left shadow-[0_16px_32px_rgba(186,193,122,0.2)]",
+                  group.feature.variant === "illustration" &&
+                    "navigation-feature-media--illustration top-0 left-0 z-1 h-auto w-full",
                   group.feature.variant === "guide" &&
                     "navigation-feature-media--guide top-25 -left-43.5 h-55 w-193.5",
                 ]}
@@ -119,13 +139,21 @@ const menuId = "desktop-navigation-menu";
                 <div class="absolute inset-0 bg-linear-to-b from-[rgba(0,0,0,0.72)] via-[rgba(0,0,0,0.05)] to-[rgba(0,0,0,0.35)]" />
               )}
               {group.feature.variant !== "story" && (
-                <span class="navigation-feature-halo" aria-hidden="true" />
+                <span
+                  class:list={[
+                    "navigation-feature-halo",
+                    group.feature.variant === "illustration" &&
+                      "navigation-feature-halo--behind",
+                  ]}
+                  aria-hidden="true"
+                />
               )}
 
               <span
                 class:list={[
                   "absolute top-5 right-5 left-5 z-10 flex flex-col items-start gap-1 [word-break:break-word]",
                   { "text-[#fff]": group.feature.variant === "story" },
+                  { "sr-only": group.feature.variant === "illustration" },
                 ]}
               >
                 <span
@@ -156,10 +184,8 @@ const menuId = "desktop-navigation-menu";
   const closeDelay = 160;
   const shellDuration = 180;
   const contentPhaseDuration = 120;
-  const contentSwitchOpacity = 0.35;
   const contentTravelDistance = 48;
   const easing = "cubic-bezier(0.22, 1, 0.36, 1)";
-  const exitEasing = "cubic-bezier(0.64, 0, 0.78, 0)";
 
   class HeaderMenu extends HTMLElement {
     triggers: HTMLButtonElement[] = [];
@@ -317,7 +343,18 @@ const menuId = "desktop-navigation-menu";
       const previousIndex = this.activeIndex;
       if (previousIndex === index && this.dataset.open === "true") return;
 
+      const wasOpen = this.dataset.open === "true";
+      this.dataset.resizing = String(wasOpen);
       this.activeIndex = index;
+      this.dataset.productsOpen = String(
+        this.panels[index].hasAttribute("data-products-panel"),
+      );
+      if (!wasOpen) {
+        this.panels.forEach((panel) => {
+          panel.getAnimations().forEach((animation) => animation.cancel());
+          panel.hidden = true;
+        });
+      }
       if (this.viewport.hidden) {
         this.dataset.open = "false";
         this.viewport.hidden = false;
@@ -342,27 +379,40 @@ const menuId = "desktop-navigation-menu";
         "(prefers-reduced-motion: reduce)",
       ).matches;
       const token = ++this.transitionToken;
-      const visiblePanel = this.panels.find((panel) => !panel.hidden);
+      const visiblePanel = this.panels.find(
+        (panel) => !panel.hidden && !panel.inert,
+      );
       const visibleIndex = visiblePanel
         ? Number(visiblePanel.dataset.menuIndex)
-        : -1;
+        : nextIndex;
+      const currentStyles = new Map(
+        this.panels
+          .filter((panel) => !panel.hidden)
+          .map((panel) => {
+            const style = getComputedStyle(panel);
+            return [
+              panel,
+              { opacity: style.opacity, transform: style.transform },
+            ];
+          }),
+      );
 
       this.panels.forEach((panel) => {
         panel.getAnimations().forEach((animation) => animation.cancel());
-        if (panel !== visiblePanel) panel.hidden = true;
+        if (panel !== visiblePanel && panel !== nextPanel) panel.hidden = true;
       });
+      this.showPanel(nextPanel);
 
-      if (!visiblePanel) {
-        this.showPanel(nextPanel);
-        nextPanel.animate([{ opacity: 0 }, { opacity: 1 }], {
-          duration: reducedMotion ? 120 : shellDuration,
-          easing,
-        });
+      if (reducedMotion || visiblePanel === nextPanel) {
+        this.panels.forEach((panel) => (panel.hidden = panel !== nextPanel));
         return;
       }
 
-      if (visiblePanel === nextPanel) {
-        this.showPanel(nextPanel);
+      if (!visiblePanel) {
+        nextPanel.animate([{ opacity: 0 }, { opacity: 1 }], {
+          duration: shellDuration,
+          easing,
+        });
         return;
       }
 
@@ -370,50 +420,35 @@ const menuId = "desktop-navigation-menu";
       visiblePanel.inert = true;
       visiblePanel.setAttribute("aria-hidden", "true");
       const exitAnimation = visiblePanel.animate(
-        reducedMotion
-          ? [{ opacity: 1 }, { opacity: contentSwitchOpacity }]
-          : [
-              { opacity: 1, transform: "translateX(0)" },
-              {
-                opacity: contentSwitchOpacity,
-                transform: `translateX(${-direction * contentTravelDistance}px)`,
-              },
-            ],
+        [
+          currentStyles.get(visiblePanel)!,
+          {
+            opacity: 0,
+            transform: `translateX(${-direction * contentTravelDistance}px)`,
+          },
+        ],
         {
-          duration: reducedMotion ? 60 : contentPhaseDuration,
-          easing: reducedMotion ? easing : exitEasing,
+          duration: contentPhaseDuration,
+          easing,
+          fill: "forwards",
         },
+      );
+      const enterAnimation = nextPanel.animate(
+        [
+          currentStyles.get(nextPanel) ?? {
+            opacity: 0,
+            transform: `translateX(${direction * contentTravelDistance}px)`,
+          },
+          { opacity: 1, transform: "translateX(0)" },
+        ],
+        { duration: contentPhaseDuration * 2, easing },
       );
 
       try {
         await exitAnimation.finished;
-      } catch {
-        return;
-      }
-
-      if (token !== this.transitionToken || this.activeIndex !== nextIndex) {
-        return;
-      }
-
-      visiblePanel.hidden = true;
-      this.showPanel(nextPanel);
-      const enterAnimation = nextPanel.animate(
-        reducedMotion
-          ? [{ opacity: contentSwitchOpacity }, { opacity: 1 }]
-          : [
-              {
-                opacity: contentSwitchOpacity,
-                transform: `translateX(${direction * contentTravelDistance}px)`,
-              },
-              { opacity: 1, transform: "translateX(0)" },
-            ],
-        {
-          duration: reducedMotion ? 60 : contentPhaseDuration,
-          easing,
-        },
-      );
-
-      try {
+        if (token !== this.transitionToken) return;
+        visiblePanel.hidden = true;
+        exitAnimation.cancel();
         await enterAnimation.finished;
       } catch {
         return;
@@ -434,9 +469,10 @@ const menuId = "desktop-navigation-menu";
       if (this.activeIndex === -1) return;
       this.cancelClose();
       this.transitionToken += 1;
-      this.panels.forEach((panel) =>
-        panel.getAnimations().forEach((animation) => animation.cancel()),
-      );
+      this.panels.forEach((panel, index) => {
+        panel.getAnimations().forEach((animation) => animation.cancel());
+        panel.hidden = index !== this.activeIndex;
+      });
       this.activeIndex = -1;
       this.dataset.open = "false";
       this.triggers.forEach((trigger) =>
@@ -457,6 +493,31 @@ const menuId = "desktop-navigation-menu";
 </script>
 
 <style>
+  header-menu[data-resizing="true"] {
+    --menu-resize-duration: 240ms;
+  }
+
+  [data-hover-corridor] {
+    transition: width var(--menu-resize-duration, 0ms)
+      cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  header-menu[data-products-open="true"] [data-hover-corridor],
+  header-menu[data-products-open="true"] [data-menu-viewport] {
+    width: min(1332px, calc(100vw - 40px));
+  }
+
+  [data-menu-panel] {
+    --panel-width: min(896px, calc(100vw - 40px));
+    left: 50%;
+    width: var(--panel-width);
+    margin-left: calc(var(--panel-width) / -2);
+  }
+
+  [data-products-panel] {
+    --panel-width: min(1332px, calc(100vw - 40px));
+  }
+
   .navigation-menu-link::before {
     position: absolute;
     inset: 0;
@@ -485,6 +546,17 @@ const menuId = "desktop-navigation-menu";
   }
 
   @media (prefers-reduced-motion: reduce) {
+    [data-menu-panel] {
+      --panel-width: min(896px, calc(100vw - 40px));
+      left: 50%;
+      width: var(--panel-width);
+      margin-left: calc(var(--panel-width) / -2);
+    }
+
+    [data-products-panel] {
+      --panel-width: min(1332px, calc(100vw - 40px));
+    }
+
     .navigation-menu-link::before {
       transform: none;
       transition: none;
@@ -498,7 +570,8 @@ const menuId = "desktop-navigation-menu";
     transform-origin: top center;
     transition:
       opacity 160ms cubic-bezier(0.64, 0, 0.78, 0),
-      transform 180ms cubic-bezier(0.64, 0, 0.78, 0);
+      transform 180ms cubic-bezier(0.64, 0, 0.78, 0),
+      width var(--menu-resize-duration, 0ms) cubic-bezier(0.22, 1, 0.36, 1);
     will-change: opacity, transform;
   }
 
@@ -508,7 +581,8 @@ const menuId = "desktop-navigation-menu";
     transform: translateX(-50%) translateY(0) scale(1);
     transition:
       opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      width var(--menu-resize-duration, 0ms) cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .navigation-feature-halo {
@@ -523,6 +597,10 @@ const menuId = "desktop-navigation-menu";
     pointer-events: none;
   }
 
+  .navigation-feature-halo--behind {
+    z-index: 0;
+  }
+
   .navigation-feature-halo::before {
     position: absolute;
     inset: -21.93%;
@@ -532,14 +610,15 @@ const menuId = "desktop-navigation-menu";
   }
 
   @media (prefers-reduced-motion: reduce) {
+    [data-hover-corridor],
     [data-menu-viewport] {
       transform: translateX(-50%);
-      transition: opacity 120ms linear;
+      transition: none;
     }
 
     header-menu[data-open="true"] [data-menu-viewport] {
       transform: translateX(-50%);
-      transition: opacity 120ms linear;
+      transition: none;
     }
   }
 
