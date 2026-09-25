@@ -22,7 +22,7 @@ const titleBadge =
       ? { text: entry.data.sidebar.badge, variant: "default" as const }
       : undefined);
 const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
-const markdownUrl = pathname ? `/md${pathname}.md` : "/md/index.md";
+const markdownUrl = pathname ? `${pathname}.md` : "/index.md";
 const activeSection = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
 
 function firstHref(entries: SidebarEntry[]): string | undefined {

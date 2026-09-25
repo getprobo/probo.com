@@ -32,7 +32,7 @@ const seoTitle = title
   : "Open-Source Compliance Platform | Probo";
 const canonical = getCanonicalUrl(Astro.url);
 const pagePath = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
-const markdownAlternate = pagePath ? `/md${pagePath}.md` : "/md/index.md";
+const markdownAlternate = pagePath ? `${pagePath}.md` : "/index.md";
 ---
 
 <!doctype html>

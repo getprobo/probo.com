@@ -1,7 +1,4 @@
 # Markdown mirrors are for LLMs, not search indexing
-/md/*
-  X-Robots-Tag: noindex, nofollow
-
 /*.md
   X-Robots-Tag: noindex, nofollow
 

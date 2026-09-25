@@ -284,7 +284,7 @@ export function generateMarkdown(): AstroIntegration {
           const pathname = new URL(request.url || "/", "http://localhost")
             .pathname;
           if (
-            (pathname !== "/md/docs.md" && !pathname.startsWith("/md/docs/")) ||
+            (pathname !== "/docs.md" && !pathname.startsWith("/docs/")) ||
             !pathname.endsWith(".md")
           ) {
             next();
@@ -292,7 +292,7 @@ export function generateMarkdown(): AstroIntegration {
           }
 
           const relativePath = pathname
-            .slice("/md/docs".length, -".md".length)
+            .slice("/docs".length, -".md".length)
             .replace(/^\/+/, "");
           const candidates = relativePath
             ? [
@@ -341,7 +341,7 @@ export function generateMarkdown(): AstroIntegration {
             .replace(/(^|\/)index$/, "")
             .replace(/\/$/, "");
           const pageUrl = `https://www.probo.com/docs${routePath ? `/${routePath}` : ""}`;
-          const markdownUrl = `https://www.probo.com/md/docs/${relPath}`;
+          const markdownUrl = `${pageUrl}.md`;
 
           mkdirSync(dirname(outPath), { recursive: true });
           writeFileSync(outPath, md);
@@ -371,16 +371,16 @@ export function generateMarkdown(): AstroIntegration {
         ];
         llmsEntries.sort((left, right) => {
           const rank = (url: string) => {
-            const path = new URL(url).pathname.replace(/^\/md\/docs\//, "");
-            if (path === "index.md") return 0;
+            const path = `${new URL(url).pathname.replace(/^\/docs\/?/, "")}/`;
+            if (path === "/") return 0;
             const index = sectionOrder.findIndex((section) =>
               path.startsWith(section),
             );
             return index === -1 ? sectionOrder.length + 1 : index + 1;
           };
           return (
-            rank(left.markdownUrl) - rank(right.markdownUrl) ||
-            left.markdownUrl.localeCompare(right.markdownUrl)
+            rank(left.pageUrl) - rank(right.pageUrl) ||
+            left.pageUrl.localeCompare(right.pageUrl)
           );
         });
 

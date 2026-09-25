@@ -23,8 +23,9 @@ function movedDocsRedirects(fromPrefix, toPrefix, exactDestination = toPrefix) {
 const redirect = (destination) => ({ status: 301, destination });
 
 /**
- * Mirror HTML docs redirects under /md/*.md so leftover markdown URLs
- * resolve to the same final document instead of 404ing.
+ * Mirror exact HTML docs redirects as .md URLs so leftover markdown URLs
+ * resolve to the same final document instead of 404ing. Wildcard rules
+ * already match .md URLs, so they need no mirror.
  * @param {Record<string, { status: 301; destination: string }>} htmlRedirects
  * @returns {Record<string, { status: 301; destination: string }>}
  */
@@ -50,15 +51,14 @@ function markdownDocsMirrors(htmlRedirects) {
     if (!prefixes.includes(fromPrefix) && !prefixes.includes(from)) {
       continue;
     }
-    if (from.includes("[") || rule.destination.startsWith("https://")) continue;
-    if (from.endsWith("/*")) {
-      extra[`/md${from}`] = {
-        status: 301,
-        destination: `/md${rule.destination}`,
-      };
-    } else {
-      extra[`/md${from}.md`] = redirect(`/md${rule.destination}.md`);
+    if (
+      from.endsWith("/*") ||
+      from.includes("[") ||
+      rule.destination.startsWith("https://")
+    ) {
+      continue;
     }
+    extra[`${from}.md`] = redirect(`${rule.destination}.md`);
   }
   return extra;
 }

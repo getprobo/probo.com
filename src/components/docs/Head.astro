@@ -4,7 +4,7 @@ import PostHog from "../posthog.astro";
 
 const { head, entry, siteTitle } = Astro.locals.starlightRoute;
 const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
-const markdownAlternate = pathname ? `/md${pathname}.md` : "/md/index.md";
+const markdownAlternate = pathname ? `${pathname}.md` : "/index.md";
 const seoTitle = `${entry.data.title} | ${siteTitle}`;
 const description = entry.data.description;
 ---

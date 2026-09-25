@@ -6,6 +6,11 @@ export async function onRequest(context: {
   };
 }): Promise<Response> {
   const url = new URL(context.request.url);
+  if (url.pathname.startsWith("/md/")) {
+    url.pathname = url.pathname.slice("/md".length);
+    return Response.redirect(url.toString(), 301);
+  }
+
   const isMarkdownPath =
     url.pathname.endsWith(".md") || url.pathname.startsWith("/md/");
   const isMarkdownAlternate =
