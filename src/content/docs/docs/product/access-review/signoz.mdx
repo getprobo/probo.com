@@ -6,7 +6,7 @@ description: Connect SigNoz as an access review source using a service account A
 Probo reads your SigNoz organization through the SigNoz API so you can review who has access. The roster covers the organization's members and its service accounts. Every SigNoz API key belongs to a service account and acts with that account's roles, up to and including SigNoz-Admin.
 
 :::caution
-Use a **service account API key**, created under **Settings** > **Service Accounts** and sent in the `SIGNOZ-API-KEY` header. An **ingestion key**, created under **Settings** > **Ingestion Settings**, does not work: it only authenticates telemetry sent to the ingest endpoints. SigNoz documents no prefix that tells the two apart, so go by where the key was created.
+Use a **service account API key**, created under **Settings** > **Service Accounts** and sent in the `SIGNOZ-API-KEY` header. An **ingestion key**, created under **Settings** > **Ingestion**, will **not** work, because it only authenticates telemetry sent to the ingest endpoints. SigNoz documents no prefix that tells the two apart, so go by where the key was created.
 :::
 
 ## Prerequisites
@@ -14,8 +14,8 @@ Use a **service account API key**, created under **Settings** > **Service Accoun
 - Probo organization administrator access
 - A SigNoz user holding the **SigNoz-Admin** (`signoz-admin`) role. SigNoz states the requirement as a role with the transactions needed to create a service account, attach a role to it and create its API key. `signoz-admin` is the only managed role that carries them
 - A service account assigned the **SigNoz-Admin** (`signoz-admin`) role, so its key can list the organization's members, service accounts, roles and API keys. The member endpoints Probo reads are admin only, and SigNoz's fine-grained access control does not cover the user resource yet, so no narrower role can read members
-- SigNoz v0.118.0 or later. A self-hosted instance on an older version does not serve the role endpoints Probo reads
-- The **Base URL** of your SigNoz instance, which the Connect dialog asks for alongside the key. It is the `http` or `https` address you use to reach SigNoz: on SigNoz Cloud that is your instance URL (for example `https://your-instance.signoz.cloud`), and on a self-hosted deployment it is your own server address. Include the base path when SigNoz is served under one, for example `https://example.com/signoz`. Leave off any query string or fragment, and make sure the instance is reachable from the public internet
+- SigNoz v0.118.0 or later. A self-hosted instance on an older version does not serve all the member and role endpoints Probo reads
+- The **Base URL** of your SigNoz instance, which the Connect dialog asks for alongside the key. It is the `http` or `https` address you use to reach SigNoz: on SigNoz Cloud that is your instance URL, which includes its region (for example `https://your-instance.us.signoz.cloud`), and on a self-hosted deployment it is your own server address. Include the base path when SigNoz is served under one, for example `https://example.com/signoz`. Leave off any query string or fragment, and make sure the instance is reachable from the public internet
 
 ## Collected Fields
 
@@ -33,18 +33,20 @@ Use a **service account API key**, created under **Settings** > **Service Accoun
 
 SigNoz lists pending invitations in the same Members table as active users, so someone who was invited but has not accepted still appears in the campaign, marked inactive.
 
-A deleted service account also stays in the campaign, marked inactive. SigNoz revokes its keys but keeps its roles for audit, so it can still show as an administrator. Service accounts are listed with API key as their authentication method, since an API key is the only way one authenticates. The service account whose key connects Probo is listed too, with the SigNoz-Admin role it needs.
+A deleted service account also stays in the campaign, marked inactive. SigNoz revokes its keys but keeps its roles for audit, so it can still show as an administrator. Service accounts are listed with API key as their authentication method, since an API key is the only way one authenticates. The service account whose key connects Probo is listed too, with the SigNoz-Admin role it needs. Its last login follows Probo's own syncs, since SigNoz records every request made with a key.
 
 ## Step 1: Create a Service Account API Key
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
+![The Overview tab of a SigNoz service account, with signoz-admin selected in the Roles dropdown](/docs/access-review/signoz-service-account-role.webp)
+
 <Steps>
 
 1. In SigNoz, signed in with the **SigNoz-Admin** role, open **Settings** and go to **Service Accounts**.
-2. Click **New Service Account**, enter a name (lowercase letters, numbers and hyphens only, e.g. `probo-access-review`), and click **Create**.
-3. Open the service account. In the **Overview** tab, use the **Roles** dropdown to assign the **SigNoz-Admin** role, then click **Save**.
-4. Open the **Keys** tab, click **Add Key**, name the key (e.g. `Probo Access Review`), leave the expiration date empty so the key stays valid until it is revoked, and click **Create**. Copy the key and store it securely. SigNoz shows it only once.
+2. Click **New Service Account**, enter a **Name** in lowercase letters and hyphens, starting with a letter (e.g. `probo-access-review`), and click **Create Service Account**.
+3. Open the service account. In the **Overview** tab, select `signoz-admin` in the **Roles** dropdown, then click **Save Changes**.
+4. Open the **Keys** tab, click **Add Key**, enter a **Name** in lowercase letters and hyphens, starting with a letter (e.g. `probo-access-review`), keep **Expiration** on **No Expiration** so the key stays valid until it is revoked, and click **Create Key**. Copy the key and store it securely. SigNoz shows it only once.
 
 </Steps>
 
@@ -61,7 +63,7 @@ Probo names the source after your SigNoz organization and pulls its members and 
 
 ## Troubleshooting
 
-- **The source says the SigNoz credentials are invalid.** SigNoz rejected the key, or Probo did not reach the SigNoz API. Confirm it is a service account API key from **Settings** > **Service Accounts** rather than an ingestion key from **Settings** > **Ingestion Settings**, that it has not expired or been revoked, and that the **Base URL** points at the instance the key was created on. On a self-hosted instance, also check that SigNoz runs v0.118.0 or later: an older version answers Probo with its web page instead of the API, which the source reports the same way.
-- **The source says SigNoz refused the request.** The key is valid, but the service account does not hold the **SigNoz-Admin** role, which SigNoz requires to list members and their roles. Probo saves the connection anyway and flags the source afterwards. Open the service account's **Overview** tab, assign the role and click **Save**. The existing key picks up the role, so you do not need to reconnect: reload the page in Probo.
-- **Key creation is unavailable.** By default only the `signoz-admin` role can create service accounts and their keys. Ask a SigNoz admin to create the key. On SigNoz Cloud and Self-Hosted Enterprise an admin can instead grant a custom role scoped to that one service account. That needs an active SigNoz license and is not available on Self-Hosted Community.
+- **The source says the SigNoz credentials are invalid.** SigNoz rejected the key, or Probo did not reach the SigNoz API. Confirm it is a service account API key from **Settings** > **Service Accounts** rather than an ingestion key from **Settings** > **Ingestion**, that it has not expired or been revoked, and that the **Base URL** points at the instance the key was created on. On a self-hosted instance, also check that SigNoz runs v0.118.0 or later: an older version answers Probo with its web page instead of the API, which the source reports the same way.
+- **The source says SigNoz refused this request.** The key is valid, but the service account does not hold the **SigNoz-Admin** role, which SigNoz requires to list members and their roles. Probo saves the connection anyway and flags the source afterwards. Open the service account's **Overview** tab, select `signoz-admin` in **Roles** and click **Save Changes**. The existing key picks up the role, so you do not need to reconnect: reload the page in Probo. The source keeps its generic name, though: SigNoz also refused the organization lookup that Probo runs once after the source is created.
+- **Key creation is unavailable.** By default only the `signoz-admin` role can create service accounts and their keys. Ask a SigNoz admin to create the key. On SigNoz Cloud, and on Self-Hosted Enterprise versions that support custom roles for service accounts, an admin can instead grant a custom role scoped to that one service account. That needs an active SigNoz license and is not available on Self-Hosted Community.
 - **A self-hosted source cannot be reached.** Probo calls the **Base URL** from its own infrastructure, so it cannot connect to a SigNoz deployment that is only reachable on a private network or on `localhost`.
