@@ -137,6 +137,8 @@ const changelog = defineCollection({
           "Internationalization",
           "Integrations",
           "Infra",
+          "Console",
+          "Console",
         ]),
       )
       .default([]),
