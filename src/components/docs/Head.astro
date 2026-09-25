@@ -2,11 +2,44 @@
 import { ClientRouter } from "astro:transitions";
 import PostHog from "../posthog.astro";
 
-const { head, entry, siteTitle } = Astro.locals.starlightRoute;
+const { head, entry, siteTitle, lastUpdated } = Astro.locals.starlightRoute;
 const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
 const markdownAlternate = pathname ? `${pathname}.md` : "/index.md";
-const seoTitle = `${entry.data.title} | ${siteTitle}`;
+const seoTitle =
+  head.find(({ tag }) => tag === "title")?.content ??
+  `${entry.data.title} | ${siteTitle}`;
 const description = entry.data.description;
+const pageUrl = `https://www.probo.com${pathname || "/docs"}`;
+const isDocsHome = pathname === "/docs";
+const docsSchema = {
+  "@context": "https://schema.org",
+  "@type": isDocsHome ? "WebPage" : "TechArticle",
+  ...(isDocsHome
+    ? { name: "Probo Docs", alternateName: "Probo Documentation" }
+    : { headline: entry.data.title }),
+  ...(description && { description }),
+  url: pageUrl,
+  inLanguage: "en",
+  ...(lastUpdated && { dateModified: lastUpdated.toISOString() }),
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Probo Docs",
+    url: "https://www.probo.com/docs",
+  },
+  publisher: {
+    "@type": "Organization",
+    "@id": "https://www.probo.com/#organization",
+    name: "Probo",
+    url: "https://www.probo.com",
+    logo: "https://www.probo.com/probo-logo.svg",
+    sameAs: [
+      "https://github.com/getprobo/probo",
+      "https://www.linkedin.com/company/getprobo",
+      "https://twitter.com/getprobo",
+      "https://www.ycombinator.com/companies/probo",
+    ],
+  },
+};
 ---
 
 {
@@ -32,6 +65,7 @@ const description = entry.data.description;
   href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
   rel="stylesheet"
 />
+<script type="application/ld+json" set:html={JSON.stringify(docsSchema)} />
 <link rel="alternate" type="text/markdown" href={markdownAlternate} />
 <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs index" />
 <link

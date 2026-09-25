@@ -98,7 +98,7 @@ export default defineConfig({
         PageSidebar: "./src/components/docs/PageSidebar.astro",
       },
       disable404Route: true,
-      title: "Probo Documentation",
+      title: "Probo Docs",
       favicon: "/favicon-192.png",
       logo: {
         replacesTitle: true,
