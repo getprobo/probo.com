@@ -39,6 +39,7 @@ const accessReviewConnectorItems = [
   { label: "Okta", slug: "docs/product/access-review/okta" },
   { label: "OpenAI", slug: "docs/product/access-review/openai" },
   { label: "OpenRouter", slug: "docs/product/access-review/openrouter" },
+  { label: "OVHcloud", slug: "docs/product/access-review/ovhcloud" },
   { label: "Pylon", slug: "docs/product/access-review/pylon" },
   { label: "Qovery", slug: "docs/product/access-review/qovery" },
   { label: "Railway", slug: "docs/product/access-review/railway" },
