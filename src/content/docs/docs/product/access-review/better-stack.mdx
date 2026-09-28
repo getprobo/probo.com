@@ -6,14 +6,14 @@ description: Connect Better Stack as an access review source using a Global API 
 Probo reads the members of one Better Stack team through the Uptime API so you can review who has access.
 
 :::caution
-Create a **Global API token** in **Better Stack** > **API tokens** and enter the **Team Name** of the team you are reviewing. The team members endpoint requires that name when a global token calls it. The **Team-based tokens** tab holds per-team tokens instead: an **Uptime API token**, documented for Uptime resources, and a **Telemetry API token**, documented for Telemetry resources including Errors rather than for the Uptime API endpoint Probo reads. Better Stack documents no prefix or format for any of them, so check which section a token came from instead of reading its value.
+Create a **Global API token** in **Better Stack** > **API tokens** and enter the exact **Team Name** of the team you are reviewing. A team-based **Uptime API token** also works. A **Telemetry API token** does not work, because the team members endpoint accepts only Global and Uptime API tokens. The tokens look alike, so check which section a token came from instead of reading its value.
 :::
 
 ## Prerequisites
 
 - Probo organization administrator access
 - The **Admin** role in Better Stack. Only Admins can edit API tokens, and a Team lead can only view them
-- The **Team Name** of the team Probo should review, which the Connect dialog asks for alongside the token. Better Stack lists your teams at **Settings** > **Teams**. Enter the name exactly as Better Stack spells it
+- The **Team Name** of the team Probo should review, which the Connect dialog asks for alongside the token. Better Stack lists your teams at **Settings** > **Teams**. Enter the name exactly as Better Stack spells it, including capitalization
 
 ## Collected Fields
 
@@ -22,26 +22,26 @@ Create a **Global API token** in **Better Stack** > **API tokens** and enter the
 | Name        | `first_name`, `last_name`                                | Probo joins the two into one name and drops a missing part. A pending invitation carries neither, so the name stays empty                                                                                                                 |
 | Email       | `email`                                                  | Probo skips a record that comes back without an email address                                                                                                                                                                             |
 | Role        | `role`                                                   | Probo shows `admin`, `billing_admin`, `team_lead`, `responder` and `member` as Admin, Billing admin, Team lead, Responder and Member. Any other value, including `custom`, appears as returned. A record with no role is left without one |
-| Admin       | `role`                                                   | Flagged as an administrator when `role` is `admin` or `team_lead`. `billing_admin` is billing only and is not flagged, and neither is a custom role                                                                                       |
+| Admin       | `role`                                                   | Flagged as an administrator when `role` is `admin` or `team_lead`. `billing_admin` (billing only) and custom roles are not flagged, so check a custom role's permissions in Better Stack                                                  |
 | Status      | `type`                                                   | Probo lists `team_member` as active and `team_member_invitation` as inactive. Any other type leaves the status unknown                                                                                                                    |
 | MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                                                                                           |
 | Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                                                                                           |
 | External ID | `id`                                                     | Stable identifier used to track the account across reviews                                                                                                                                                                                |
 | Created at  | `created_at`                                             | When the member joined the team. Probo falls back to `invited_at` when `created_at` is missing, as on a pending invitation                                                                                                                |
 
-Probo lists members who have been invited but have not yet accepted alongside confirmed members, marked inactive. The role Better Stack returns is the one the member holds in the team you named, not in any other team the same person belongs to.
+Probo also lists members who have been invited but have not yet accepted, and marks them inactive. The role Better Stack returns is the member's role in the team being listed. `admin` and `billing_admin` are organization-wide roles in Better Stack, so they are the same in every team.
 
 ## Step 1: Create a Global API Token
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating a Global API token in the Better Stack API tokens settings](/docs/access-review/better-stack-create-api-key.webp)
+![Creating a read-only Global API token in the Better Stack API tokens settings](/docs/access-review/better-stack-create-api-key.webp)
 
 <Steps>
 
 1. In [Better Stack](https://betterstack.com/settings/global-api-tokens), signed in as an **Admin**, go to **API tokens** and find the **Global API tokens** section. A global token is valid across all of your teams, which is why the team members endpoint takes a team name.
-2. Enter a **Token name** (e.g. `Probo Access Review`), leave the permission set to **Read & write**, and click **Create**.
-3. Copy the token and store it securely. Existing tokens stay copyable from this screen, so you can retrieve it later.
+2. Enter a **Token name** (e.g. `Probo Access Review`), set the permission to **Read only**, and click **Create**. Read-only access is enough because Probo only reads team members.
+3. Copy the token and store it securely. Existing tokens show a **Copy** button on this screen, so you can retrieve the token later.
 
 </Steps>
 
@@ -54,11 +54,13 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 </Steps>
 
-Probo names the source after the team name you entered and pulls that team's members into your campaigns.
+When you click **Connect**, Probo uses the token to request that team's members from Better Stack. If Better Stack has no team by that name for the token, the dialog shows an error under **Team Name** and Probo does not save the connection. After you connect, Probo names the source after the team name you entered and pulls that team's members into your campaigns.
+
+With a team-based **Uptime API token**, Better Stack ignores the team name and lists the token's own team, so enter that team's name to keep the source label accurate.
 
 ## Troubleshooting
 
-- **Token rejected.** Confirm the token comes from the **Global API tokens** section, which is the kind Better Stack documents alongside the team name parameter. A **Telemetry API token** covers Telemetry resources including Errors, not the Uptime API.
-- **No members appear.** Check the **Team Name** against the names Better Stack shows at **Settings** > **Teams** and enter it exactly. A global token selects the team through that name.
+- **Token rejected.** Confirm the token is a **Global API token** or a team-based **Uptime API token**. Better Stack rejects a **Telemetry API token** on the team members endpoint. A token of the wrong kind is not caught when you connect: the source then shows **Better Stack credentials are invalid**.
+- **"Better Stack has no team with this name for this API token."** Better Stack matches team names exactly, including capitalization. Copy the name from **Settings** > **Teams**, or use a team-based **Uptime API token** for the team.
 - **Token creation is unavailable.** Editing API tokens is an Admin permission in Better Stack. A Team lead can view tokens but not create them, so ask an Admin.
-- **Roles do not match what the console shows.** The endpoint reports the role the member holds in the team being listed, so confirm the **Team Name** matches the team you meant to review. Custom roles are an Enterprise feature and come back as `custom`. Probo flags only `admin` and `team_lead` as administrators.
+- **Roles do not match what Better Stack shows.** The endpoint reports the role the member holds in the team being listed, so confirm the **Team Name** matches the team you meant to review. Custom roles are an Enterprise feature and come back as `custom`. Probo flags only `admin` and `team_lead` as administrators.

@@ -6,13 +6,13 @@ description: Connect Supabase as an access review source using a personal access
 Probo reads your Supabase organization's members through the Supabase Management API so you can review who has access.
 
 :::caution
-Use a Supabase **personal access token** (`sbp_...`) created on your account's **Access Tokens** page. Project API keys do not work: publishable keys (`sb_publishable_...`), secret keys (`sb_secret_...`) and the legacy `anon` and `service_role` JWTs all authenticate requests to a single project. The organization members endpoint is on the Management API at `api.supabase.com`, which accepts only a personal access token or an OAuth2 token.
+Use a Supabase **personal access token** (`sbp_…`) created on your account's **Access Tokens** page. Give it **Organization** resource access that includes the organization you want to review. A token left on the default **Project** resource access cannot read organization members. Project API keys do not work either. Publishable keys (`sb_publishable_…`), secret keys (`sb_secret_…`) and the legacy `anon` and `service_role` JWTs authenticate requests to a single project, but the organization members endpoint is on the Management API at `api.supabase.com`, which accepts only a personal access token or an OAuth2 token.
 :::
 
 ## Prerequisites
 
 - Probo organization administrator access
-- A Supabase account that is a member of the organization you want to review. Every organization role (**Owner**, **Administrator**, **Developer** and **Read-Only**) can list organization members. An unscoped personal access token has the same privileges as the account that created it
+- A Supabase account with an organization role in the organization you want to review. Every organization role (**Owner**, **Administrator**, **Developer** and **Read-Only**) can list organization members. An account with access to specific projects only cannot select the organization for an **Organization** token. A token never has more access than the account that created it
 - The **Organization Slug** of the organization Probo should review, which the Connect dialog asks for alongside the token. Supabase puts it in the dashboard URL while the organization is open: `supabase.com/dashboard/org/<organization-slug>`
 
 ## Collected Fields
@@ -33,13 +33,15 @@ Use a Supabase **personal access token** (`sbp_...`) created on your account's *
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Generate New Token dialog in Supabase account settings](/docs/access-review/supabase-create-api-key.webp)
+![The Generate token dialog in Supabase with Organization resource access selected](/docs/access-review/supabase-create-api-key.webp)
 
 <Steps>
 
-1. In the [Supabase dashboard](https://supabase.com/dashboard/account/tokens), go to **Account Settings** > **Access Tokens**.
-2. Click **Generate new token**, enter a **Name** (e.g. `Probo Access Review`), and set **Expires in**. The dialog defaults to 30 days, so pick a window that covers your review cycle, or **Never**.
-3. Click **Generate token**, then copy the token (`sbp_...`) and store it securely. Supabase shows it once and you cannot retrieve it afterwards.
+1. In the [Supabase dashboard](https://supabase.com/dashboard/account/tokens), go to **Account Settings** > **Access Tokens** and click **Generate new token**.
+2. Enter a **Name** (e.g. `Probo Access Review`) and set **Expires in**. The dialog defaults to 7 days, so pick **90 days** or a **Custom** date that covers your review cycle.
+3. Under **Resource access**, select **Organization** instead of the default **Project**, then choose the organization Probo should review in **Select organizations**.
+4. Under **Permissions**, open **Account and organization** and set **Organization Members** to **Read**. Probo reads nothing else, so leave the other permissions at **None**.
+5. Click **Review access**, then **Create token**. Copy the token (`sbp_…`) and store it securely. Supabase shows it once and you cannot retrieve it afterwards.
 
 </Steps>
 
@@ -52,11 +54,12 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 </Steps>
 
-Probo names the source after your organization slug and pulls its members into your campaigns.
+When you click **Connect**, Probo uses the token to request that organization's members from Supabase. If Supabase has no organization with that slug, the dialog shows an error under **Organization Slug**. If it accepts the token but refuses to list that organization's members, the error appears under **API Key**. In both cases Probo does not save the connection. After you connect, Probo names the source after your organization slug and pulls its members into your campaigns.
 
 ## Troubleshooting
 
-- **Token rejected.** Confirm it is a personal access token (`sbp_...`) and that it is still listed under **Account Settings** > **Access Tokens**. A project API key, whether publishable (`sb_publishable_...`), secret (`sb_secret_...`) or a legacy `anon` or `service_role` JWT, reaches only its own project and cannot read organization members.
-- **No members appear.** Check that the **Organization Slug** matches the value in the dashboard URL, `supabase.com/dashboard/org/<organization-slug>`, and that the account that created the token still belongs to that organization. A personal access token inherits its owner's access, so it stops reading the organization once that person leaves.
-- **Syncs worked and then stopped.** The **Expires in** field defaults to 30 days. Check whether the token is still listed on the **Access Tokens** page, then generate a replacement and update the source in Probo.
-- **A scoped token does not work.** Supabase also issues scoped personal access tokens, whose access is narrower than the account's own. If the token is scoped, generate an unscoped personal access token on the **Access Tokens** page and use that instead.
+- **Token rejected.** The Connect dialog only accepts a key that starts with `sbp_`, so a project API key is refused before it reaches Supabase. An expired or deleted personal access token is not caught when you connect: the source then shows **Supabase credentials are invalid**. Confirm the token is still listed under **Account Settings** > **Access Tokens**.
+- **"This access token cannot read the members of this organization."** Shown under **API Key**. The token has the default **Project** resource access, is scoped to other organizations, or belongs to an account that is not a member of this organization. Generate a token with **Organization** resource access that includes the organization and **Organization Members** set to **Read**.
+- **"Supabase has no organization with this slug."** Open the organization in the Supabase dashboard and copy the **Organization Slug** from the URL: `supabase.com/dashboard/org/<organization-slug>`.
+- **Syncs worked and then stopped.** The token has expired, or the account that created it has left the organization. A token has only its owner's access, so it stops reading the organization once that person leaves. The console cannot replace the token on an existing source. Generate a new token, **Delete** the source in **Connections**, and connect Supabase again with the new token. Campaigns that already include the deleted source stop fetching it, so start a new campaign to review it again.
+- **Using a legacy token.** A legacy token has full access to your account and shows a **LEGACY** badge on the **Access Tokens** page. Tokens created before Supabase introduced scoped tokens are legacy tokens, and so are tokens made with **Create legacy token**. A legacy token works, but it grants far more access than Probo needs. Prefer a token scoped as described in Step 1.
