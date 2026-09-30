@@ -74,8 +74,8 @@ const reviewSteps: ReviewStep[] = [
     },
     alt: "Identity provider directory syncing employees into Probo with the Employee role",
     bullets: [
-      "Push people from Okta over native SCIM as assignments change.",
       "Pull Google Workspace and Microsoft 365 users with SCIM Bridge on a schedule.",
+      "Push people from Okta over native SCIM as assignments change.",
       "Deactivate people in Probo when your directory deactivates them.",
     ],
   },
@@ -123,7 +123,7 @@ const reviewSteps: ReviewStep[] = [
     bullets: [
       "Run /probot login to link a Slack identity to a Probo account.",
       "Send approval and review requests as Slack messages with the right action buttons.",
-      "Let linked people drive Probo actions by talking to Probot in a channel.",
+      "Let linked people drive Probo actions, matching their role, by talking to Probot in a channel.",
     ],
   },
 ];
@@ -313,7 +313,7 @@ const softwareApplicationSchema = {
           class="motion-safe:animate-perspective-in mx-auto mb-6 max-w-[680px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
           style="animation-delay: 150ms"
         >
-          Your whole team’s compliance, in one portal.
+          Your team’s compliance tasks, in one portal.
         </h1>
         <p
           class="text-muted-foreground motion-safe:animate-perspective-in mx-auto mb-8 max-w-[520px] text-base"
