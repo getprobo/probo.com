@@ -1,0 +1,1397 @@
+---
+import "@phosphor-icons/web/regular";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
+import Button from "../../components/ui/Button.svelte";
+import LogosScroll from "../../components/LogosScroll.svelte";
+import LottiePlayer from "../../components/LottiePlayer.svelte";
+import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
+import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
+
+const pageTitle = "Employee Portal";
+const pageDescription =
+  "Give every employee one place to sign policies, approve documents, and enroll their laptop, while your identity provider keeps the list of people current.";
+
+const overviewFeatures = [
+  {
+    icon: "ph-squares-four",
+    title: "One portal for every employee",
+    description:
+      "Give each person a home dashboard that leads with what they still need to sign, approve, and enroll.",
+  },
+  {
+    icon: "ph-users-three",
+    title: "Provisioned from your identity provider",
+    description:
+      "Sync people over SCIM so each new hire lands in Probo with the Employee role.",
+  },
+  {
+    icon: "ph-signature",
+    title: "Sign and approve in the browser",
+    description:
+      "Let people read the latest version, check its history, and sign or approve without leaving the page.",
+  },
+  {
+    icon: "ph-laptop",
+    title: "Devices enrolled in two clicks",
+    description:
+      "Walk employees through downloading the Probo agent and enrolling their laptop from a guided wizard.",
+  },
+  {
+    icon: "ph-slack-logo",
+    title: "Compliance requests inside Slack",
+    description:
+      "Link each person’s Slack identity to Probo so approval requests arrive as messages with action buttons.",
+  },
+];
+
+type ReviewStep = {
+  title: string;
+  lottie: string;
+  foreground?: {
+    src: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  reverse?: boolean;
+  alt: string;
+  bullets: string[];
+};
+
+const reviewSteps: ReviewStep[] = [
+  {
+    title: "Provision everyone from your directory",
+    lottie: "/lottie/access-review/1.json",
+    foreground: {
+      src: "/employee-portal/workflow-directory-ui.svg",
+      x: 55,
+      y: 49,
+      width: 399,
+      height: 566,
+    },
+    alt: "Identity provider directory syncing employees into Probo with the Employee role",
+    bullets: [
+      "Push people from Okta over native SCIM as assignments change.",
+      "Pull Google Workspace and Microsoft 365 users with SCIM Bridge on a schedule.",
+      "Deactivate people in Probo when your directory deactivates them.",
+    ],
+  },
+  {
+    title: "Collect signatures and approvals in one place",
+    lottie: "/lottie/access-review/2.json",
+    foreground: {
+      src: "/employee-portal/workflow-signatures-approvals-ui.svg",
+      x: 32,
+      y: 83,
+      width: 476,
+      height: 581,
+    },
+    reverse: true,
+    alt: "Policy viewer with version history, signature action and signed PDF confirmation",
+    bullets: [
+      "Keep signature and approval queues separate, each with its own pagination.",
+      "Let employees flip through version history while they sign the latest version.",
+      "Generate a signed PDF and an esign record for every signature.",
+    ],
+  },
+  {
+    title: "Enroll laptops from the portal",
+    lottie: "/lottie/access-review/3.json",
+    foreground: {
+      src: "/probo-agent/workflow-enrollment-foreground.svg",
+      x: 41,
+      y: 41,
+      width: 421,
+      height: 623,
+    },
+    alt: "Guided device enrollment through the Employee Portal",
+    bullets: [
+      "Guide employees through downloading the Probo agent and enrolling it, step by step.",
+      "Skip the download step when the agent already runs on the device.",
+      "Issue a one-time token with CLI instructions for devices that cannot run the agent.",
+    ],
+  },
+  {
+    title: "Bring Probo into Slack",
+    // This composite animation already includes background variant 1.
+    lottie: "/lottie/trust-center/slack.json",
+    reverse: true,
+    alt: "Probot approval request in Slack with action buttons and linked account confirmation",
+    bullets: [
+      "Run /probot login to link a Slack identity to a Probo account.",
+      "Send approval and review requests as Slack messages with the right action buttons.",
+      "Let linked people drive Probo actions by talking to Probot in a channel.",
+    ],
+  },
+];
+
+const publishCards = [
+  {
+    illustration: "capability-signatures",
+    title: "Signatures",
+    description:
+      "List every document waiting for the employee’s signature, with a counter that stays put while they sign.",
+  },
+  {
+    illustration: "capability-approvals",
+    title: "Approvals",
+    description:
+      "Queue the documents a person must approve, paginated apart from signatures so nothing gets buried.",
+  },
+  {
+    illustration: "capability-documents",
+    title: "Documents",
+    description:
+      "Keep the policies each person already signed or approved, so they can reread them anytime.",
+  },
+  {
+    illustration: "capability-version-history",
+    title: "Version History",
+    description:
+      "Show past versions next to the current one, while sign and approve act on the latest.",
+  },
+  {
+    illustration: "capability-devices",
+    title: "Devices",
+    description:
+      "List the employee’s enrolled devices and their status, and register a new one from the same page.",
+  },
+  {
+    illustration: "capability-slack",
+    title: "Slack",
+    description:
+      "Connect the employee’s Probo account to Probot so requests reach them where they already work.",
+  },
+];
+
+const trustedLogos = [
+  {
+    src: "/clients/trace_for_good.svg",
+    alt: "Trace for Good",
+    class: "trusted-logo--trace",
+    width: 1023,
+    height: 154,
+  },
+  {
+    src: "/clients/jimo.svg",
+    alt: "Jimo",
+    class: "trusted-logo--jimo",
+    width: 72,
+    height: 36,
+  },
+  {
+    src: "/clients/lucis.svg",
+    alt: "Lucis",
+    class: "trusted-logo--lucis",
+    width: 246,
+    height: 74,
+  },
+  {
+    src: "/clients/filz.svg",
+    alt: "Filiz",
+    class: "trusted-logo--filiz",
+    width: 598,
+    height: 240,
+  },
+  {
+    src: "/clients/ahrefs.svg",
+    alt: "Ahrefs",
+    class: "trusted-logo--ahrefs",
+    width: 74,
+    height: 19,
+  },
+];
+
+const faqs = [
+  {
+    question: "How do our employees get access?",
+    answer:
+      "Automatically, once SCIM is connected. Every person your identity provider assigns or syncs lands in Probo with the Employee role, ready to use the Employee Portal.",
+  },
+  {
+    question: "Which identity providers are supported?",
+    answer:
+      "Okta, Google Workspace, and Microsoft 365. Okta pushes changes over native SCIM, while Google Workspace and Microsoft 365 sync through SCIM Bridge on a schedule.",
+  },
+  {
+    question: "What can an employee see?",
+    answer:
+      "Only their own work. The Employee role sees assigned documents and can sign and approve when asked, with no access to the rest of your compliance program.",
+  },
+  {
+    question: "Can employees read a policy before signing it?",
+    answer:
+      "Yes. The document viewer shows the latest version with its version history, so people can read the full text and look back at past versions before they sign.",
+  },
+  {
+    question: "Does a signature in the portal count as audit evidence?",
+    answer:
+      "Yes. Every signature produces a signed PDF and an esign record with the signer’s IP address and user agent, using the same consent wording as the rest of Probo.",
+  },
+  {
+    question: "Can we keep service accounts out of Probo?",
+    answer:
+      "Yes. SCIM Bridge exclusions keep identities such as service accounts or shared mailboxes out of the sync, and you can change anyone’s role in People afterward.",
+  },
+  {
+    question: "What happens when someone leaves?",
+    answer:
+      "They lose access. When your directory deactivates them, SCIM deactivates them in Probo, which blocks sign-in while keeping their record.",
+  },
+  {
+    question: "What if a device cannot run the Probo agent?",
+    answer:
+      "Enroll it manually. The Employee Portal issues a one-time token with CLI instructions, so IT can still cover the device.",
+  },
+  {
+    question: "Do employees have to use Slack?",
+    answer:
+      "No. Slack is optional. Linking with /probot login moves requests into Slack messages, and the same work stays available in the Employee Portal.",
+  },
+  {
+    question: "Which languages does the Employee Portal support?",
+    answer:
+      "Four. The Employee Portal ships in English, French, Dutch, and Spanish.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
+const softwareApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Probo Employee Portal",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: pageDescription,
+  url: "https://www.probo.com/products/employee-portal",
+  publisher: {
+    "@type": "Organization",
+    name: "Probo",
+    url: "https://www.probo.com",
+  },
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  ogImage="/employee-portal/hero-employee-portal.webp"
+  ogImageWidth={1146}
+  ogImageHeight={786}
+  ogImageAlt="Acme Employee Portal home with signatures, approvals, devices, and Slack"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareApplicationSchema)}
+  />
+  <main class="-mt-16 overflow-hidden pt-16">
+    <div class="relative isolate overflow-hidden">
+      <div
+        aria-hidden="true"
+        class="trust-hero-orb pointer-events-none absolute top-[-1314px] left-1/2 z-0 size-[2265px] rounded-full border-[350px] border-[#E6FF03] blur-[96px]"
+      >
+      </div>
+
+      <section class="relative z-10 container py-16 text-center sm:py-24">
+        <h1
+          class="motion-safe:animate-perspective-in mx-auto mb-6 max-w-[680px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
+          style="animation-delay: 150ms"
+        >
+          Your whole team’s compliance, in one portal.
+        </h1>
+        <p
+          class="text-muted-foreground motion-safe:animate-perspective-in mx-auto mb-8 max-w-[520px] text-base"
+          style="animation-delay: 350ms"
+        >
+          {pageDescription}
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button
+            href="/contact"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 400ms"
+          >
+            Book a demo
+          </Button>
+          <Button
+            href="/docs/product/identity-and-access"
+            variant="secondary"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 450ms">Read the docs</Button
+          >
+        </div>
+      </section>
+
+      <section class="relative z-10 container pb-0">
+        <div class="access-review-browser">
+          <img
+            src="/employee-portal/hero-employee-portal.svg"
+            alt="Acme Employee Portal home with signatures, approvals, devices, and Slack"
+            width="1146"
+            height="786"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            class="motion-safe:animate-slide-in"
+            style="animation-delay: 600ms"
+          />
+        </div>
+      </section>
+    </div>
+
+    <section class="container pt-16 pb-0 text-center sm:pt-32">
+      <h2
+        class="mx-auto max-w-[552px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance text-[#141e12]"
+        data-trust-reveal
+      >
+        Everything your employees owe the compliance program, in one place.
+      </h2>
+      <p
+        class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+        data-trust-reveal
+        style="--trust-reveal-delay: 100ms"
+      >
+        Give each person a home for what they need to sign, approve, and enroll,
+        without handing them the admin console.
+      </p>
+
+      <div class="overview-feature-grid mt-12">
+        {
+          overviewFeatures.map((feature, index) => (
+            <div
+              class="overview-feature"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <i
+                class:list={["ph overview-feature-icon", feature.icon]}
+                aria-hidden="true"
+              />
+              <div class="overview-feature-copy">
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section id="how-it-works" class="pt-16 pb-0 sm:pt-32">
+      <div class="container mb-12 text-center sm:mb-16">
+        <h2
+          class="mx-auto max-w-[600px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          Give employees self-service without losing the audit trail
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Provision people from your directory, collect signatures and approvals
+          in the portal, and cover devices and Slack from the same account.
+        </p>
+      </div>
+
+      <div class="space-y-8 sm:space-y-12">
+        {
+          reviewSteps.map((feature, index) => (
+            <div
+              class:list={[
+                "container grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-16",
+              ]}
+              data-trust-reveal={index === 0 ? undefined : true}
+              style={`--trust-reveal-delay: ${index * 80}ms`}
+            >
+              <div
+                class:list={[
+                  "bg-subtle relative isolate mx-auto aspect-[508/664] w-full max-w-[508px] overflow-hidden rounded-2xl",
+                  feature.reverse && "lg:order-2",
+                ]}
+                data-review-visual
+                data-review-asset-visual
+                style={`--review-asset-x: ${feature.reverse ? "104px" : "-96px"}; --review-asset-y: ${index === 0 || feature.reverse ? "0px" : "64px"}; --review-asset-scale: ${index === 0 ? 1 : 0.98}; --review-asset-duration: ${feature.reverse ? "820ms" : "860ms"};`}
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 z-0"
+                  aria-hidden={feature.foreground ? true : undefined}
+                >
+                  <LottiePlayer
+                    client:visible
+                    src={feature.lottie}
+                    label={`${feature.title} animation`}
+                    class="size-full origin-center scale-[1.12] transform-gpu"
+                  />
+                </div>
+                {feature.foreground ? (
+                  <div
+                    class="review-asset pointer-events-none absolute inset-0 z-10"
+                    role="img"
+                    aria-label={feature.alt}
+                  >
+                    <img
+                      src={feature.foreground.src}
+                      alt=""
+                      width={feature.foreground.width}
+                      height={feature.foreground.height}
+                      loading="lazy"
+                      decoding="async"
+                      class="absolute block h-auto max-w-none"
+                      style={`left: ${(feature.foreground.x / 508) * 100}%; top: ${(feature.foreground.y / 664) * 100}%; width: ${(feature.foreground.width / 508) * 100}%;`}
+                    />
+                  </div>
+                ) : null}
+              </div>
+
+              <div
+                class:list={[
+                  "mx-auto w-full max-w-[508px] min-w-0",
+                  feature.reverse ? "lg:order-1 lg:pr-16" : "lg:pl-16",
+                ]}
+                data-trust-reveal={index === 0 ? true : undefined}
+              >
+                <h3 class="mb-6 text-[24px] leading-8 font-semibold tracking-[-0.6px]">
+                  {feature.title}
+                </h3>
+                <ul class="text-muted-foreground space-y-3 text-[16px] leading-6">
+                  {feature.bullets.map((bullet) => (
+                    <li class="flex gap-2">
+                      <i
+                        class="ph ph-check inline-flex size-6 shrink-0 items-center justify-center text-[24px] leading-none text-current"
+                        aria-hidden="true"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="mb-16 text-center">
+        <h2
+          class="mx-auto max-w-[560px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          All your employee compliance work, organized for audit
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Organize signatures, approvals, signed policies, devices, and Slack in
+          one portal instead of email reminders and device spreadsheets.
+        </p>
+      </div>
+
+      <div class="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          publishCards.map((card, index) => (
+            <article
+              class="mx-auto flex w-full max-w-[508px] flex-col gap-6"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <div
+                class="aspect-square w-full overflow-hidden"
+                data-review-asset-visual
+              >
+                <img
+                  src={`/employee-portal/${card.illustration}.webp`}
+                  srcset={`/employee-portal/${card.illustration}.webp 344w, /employee-portal/${card.illustration}-2x.webp 688w, /employee-portal/${card.illustration}-3x.webp 1032w`}
+                  sizes="(min-width: 1120px) 344px, (min-width: 1024px) calc((100vw - 88px) / 3), (min-width: 640px) calc((100vw - 64px) / 2), (min-width: 548px) 508px, calc(100vw - 40px)"
+                  alt=""
+                  aria-hidden="true"
+                  width="344"
+                  height="344"
+                  loading="lazy"
+                  decoding="async"
+                  class="review-asset block aspect-square h-auto w-full"
+                />
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="text-[20px] leading-7 font-semibold tracking-[-0.4px]">
+                  {card.title}
+                </h3>
+                <p class="text-muted-foreground text-[16px] leading-6">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="pb-12 text-center sm:pb-16">
+        <h2
+          class="text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+          data-trust-reveal
+        >
+          Trusted by 130+ companies
+        </h2>
+        <p
+          class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Compliance teams use Probo to collect policy sign-offs, keep document
+          approvals moving, and get every work device enrolled.
+        </p>
+      </div>
+
+      <div class="trusted-showcase">
+        <div
+          class="trusted-photo-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          <Image
+            src={BlaxelFounders}
+            alt="Paul Sinai and the Blaxel team"
+            width={528}
+            height={528}
+            densities={[1, 2]}
+            class="trusted-photo"
+            loading="lazy"
+          />
+        </div>
+
+        <div
+          class="trusted-quote-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 180ms"
+        >
+          <span class="trusted-quote-halo" aria-hidden="true"></span>
+          <div class="trusted-quote-content">
+            <blockquote class="trusted-quote">
+              &ldquo;Probo handled our SOC 2 and compliance, so we could focus
+              on building.&rdquo;
+            </blockquote>
+
+            <div class="trusted-author">
+              <div class="trusted-author-copy">
+                <div class="trusted-author-name">Paul Sinai</div>
+                <div class="trusted-author-role">
+                  CEO &amp; Co-founder of Blaxel
+                </div>
+              </div>
+              <Image
+                src={PaulSinai}
+                alt="Paul Sinai"
+                width={48}
+                height={48}
+                densities={[1, 2]}
+                class="trusted-avatar"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <div class="trusted-logo-block">
+            <p>Trusted by teams building compliance-ready workflows</p>
+            <div class="trusted-logo-rail" aria-label="Trusted companies">
+              <LogosScroll class="trusted-logo-ticker" client:load>
+                {
+                  trustedLogos.map((logo) => (
+                    <span class:list={["trusted-logo-item", logo.class]}>
+                      <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={logo.width}
+                        height={logo.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  ))
+                }
+              </LogosScroll>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container pt-16 sm:pt-32">
+      <h2
+        class="mb-6 text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+        data-trust-reveal
+      >
+        Questions, answered
+      </h2>
+      <div class="faq-accordion mx-auto max-w-[768px]" data-faq-accordion>
+        {
+          faqs.map((faq, index) => (
+            <div
+              class="faq-item"
+              data-faq-item
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 60}ms`}
+            >
+              <h3>
+                <button
+                  class="faq-trigger"
+                  type="button"
+                  id={`employee-portal-faq-trigger-${index}`}
+                  aria-expanded="false"
+                  aria-controls={`employee-portal-faq-panel-${index}`}
+                  data-faq-trigger
+                >
+                  <span>{faq.question}</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <i class="ph ph-plus faq-icon-plus" />
+                    <i class="ph ph-minus faq-icon-minus" />
+                  </span>
+                </button>
+              </h3>
+              <div
+                class="faq-panel"
+                id={`employee-portal-faq-panel-${index}`}
+                role="region"
+                aria-labelledby={`employee-portal-faq-trigger-${index}`}
+                aria-hidden="true"
+                data-faq-panel
+              >
+                <div class="faq-panel-inner">
+                  <p>{faq.answer}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+    <ProductDiscovery />
+  </main>
+</Layout>
+
+<script>
+  const initEmployeePortalAnimations = () => {
+    const assetVisuals = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-review-asset-visual]"),
+    );
+    const revealTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-trust-reveal]"),
+    );
+
+    if (assetVisuals.length === 0 && revealTargets.length === 0) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      assetVisuals.forEach((visual) => {
+        visual.classList.add("is-visible");
+      });
+      revealTargets.forEach((target) => {
+        target.classList.add("is-visible");
+      });
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    const assetObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          assetObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.35 },
+    );
+
+    revealTargets.forEach((target) => {
+      if (target.dataset.revealReady === "true") {
+        return;
+      }
+
+      target.dataset.revealReady = "true";
+      target.classList.add("is-awaiting-reveal");
+      revealObserver.observe(target);
+    });
+
+    assetVisuals.forEach((visual) => {
+      if (visual.dataset.motionReady === "true") {
+        return;
+      }
+
+      visual.dataset.motionReady = "true";
+      visual.classList.add("is-awaiting-animation");
+      assetObserver.observe(visual);
+    });
+  };
+
+  const initEmployeePortalFaq = () => {
+    const faqAccordions = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-faq-accordion]"),
+    );
+
+    faqAccordions.forEach((faqAccordion) => {
+      if (faqAccordion.dataset.faqReady === "true") {
+        return;
+      }
+
+      faqAccordion.dataset.faqReady = "true";
+
+      const faqItems = Array.from(
+        faqAccordion.querySelectorAll<HTMLElement>("[data-faq-item]"),
+      );
+
+      const setFaqItemState = (item: HTMLElement, shouldOpen: boolean) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+        const panel = item.querySelector<HTMLElement>("[data-faq-panel]");
+
+        if (!trigger || !panel) {
+          return;
+        }
+
+        item.classList.toggle("is-open", shouldOpen);
+        trigger.setAttribute("aria-expanded", String(shouldOpen));
+        panel.setAttribute("aria-hidden", String(!shouldOpen));
+      };
+
+      faqItems.forEach((item, index) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+
+        if (!trigger) {
+          return;
+        }
+
+        trigger.addEventListener("click", () => {
+          const shouldOpen = !item.classList.contains("is-open");
+
+          faqItems.forEach((faqItem) => {
+            setFaqItemState(faqItem, faqItem === item && shouldOpen);
+          });
+        });
+
+        trigger.addEventListener("keydown", (event) => {
+          const lastIndex = faqItems.length - 1;
+          const nextIndex =
+            event.key === "ArrowDown"
+              ? Math.min(index + 1, lastIndex)
+              : event.key === "ArrowUp"
+                ? Math.max(index - 1, 0)
+                : event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? lastIndex
+                    : index;
+
+          if (nextIndex === index) {
+            return;
+          }
+
+          event.preventDefault();
+          faqItems[nextIndex]
+            ?.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+            ?.focus();
+        });
+      });
+    });
+  };
+
+  const initEmployeePortalPage = () => {
+    initEmployeePortalAnimations();
+    initEmployeePortalFaq();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initEmployeePortalPage, {
+      once: true,
+    });
+  } else {
+    initEmployeePortalPage();
+  }
+</script>
+
+<style>
+  .access-review-browser {
+    position: relative;
+    aspect-ratio: 1146 / 786;
+  }
+
+  .access-review-browser img {
+    width: 100%;
+    height: auto;
+  }
+
+  .trust-hero-orb {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    transform-origin: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .trust-hero-orb {
+      animation: trust-hero-orb-scale-in cubic-bezier(0.785, 0.135, 0.15, 0.86)
+        3s both;
+      animation-delay: -1200ms;
+    }
+  }
+
+  @keyframes trust-hero-orb-scale-in {
+    from {
+      transform: translateX(-50%) scale(0);
+    }
+
+    to {
+      transform: translateX(-50%) scale(1);
+    }
+  }
+
+  [data-trust-reveal],
+  :global([data-product-discovery] [data-trust-reveal]) {
+    --trust-reveal-delay: 0ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-trust-reveal].is-awaiting-reveal,
+    :global([data-product-discovery] [data-trust-reveal].is-awaiting-reveal) {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    [data-trust-reveal].is-visible,
+    :global([data-product-discovery] [data-trust-reveal].is-visible) {
+      animation: trust-reveal-slide-in var(--spring-smooth) 850ms
+        var(--trust-reveal-delay) both;
+    }
+  }
+
+  @keyframes trust-reveal-slide-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  [data-review-asset-visual] {
+    --review-asset-x: 0px;
+    --review-asset-y: 42px;
+    --review-asset-duration: 760ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-review-asset-visual].is-awaiting-animation .review-asset {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    [data-review-asset-visual].is-visible .review-asset {
+      animation: review-asset-enter var(--review-asset-duration)
+        cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+    }
+  }
+
+  @keyframes review-asset-enter {
+    0% {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    42% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  .overview-feature-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 48px;
+  }
+
+  .overview-feature {
+    display: flex;
+    width: min(100%, 328px);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .overview-feature-icon {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    color: #343330;
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .overview-feature-copy {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .overview-feature-copy h3,
+  .overview-feature-copy p {
+    width: 100%;
+  }
+
+  .overview-feature-copy h3 {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .overview-feature-copy p {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .overview-feature-copy a {
+    color: #343330;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 640px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 48px;
+      row-gap: 56px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .overview-feature-grid {
+      position: relative;
+      display: block;
+      width: 100%;
+      max-width: 1080px;
+      height: 346px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature {
+      position: absolute;
+      width: 328px;
+    }
+
+    .overview-feature:nth-child(1) {
+      top: 0;
+      left: 0;
+    }
+
+    .overview-feature:nth-child(1) .overview-feature-copy h3 {
+      max-width: 276px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature:nth-child(2) {
+      top: 0;
+      left: 376px;
+    }
+
+    .overview-feature:nth-child(3) {
+      top: 0;
+      left: 752px;
+    }
+
+    .overview-feature:nth-child(4) {
+      top: 201px;
+      left: 188px;
+    }
+
+    .overview-feature:nth-child(5) {
+      top: 201px;
+      left: 564px;
+    }
+  }
+
+  .trusted-showcase {
+    display: grid;
+    width: 100%;
+    max-width: 1080px;
+    gap: 24px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .trusted-photo-card,
+  .trusted-quote-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f6f9f5;
+  }
+
+  .trusted-photo-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  .trusted-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+
+  .trusted-quote-card {
+    display: flex;
+    min-height: 420px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 72px 20px 32px;
+    text-align: center;
+  }
+
+  .trusted-quote-halo {
+    position: absolute;
+    top: -423px;
+    left: 50%;
+    z-index: 0;
+    width: 1010px;
+    height: 1010px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .trusted-quote-halo::before {
+    position: absolute;
+    inset: -17%;
+    content: "";
+    background: url("/trust-center/quote-ellipse.svg") center / 100% 100%
+      no-repeat;
+    transform: rotate(180deg) scaleY(-1);
+  }
+
+  .trusted-quote-content,
+  .trusted-logo-block {
+    position: relative;
+    z-index: 1;
+  }
+
+  .trusted-quote-content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-quote {
+    margin: 0;
+    color: #141e12;
+    font-size: 22px;
+    line-height: 30px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    text-align: center;
+    text-wrap: balance;
+    word-break: break-word;
+  }
+
+  .trusted-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .trusted-author-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .trusted-author-name {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .trusted-author-role {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .trusted-avatar {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .trusted-logo-block {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-logo-block p {
+    color: #6b716a;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .trusted-logo-rail {
+    width: 792px;
+    max-width: calc(100vw - 48px);
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker) {
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker .splide__track),
+  :global(.trusted-logo-ticker .splide__list) {
+    height: 24px;
+  }
+
+  :global(.trusted-logo-ticker .splide__slide) {
+    display: flex;
+    height: 24px;
+    align-items: center;
+  }
+
+  .trusted-logo-item {
+    display: flex;
+    height: 24px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    opacity: 0.6;
+  }
+
+  .trusted-logo-item img {
+    display: block;
+    width: 100%;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .trusted-logo--trace {
+    width: 190.5px;
+  }
+
+  .trusted-logo--jimo {
+    width: 78px;
+  }
+
+  .trusted-logo--lucis {
+    width: 109.5px;
+  }
+
+  .trusted-logo--filiz {
+    width: 115.5px;
+  }
+
+  .trusted-logo--ahrefs {
+    width: 123px;
+  }
+
+  @media (min-width: 1024px) {
+    .trusted-showcase {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .trusted-quote-card {
+      min-height: auto;
+      aspect-ratio: 1 / 1;
+      padding: 96px 32px 32px;
+    }
+
+    .trusted-quote {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border-low);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 0;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+  }
+
+  .faq-trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: padding 220ms ease;
+  }
+
+  .faq-trigger:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 4px;
+  }
+
+  .faq-trigger span:first-child {
+    flex: 1;
+  }
+
+  .faq-icon {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+
+  .faq-icon i {
+    position: absolute;
+    font-size: 16px;
+    line-height: 1;
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease;
+  }
+
+  .faq-icon-minus {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-trigger {
+    padding-bottom: 8px;
+  }
+
+  .faq-item.is-open .faq-icon-plus {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-icon-minus {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms ease;
+  }
+
+  .faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-panel p {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0 40px 16px 0;
+    color: #6b716a;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .faq-item.is-open .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-panel,
+    .faq-icon i,
+    .faq-trigger {
+      transition: none;
+    }
+  }
+</style>

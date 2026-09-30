@@ -21,6 +21,15 @@ const products = [
     height: 216,
   },
   {
+    id: "employee-portal",
+    title: "Employee Portal",
+    description: "Your whole team’s compliance, in one portal",
+    href: "/products/employee-portal",
+    asset: "/employee-portal/discovery-get-started.svg",
+    width: 342,
+    height: 554,
+  },
+  {
     id: "access-review",
     title: "Access Review",
     description: "Monitor user access across all your systems",
@@ -332,7 +341,8 @@ const products = [
     transform: translateX(-50%);
   }
 
-  .product-discovery-card--compliance-portal .product-discovery-halo {
+  .product-discovery-card--compliance-portal .product-discovery-halo,
+  .product-discovery-card--employee-portal .product-discovery-halo {
     bottom: -130px;
     left: -297px;
   }
@@ -342,6 +352,13 @@ const products = [
     left: 22px;
     width: 360px;
     height: 216px;
+  }
+
+  .product-discovery-card--employee-portal .product-discovery-art {
+    top: 163px;
+    left: 32px;
+    width: 342px;
+    height: 554px;
   }
 
   .product-discovery-card--access-review .product-discovery-halo {

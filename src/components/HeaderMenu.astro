@@ -64,12 +64,7 @@ const menuId = "desktop-navigation-menu";
             class="absolute top-0 grid h-full grid-cols-[minmax(0,1fr)_420px] items-start gap-8 p-3"
             hidden
           >
-            <div
-              class:list={[
-                "flex min-w-0 flex-col items-start self-start px-2",
-                group.label === "Products" ? "gap-2 py-3" : "gap-6 py-5",
-              ]}
-            >
+            <div class="flex min-w-0 flex-col items-start gap-6 self-start px-2 py-5">
               {group.showLabel !== false && (
                 <p class="text-muted-foreground px-3 text-sm font-medium">
                   {group.label}
@@ -84,19 +79,19 @@ const menuId = "desktop-navigation-menu";
                 ]}
                 style={
                   group.label === "Products"
-                    ? `grid-template-rows: repeat(${Math.ceil(group.items.length / 2)}, auto)`
+                    ? "grid-template-rows: repeat(5, auto)"
                     : undefined
                 }
               >
                 {group.items.map((item) => (
                   <a
                     href={item.href}
-                    class="navigation-menu-link relative isolate flex min-w-0 items-center gap-4 rounded-2xl p-3 outline-none"
+                    class="navigation-menu-link relative isolate flex min-w-0 items-center gap-4 rounded-2xl p-2 outline-none"
                   >
-                    <span class="grid size-12 shrink-0 place-items-center rounded-[10px] border">
+                    <span class="grid size-10 shrink-0 place-items-center rounded-[10px] border">
                       <MenuIcon name={item.icon} />
                     </span>
-                    <span class="min-w-0 text-base leading-6">
+                    <span class="min-w-0 text-base leading-5">
                       <span class="block truncate font-semibold">
                         {item.label}
                       </span>
