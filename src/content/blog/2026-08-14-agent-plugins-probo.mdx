@@ -28,7 +28,7 @@ Agent Plugins are the standard that closes that gap.
 - **A plugin is two things in one folder:** an MCP server (the tools your agent can call) and agent skills (the instructions that tell it how to do the work well).
 - **It's a new open standard:** built jointly by Amazon, Cursor, GitHub, Microsoft, OpenAI, and Vercel, and already supported by several AI clients.
 - **It's deliberately lean:** no central directory, no universal installer. Each client installs it its own way.
-- **Probo ships a real one:** an Agent Plugins 1.0.0 package (MIT, published as `@probo/skills`) that pairs four compliance skills with two hosted MCP servers scoped to your real Probo data.
+- **Probo ships a real one:** an Agent Plugins 1.0.0 package (MIT, published as `@probo/skills`) that pairs four compliance skills with two [hosted MCP servers](/docs/developers/api/mcp/overview) scoped to your real Probo data.
 
 ## What is an Agent Plugin?
 
@@ -86,11 +86,11 @@ It's a small, sharp set on purpose, not a dumping ground. Two of them (`access-r
 - `probo-us`: `https://us.probo.com/api/mcp/v1`
 - `probo-eu`: `https://eu.probo.com/api/mcp/v1`
 
-There's no API key or bearer token to paste anywhere. Probo MCP authenticates with OAuth 2.0, discovered automatically from the instance, and it never bypasses your existing access controls. A session can only reach an organization and run an operation when both the token's scopes and your permissions allow it.
+There's no API key or bearer token to paste anywhere. Probo MCP [authenticates with OAuth 2.0](/docs/developers/api/mcp/authentication), discovered automatically from the instance, and it never bypasses your existing access controls. A session can only reach an organization and run an operation when both the token's scopes and your permissions allow it.
 
 The agent sees exactly what you'd see, and nothing more.
 
-Here's the setup in Claude Code, which reads the marketplace catalog at the repo root:
+Here's the setup in [Claude Code](/docs/developers/api/mcp/claude-code), which reads the marketplace catalog at the repo root:
 
 ```bash
 claude plugin marketplace add getprobo/probo
@@ -100,7 +100,7 @@ claude mcp login probo-us   # pick your region, or run /mcp in session
 
 Any other Agent Plugins client works the same way in spirit: point it at the package, and it reads `plugin.json`, discovers the skills, and loads both servers from `mcp.json`. Claude Code, Codex, OpenCode, and Cursor are all supported today.
 
-Self-hosting Probo? The 1.0.0 spec has no placeholder expansion for remote MCP URLs, so you add your own instance in the agent rather than in the package:
+[Self-hosting Probo](/docs/deployment/self-hosting)? The 1.0.0 spec has no placeholder expansion for remote MCP URLs, so you add your own instance in the agent rather than in the package:
 
 ```bash
 claude mcp add --transport http probo https://probo.example.com/api/mcp/v1
@@ -112,7 +112,7 @@ An MCP server on its own is a box of tools with no manual. A skills library on i
 
 For compliance, where the whole job is acting correctly on your specific state, that pairing is the difference between an agent that gives advice and one that does the work.
 
-The skills are open source and the MCP server is live today. If you want your agent working from your real compliance posture instead of guessing, that's the setup.
+The skills are open source and the MCP server is live today. If you want your [agent working from your real compliance posture](/products/ai-agents-for-compliance) instead of guessing, that's the setup.
 
 ## Frequently Asked Questions
 

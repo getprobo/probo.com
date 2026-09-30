@@ -6,8 +6,8 @@ image: "/changelog/2026-06-19-personal-api-tokens.png"
 tags: ["IAM"]
 ---
 
-Until now, calling the Probo API outside the console meant either building an OAuth2 app or borrowing a token meant for something else.
+Until now, calling the [Probo API](/docs/developers/api-overview) outside the console meant either building an OAuth2 app or borrowing a token meant for something else.
 
 Personal API tokens fix that. Head to `/me/oauth-tokens` in the console, and you can create a bearer token scoped to your own identity, list the tokens you've issued, and revoke any of them on the spot. Every v1 API scope is now registered and enforced, so tokens only work for what they were actually granted.
 
-Auditors get the `v1:iam:read` scope by default, which covers the read-only API access most audit tooling needs without a separate request.
+[Auditors](/docs/product/roles-and-permissions) get the `v1:iam:read` scope by default, which covers the read-only API access most audit tooling needs without a separate request.

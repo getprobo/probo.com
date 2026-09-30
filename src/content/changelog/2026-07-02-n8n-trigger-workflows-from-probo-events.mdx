@@ -8,6 +8,6 @@ tags: ["Integrations"]
 
 Automating anything downstream of a Probo event used to mean polling on a schedule and diffing state in your n8n workflow.
 
-The new Probo Trigger node replaces that. It owns the whole webhook subscription lifecycle: it registers a subscription when you activate the workflow, re-registers it if your webhook URL changes, and cleans up the subscription when you deactivate. It also verifies the HMAC-SHA256 signature on every event, so you're not trusting an unauthenticated payload.
+The new [Probo Trigger node](/docs/developers/api/n8n/trigger) replaces that. It owns the whole webhook subscription lifecycle: it registers a subscription when you activate the workflow, re-registers it if your webhook URL changes, and cleans up the subscription when you deactivate. It also verifies the [HMAC-SHA256 signature](/docs/developers/api/webhooks/signature-verification) on every event, so you're not trusting an unauthenticated payload.
 
 It covers the same document lifecycle events as the API: created, updated, archived, unarchived, deleted, plus version, signature, and approval events. Point it at the event you care about and skip the polling node entirely.

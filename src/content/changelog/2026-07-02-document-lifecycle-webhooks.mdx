@@ -8,6 +8,6 @@ tags: ["Documents"]
 
 If you wanted to know when a document got signed or a new version got published, you had to poll the API and diff the result yourself.
 
-Document lifecycle events are now webhook subscribable: created, updated, archived, unarchived, deleted, plus the version, signature, and approval sub-events underneath each document. Wire up a webhook once and get notified the moment any of those happen.
+[Document lifecycle events](/docs/developers/api/webhooks/event-types) are now webhook subscribable: created, updated, archived, unarchived, deleted, plus the version, signature, and approval sub-events underneath each document. [Wire up a webhook](/docs/developers/api/webhooks/quickstart) once and get notified the moment any of those happen.
 
 The CLI's `prb webhook create`/`update` commands cover the same event list, so you can wire this up without leaving your terminal.

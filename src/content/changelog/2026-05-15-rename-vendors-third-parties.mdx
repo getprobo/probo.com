@@ -13,14 +13,14 @@ This is a breaking change across the full API surface.
 ## What changed
 
 - GraphQL and MCP: all `vendor*` fields and types renamed to `third_party*`
-- Webhook events: `vendor:*` events are now `third_party:*`
+- [Webhook events](/docs/developers/api/webhooks/event-types): `vendor:*` events are now `third_party:*`
 - CLI: `prb vendor` command group renamed to `prb third-party`
 - Console and Trust page URLs updated accordingly
 - Database snapshot type: `VENDORS` → `THIRD_PARTIES`
 
 ## Why it matters
 
-The rename better reflects what the feature tracks: any third-party service your organization uses, not just traditional vendors. It also aligns the product language with GDPR and SOC 2 terminology used by compliance teams.
+The rename better reflects what the feature tracks: any [third-party service](/docs/product/third-party-management) your organization uses, not just traditional vendors. It also aligns the product language with GDPR and SOC 2 terminology used by compliance teams.
 
 ## What you need to do
 

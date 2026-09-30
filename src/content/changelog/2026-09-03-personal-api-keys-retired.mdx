@@ -6,8 +6,8 @@ images: ["/changelog/2026-09-03-personal-api-keys-retired-1.png"]
 tags: ["IAM"]
 ---
 
-Personal API keys granted whatever access the creating user had, with no way to narrow that down. If a key leaked, so did everything that user could touch. Probo has removed the personal API key creation UI and its GraphQL mutation for that reason.
+Personal API keys granted whatever access the creating user had, with no way to narrow that down. If a key leaked, so did everything that user could touch. Probo has removed the personal API key creation UI and its [GraphQL mutation](/docs/developers/graphql) for that reason.
 
-Scoped OAuth access tokens are the replacement. They only carry the specific permissions you grant at creation, so a token built for reading documents can't also delete users. Existing personal API keys keep working for now, but new integrations should use OAuth tokens going forward.
+[Scoped OAuth access tokens](/docs/developers/api-overview) are the replacement. They only carry the specific permissions you grant at creation, so a token built for reading documents can't also delete users. Existing personal API keys keep working for now, but new integrations should use OAuth tokens going forward.
 
 It's a smaller surface to worry about if something goes wrong, and it matches how most API providers handle this today.

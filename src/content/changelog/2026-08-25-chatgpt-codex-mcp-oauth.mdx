@@ -2,11 +2,15 @@
 title: "ChatGPT and Codex Can Now Log In to Probo's MCP"
 description: "ChatGPT and Codex can connect to Probo over MCP with a real OAuth login instead of a workaround, using resource bound tokens so each connection is scoped to your Probo organization."
 date: 2026-08-25
-images: ["/changelog/2026-08-25-chatgpt-codex-mcp-oauth-1.svg", "/changelog/2026-08-25-chatgpt-codex-mcp-oauth-2.svg"]
+images:
+  [
+    "/changelog/2026-08-25-chatgpt-codex-mcp-oauth-1.svg",
+    "/changelog/2026-08-25-chatgpt-codex-mcp-oauth-2.svg",
+  ]
 imagesLayout: "logos"
 tags: ["Integrations"]
 ---
 
-Probo's MCP server now speaks the OAuth dialect that ChatGPT and Codex expect. Both clients negotiate the auth method through CIMD and get issuer identification per RFC 9207, so the connection sets itself up correctly on the first try instead of failing on a mismatched flow.
+Probo's [MCP server](/products/ai-agents-for-compliance) now speaks the OAuth dialect that [ChatGPT and Codex](/docs/developers/api/mcp/openai) expect. Both clients negotiate the auth method through CIMD and get issuer identification per RFC 9207, so the connection sets itself up correctly on the first try instead of failing on a mismatched flow.
 
 Access and refresh tokens are bound to your Probo organization as the resource, so a token minted for one org cannot be replayed against another. If you tried connecting ChatGPT or Codex to Probo before and hit a wall, it's worth trying again.

@@ -5,7 +5,7 @@ date: 2026-09-01
 tags: ["Risk Management"]
 ---
 
-Risk analyses aren't static. Scores shift, treatment plans get updated, measures get linked and unlinked. Until now, the console only ever showed you where things stand today, which made it hard to answer what a risk looked like at the last audit.
+[Risk analyses](/docs/product/risk-management) aren't static. Scores shift, treatment plans get updated, measures get linked and unlinked. Until now, the console only ever showed you where things stand today, which made it hard to answer what a risk looked like at the last audit.
 
 `prb risk-analysis view --as-of` and `treatment-plan list --as-of` fix that. Pass an RFC3339 timestamp and Probo reconstructs the matrix cells and treatment plans as they existed at that instant, pulled from the full event history rather than a snapshot table. Leave it off and you get live data like before.
 

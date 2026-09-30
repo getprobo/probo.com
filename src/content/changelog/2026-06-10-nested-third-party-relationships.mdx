@@ -6,8 +6,8 @@ image: "/changelog/2026-06-10-nested-third-party-relationships.png"
 tags: ["TPRM"]
 ---
 
-Third-party relationships used to support exactly one level: a vendor and its direct sub-vendors. Anything past that had no home in the data model.
+[Third-party relationships](/docs/product/third-party-management) used to support exactly one level: a vendor and its direct sub-vendors. Anything past that had no home in the data model.
 
-Third parties can now nest to arbitrary depth. Each third party carries a reference to its parent, and the console, API, and CLI (`prb third-party list --level N`) all understand levels beyond the first. If your vendor's subprocessor has its own subprocessor, that relationship is now representable instead of flattened.
+Third parties can now nest to arbitrary depth. Each third party carries a reference to its parent, and the console, API, and [CLI](/docs/developers/cli/commands/thirdparty) (`prb third-party list --level N`) all understand levels beyond the first. If your vendor's subprocessor has its own subprocessor, that relationship is now representable instead of flattened.
 
 This also cleans up how sub-vendor links work generally: they're just a parent reference on the third party itself now, instead of a separate link/unlink relationship to manage.

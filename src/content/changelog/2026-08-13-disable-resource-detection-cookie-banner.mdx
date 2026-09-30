@@ -6,8 +6,8 @@ images: ["/changelog/2026-08-13-disable-resource-detection-cookie-banner-1.png"]
 tags: ["Cookie Banner"]
 ---
 
-The cookie banner has always scanned pages for scripts, iframes, and other tracked resources alongside cookies. That is useful for most sites, but not every setup needs it.
+The [cookie banner](/products/cookie-banner) has always scanned pages for scripts, iframes, and other tracked resources alongside cookies. That is useful for most sites, but not every setup needs it.
 
-You can now turn resource detection off per banner. Cookies and storage keep reporting as usual. The SDK just skips scanning for scripts and iframes, and the server stops accepting resource reports for that banner.
+You can now turn resource detection off per banner. Cookies and storage keep reporting as usual. [The SDK](/docs/product/cookie-banner/javascript-sdk) just skips scanning for scripts and iframes, and the server stops accepting resource reports for that banner.
 
 It is a one-line change in the banner settings, aimed at sites where resource scanning was adding noise without adding value.

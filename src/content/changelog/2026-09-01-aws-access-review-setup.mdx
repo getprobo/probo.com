@@ -6,7 +6,7 @@ images: ["/changelog/2026-09-01-aws-access-review-setup-1.png"]
 tags: ["Access Review"]
 ---
 
-When we first shipped the AWS Access Review connector, setting it up meant copying values out of documentation and building the IAM role yourself. That's gone now. The console dialog and the `prb access-review source setup-aws` command both hand you the issuer, audience, subject, a suggested role name, and a ready-to-run Terraform snippet or CloudFormation quick-create link. Pass `--aws-role-arn` to `source create` and the CLI creates the connector and the access source in one call, cleaning up after itself if anything fails partway through.
+When we first shipped the [AWS Access Review connector](/docs/product/access-review/aws), setting it up meant copying values out of documentation and building the IAM role yourself. That's gone now. The console dialog and the `prb access-review source setup-aws` command both hand you the issuer, audience, subject, a suggested role name, and a ready-to-run Terraform snippet or CloudFormation quick-create link. Pass `--aws-role-arn` to `source create` and [the CLI](/docs/developers/cli/commands/access-review) creates the connector and the access source in one call, cleaning up after itself if anything fails partway through.
 
 Once connected, reviews go deeper too. Identity Center entries now show MFA status and last login pulled from CloudTrail and registered MFA devices, and unused accounts with no permission-set assignment show up instead of getting silently skipped. Root account identities are matched to a person by email when the audit role can read Organizations data. A reviewer no longer has to cross-reference three different AWS consoles to answer whether an account has MFA.
 

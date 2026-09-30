@@ -82,17 +82,17 @@ None of this is an argument against having the page. It is an argument against t
 
 ### A rough rule
 
-| Content | Default |
-| --- | --- |
-| Certification badges and framework status | Public |
-| Security commitments | Public |
-| Subprocessor list | Public, often legally required |
-| Privacy policy, terms, DPA template | Public |
-| Information security policy | Restricted |
-| SOC 2 Type II report | Restricted plus NDA |
-| Penetration test report | Restricted plus NDA |
-| Architecture and network documentation | Restricted plus NDA, or not published |
-| Incident post-mortems | Not published |
+| Content                                   | Default                               |
+| ----------------------------------------- | ------------------------------------- |
+| Certification badges and framework status | Public                                |
+| Security commitments                      | Public                                |
+| Subprocessor list                         | Public, often legally required        |
+| Privacy policy, terms, DPA template       | Public                                |
+| Information security policy               | Restricted                            |
+| SOC 2 Type II report                      | Restricted plus NDA                   |
+| Penetration test report                   | Restricted plus NDA                   |
+| Architecture and network documentation    | Restricted plus NDA, or not published |
+| Incident post-mortems                     | Not published                         |
 
 The pattern: claims can be public, evidence should be gated.
 
@@ -108,11 +108,11 @@ Six things the page needs to be safe.
 
 **Watermarking.** Documents should carry the identity of whoever accessed them. It will not stop a determined leak. It makes casual redistribution traceable, and knowing that changes behaviour.
 
-**Authentication without account creation.** Magic links or SSO. Forcing a security reviewer to create another account produces abandoned reviews and shared logins, and shared logins destroy your audit trail.
+**Authentication without account creation.** [Magic links or SSO](/docs/product/compliance-portal/visitor-access-and-nda). Forcing a security reviewer to create another account produces abandoned reviews and shared logins, and shared logins destroy your audit trail.
 
 **Approvals where your team already works.** Access requests that land in an inbox get answered in three days. The same request in Slack gets answered in three minutes.
 
-**A record of who accessed what.** You need to be able to answer "who downloaded our SOC 2 report last year, and are they still a customer?" That is an access review question. If the page cannot answer it, you have published documents you cannot account for.
+**A record of who accessed what.** You need to be able to answer "who downloaded our SOC 2 report last year, and are they still a customer?" That is an [access review](/products/access-review) question. If the page cannot answer it, you have published documents you cannot account for.
 
 ## Setting one up
 

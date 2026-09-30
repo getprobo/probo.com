@@ -6,10 +6,10 @@ image: "/changelog/2026-04-22-oauth2-authorization-server.png"
 tags: ["IAM"]
 ---
 
-Probo is now an OAuth2 and OpenID Connect authorization server. That means anyone — your team, your partners, third-party vendors — can build integrations that authenticate against Probo and tap into your compliance data.
+Probo is now an OAuth2 and OpenID Connect authorization server. That means anyone — your team, your partners, third-party vendors — can [build integrations](/docs/developers/api-overview) that authenticate against Probo and tap into your compliance data.
 
 Want to connect an internal dashboard? Wire up a CI pipeline? Let a vendor pull evidence automatically? Register a client, get tokens, ship it. PKCE, device grant, dynamic client registration, introspection, and revocation are all there out of the box.
 
 This is the foundation for an open ecosystem around Probo. No more one-off API keys or custom auth plumbing — just standard OAuth2.
 
-Heads up on the upgrade: this requires a new `probod.auth.oauth2-server` config block with at least one signing key. Check the release notes before rolling forward.
+Heads up on the upgrade: this requires a new `probod.auth.oauth2-server` [config block](/docs/deployment/configuration/config-reference) with at least one signing key. Check the release notes before rolling forward.

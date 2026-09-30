@@ -6,6 +6,6 @@ images: ["/changelog/2026-08-10-full-scim-audit-detail-1.png"]
 tags: ["IAM"]
 ---
 
-Until now, SCIM audit entries told you that something happened, not what. Now each SCIM event stores the full request and response body exchanged with your identity provider. Password fields and other credential attributes get redacted automatically, no matter which schema URN the provisioning client used to send them.
+Until now, [SCIM audit entries](/docs/product/audit-log) told you that something happened, not what. Now each SCIM event stores the full request and response body exchanged with your [identity provider](/docs/product/scim/overview). Password fields and other credential attributes get redacted automatically, no matter which schema URN the provisioning client used to send them.
 
 If a user's role changes unexpectedly or a deprovisioning event doesn't behave the way you expect, open the audit entry and see the exact payload your IdP sent. No more guessing from a one line summary.

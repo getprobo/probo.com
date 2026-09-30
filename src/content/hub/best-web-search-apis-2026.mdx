@@ -27,15 +27,15 @@ You are wiring live web data into an AI product. Every vendor will sell you "sea
 
 <div class="overflow-x-auto">
 
-| Rank | Tool | Best for | Standout capability | Public pricing |
-| :---- | :---- | :---- | :---- | :---- |
-| 1 | [Exa](https://exa.ai/) | Teams that need semantic discovery plus clean, LLM-ready page content | Own neural index with excerpt extraction, plus search, contents, answer, agent, and monitors endpoints | $7/1k searches, $20 free credits |
-| 2 | Tavily | A fast search-to-answer step inside an agent loop | Results plus an optional synthesized answer in a single call | Free 1,000 credits/mo, $0.008/credit PAYG |
-| 3 | Linkup | Teams with EU customers or a hard data-residency requirement | Zero data retention on every plan, plus bring-your-own-cloud | $5/1k standard, $50/1k deep, $20/mo free credit |
-| 4 | Firecrawl | Ingesting whole pages and sites into clean markdown for RAG | Crawl, scrape, and interact, not just search | Free 1,000 credits, $16 to $599/mo |
-| 5 | Brave Search API | Teams that want an index not derived from Google or Bing | Genuinely independent index with a privacy-first posture | $5/1k requests, $5/mo free credit |
-| 6 | Perplexity Sonar API | Products where every answer needs visible citations | Cited answers as a first-class output | Token cost plus $5 to $14/1k search fee |
-| 7 | Serper | High-volume raw Google results at the lowest unit cost | Cheapest per-query SERP data available | ~$0.30 to $1.00/1k, credits expire in 6 months |
+| Rank | Tool                   | Best for                                                              | Standout capability                                                                                    | Public pricing                                  |
+| :--- | :--------------------- | :-------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- | :---------------------------------------------- |
+| 1    | [Exa](https://exa.ai/) | Teams that need semantic discovery plus clean, LLM-ready page content | Own neural index with excerpt extraction, plus search, contents, answer, agent, and monitors endpoints | $7/1k searches, $20 free credits                |
+| 2    | Tavily                 | A fast search-to-answer step inside an agent loop                     | Results plus an optional synthesized answer in a single call                                           | Free 1,000 credits/mo, $0.008/credit PAYG       |
+| 3    | Linkup                 | Teams with EU customers or a hard data-residency requirement          | Zero data retention on every plan, plus bring-your-own-cloud                                           | $5/1k standard, $50/1k deep, $20/mo free credit |
+| 4    | Firecrawl              | Ingesting whole pages and sites into clean markdown for RAG           | Crawl, scrape, and interact, not just search                                                           | Free 1,000 credits, $16 to $599/mo              |
+| 5    | Brave Search API       | Teams that want an index not derived from Google or Bing              | Genuinely independent index with a privacy-first posture                                               | $5/1k requests, $5/mo free credit               |
+| 6    | Perplexity Sonar API   | Products where every answer needs visible citations                   | Cited answers as a first-class output                                                                  | Token cost plus $5 to $14/1k search fee         |
+| 7    | Serper                 | High-volume raw Google results at the lowest unit cost                | Cheapest per-query SERP data available                                                                 | ~$0.30 to $1.00/1k, credits expire in 6 months  |
 
 </div>
 
@@ -189,7 +189,7 @@ Often, yes, and for two reasons. Different tools genuinely do different jobs, so
 
 ### Does any of this matter for SOC 2 or ISO 27001?
 
-Yes, in three specific places: vendor management, since the provider is a third party handling your data; access control, since API keys are credentials that need rotation and offboarding; and risk assessment, since untrusted retrieved content reaching a model with tool access is a real risk that deserves a documented decision.
+Yes, in three specific places: [vendor management](/docs/product/third-party-management), since the provider is a third party handling your data; access control, since API keys are credentials that need rotation and offboarding; and [risk assessment](/docs/product/risk-management), since untrusted retrieved content reaching a model with tool access is a real risk that deserves a documented decision.
 
 Pick based on the shape of the problem. Semantic discovery plus clean text is Exa. A one-call answer inside an agent loop is Tavily. Full-page ingestion is Firecrawl. Raw links at the lowest possible cost is Serper. Most production systems end up using two of these, not one.
 

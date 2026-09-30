@@ -5,10 +5,10 @@ date: 2026-06-05
 tags: ["Cookie Banner"]
 ---
 
-When you list cookies in a consent banner, knowing what kind of tracker something is matters. Is it a pixel? A script? A storage entry? Until now, that detail was invisible to SDK consumers.
+When you list cookies in a [consent banner](/products/cookie-banner), knowing what kind of tracker something is matters. Is it a pixel? A script? A storage entry? Until now, that detail was invisible to SDK consumers.
 
 `@probo/cookie-banner` 0.8.0 exposes `trackerType` on every `CookieItem`. The headless cookie list and the themed banner both render it out of the box.
 
 This means you can build category-aware UIs, filter trackers by type, or surface that information directly to end users — without any extra API calls.
 
-If you render a custom consent UI on top of the headless SDK, update your `CookieItem` handler to use the new `trackerType` field.
+If you render a custom consent UI on top of the [headless SDK](/docs/product/cookie-banner/javascript-sdk), update your `CookieItem` handler to use the new `trackerType` field.

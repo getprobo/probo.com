@@ -5,7 +5,7 @@ date: 2026-08-20
 tags: ["Integrations"]
 ---
 
-Webhook delivery used to be a single shot. If your endpoint timed out or returned 5xx, the event was marked failed and Probo moved on.
+[Webhook delivery](/docs/developers/api/webhooks/delivery-and-recovery) used to be a single shot. If your endpoint timed out or returned 5xx, the event was marked failed and Probo moved on.
 
 Deliveries are now durable jobs. Each subscription gets its own delivery ID, Probo keeps that ID across retries, and it sends `Idempotency-Key` plus `X-Probo-Webhook-Delivery-Id` so receivers can ignore duplicates. Transient failures — network errors, timeouts, `408`, `425`, `429`, and `5xx` — retry with exponential backoff, up to 12 attempts. `Retry-After` is honored on retryable responses.
 

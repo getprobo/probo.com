@@ -6,8 +6,8 @@ image: "/changelog/2026-06-19-connect-ai-agents-oauth2-cimd.png"
 tags: ["Integrations"]
 ---
 
-Connecting an MCP client to Probo used to mean provisioning a client ID by hand first.
+Connecting an [MCP client](/products/ai-agents-for-compliance) to Probo used to mean provisioning a client ID by hand first.
 
-With OAuth2 Client ID Metadata Document (CIMD) support, clients like Claude and ChatGPT register themselves by pointing at an HTTPS client_id URL. Probo fetches and caches the metadata document, upserts the client on first use, and advertises CIMD support in OIDC discovery once you've configured which client URLs are allowed.
+With [OAuth2 Client ID Metadata Document](/docs/developers/api/mcp/authentication) (CIMD) support, clients like Claude and ChatGPT register themselves by pointing at an HTTPS client_id URL. Probo fetches and caches the metadata document, upserts the client on first use, and advertises CIMD support in OIDC discovery once you've configured which client URLs are allowed.
 
 It's opt-in. Nothing changes until you add allowed CIMD client URLs to your OAuth2 config, and existing pre-provisioned MCP clients keep working exactly as before.
