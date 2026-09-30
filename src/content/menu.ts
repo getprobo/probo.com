@@ -57,6 +57,12 @@ export const menuGroups: MenuGroup[] = [
         icon: "shield-check",
       },
       {
+        label: "Employee Portal",
+        description: "Your whole team’s compliance, in one portal",
+        href: "/products/employee-portal",
+        icon: "users-three",
+      },
+      {
         label: "Access Review",
         description: "Monitor user access across all your systems",
         href: "/products/access-review",
