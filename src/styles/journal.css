@@ -325,6 +325,9 @@
   margin: 0;
   border-radius: 0;
 }
+.journal-prose .expressive-code .frame:has(> .journal-code) > .copy {
+  display: none;
+}
 .journal-prose table {
   display: block;
   max-width: 100%;

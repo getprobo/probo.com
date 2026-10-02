@@ -27,7 +27,8 @@
     const status = document.querySelector<HTMLElement>("[data-copy-status]");
     const copy = async (button: HTMLButtonElement, value: string) => {
       const label = button.querySelector("span");
-      const previous = label?.textContent ?? "Copy";
+      const previous = (button.dataset.copyLabel ??=
+        label?.textContent ?? "Copy");
       try {
         await navigator.clipboard.writeText(value);
         if (label) label.textContent = "Copied";
@@ -60,23 +61,31 @@
         "text";
       pre.dataset.language = language;
       pre.tabIndex = 0;
+      const isTemplate = ["text", "plaintext"].includes(language);
       pre.setAttribute(
         "aria-label",
-        `${language === "text" ? "Text template" : language + " code"}, scroll to read`,
+        `${isTemplate ? "Text template" : language + " code"}, scroll to read`,
       );
       const wrapper = document.createElement("div");
       wrapper.className = "journal-code";
-      if (!["text", "plaintext"].includes(language))
-        wrapper.classList.add("journal-code-wide");
+      if (!isTemplate) wrapper.classList.add("journal-code-wide");
       const toolbar = document.createElement("div");
       toolbar.className = "journal-code-toolbar";
       const title = document.createElement("span");
-      let section: Element | null = pre.previousElementSibling;
+      let section: Element | null = (pre.closest(".expressive-code") ?? pre)
+        .previousElementSibling;
       while (section && !/^H[2-4]$/.test(section.tagName))
         section = section.previousElementSibling;
-      title.textContent = ["text", "plaintext"].includes(language)
+      title.textContent = isTemplate
         ? (section?.textContent ?? "Template")
         : (languageLabels[language] ?? language);
+      // Expressive Code renders lines as separate elements, without text separators.
+      const lines = [...pre.querySelectorAll<HTMLElement>(".ec-line .code")];
+      const code = lines.length
+        ? lines
+            .map((line) => (line.textContent ?? "").replace(/\n$/, ""))
+            .join("\n")
+        : (pre.textContent ?? "");
       const button = document.createElement("button");
       button.type = "button";
       button.setAttribute("aria-label", `Copy ${title.textContent}`);
@@ -87,11 +96,9 @@
       const label = document.createElement("span");
       label.textContent = "Copy";
       button.append(icon, label);
-      button.addEventListener(
-        "click",
-        () => void copy(button, pre.textContent ?? ""),
-        { signal },
-      );
+      button.addEventListener("click", () => void copy(button, code), {
+        signal,
+      });
       toolbar.append(title, button);
       pre.before(wrapper);
       wrapper.append(toolbar, pre);

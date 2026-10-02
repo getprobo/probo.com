@@ -146,7 +146,7 @@ const isEmile = author === "Émile Ré";
 }
 
 {
-  (isAntoine || isArthur || isBryan || isEmile) && (
+  !journal && (isAntoine || isArthur || isBryan || isEmile) && (
     <div
       class={clsx(
         "flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10",
