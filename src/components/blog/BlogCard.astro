@@ -1,0 +1,65 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { blogDate, postHref } from "../../lib/blog";
+interface Props {
+  post: CollectionEntry<"blog">;
+  featured?: boolean;
+}
+const { post, featured = false } = Astro.props;
+const image = post.data.coverImage ?? post.data.titleImage;
+---
+
+<article class:list={["journal-card", featured && "journal-featured"]}>
+  <a
+    href={postHref(post.id)}
+    class="group block rounded-lg"
+    aria-label={post.data.title}
+  >
+    <div class="journal-card-image" aria-hidden="true">
+      {
+        image && (
+          <img
+            src={image}
+            alt=""
+            loading={featured ? "eager" : "lazy"}
+            decoding="async"
+            width="1080"
+            height="540"
+          />
+        )
+      }
+    </div>
+    <div class="journal-card-copy">
+      <p class="text-muted-foreground text-sm font-medium">
+        {post.data.category}
+      </p>
+      <h2
+        class="font-semibold decoration-1 underline-offset-4 group-hover:underline"
+      >
+        {post.data.title}
+      </h2>
+      <p class="journal-card-excerpt">{post.data.excerpt}</p>
+      <div class="journal-card-meta">
+        <p class="text-muted-foreground text-sm">
+          {post.data.author.name}<span aria-hidden="true"> · </span><time
+            datetime={post.data.date.toISOString()}
+            >{blogDate.format(post.data.date)}</time
+          >
+        </p>
+        {
+          !featured && (
+            <img src="/blog/icons/right.svg" alt="" width="16" height="16" />
+          )
+        }
+      </div>
+      {
+        featured && (
+          <span class="inline-flex min-h-11 items-center gap-3 text-base font-medium">
+            Read article
+            <img src="/blog/icons/right.svg" alt="" width="16" height="16" />
+          </span>
+        )
+      }
+    </div>
+  </a>
+</article>

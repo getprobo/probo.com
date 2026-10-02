@@ -1,4 +1,5 @@
 import { defineCollection, z } from "astro:content";
+import { blogCategories } from "./lib/blog";
 import { glob } from "astro/loaders";
 import { frameworks } from "./content/frameworks.ts";
 import { docsLoader } from "@astrojs/starlight/loaders";
@@ -16,6 +17,11 @@ const blog = defineCollection({
   schema: z
     .object({
       title: z.string(),
+      category: z.enum(blogCategories),
+      showCover: z.boolean().default(false),
+      showToc: z.boolean().default(true),
+      coverImage: z.string().optional(),
+      coverImageAlt: nonEmptyAlt.optional(),
       date: z.date(),
       dateModified: z.date().optional(),
       /** Meta description / preview excerpt; keep 120-160 chars for SEO. */
@@ -35,6 +41,10 @@ const blog = defineCollection({
           }),
         )
         .optional(),
+    })
+    .refine((data) => !data.coverImage || Boolean(data.coverImageAlt), {
+      message: "coverImageAlt is required when coverImage is set",
+      path: ["coverImageAlt"],
     })
     .refine((data) => !data.titleImage || Boolean(data.titleImageAlt), {
       message: "titleImageAlt is required when titleImage is set",

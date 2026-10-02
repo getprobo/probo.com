@@ -1,0 +1,36 @@
+---
+import type { MarkdownHeading } from "astro";
+interface Props {
+  headings: MarkdownHeading[];
+}
+const { headings } = Astro.props;
+---
+
+<aside class="journal-toc">
+  <nav aria-label="Table of contents" class="journal-toc-desktop">
+    <p>On this page</p>
+    <ol>
+      {
+        headings.map((heading) => (
+          <li>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+  <details class="journal-toc-mobile">
+    <summary>On this page<span aria-hidden="true">+</span></summary>
+    <nav aria-label="Table of contents">
+      <ol>
+        {
+          headings.map((heading) => (
+            <li>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+  </details>
+</aside>

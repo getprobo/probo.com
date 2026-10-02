@@ -32,7 +32,12 @@ const providers = [
 ];
 ---
 
-<div class="flex flex-wrap items-center gap-3">
+<div
+  class:list={[
+    "flex flex-wrap items-center gap-3",
+    Astro.props.journal && "journal-ai",
+  ]}
+>
   <span class="text-tertiary-foreground text-xs whitespace-nowrap">
     Ask AI about Probo
   </span>
@@ -51,13 +56,25 @@ const providers = [
           aria-label={`Ask ${provider.name} about Probo`}
           class="text-tertiary-foreground border-border-mid hover:text-foreground flex size-7 items-center justify-center rounded-full border transition-colors hover:bg-black/5"
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="size-3.5"
-            xmlns="http://www.w3.org/2000/svg"
-            set:html={provider.svg}
-          />
+          {Astro.props.journal ? (
+            <>
+              <img
+                src={`/blog/icons/${provider.name.toLowerCase()}.svg`}
+                width="16"
+                height="16"
+                alt=""
+              />
+              <span>{provider.name}</span>
+            </>
+          ) : (
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-3.5"
+              xmlns="http://www.w3.org/2000/svg"
+              set:html={provider.svg}
+            />
+          )}
         </a>
       ))
     }

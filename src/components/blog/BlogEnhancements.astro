@@ -1,0 +1,219 @@
+<dialog
+  class="journal-image-dialog"
+  aria-label="Enlarged article image"
+  data-image-dialog
+>
+  <button type="button" aria-label="Close enlarged image" data-close-image
+    >Close</button
+  >
+  <img alt="" />
+</dialog>
+
+<script>
+  const languageLabels: Record<string, string> = {
+    ts: "TypeScript",
+    js: "JavaScript",
+    json: "JSON",
+    bash: "Bash",
+    sh: "Shell",
+  };
+  let cleanup = () => {};
+  const initialize = () => {
+    cleanup();
+    const article = document.querySelector<HTMLElement>("[data-article-body]");
+    if (!article) return;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const status = document.querySelector<HTMLElement>("[data-copy-status]");
+    const copy = async (button: HTMLButtonElement, value: string) => {
+      const label = button.querySelector("span");
+      const previous = label?.textContent ?? "Copy";
+      try {
+        await navigator.clipboard.writeText(value);
+        if (label) label.textContent = "Copied";
+        if (status) status.textContent = "Copied to clipboard.";
+        window.setTimeout(() => {
+          if (label) label.textContent = previous;
+        }, 2000);
+      } catch {
+        if (label) label.textContent = "Try again";
+        if (status)
+          status.textContent =
+            "Could not copy. Select the text and copy it manually.";
+      }
+    };
+    document
+      .querySelector<HTMLButtonElement>("[data-copy-link]")
+      ?.addEventListener(
+        "click",
+        (event) => {
+          const button = event.currentTarget as HTMLButtonElement;
+          void copy(button, button.dataset.copyLink!);
+        },
+        { signal },
+      );
+    article.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
+      if (pre.parentElement?.classList.contains("journal-code")) return;
+      const language =
+        pre.dataset.language ??
+        pre.querySelector("code")?.className.match(/language-(\w+)/)?.[1] ??
+        "text";
+      pre.dataset.language = language;
+      pre.tabIndex = 0;
+      pre.setAttribute(
+        "aria-label",
+        `${language === "text" ? "Text template" : language + " code"}, scroll to read`,
+      );
+      const wrapper = document.createElement("div");
+      wrapper.className = "journal-code";
+      if (!["text", "plaintext"].includes(language))
+        wrapper.classList.add("journal-code-wide");
+      const toolbar = document.createElement("div");
+      toolbar.className = "journal-code-toolbar";
+      const title = document.createElement("span");
+      let section: Element | null = pre.previousElementSibling;
+      while (section && !/^H[2-4]$/.test(section.tagName))
+        section = section.previousElementSibling;
+      title.textContent = ["text", "plaintext"].includes(language)
+        ? (section?.textContent ?? "Template")
+        : (languageLabels[language] ?? language);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("aria-label", `Copy ${title.textContent}`);
+      const icon = document.createElement("img");
+      icon.src = "/blog/icons/copy.svg";
+      icon.alt = "";
+      icon.width = icon.height = 16;
+      const label = document.createElement("span");
+      label.textContent = "Copy";
+      button.append(icon, label);
+      button.addEventListener(
+        "click",
+        () => void copy(button, pre.textContent ?? ""),
+        { signal },
+      );
+      toolbar.append(title, button);
+      pre.before(wrapper);
+      wrapper.append(toolbar, pre);
+    });
+    article.querySelectorAll("table").forEach((table, index) => {
+      if (table.parentElement?.classList.contains("journal-table")) return;
+      const wrapper = document.createElement("div");
+      wrapper.className = "journal-table";
+      wrapper.tabIndex = 0;
+      wrapper.setAttribute("role", "region");
+      wrapper.setAttribute(
+        "aria-label",
+        `Article table ${index + 1}, scroll horizontally to see all columns`,
+      );
+      table.before(wrapper);
+      wrapper.append(table);
+    });
+    const dialog = document.querySelector<HTMLDialogElement>(
+      "[data-image-dialog]",
+    );
+    const enlarged = dialog?.querySelector("img");
+    if (dialog && enlarged) {
+      article.querySelectorAll<HTMLImageElement>("img").forEach((img) => {
+        if (img.closest("a, button")) return;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.enlargeImage = "";
+        button.setAttribute(
+          "aria-label",
+          `Enlarge image: ${img.alt || "article illustration"}`,
+        );
+        img.before(button);
+        button.append(img);
+        button.addEventListener(
+          "click",
+          () => {
+            enlarged.src = img.currentSrc || img.src;
+            enlarged.alt = img.alt;
+            dialog.showModal();
+          },
+          { signal },
+        );
+      });
+      dialog
+        .querySelector("[data-close-image]")
+        ?.addEventListener("click", () => dialog.close(), { signal });
+      dialog.addEventListener(
+        "click",
+        (event) => {
+          if (event.target === dialog) dialog.close();
+        },
+        { signal },
+      );
+    }
+    document
+      .querySelectorAll<HTMLAnchorElement>(".journal-toc-mobile a")
+      .forEach((link) => {
+        link.addEventListener(
+          "click",
+          () => link.closest("details")?.removeAttribute("open"),
+          { signal },
+        );
+      });
+    const links = [
+      ...document.querySelectorAll<HTMLAnchorElement>(".journal-toc-desktop a"),
+    ];
+    const headings = links
+      .map((link) =>
+        document.getElementById(decodeURIComponent(link.hash.slice(1))),
+      )
+      .filter((heading): heading is HTMLElement => !!heading);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          links.forEach((link) => {
+            if (decodeURIComponent(link.hash.slice(1)) === entry.target.id)
+              link.setAttribute("aria-current", "location");
+            else link.removeAttribute("aria-current");
+          });
+        }
+      },
+      { rootMargin: "-100px 0px -65% 0px" },
+    );
+    headings.forEach((heading) => observer.observe(heading));
+    const desktopToc = document.querySelector<HTMLElement>(
+      ".journal-toc-desktop",
+    );
+    const wideBlocks = [
+      ...article.querySelectorAll<HTMLElement>(
+        ".journal-code-wide, figure:has(n8n-demo)",
+      ),
+    ];
+    let frame = 0;
+    const updateToc = () => {
+      frame = 0;
+      if (!desktopToc || !desktopToc.offsetWidth) return;
+      const tocRect = desktopToc.getBoundingClientRect();
+      desktopToc.classList.toggle(
+        "is-obscured",
+        wideBlocks.some((block) => {
+          const rect = block.getBoundingClientRect();
+          return (
+            rect.left < tocRect.right &&
+            rect.top < tocRect.bottom &&
+            rect.bottom > tocRect.top
+          );
+        }),
+      );
+    };
+    const scheduleToc = () => {
+      if (!frame) frame = requestAnimationFrame(updateToc);
+    };
+    window.addEventListener("scroll", scheduleToc, { signal, passive: true });
+    window.addEventListener("resize", scheduleToc, { signal, passive: true });
+    updateToc();
+    cleanup = () => {
+      controller.abort();
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  };
+  document.addEventListener("astro:page-load", initialize);
+  document.addEventListener("astro:before-swap", () => cleanup());
+</script>

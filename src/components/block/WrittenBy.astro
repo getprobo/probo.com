@@ -9,11 +9,36 @@ import EmilePortrait from "../../assets/emile_blog.svg";
 interface Props {
   class?: string;
   author?: string;
+  variant?: "default" | "journal";
 }
 
 const { class: className, author } = Astro.props;
 
-const showBoth = !author;
+const journal = Astro.props.variant === "journal";
+const authorDetails: Record<string, { role: string; biography: string }> = {
+  "Antoine Bouchardy": {
+    role: "CEO and co-founder",
+    biography:
+      "He writes about the challenges founders face balancing growth with regulation.",
+  },
+  "Arthur Mayoux": {
+    role: "Chief of Staff",
+    biography:
+      "Working across multiple departments, his primary objective is to help the company scale.",
+  },
+  "Bryan Frimin": {
+    role: "CTO and co-founder",
+    biography:
+      "Experienced with cyber-security, he is building the open compliance tool which adapts to your actual stack.",
+  },
+  "Émile Ré": {
+    role: "Founding engineer",
+    biography:
+      "He writes about the technical side of making compliance simple for startups.",
+  },
+};
+const details = author ? authorDetails[author] : undefined;
+const showBoth = !author && !journal;
 const isAntoine = author === "Antoine Bouchardy";
 const isArthur = author === "Arthur Mayoux";
 const isBryan = author === "Bryan Frimin";
@@ -230,6 +255,21 @@ const isEmile = author === "Émile Ré";
           height={164}
         />
       )}
+    </div>
+  )
+}
+
+{
+  journal && (
+    <div class="journal-author">
+      <p class="text-muted-foreground text-xs">Written by</p>
+      <div>
+        <p class="font-medium">{author}</p>
+        {details && (
+          <p class="text-muted-foreground mt-1 text-sm">{details.role}</p>
+        )}
+      </div>
+      {details && <p class="text-muted-foreground">{details.biography}</p>}
     </div>
   )
 }

@@ -1,0 +1,46 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "../../../../layouts/Layout.astro";
+import BlogIndex from "../../../../components/BlogIndex.astro";
+import {
+  blogCategories,
+  newestFirst,
+  type BlogCategory,
+} from "../../../../lib/blog";
+import { pageSize } from "../../../../content.config";
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog")).sort(newestFirst);
+  return blogCategories.flatMap((category) => {
+    const filtered = posts.filter((post) => post.data.category === category);
+    const lastPage = Math.ceil(filtered.length / pageSize);
+    return Array.from({ length: lastPage }, (_, i) => ({
+      params: {
+        category: category.toLowerCase(),
+        page: i === 0 ? undefined : `page/${i + 1}`,
+      },
+      props: {
+        category,
+        currentPage: i + 1,
+        lastPage,
+        posts: filtered.slice(i * pageSize, (i + 1) * pageSize),
+      },
+    }));
+  });
+}
+interface Props {
+  category: BlogCategory;
+  currentPage: number;
+  lastPage: number;
+  posts: CollectionEntry<"blog">[];
+}
+const { category, currentPage } = Astro.props;
+---
+
+<Layout
+  journal
+  noFrameworks
+  title={`${category} | The Compliance Journal${currentPage > 1 ? `, page ${currentPage}` : ""}`}
+  description={`Practical ${category.toLowerCase()} guides and perspectives from the Probo team.`}
+>
+  <BlogIndex {...Astro.props} />
+</Layout>

@@ -25,58 +25,113 @@ const iframeName = `newsletter-frame-${crypto.randomUUID()}`;
 const PROBO_NEWSLETTER_LIST_UUID = "d1e033d7-270d-4cf0-af1e-3782f4d49b49";
 ---
 
-<newsletter-form>
-  <div class={newsletter(Astro.props)}>
-    <form
-      class={clsx(props.variant !== "footer" && "@sm:flex items-center gap-20")}
-      method="post"
-      action="https://lists.probo.com/subscription/form"
-      target={iframeName}
-    >
-      <div
-        class={clsx(
-          "mb-6 @sm:max-w-65 @sm:mb-0",
-          props.variant === "footer" ? "text-sm" : "text-lg font-medium",
-        )}
-      >
-        Sign up for our newsletter to get actionable insights about compliance,
-        right to your inbox.
+{
+  props.variant === "journal" ? (
+    <section class="journal-newsletter" aria-labelledby="newsletter-title">
+      <div>
+        <>
+          <h2 id="newsletter-title">
+            Stay ahead of
+            <br />
+            compliance.
+          </h2>
+          <p>
+            Practical ideas on compliance and security, straight to your inbox.
+          </p>
+        </>
       </div>
-      <div class="space-y-3">
+      <form
+        method="post"
+        action="https://lists.probo.com/subscription/form"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <label for="journal-newsletter-email">Email address</label>
         <input type="hidden" name="nonce" value="" />
         <input type="hidden" name="l" value={PROBO_NEWSLETTER_LIST_UUID} />
-        <input
+        <div class="journal-newsletter-fields">
+          <div class="journal-newsletter-input">
+            <>
+              <img src="/blog/icons/email.svg" alt="" width="18" height="18" />
+              <input
+                id="journal-newsletter-email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                placeholder="you@company.com"
+              />
+            </>
+          </div>
+          <button type="submit">
+            Subscribe
+            <span class="sr-only"> (opens confirmation in a new tab)</span>
+          </button>
+        </div>
+        <p>
+          Read our <a href="/privacy">Privacy Policy</a>.
+        </p>
+      </form>
+    </section>
+  ) : (
+    <newsletter-form>
+      <div class={newsletter(Astro.props)}>
+        <form
           class={clsx(
-            "border-border-mid placeholder:text-quaternary w-full rounded-lg border px-3 bg-secondary ",
-            props.variant === "footer" ? "h-8" : "h-11 sm:h-8",
+            props.variant !== "footer" && "items-center gap-20 @sm:flex",
           )}
-          name="email"
-          type="email"
-          required
-          placeholder="Enter your email"
-          aria-label="Your email"
-        />
-        <Button
-          type="submit"
-          class={clsx(
-            "w-full text-base sm:w-max",
-            props.variant === "footer" ? "h-9 w-max" : "h-11 sm:h-8",
-          )}>Subscribe</Button
+          method="post"
+          action="https://lists.probo.com/subscription/form"
+          target={iframeName}
         >
+          <div
+            class={clsx(
+              "mb-6 @sm:mb-0 @sm:max-w-65",
+              props.variant === "footer" ? "text-sm" : "text-lg font-medium",
+            )}
+          >
+            Sign up for our newsletter to get actionable insights about
+            compliance, right to your inbox.
+          </div>
+          <div class="space-y-3">
+            <input type="hidden" name="nonce" value="" />
+            <input type="hidden" name="l" value={PROBO_NEWSLETTER_LIST_UUID} />
+            <input
+              class={clsx(
+                "border-border-mid placeholder:text-quaternary bg-secondary w-full rounded-lg border px-3",
+                props.variant === "footer" ? "h-8" : "h-11 sm:h-8",
+              )}
+              name="email"
+              type="email"
+              required
+              placeholder="Enter your email"
+              aria-label="Your email"
+            />
+            <Button
+              type="submit"
+              class={clsx(
+                "w-full text-base sm:w-max",
+                props.variant === "footer" ? "h-9 w-max" : "h-11 sm:h-8",
+              )}
+            >
+              Subscribe
+            </Button>
+          </div>
+        </form>
+        <p
+          class={clsx(
+            "hidden",
+            props.variant === "footer" ? "text-sm" : "text-lg font-medium",
+          )}
+          data-success
+        >
+          You're subscribed — thanks for signing up!
+        </p>
       </div>
-    </form>
-    <p
-      class={clsx(
-        "hidden",
-        props.variant === "footer" ? "text-sm" : "text-lg font-medium",
-      )}
-      data-success
-    >
-      You're subscribed — thanks for signing up!
-    </p>
-  </div>
-  <iframe name={iframeName} hidden></iframe>
-</newsletter-form>
+      <iframe name={iframeName} hidden />
+    </newsletter-form>
+  )
+}
 
 <script>
   import { customElementDefine } from "../../lib/dom";

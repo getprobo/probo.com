@@ -11,6 +11,7 @@ import { directMenuItems, menuGroups } from "../content/menu";
 type Props = {
   hideBurger?: boolean;
   docsChrome?: boolean;
+  journal?: boolean;
 };
 
 const { hideBurger = false, docsChrome = false } = Astro.props;
@@ -66,7 +67,10 @@ const { hideBurger = false, docsChrome = false } = Astro.props;
         <GithubStars class="mt-0.5 block" />
       </Button>
     </nav>
-    <div transition:name="header-compliant">
+    <div
+      transition:name="header-compliant"
+      class:list={[Astro.props.journal && "hidden lg:block"]}
+    >
       <Button
         href="/contact"
         class="ml-auto h-9 px-4 whitespace-nowrap lg:ml-4 lg:h-8 lg:px-3"
