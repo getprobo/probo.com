@@ -102,8 +102,8 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/framework",
   },
   {
-    label: "Measure",
-    slug: "docs/developers/cli/commands/measure",
+    label: "Internal Control",
+    slug: "docs/developers/cli/commands/internal-control",
   },
   {
     label: "Obligation",
@@ -356,8 +356,8 @@ export const n8nResourceItems = [
     slug: "docs/developers/api/n8n/resources/framework",
   },
   {
-    label: "Measure",
-    slug: "docs/developers/api/n8n/resources/measure",
+    label: "Internal Control",
+    slug: "docs/developers/api/n8n/resources/internal-control",
   },
   {
     label: "Obligation",
