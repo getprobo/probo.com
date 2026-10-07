@@ -157,6 +157,7 @@ const htmlRedirects = {
   "/docs/product/access-review/clerk": redirect(
     "/docs/product/access-review/directory",
   ),
+  "/docs/product/tasks/linear": redirect("/docs/product/tasks/overview#linear"),
   "/docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence":
     redirect(
       "/docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence",

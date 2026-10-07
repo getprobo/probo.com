@@ -110,6 +110,7 @@ export const docsSidebarGroups = [
         label: "Compliance program",
         slug: "docs/product/compliance-program",
       },
+      { label: "Tasks", slug: "docs/product/tasks/overview" },
       { label: "Risk management", slug: "docs/product/risk-management" },
       {
         label: "Third-party management",
@@ -340,15 +341,6 @@ export const docsSidebarGroups = [
         label: "Commands",
         slug: "docs/product/device-agent/commands",
       },
-    ],
-  },
-  {
-    id: "tasks",
-    sectionId: "product",
-    label: "Tasks",
-    items: [
-      { label: "Overview", slug: "docs/product/tasks/overview" },
-      { label: "Linear", slug: "docs/product/tasks/linear" },
     ],
   },
   {

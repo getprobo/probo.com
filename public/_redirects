@@ -55,6 +55,7 @@
 /docs/product/probo-agent/* /docs/product/device-agent/:splat 301
 /docs/product/access-review/infrastructure-security /docs/deployment/infrastructure-security 301
 /docs/product/access-review/clerk /docs/product/access-review/directory 301
+/docs/product/tasks/linear /docs/product/tasks/overview#linear 301
 /docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence /docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence 301
 /docs/developers/api/mcp/tools/catalog/linear /docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence 301
 /docs/developers/api/mcp/tools/assets /docs/developers/api/mcp/tools/catalog/assets-and-data 301
