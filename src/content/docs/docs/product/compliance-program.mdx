@@ -1,6 +1,6 @@
 ---
 title: Compliance program
-description: Learn how a Probo compliance program connects frameworks, controls, measures, tasks, and evidence, plus how Statements of Applicability record scope.
+description: Learn how a Probo compliance program connects frameworks, controls, internal controls, tasks, and evidence, plus how Statements of Applicability record scope.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
@@ -13,24 +13,24 @@ A Probo organization is the boundary for a company’s compliance records and me
 
 1. A **framework** groups requirements from a standard or a custom program.
 2. A **control** describes an outcome the organization is expected to achieve.
-3. A **measure** describes what the organization actually operates to satisfy one or more controls.
+3. An **internal control** describes what the organization actually operates to satisfy one or more controls.
 4. A **[task](/docs/product/tasks/overview)** assigns a concrete piece of work, optionally with a due date.
-5. **Evidence** is a file or URL supporting the operation of a measure.
+5. **Evidence** is a file or URL supporting the operation of an internal control.
 
 <MermaidDiagram
   chart={programChain}
   caption="From a requirement to the work and proof that satisfy it."
 />
 
-Controls and measures are many-to-many. A reusable measure such as an access review can support controls in several frameworks, which avoids duplicating the same implementation work.
+Controls and internal controls are many-to-many. A reusable internal control such as an access review can support controls in several frameworks, which avoids duplicating the same implementation work.
 
 ## Applicability
 
-A Statement of Applicability records which controls apply to an organization and why. It is versioned separately from day-to-day measure work so teams can review and publish a deliberate scope.
+A Statement of Applicability records which controls apply to an organization and why. It is versioned separately from day-to-day internal control work so teams can review and publish a deliberate scope.
 
 ## Program records
 
-Frameworks, controls, measures, tasks, evidence, risks, documents, audits, and obligations can be linked rather than copied. These relationships provide traceability from a requirement to its implementation, supporting material, risks, and audit results.
+Frameworks, controls, internal controls, tasks, evidence, risks, documents, audits, and obligations can be linked rather than copied. These relationships provide traceability from a requirement to its implementation, supporting material, risks, and audit results.
 
 Publishing a list or statement creates a stable representation for review. Draft records remain editable until the responsible team is ready to publish them.
 
@@ -40,7 +40,7 @@ Organization membership determines access to the program. Assign work to named u
 
 ## Automation
 
-Frameworks, controls, measures, tasks, evidence, and statements of applicability are available through the console and developer interfaces.
+Frameworks, controls, internal controls, tasks, evidence, and statements of applicability are available through the console and developer interfaces.
 
 <CardGrid>
   <LinkCard
@@ -64,9 +64,9 @@ Frameworks, controls, measures, tasks, evidence, and statements of applicability
     href="/docs/developers/api/mcp/tools/catalog/frameworks-and-controls"
   />
   <LinkCard
-    title="MCP measures, tasks, and evidence"
+    title="MCP internal controls, tasks, and evidence"
     description="Create and update implementation work through MCP"
-    href="/docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence"
+    href="/docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence"
   />
   <LinkCard
     title="n8n Framework"

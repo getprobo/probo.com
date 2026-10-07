@@ -55,6 +55,8 @@
 /docs/product/probo-agent/* /docs/product/device-agent/:splat 301
 /docs/product/access-review/infrastructure-security /docs/deployment/infrastructure-security 301
 /docs/product/access-review/clerk /docs/product/access-review/directory 301
+/docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence /docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence 301
+/docs/developers/api/mcp/tools/catalog/linear /docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence 301
 /docs/developers/api/mcp/tools/assets /docs/developers/api/mcp/tools/catalog/assets-and-data 301
 /docs/developers/api/mcp/tools/audits /docs/developers/api/mcp/tools/catalog/audits-and-findings 301
 /docs/developers/api/mcp/tools/controls /docs/developers/api/mcp/tools/catalog/frameworks-and-controls 301
@@ -63,13 +65,13 @@
 /docs/developers/api/mcp/tools/dpias /docs/developers/api/mcp/tools/catalog/privacy 301
 /docs/developers/api/mcp/tools/findings /docs/developers/api/mcp/tools/catalog/audits-and-findings 301
 /docs/developers/api/mcp/tools/frameworks /docs/developers/api/mcp/tools/catalog/frameworks-and-controls 301
-/docs/developers/api/mcp/tools/measures /docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence 301
+/docs/developers/api/mcp/tools/measures /docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence 301
 /docs/developers/api/mcp/tools/obligations /docs/developers/api/mcp/tools/catalog/obligations 301
 /docs/developers/api/mcp/tools/organizations /docs/developers/api/mcp/tools/catalog/organizations 301
 /docs/developers/api/mcp/tools/processing-activities /docs/developers/api/mcp/tools/catalog/privacy 301
 /docs/developers/api/mcp/tools/risks /docs/developers/api/mcp/tools/catalog/risks 301
 /docs/developers/api/mcp/tools/states-of-applicability /docs/developers/api/mcp/tools/catalog/statements-of-applicability 301
-/docs/developers/api/mcp/tools/tasks /docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence 301
+/docs/developers/api/mcp/tools/tasks /docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence 301
 /docs/developers/api/mcp/tools/third-parties /docs/developers/api/mcp/tools/catalog/third-parties 301
 /docs/developers/api/mcp/tools/tias /docs/developers/api/mcp/tools/catalog/privacy 301
 /docs/developers/api/mcp/tools/users /docs/developers/api/mcp/tools/catalog/identity-and-provisioning 301

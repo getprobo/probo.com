@@ -229,12 +229,8 @@ export const mcpCategoryItems = [
     slug: "docs/developers/api/mcp/tools/catalog/identity-and-provisioning",
   },
   {
-    label: "Linear",
-    slug: "docs/developers/api/mcp/tools/catalog/linear",
-  },
-  {
-    label: "Measures, tasks, and evidence",
-    slug: "docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence",
+    label: "Internal controls, tasks, and evidence",
+    slug: "docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence",
   },
   {
     label: "Obligations",

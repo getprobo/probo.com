@@ -22,7 +22,7 @@ Use webhooks to synchronize users and third parties, start document approval or 
 | Documents | `document:*`, `document-version:*`, signature and approval quorum events |
 | Tasks | `task:*`, `task-comment:*` |
 
-Other product areas — including frameworks, controls, measures, risks, access reviews, devices, and cookie consent — do not emit webhook events. Use [GraphQL](/docs/developers/graphql), the [CLI](/docs/developers/cli/overview), [MCP](/docs/developers/api/mcp/overview), or [n8n](/docs/developers/api/n8n/overview) for those domains, and poll or reconcile when your integration must stay current.
+Other product areas — including frameworks, controls, internal controls, risks, access reviews, devices, and cookie consent — do not emit webhook events. Use [GraphQL](/docs/developers/graphql), the [CLI](/docs/developers/cli/overview), [MCP](/docs/developers/api/mcp/overview), or [n8n](/docs/developers/api/n8n/overview) for those domains, and poll or reconcile when your integration must stay current.
 
 See [Event types](/docs/developers/api/webhooks/event-types) for every payload shape. Bodies and the `X-Probo-Webhook-Event` header use lowercase wire names such as `user:created`. The console, CLI, MCP, and n8n use uppercase enums such as `USER_CREATED`.
 

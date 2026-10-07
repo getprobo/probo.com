@@ -414,6 +414,7 @@ function commandLabel(count) {
 function categoryForTool(name) {
   const categories = [
     ["Access reviews", /AccessReview|AccessEntr|Connector/],
+    ["Internal controls, tasks, and evidence", /InternalControl|Task|Evidence|Linear/],
     ["AI systems", /AiSystem/],
     ["Risk assessments", /RiskAssessment/],
     ["Third parties", /ThirdPart(?:y|ies)/],
@@ -436,8 +437,6 @@ function categoryForTool(name) {
     ["Identity and provisioning", /SCIM|User|Membership/],
     ["Devices", /Device/],
     ["Frameworks and controls", /Framework|Control/],
-    ["Linear", /Linear/],
-    ["Measures, tasks, and evidence", /Measure|Task|Evidence/],
     ["Risks", /Risk|TreatmentPlan/],
     ["Audits and findings", /Audit|Finding/],
     ["Assets and data", /Asset|Datum|Data(?:List)?$/],
