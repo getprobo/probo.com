@@ -1,0 +1,93 @@
+---
+title: Tasks Overview
+description: Track compliance work in Probo with task states, priorities, assignees, comments, recurring deadlines, and optional links to internal controls.
+---
+
+import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+
+Tasks are the work items behind your compliance program: implementing a control, collecting evidence, remediating a finding, or reviewing a vendor. Each task belongs to an organization and can be linked to an internal control.
+
+Open **Tasks** in the organization to search, filter, and reorder the list. An internal control also has a **Tasks** tab for the work attached to that control.
+
+## Create a task
+
+Owners and admins can create tasks. Viewers can read tasks, comments, and activity.
+
+A new task needs a name. Everything else is optional:
+
+| Field            | Description                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| Name             | Up to 1,000 bytes. Shown in the list and on the task page.                                                 |
+| Description      | Rich text, up to 5,000 characters of text.                                                                 |
+| State            | Where the work sits. Defaults to **To do**.                                                                |
+| Priority         | **Urgent**, **High**, **Medium**, or **Low**. Defaults to **Medium**.                                      |
+| Assignee         | An organization member.                                                                                    |
+| Internal control | The control this work implements. Set it on the task, or create the task from the control's **Tasks** tab. |
+| Deadline         | When the work is due.                                                                                      |
+| Time estimate    | Expected effort, as an ISO-8601 duration such as `PT2H` or `P1D`. The maximum is 1,000 hours.              |
+| Repeats          | How often the task repeats. Requires a deadline. See [Recurring tasks](#recurring-tasks).                  |
+
+The list can be searched by name and filtered by state or assignee. Drag a task to change its order. Dropping it next to tasks of another priority updates its priority too.
+
+## States
+
+| State       | Meaning                                    |
+| ----------- | ------------------------------------------ |
+| Backlog     | Recorded, and not ready to start           |
+| To do       | Ready to start                             |
+| In progress | Someone is working on it                   |
+| Done        | Finished                                   |
+| Canceled    | Stopped                                    |
+| Duplicate   | The same work is already tracked elsewhere |
+
+## Priorities
+
+Urgent, High, Medium, and Low. The list orders by priority rank by default, then by the manual rank inside that priority.
+
+## Recurring tasks
+
+Set a recurrence interval together with a deadline. The interval is an ISO-8601 duration, for example `P7D` (every week), `P1M` (every month), or `P1Y` (every year). The longest interval is 10 years.
+
+When the deadline passes, Probo creates the next task:
+
+- The new task copies the name, description, priority, assignee, time estimate, internal control, and interval.
+- Its state is **To do**.
+- Its deadline is the next occurrence after now. Missed cycles collapse into that single next occurrence.
+- Recurrence is cleared on the task that just came due, and kept on the new one.
+
+## Comments and activity
+
+The task page has a comment thread and an activity log.
+
+Comments are rich text, up to 5,000 characters. The author can edit or delete their own comment. Owners and admins can delete any comment.
+
+Activity records creates and updates for the name, description, state, priority, assignee, internal control, deadline, and time estimate. Each entry stores the previous value and the new value.
+
+## Linear
+
+Connect Linear to publish a task as an issue, or link it to an issue that already exists, and keep the two in sync. See [Linear](/docs/product/tasks/linear).
+
+## Next steps
+
+<CardGrid>
+  <LinkCard
+    title="Linear"
+    description="Connect Linear and sync issues, states, and comments"
+    href="/docs/product/tasks/linear"
+  />
+  <LinkCard
+    title="CLI"
+    description="Create, update, and publish tasks from the terminal"
+    href="/docs/developers/cli/commands/task"
+  />
+  <LinkCard
+    title="MCP tools"
+    description="Manage tasks from an AI assistant"
+    href="/docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence"
+  />
+  <LinkCard
+    title="Webhooks"
+    description="Receive task and comment lifecycle events"
+    href="/docs/developers/api/webhooks/event-types"
+  />
+</CardGrid>

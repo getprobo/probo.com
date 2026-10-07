@@ -343,6 +343,15 @@ export const docsSidebarGroups = [
     ],
   },
   {
+    id: "tasks",
+    sectionId: "product",
+    label: "Tasks",
+    items: [
+      { label: "Overview", slug: "docs/product/tasks/overview" },
+      { label: "Linear", slug: "docs/product/tasks/linear" },
+    ],
+  },
+  {
     id: "developer-overview",
     sectionId: "developers",
     label: "Developer Overview",
