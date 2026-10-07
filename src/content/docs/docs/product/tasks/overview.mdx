@@ -190,15 +190,7 @@ connectors:
 
 Access reviews use a `LINEAR` connector. Task sync uses `LINEAR_SYNC`. See [Environment variables](/docs/deployment/configuration/environment-reference) and [Config file](/docs/deployment/configuration/config-file).
 
-### From the CLI, MCP, and n8n
-
-The same publish, link, and unlink actions are available outside the console:
-
-- [CLI](/docs/developers/cli/commands/task): `prb task publish-linear`, `link-linear`, and `unlink-external`
-- [MCP](/docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence): `listLinearTeams`, `listLinearIssues`, `publishTaskToLinear`, `linkTaskToLinear`, and `unlinkTaskExternal`
-- [n8n](/docs/developers/api/n8n/resources/task): **Publish To Linear**, **Link To Linear**, and **Unlink External**
-
-## Next steps
+## Automation
 
 <CardGrid>
   <LinkCard
@@ -210,6 +202,11 @@ The same publish, link, and unlink actions are available outside the console:
     title="MCP tools"
     description="Manage tasks from an AI assistant"
     href="/docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence"
+  />
+  <LinkCard
+    title="n8n Task"
+    description="Automate task operations in n8n"
+    href="/docs/developers/api/n8n/resources/task"
   />
   <LinkCard
     title="Webhooks"
