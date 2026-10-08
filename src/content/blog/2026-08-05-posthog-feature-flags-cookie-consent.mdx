@@ -15,6 +15,8 @@ faqs:
     answer: "No — it stores the visitor's PostHog opt-in/out preference so the SDK remembers the choice. Same legal posture teams usually apply to a probo_consent cookie: strictly necessary preference storage for compliance, not a marketing distinct_id. Disclose it as essential in your cookie inventory. This is not legal advice; keep the purpose narrow."
   - question: "How do I target a demo distinct ID on a feature flag?"
     answer: "In PostHog, open the flag's release conditions and add a condition where Distinct ID equals the string you pass to identify() (for example cookie-banner-example-demo). Set that condition to 100% rollout. After the visitor accepts analytics and identify runs, the flag evaluates for that person."
+coverImage: "/blog/covers-phosphor/sign-out-2x.webp"
+coverImageAlt: "Sign-out icon on a cream and fluorescent yellow background."
 ---
 
 You already have PostHog behind a regulation-aware cookie banner — the [Track 2 setup](/blog/2026-05-27-posthog-cookie-banner-gdpr-ccpa-compliance). Now you want a small product feature gated by a PostHog feature flag: **hidden when the flag is off**, and also **treated as off** while PostHog is still cookieless or the visitor is unidentified. Only after analytics consent and `identify()` should the flag come from PostHog.

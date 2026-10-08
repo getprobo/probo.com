@@ -58,7 +58,8 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 .journal-card-copy {
   display: flex;
@@ -168,7 +169,8 @@
 .journal-cover img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 .journal-reading-layout {
   position: relative;
