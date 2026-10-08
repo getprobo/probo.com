@@ -2,6 +2,8 @@
 import type { CollectionEntry } from "astro:content";
 import "../styles/journal.css";
 import BlogCard from "./blog/BlogCard.astro";
+import Button from "./ui/Button.svelte";
+import Icon, { type IconName } from "./Icon.astro";
 import { blogCategories, categoryHref, type BlogCategory } from "../lib/blog";
 interface Props {
   posts: CollectionEntry<"blog">[];
@@ -12,6 +14,11 @@ interface Props {
 const { posts, currentPage, lastPage, category } = Astro.props;
 const featured = !category && currentPage === 1 ? posts[0] : undefined;
 const list = featured ? posts.slice(1) : posts;
+const categoryIcons: Record<BlogCategory, IconName> = {
+  Compliance: "shield-check",
+  Engineering: "code",
+  Perspectives: "quotes",
+};
 ---
 
 <main class="journal-container journal-index">
@@ -30,12 +37,15 @@ const list = featured ? posts.slice(1) : posts;
     <nav aria-label="Article categories" class="journal-filters">
       {
         [undefined, ...blogCategories].map((item) => (
-          <a
+          <Button
+            variant="secondary"
+            class="h-10 px-4 whitespace-nowrap sm:h-10"
             href={categoryHref(item)}
             aria-current={item === category ? "page" : undefined}
           >
+            <Icon name={item ? categoryIcons[item] : "article"} size={16} />
             {item ?? "All"}
-          </a>
+          </Button>
         ))
       }
     </nav>
