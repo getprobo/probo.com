@@ -201,13 +201,16 @@
 .journal-toc ol {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
 }
 .journal-toc a {
   display: block;
   padding: 6px 8px 6px 12px;
   border-left: 1px solid var(--color-border-low);
   color: var(--color-muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
 }
 .journal-toc a:hover,
 .journal-toc a[aria-current="location"] {
@@ -620,7 +623,7 @@
   border-left-width: 2px;
 }
 .journal-toc-desktop a {
-  padding-block: 10px;
+  padding-block: 6px;
 }
 .journal-prose pre[data-language="plaintext"],
 .journal-prose pre[data-language="text"] {
@@ -837,7 +840,7 @@
     padding: 0 16px 16px;
   }
   .journal-toc-mobile a {
-    padding-block: 10px;
+    padding-block: 6px;
   }
   .journal-newsletter {
     grid-template-columns: 1fr 1fr;
