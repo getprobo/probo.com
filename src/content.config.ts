@@ -88,6 +88,8 @@ const hub = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/hub" }),
   schema: z.object({
     title: z.string(),
+    /** <title> tag override when it should differ from the <h1> */
+    metaTitle: z.string().optional(),
     /** Word/phrase within `title` to highlight in the article <h1> */
     highlight: z.string().optional(),
     /** Small pill shown under the <h1> (e.g. "The Complete SOC 2 Guide for 2026") */
@@ -105,6 +107,10 @@ const hub = defineCollection({
     date: z.date(),
     dateModified: z.date().optional(),
     ogImage: z.string().optional(),
+    /** Rendered as FAQPage JSON-LD */
+    faqs: z
+      .array(z.object({ question: z.string(), answer: z.string() }))
+      .default([]),
     draft: z.boolean().default(false),
   }),
 });
