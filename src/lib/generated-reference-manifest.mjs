@@ -90,6 +90,10 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/dpia",
   },
   {
+    label: "Employee Portal",
+    slug: "docs/developers/cli/commands/employee-portal",
+  },
+  {
     label: "Evidence",
     slug: "docs/developers/cli/commands/evidence",
   },
@@ -221,6 +225,10 @@ export const mcpCategoryItems = [
     slug: "docs/developers/api/mcp/tools/catalog/documents-and-approvals",
   },
   {
+    label: "Employee portal",
+    slug: "docs/developers/api/mcp/tools/catalog/employee-portal",
+  },
+  {
     label: "Frameworks and controls",
     slug: "docs/developers/api/mcp/tools/catalog/frameworks-and-controls",
   },
@@ -334,6 +342,10 @@ export const n8nResourceItems = [
   {
     label: "DPIA",
     slug: "docs/developers/api/n8n/resources/dpia",
+  },
+  {
+    label: "Employee Portal",
+    slug: "docs/developers/api/n8n/resources/employee-portal",
   },
   {
     label: "Evidence",
