@@ -94,28 +94,13 @@ type Props = {
         </nav>
         <div class="journal-footer-bottom">
           <div class="journal-footer-legal">
-            <>
-              <p>
-                Copyright © 2025-{new Date().getFullYear()} Probo. All rights
-                reserved.
-              </p>
-              <a
-                href="https://probostatus.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-3"
-              >
-                System status
-                <img
-                  src="/blog/icons/right.svg"
-                  width="16"
-                  height="16"
-                  alt=""
-                />
-              </a>
-            </>
+            <p>
+              Copyright © 2025-{new Date().getFullYear()} Probo. All rights
+              reserved.
+            </p>
+            <OpenStatus client:visible />
           </div>
-          <AskAi journal />
+          <AskAi />
         </div>
       </div>
     </footer>
