@@ -220,7 +220,7 @@
   display: block;
   padding: 6px 8px 6px 12px;
   border-left: 1px solid var(--color-border-low);
-  color: var(--color-muted-foreground);
+  color: #9aa299;
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
@@ -612,8 +612,9 @@
   cursor: pointer;
 }
 .journal-toc a[aria-current="location"] {
-  background: var(--color-highlight);
-  border-left-width: 2px;
+  background: transparent;
+  border-left: 1px solid #000;
+  font-weight: 600;
 }
 .journal-toc-desktop a {
   padding-block: 6px;
@@ -663,8 +664,60 @@
   gap: 12px;
   padding-top: 12px;
 }
-.journal-card-meta > img {
+.journal-card-meta-reveal {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.journal-card-meta-reveal > * {
+  grid-area: 1 / 1;
+}
+.journal-card-meta-read {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+}
+.journal-card-meta-read img {
   flex-shrink: 0;
+}
+.journal-card-meta-reveal[data-scrambling] .journal-card-meta-read img {
+  opacity: 0;
+}
+.journal-card-meta-reveal[data-scrambling] .journal-card-meta-author {
+  opacity: 0;
+}
+.journal-card-meta-reveal[data-scrambling] .journal-card-meta-read {
+  opacity: 1;
+}
+.journal-card > a:focus-visible .journal-card-meta-author {
+  opacity: 0;
+}
+.journal-card > a:focus-visible .journal-card-meta-read {
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .journal-card > a:hover .journal-card-meta-author {
+    opacity: 0;
+  }
+  .journal-card > a:hover .journal-card-meta-read {
+    opacity: 1;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .journal-card-image img {
+    transform: scale(1.14);
+    transition: transform 600ms cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .journal-card > a:hover .journal-card-image img {
+    transform: scale(1);
+  }
+  .journal-card > a:focus-visible .journal-card-image img {
+    transform: none;
+    transition: none;
+  }
 }
 .journal-featured .journal-card-meta {
   padding-top: 0;
