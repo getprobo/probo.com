@@ -50,10 +50,19 @@
 }
 .journal-card-image,
 .journal-cover {
+  position: relative;
   background: var(--journal-reserve);
-  border: 1px solid var(--color-border-low);
   border-radius: 8px;
   overflow: hidden;
+}
+.journal-card-image::after,
+.journal-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(0 0 0 / 3%);
+  border-radius: inherit;
+  pointer-events: none;
 }
 .journal-card-image {
   aspect-ratio: 2;
