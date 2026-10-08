@@ -159,6 +159,7 @@
 .journal-metadata {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   column-gap: 8px;
   row-gap: 4px;
   margin-top: 24px;
@@ -684,6 +685,7 @@
 .journal-breadcrumb {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   color: var(--color-muted-foreground);
   min-height: 44px;
@@ -703,7 +705,9 @@
 .journal-hero {
   margin-top: 24px;
   max-width: 760px;
+  margin-inline: auto;
   margin-bottom: 48px;
+  text-align: center;
 }
 .journal-cover {
   aspect-ratio: 16 / 9;
