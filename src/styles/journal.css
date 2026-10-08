@@ -14,6 +14,7 @@
 }
 .journal-masthead {
   margin-bottom: 40px;
+  text-align: center;
 }
 .journal-masthead h1 {
   font-size: 40px;
@@ -29,6 +30,7 @@
 }
 .journal-filters {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 32px;
