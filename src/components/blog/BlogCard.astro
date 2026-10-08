@@ -95,7 +95,11 @@ const image = post.data.coverImage ?? post.data.titleImage;
           ".journal-card-meta-label",
         );
         if (!reveal || !author || !label) return;
-        const source = author.textContent?.replace(/\s+/g, " ").trim() ?? "";
+        const source =
+          author.textContent
+            ?.replace(/\s+/g, " ")
+            .replace(/\s*·\s*/g, " · ")
+            .trim() ?? "";
         let frame = 0;
 
         const update = (animate = true) => {
