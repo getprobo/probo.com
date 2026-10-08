@@ -5,6 +5,7 @@ import AntoinePortrait from "../../assets/antoine-bourchardy.png";
 import ArthurPortrait from "../../assets/arthur-mayoux-blog.svg";
 import BryanPortrait from "../../assets/bryan_firmin.svg";
 import EmilePortrait from "../../assets/emile_blog.svg";
+import AuthorAvatar from "../blog/AuthorAvatar.astro";
 
 interface Props {
   class?: string;
@@ -263,11 +264,14 @@ const isEmile = author === "Émile Ré";
   journal && (
     <div class="journal-author">
       <p class="text-muted-foreground text-xs">Written by</p>
-      <div>
-        <p class="font-medium">{author}</p>
-        {details && (
-          <p class="text-muted-foreground mt-1 text-sm">{details.role}</p>
-        )}
+      <div class="flex items-center gap-3">
+        {author && <AuthorAvatar author={author} size="large" />}
+        <div>
+          <p class="font-medium">{author}</p>
+          {details && (
+            <p class="text-muted-foreground mt-1 text-sm">{details.role}</p>
+          )}
+        </div>
       </div>
       {details && <p class="text-muted-foreground">{details.biography}</p>}
     </div>

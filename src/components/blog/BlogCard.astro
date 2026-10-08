@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { blogDate, postHref } from "../../lib/blog";
+import AuthorAvatar from "./AuthorAvatar.astro";
 interface Props {
   post: CollectionEntry<"blog">;
   featured?: boolean;
@@ -41,8 +42,18 @@ const image = post.data.coverImage ?? post.data.titleImage;
       <p class="journal-card-excerpt">{post.data.excerpt}</p>
       <div class="journal-card-meta">
         <div class="journal-card-meta-reveal text-muted-foreground text-sm">
-          <p class="journal-card-meta-author">
-            {post.data.author.name}<span aria-hidden="true"> · </span><time
+          <p
+            class="journal-card-meta-author flex flex-wrap items-center gap-x-2 gap-y-1"
+          >
+            <span class="inline-flex items-center gap-2">
+              <AuthorAvatar
+                author={post.data.author.name}
+                size={featured ? "medium" : "small"}
+                loading={featured ? "eager" : "lazy"}
+              />
+              {post.data.author.name}
+            </span>
+            <span aria-hidden="true">·</span><time
               datetime={post.data.date.toISOString()}
               >{blogDate.format(post.data.date)}</time
             >
