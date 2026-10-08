@@ -209,6 +209,16 @@ const markdownAlternate = pagePath ? `${pagePath}.md` : "/index.md";
       )
     }
     <script>
+      document.addEventListener("astro:before-swap", (event) => {
+        if (
+          document.body.classList.contains("journal") ||
+          event.newDocument.body.classList.contains("journal")
+        ) {
+          void event.viewTransition.ready.catch(() => {});
+          event.viewTransition.skipTransition();
+        }
+      });
+
       const registerBanner = async (attempt = 0) => {
         if (!document.querySelector("probo-cookie-banner")) return;
         try {

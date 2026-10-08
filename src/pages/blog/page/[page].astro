@@ -10,7 +10,7 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
   const allPosts = (await getCollection("blog")).sort(
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
   );
-  return paginate(allPosts, { pageSize });
+  return paginate(allPosts.slice(1), { pageSize });
 }
 
 type Props = {

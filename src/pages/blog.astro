@@ -7,8 +7,8 @@ import { pageSize } from "../content.config.ts";
 const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-const lastPage = Math.ceil(allPosts.length / pageSize);
-const posts = allPosts.slice(0, pageSize);
+const lastPage = Math.max(1, Math.ceil((allPosts.length - 1) / pageSize));
+const posts = allPosts.slice(0, pageSize + 1);
 ---
 
 <Layout

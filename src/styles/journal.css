@@ -93,7 +93,7 @@
 }
 .journal-featured > a {
   display: grid;
-  grid-template-columns: 1fr 0.941fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
   gap: 32px;
 }
