@@ -39,7 +39,7 @@ const categoryIcons: Record<BlogCategory, IconName> = {
         [undefined, ...blogCategories].map((item) => (
           <Button
             variant="secondary"
-            class="h-10 px-4 whitespace-nowrap sm:h-10"
+            class="h-9 px-4 whitespace-nowrap lg:h-8 lg:px-3"
             href={categoryHref(item)}
             aria-current={item === category ? "page" : undefined}
           >
