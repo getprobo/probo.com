@@ -1,7 +1,9 @@
 .journal {
   --journal-reserve: #f3f5f2;
 }
-.journal :where(a, button, summary, input, [tabindex="0"]):focus-visible {
+.journal
+  :where(#main-content, .journal-footer)
+  :where(a, button, summary, input, [tabindex="0"]):focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
 }
@@ -10,10 +12,10 @@
   margin-inline: auto;
 }
 .journal-index {
-  padding-top: 48px;
+  padding-top: 64px;
 }
 .journal-masthead {
-  margin-bottom: 40px;
+  margin-bottom: 56px;
 }
 .journal-masthead h1 {
   font-size: 40px;
@@ -102,7 +104,6 @@
 .journal-catalogue-featured {
   margin-top: 48px;
   padding-top: 32px;
-  border-top: 1px solid var(--color-border-low);
 }
 .journal-grid {
   display: grid;
@@ -595,26 +596,6 @@
   min-width: 44px;
   cursor: pointer;
 }
-.journal .page-header {
-  background: var(--color-level-0);
-  border-bottom-color: transparent;
-}
-.journal .page-header > .container {
-  height: 80px;
-  padding-block: 0;
-}
-.journal .page-header .logo-light {
-  width: 88px;
-  height: auto;
-}
-.journal .page-header nav > a,
-.journal .page-header a[href="/contact"] {
-  min-height: 40px;
-}
-.journal .page-header a[href="/contact"] {
-  padding-inline: 16px;
-  font-size: 14px;
-}
 .journal-toc a[aria-current="location"] {
   background: var(--color-highlight);
   border-left-width: 2px;
@@ -860,10 +841,10 @@
     width: calc(100% - 32px);
   }
   .journal-index {
-    padding-top: 32px;
+    padding-top: 40px;
   }
   .journal-masthead {
-    margin-bottom: 32px;
+    margin-bottom: 40px;
   }
   .journal-masthead h1 {
     font-size: 32px;
@@ -997,9 +978,6 @@
   .journal-ai a {
     min-height: 44px;
   }
-  .journal .page-header > .container {
-    padding-inline: 16px;
-  }
   .journal-filters {
     gap: 8px;
     margin-top: 24px;
@@ -1043,14 +1021,5 @@
   }
   .journal-ai > span {
     width: auto;
-  }
-}
-@media (max-width: 1023px) {
-  .journal .page-header > .container {
-    height: 64px;
-  }
-  .journal .page-header burger-menu {
-    width: 44px;
-    height: 44px;
   }
 }
