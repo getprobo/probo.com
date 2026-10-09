@@ -37,11 +37,10 @@
   gap: 8px;
   margin-top: 32px;
 }
-.journal-filters a:hover,
-.journal-pagination a:hover {
+.journal-filters a:hover {
   background: var(--color-highlight);
 }
-.journal :is(.journal-filters, .journal-pagination) a[aria-current="page"] {
+.journal .journal-filters a[aria-current="page"] {
   background: var(--color-primary);
   color: var(--color-invert);
 }
@@ -123,21 +122,89 @@
   row-gap: 64px;
 }
 .journal-pagination {
+  --pagination-snappy: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --pagination-smooth: cubic-bezier(0.19, 1, 0.22, 1);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  margin-top: 56px;
+  width: fit-content;
+  max-width: 100%;
+  gap: 4px;
+  margin: 40px auto 0;
 }
-.journal-pagination a {
+.journal-pagination > :is(a, span) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--color-border-low);
   border-radius: 50%;
-  font-size: 15px;
+  color: var(--color-muted-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.journal-pagination [aria-current="page"] {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-invert);
+}
+.journal-pagination a {
+  transition:
+    background-color 180ms var(--pagination-smooth),
+    border-color 180ms var(--pagination-smooth),
+    color 180ms var(--pagination-smooth),
+    transform 220ms var(--pagination-snappy);
+}
+.journal-pagination a[rel="prev"] {
+  --pagination-arrow-shift: -2px;
+}
+.journal-pagination a[rel="next"] {
+  --pagination-arrow-shift: 2px;
+}
+.journal-pagination img {
+  transition: transform 220ms var(--pagination-snappy);
+}
+.journal-pagination a:focus-visible {
+  background: var(--color-highlight);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  outline-offset: 3px;
+}
+.journal-pagination a:focus-visible img {
+  transform: translateX(var(--pagination-arrow-shift));
+}
+@media (hover: hover) and (pointer: fine) {
+  .journal-pagination a:hover {
+    background: var(--color-highlight);
+    border-color: var(--color-border-mid);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+  .journal-pagination a:hover img {
+    transform: translateX(var(--pagination-arrow-shift));
+  }
+}
+.journal-pagination a:active {
+  background: var(--color-highlight);
+  transform: scale(0.92);
+  transition-duration: 80ms;
+}
+@media (pointer: coarse) {
+  .journal-pagination > :is(a, span) {
+    width: 44px;
+    height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journal-pagination a,
+  .journal-pagination img {
+    transition: none;
+    transform: none !important;
+  }
 }
 .journal-article {
   padding-top: 24px;
@@ -927,7 +994,7 @@
     padding-bottom: 48px;
   }
   .journal-pagination {
-    margin-top: 40px;
+    margin-top: 32px;
   }
   .journal-article {
     padding-top: 16px;
