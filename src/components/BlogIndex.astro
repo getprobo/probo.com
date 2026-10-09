@@ -69,15 +69,20 @@ const categoryIcons: Record<BlogCategory, IconName> = {
               <img src="/blog/icons/back.svg" alt="" width="16" height="16" />
             </a>
           )}
-          {Array.from({ length: lastPage }, (_, i) => i + 1).map((page) => (
-            <a
-              href={categoryHref(category, page)}
-              aria-label={`Page ${page}`}
-              aria-current={page === currentPage ? "page" : undefined}
-            >
-              {page}
-            </a>
-          ))}
+          {Array.from({ length: lastPage }, (_, i) => i + 1).map((page) =>
+            page === currentPage ? (
+              <span aria-label={`Page ${page}`} aria-current="page">
+                {page}
+              </span>
+            ) : (
+              <a
+                href={categoryHref(category, page)}
+                aria-label={`Page ${page}`}
+              >
+                {page}
+              </a>
+            ),
+          )}
           {currentPage < lastPage && (
             <a
               href={categoryHref(category, currentPage + 1)}
