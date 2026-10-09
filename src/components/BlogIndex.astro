@@ -44,7 +44,7 @@ const categoryIcons: Record<BlogCategory, IconName> = {
             aria-current={item === category ? "page" : undefined}
           >
             <Icon name={item ? categoryIcons[item] : "article"} size={16} />
-            {item ?? "All"}
+            {item ?? "All articles"}
           </Button>
         ))
       }
