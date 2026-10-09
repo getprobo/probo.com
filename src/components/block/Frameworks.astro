@@ -5,37 +5,38 @@ import Badges from "../Badges.svelte";
 import Button from "../../components/ui/Button.svelte";
 ---
 
-<div class="bg-linear-to-b from-[#F8FAF4] to-[#FFFFFB] py-10 sm:py-20">
-  <div class="container">
-    <Image
-      src={Logo}
-      alt="Logo probo"
-      width={48}
-      height={48}
-      class="mx-auto mb-6"
-    />
-    <h2 class="text-h3 sm:text-h2 mb-3 text-center font-medium">
-      Managed frameworks
-    </h2>
-    <p class="text-muted-foreground mb-12 text-center text-lg">
-      Not seeing the one you are looking for?<br />
-      Reach out, we likely do it as well.
-    </p>
+<section class="footer-frameworks" aria-labelledby="footer-frameworks-title">
+  <Image
+    src={Logo}
+    alt="Logo probo"
+    width={48}
+    height={48}
+    class="mx-auto mb-6"
+  />
+  <h2
+    id="footer-frameworks-title"
+    class="text-h3 sm:text-h2 mb-3 text-center font-medium"
+  >
+    Managed frameworks
+  </h2>
+  <p class="text-muted-foreground mb-12 text-center text-lg">
+    Not seeing the one you are looking for?<br />
+    Reach out, we likely do it as well.
+  </p>
 
-    <Badges
-      count={10}
-      countMobile={9}
-      client:visible
-      class="mx-auto mb-13 grid max-w-[660px] grid-cols-3 justify-center justify-items-center gap-2 gap-y-10 sm:grid-cols-5 sm:gap-x-10"
-    />
+  <Badges
+    count={10}
+    countMobile={9}
+    client:visible
+    class="mx-auto mb-13 grid max-w-[660px] grid-cols-3 justify-center justify-items-center gap-2 gap-y-10 sm:grid-cols-5 sm:gap-x-10"
+  />
 
-    <Button
-      rel="nofollow noreferrer"
-      href="/contact"
-      size="lg"
-      class="mx-auto flex w-max"
-    >
-      Get compliant
-    </Button>
-  </div>
-</div>
+  <Button
+    rel="nofollow noreferrer"
+    href="/contact"
+    size="lg"
+    class="mx-auto flex w-max"
+  >
+    Get compliant
+  </Button>
+</section>
