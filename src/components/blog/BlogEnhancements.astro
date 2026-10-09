@@ -68,7 +68,10 @@
       );
       const wrapper = document.createElement("div");
       wrapper.className = "journal-code";
-      if (!isTemplate) wrapper.classList.add("journal-code-wide");
+      if (!isTemplate) {
+        wrapper.classList.add("journal-code-wide");
+        pre.closest(".expressive-code")?.setAttribute("data-theme", "dark");
+      }
       const toolbar = document.createElement("div");
       toolbar.className = "journal-code-toolbar";
       const title = document.createElement("span");
