@@ -24,7 +24,13 @@ const categoryIcons: Record<BlogCategory, IconName> = {
 <main class="journal-container journal-index">
   <header class="journal-masthead">
     <h1>
-      The Compliance Journal<span class="sr-only"
+      <img
+        src="/blog/journal-logo-minimal.svg"
+        class="journal-logo"
+        width="230"
+        height="73"
+        alt="The Compliance Journal"
+      /><span class="sr-only"
         >{category ? `: ${category}` : ""}{
           currentPage > 1 ? `, page ${currentPage}` : ""
         }</span
