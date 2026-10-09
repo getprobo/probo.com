@@ -479,14 +479,14 @@
 }
 .journal-footer {
   background: var(--color-highlight);
-  padding-block: 64px 40px;
+  padding-block: 96px 64px;
 }
 .journal-newsletter {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 416px;
   gap: 64px;
   align-items: center;
-  padding-bottom: 64px;
+  padding-bottom: 96px;
 }
 .journal-newsletter h2 {
   font-size: 48px;
@@ -562,7 +562,7 @@
   grid-template-columns: 172fr repeat(4, 203fr);
   gap: 24px;
   border-top: 1px solid var(--color-border-low);
-  padding-top: 32px;
+  padding-top: 64px;
 }
 .journal-footer-nav ul {
   margin-top: 16px;
@@ -650,12 +650,6 @@
 }
 .journal-filters a {
   border-color: var(--color-border-low);
-}
-.journal-card:not(.journal-featured) h2 {
-  min-height: 60px;
-}
-.journal-card:not(.journal-featured) .journal-card-excerpt {
-  min-height: 72px;
 }
 .journal-card-meta {
   display: flex;
@@ -793,8 +787,8 @@
   justify-content: space-between;
   flex-wrap: wrap;
   display: flex;
-  padding-top: 24px;
-  margin-top: 32px;
+  padding-top: 48px;
+  margin-top: 64px;
   border-top: 1px solid var(--color-border-low);
   align-items: center;
 }
@@ -991,11 +985,12 @@
     padding-block: 32px 48px;
   }
   .journal-footer {
-    padding-block: 48px 32px;
+    padding-block: 64px 48px;
   }
   .journal-newsletter {
     grid-template-columns: 1fr;
     gap: 28px;
+    padding-bottom: 64px;
   }
   .journal-newsletter h2 {
     font-size: 36px;
@@ -1011,6 +1006,7 @@
   .journal-footer-nav {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 32px;
+    padding-top: 48px;
   }
   .journal-footer-nav li a {
     display: inline-block;
@@ -1018,6 +1014,10 @@
   }
   .journal-footer-nav ul {
     gap: 8px;
+  }
+  .journal-footer-bottom {
+    padding-top: 32px;
+    margin-top: 48px;
   }
   .journal-footer-bottom,
   .journal-footer-legal {
@@ -1057,10 +1057,6 @@
   .journal-featured h2 {
     font-size: 24px;
     line-height: 32px;
-  }
-  .journal-card:not(.journal-featured) h2,
-  .journal-card:not(.journal-featured) .journal-card-excerpt {
-    min-height: 0;
   }
   .journal-hero,
   .journal-cover {
