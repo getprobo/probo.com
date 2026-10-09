@@ -236,14 +236,13 @@ const faqSchema = post.data.faqs
         </article>
         <WrittenBy author={post.data.author.name} variant="journal" />
         <div class="journal-share" aria-label="Share this article">
-          <p class="journal-share-label">Share this article</p>
           <button type="button" data-copy-link={canonical}
             ><img
               src="/blog/icons/link.svg"
               alt=""
               width="16"
               height="16"
-            /><span>Copy link</span></button
+            /><span>Copy Link</span></button
           >
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`}
@@ -254,7 +253,7 @@ const faqSchema = post.data.faqs
               alt=""
               width="16"
               height="16"
-            />LinkedIn</a
+            />Share on LinkedIn</a
           >
           <p class="sr-only" aria-live="polite" data-copy-status></p>
         </div>
