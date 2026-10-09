@@ -19,7 +19,7 @@ Use Kubernetes when your team already has established practices for ingress, cer
 - An ingress controller and TLS certificate
 - An SMTP relay if you want Probo to send email
 
-The database role must be able to create or use the `citext`, `pgcrypto`, `unaccent`, and `pg_stat_statements` extensions. On PostgreSQL 15 and newer, make the Probo role the owner of the `public` schema before first startup:
+The database role must be able to create or use the `citext`, `pgcrypto`, `unaccent`, and `pg_stat_statements` extensions. On PostgreSQL 18 or newer, make the Probo role the owner of the `public` schema before first startup:
 
 ```sql
 ALTER SCHEMA public OWNER TO probod;
