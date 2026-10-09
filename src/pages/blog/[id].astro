@@ -161,13 +161,17 @@ const faqSchema = post.data.faqs
   }
   <main class="journal-container journal-article">
     <nav class="journal-breadcrumb" aria-label="Breadcrumb">
-      <a href="/blog" class="journal-back" aria-label="Back to the journal"
-        ><img
-          src="/blog/icons/back.svg"
-          width="16"
-          height="16"
+      <a
+        href="/blog"
+        class="journal-back"
+        aria-label="Back to The Compliance Journal"
+        ><img src="/blog/icons/back.svg" width="16" height="16" alt="" /><img
+          src="/blog/journal-logo-minimal.svg"
+          class="journal-breadcrumb-logo"
+          width="230"
+          height="73"
           alt=""
-        />Journal</a
+        /></a
       >
       <span aria-hidden="true">/</span>
       <a href={categoryHref(post.data.category)} class="journal-category"
