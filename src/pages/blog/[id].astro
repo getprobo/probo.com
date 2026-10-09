@@ -1,43 +1,64 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import Prose from "../../components/Prose.astro";
-import Sharer from "../../components/block/Sharer.svelte";
+import BlogCard from "../../components/blog/BlogCard.astro";
+import AuthorAvatar from "../../components/blog/AuthorAvatar.astro";
+import BlogToc from "../../components/blog/BlogToc.astro";
+import BlogEnhancements from "../../components/blog/BlogEnhancements.astro";
+import {
+  blogDate,
+  categoryHref,
+  newestFirst,
+  readingMinutes,
+} from "../../lib/blog";
+import "../../styles/journal.css";
 import WrittenBy from "../../components/block/WrittenBy.astro";
-import Newsletter from "../../components/block/Newsletter.astro";
 import { getCanonicalUrl } from "../../lib/i18n.ts";
 
 interface Props {
   post: CollectionEntry<"blog">;
-  newer: CollectionEntry<"blog"> | null;
-  older: CollectionEntry<"blog"> | null;
+  related: CollectionEntry<"blog">[];
 }
-
 export async function getStaticPaths() {
-  const posts = (await getCollection("blog")).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-  );
-  return posts.map((post, index) => ({
+  const posts = (await getCollection("blog")).sort(newestFirst);
+  return posts.map((post) => ({
     params: { id: post.id },
     props: {
       post,
-      newer: posts[index - 1] ?? null,
-      older: posts[index + 1] ?? null,
+      related: [
+        ...posts.filter(
+          (other) =>
+            other.id !== post.id && other.data.category === post.data.category,
+        ),
+        ...posts.filter(
+          (other) =>
+            other.id !== post.id && other.data.category !== post.data.category,
+        ),
+      ].slice(0, 2),
     },
   }));
 }
-const { post, newer, older } = Astro.props;
-const postHref = (id: string) => `/blog/${id.split("/").at(-1)}`;
-const { Content } = await render(post);
-const dateFormatter = Intl.DateTimeFormat("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
-
-const articleImage = post.data.ogImage
-  ? `https://www.probo.com${post.data.ogImage}`
-  : "https://www.probo.com/og.png";
+const { post, related } = Astro.props;
+const { Content, headings } = await render(post);
+const headingDepth = Math.min(...headings.map((heading) => heading.depth));
+const toc = headings.filter((heading) => heading.depth === headingDepth);
+const hasFaq = headings.some((heading) =>
+  /frequently asked|faq/i.test(heading.text),
+);
+if (!hasFaq && post.data.faqs?.length) {
+  toc.push({
+    depth: 2,
+    slug: "frequently-asked-questions",
+    text: "Frequently asked questions",
+  });
+}
+const showToc = post.data.showToc && toc.length > 2;
+const cover = post.data.coverImage ?? post.data.titleImage;
+const canonical = getCanonicalUrl(Astro.url);
+const articleImage =
+  (post.data.ogImage ?? cover)
+    ? `https://www.probo.com${post.data.ogImage ?? cover}`
+    : "https://www.probo.com/og.png";
 
 const articleSchema = {
   "@context": "https://schema.org",
@@ -110,11 +131,13 @@ const faqSchema = post.data.faqs
 ---
 
 <Layout
+  journal
+  noFrameworks
   title={post.data.title}
   description={post.data.excerpt}
-  ogImage={post.data.ogImage ?? post.data.titleImage}
+  ogImage={post.data.ogImage ?? cover}
+  ogType="article"
 >
-  <meta slot="head" property="og:type" content="article" />
   <meta
     slot="head"
     property="article:published_time"
@@ -123,13 +146,9 @@ const faqSchema = post.data.faqs
   <meta
     slot="head"
     property="article:modified_time"
-    content={post.data.date.toISOString()}
+    content={(post.data.dateModified ?? post.data.date).toISOString()}
   />
-  <meta
-    slot="head"
-    property="article:author"
-    content="https://www.probo.com/about"
-  />
+  <meta slot="head" property="article:author" content={post.data.author.name} />
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <script
     type="application/ld+json"
@@ -140,129 +159,112 @@ const faqSchema = post.data.faqs
       <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
     )
   }
-  <main class="@container container my-10 max-w-[720px] sm:my-20">
-    <a
-      href="/blog"
-      class="text-muted-foreground hover:text-foreground animate-slide-in mb-8 inline-flex items-center gap-1 text-sm transition-colors"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
+  <main class="journal-container journal-article">
+    <nav class="journal-breadcrumb" aria-label="Breadcrumb">
+      <a
+        href="/blog"
+        class="journal-back"
+        aria-label="Back to The Compliance Journal"
+        ><img src="/blog/icons/back.svg" width="16" height="16" alt="" /><img
+          src="/blog/journal-logo-minimal.svg"
+          class="journal-breadcrumb-logo"
+          width="230"
+          height="73"
+          alt=""
+        /></a
       >
-        <path d="m15 18-6-6 6-6"></path>
-      </svg>
-      Blog
-    </a>
-    <div class="text-muted-foreground animate-fade-in animation-delay-100 mb-5">
-      {dateFormatter.format(new Date(post.data.date))}, by {
-        post.data.author.name
-      }
-    </div>
-    {
-      post.data.titleImage ? (
-        <div class="animate-slide-in mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
-          <h1 class="text-h3 sm:text-h2 flex-1 font-medium">
-            {post.data.title}
-          </h1>
-          <img
-            src={post.data.titleImage}
-            alt={post.data.titleImageAlt}
-            width={280}
-            height={280}
-            class="mx-auto h-auto w-full max-w-[160px] shrink-0 object-contain sm:mx-0 sm:max-w-[200px]"
+      <span aria-hidden="true">/</span>
+      <a href={categoryHref(post.data.category)} class="journal-category"
+        >{post.data.category}</a
+      >
+    </nav>
+    <header class="journal-hero">
+      <h1>{post.data.title}</h1>
+      <p class="journal-deck">{post.data.excerpt}</p>
+      <p class="journal-metadata items-center">
+        <span class="inline-flex items-center gap-2">
+          <AuthorAvatar
+            author={post.data.author.name}
+            size="medium"
             loading="eager"
-            decoding="async"
           />
-        </div>
-      ) : (
-        <h1 class="text-h3 sm:text-h2 animate-slide-in mb-10 font-medium">
-          {post.data.title}
-        </h1>
-      )
-    }
-    <p
-      class="text-h5 animate-slide-in animation-delay-100 mb-10 font-medium whitespace-pre-line"
-    >
-      {post.data.excerpt}
-    </p>
-    <Prose class="animate-slide-in animation-delay-200">
-      <Content />
-    </Prose>
-    <hr class="my-10 sm:mb-20" />
-    <Sharer
-      client:only
-      url={Astro.url.toString()}
-      title={post.data.title}
-      class="my-10 sm:mt-20"
-    />
-    <WrittenBy class="my-10" author={post.data.author.name} />
-    {
-      (older || newer) && (
-        <nav
-          aria-label="Blog"
-          class="animate-slide-in animation-delay-300 mt-6 grid grid-cols-1 gap-8 border-t pt-8 sm:grid-cols-2"
+          {post.data.author.name}
+        </span><span aria-hidden="true">·</span><time
+          datetime={post.data.date.toISOString()}
+          >{blogDate.format(post.data.date)}</time
+        ><span aria-hidden="true">·</span><span
+          >{readingMinutes(post.body)} min read</span
         >
-          {older ? (
-            <a href={postHref(older.id)} class="group min-w-0">
-              <span class="text-tertiary-foreground text-xxs mb-1 flex items-center gap-0.5">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
-                Older
-              </span>
-              <span class="group-hover:text-muted-foreground block font-medium tracking-[-0.01em] transition-colors">
-                {older.data.title}
-              </span>
-            </a>
-          ) : (
-            <div />
+      </p>
+    </header>
+    {
+      (post.data.showCover || cover) && (
+        <div class="journal-cover" aria-hidden={!cover ? "true" : undefined}>
+          {cover && (
+            <img
+              src={cover}
+              alt={post.data.coverImageAlt ?? post.data.titleImageAlt}
+              width="1080"
+              height="608"
+              loading="eager"
+              decoding="async"
+            />
           )}
-          {newer && (
-            <a href={postHref(newer.id)} class="group min-w-0 sm:text-right">
-              <span class="text-tertiary-foreground text-xxs mb-1 flex items-center gap-0.5 sm:justify-end">
-                Newer
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </span>
-              <span class="group-hover:text-muted-foreground block font-medium tracking-[-0.01em] transition-colors">
-                {newer.data.title}
-              </span>
-            </a>
-          )}
-        </nav>
+        </div>
       )
     }
-    <Newsletter class="mt-16" />
+    <div class="journal-reading-layout">
+      {showToc && <BlogToc headings={toc} />}
+      <div class="journal-reading-column">
+        <article class="journal-prose" data-article-body>
+          <Content />
+          {
+            !hasFaq && post.data.faqs && (
+              <section aria-labelledby="frequently-asked-questions">
+                <h2 id="frequently-asked-questions">
+                  Frequently asked questions
+                </h2>
+                {post.data.faqs.map((faq) => (
+                  <div class="journal-faq">
+                    <h3>{faq.question}</h3>
+                    <p>{faq.answer}</p>
+                  </div>
+                ))}
+              </section>
+            )
+          }
+        </article>
+        <WrittenBy author={post.data.author.name} variant="journal" />
+        <div class="journal-share" aria-label="Share this article">
+          <button type="button" data-copy-link={canonical}
+            ><img
+              src="/blog/icons/link.svg"
+              alt=""
+              width="16"
+              height="16"
+            /><span>Copy Link</span></button
+          >
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              src="/blog/icons/linkedin.svg"
+              alt=""
+              width="16"
+              height="16"
+            />Share on LinkedIn</a
+          >
+          <p class="sr-only" aria-live="polite" data-copy-status></p>
+        </div>
+      </div>
+    </div>
+    <section class="journal-related" aria-labelledby="keep-reading">
+      <h2 id="keep-reading">Keep reading</h2>
+      <div class="journal-grid">
+        {related.map((other) => <BlogCard post={other} />)}
+      </div>
+    </section>
   </main>
+  <BlogEnhancements />
 </Layout>

@@ -21,7 +21,7 @@ const { hideBurger = false, docsChrome = false } = Astro.props;
     "page-header text-primary transition-all",
     docsChrome
       ? "bg-transparent"
-      : "bg-secondary/80 sticky top-0 z-50 border-b backdrop-blur-md",
+      : "data-[scrolled=true]:border-border-low data-[scrolled=true]:bg-secondary/80 sticky top-0 z-50 border-b border-transparent bg-transparent data-[scrolled=true]:backdrop-blur-md",
   ]}
 >
   <div

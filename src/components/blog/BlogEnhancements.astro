@@ -1,0 +1,336 @@
+<dialog
+  class="journal-image-dialog"
+  aria-label="Enlarged article image"
+  data-image-dialog
+>
+  <button type="button" aria-label="Close enlarged image" data-close-image
+    >Close</button
+  >
+  <img alt="" />
+</dialog>
+
+<script>
+  const languageLabels: Record<string, string> = {
+    ts: "TypeScript",
+    js: "JavaScript",
+    json: "JSON",
+    bash: "Bash",
+    sh: "Shell",
+  };
+  let cleanup = () => {};
+  const initialize = () => {
+    cleanup();
+    const article = document.querySelector<HTMLElement>("[data-article-body]");
+    if (!article) return;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const status = document.querySelector<HTMLElement>("[data-copy-status]");
+    const copy = async (button: HTMLButtonElement, value: string) => {
+      const label = button.querySelector("span");
+      const previous = (button.dataset.copyLabel ??=
+        label?.textContent ?? "Copy");
+      try {
+        await navigator.clipboard.writeText(value);
+        if (label) label.textContent = "Copied";
+        if (status) status.textContent = "Copied to clipboard.";
+        window.setTimeout(() => {
+          if (label) label.textContent = previous;
+        }, 2000);
+      } catch {
+        if (label) label.textContent = "Try again";
+        if (status)
+          status.textContent =
+            "Could not copy. Select the text and copy it manually.";
+      }
+    };
+    document
+      .querySelector<HTMLButtonElement>("[data-copy-link]")
+      ?.addEventListener(
+        "click",
+        (event) => {
+          const button = event.currentTarget as HTMLButtonElement;
+          void copy(button, button.dataset.copyLink!);
+        },
+        { signal },
+      );
+    article.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
+      if (pre.parentElement?.classList.contains("journal-code")) return;
+      const language =
+        pre.dataset.language ??
+        pre.querySelector("code")?.className.match(/language-(\w+)/)?.[1] ??
+        "text";
+      pre.dataset.language = language;
+      pre.tabIndex = 0;
+      const isTemplate = ["text", "plaintext"].includes(language);
+      pre.setAttribute(
+        "aria-label",
+        `${isTemplate ? "Text template" : language + " code"}, scroll to read`,
+      );
+      const wrapper = document.createElement("div");
+      wrapper.className = "journal-code";
+      if (!isTemplate) {
+        wrapper.classList.add("journal-code-wide");
+        pre.closest(".expressive-code")?.setAttribute("data-theme", "dark");
+      }
+      const toolbar = document.createElement("div");
+      toolbar.className = "journal-code-toolbar";
+      const title = document.createElement("span");
+      let section: Element | null = (pre.closest(".expressive-code") ?? pre)
+        .previousElementSibling;
+      while (section && !/^H[2-4]$/.test(section.tagName))
+        section = section.previousElementSibling;
+      title.textContent = isTemplate
+        ? (section?.textContent ?? "Template")
+        : (languageLabels[language] ?? language);
+      // Expressive Code renders lines as separate elements, without text separators.
+      const lines = [...pre.querySelectorAll<HTMLElement>(".ec-line .code")];
+      const code = lines.length
+        ? lines
+            .map((line) => (line.textContent ?? "").replace(/\n$/, ""))
+            .join("\n")
+        : (pre.textContent ?? "");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("aria-label", `Copy ${title.textContent}`);
+      const icon = document.createElement("img");
+      icon.src = "/blog/icons/copy.svg";
+      icon.alt = "";
+      icon.width = icon.height = 16;
+      const label = document.createElement("span");
+      label.textContent = "Copy";
+      button.append(icon, label);
+      button.addEventListener("click", () => void copy(button, code), {
+        signal,
+      });
+      toolbar.append(title, button);
+      pre.before(wrapper);
+      wrapper.append(toolbar, pre);
+    });
+    article.querySelectorAll("table").forEach((table, index) => {
+      if (table.parentElement?.classList.contains("journal-table")) return;
+      const wrapper = document.createElement("div");
+      wrapper.className = "journal-table";
+      wrapper.tabIndex = 0;
+      wrapper.setAttribute("role", "region");
+      wrapper.setAttribute(
+        "aria-label",
+        `Article table ${index + 1}, scroll horizontally to see all columns`,
+      );
+      table.before(wrapper);
+      wrapper.append(table);
+    });
+    const dialog = document.querySelector<HTMLDialogElement>(
+      "[data-image-dialog]",
+    );
+    const enlarged = dialog?.querySelector("img");
+    if (dialog && enlarged) {
+      article.querySelectorAll<HTMLImageElement>("img").forEach((img) => {
+        if (img.closest("a, button")) return;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.enlargeImage = "";
+        button.setAttribute(
+          "aria-label",
+          `Enlarge image: ${img.alt || "article illustration"}`,
+        );
+        img.before(button);
+        button.append(img);
+        button.addEventListener(
+          "click",
+          () => {
+            enlarged.src = img.currentSrc || img.src;
+            enlarged.alt = img.alt;
+            dialog.showModal();
+          },
+          { signal },
+        );
+      });
+      dialog
+        .querySelector("[data-close-image]")
+        ?.addEventListener("click", () => dialog.close(), { signal });
+      dialog.addEventListener(
+        "click",
+        (event) => {
+          if (event.target === dialog) dialog.close();
+        },
+        { signal },
+      );
+    }
+    const links = [
+      ...document.querySelectorAll<HTMLAnchorElement>(".journal-toc-desktop a"),
+    ];
+    const mobileLinks = [
+      ...document.querySelectorAll<HTMLAnchorElement>(".journal-toc-mobile a"),
+    ];
+    const sections = links.flatMap((link) => {
+      const heading = document.getElementById(
+        decodeURIComponent(link.hash.slice(1)),
+      );
+      return heading ? [{ link, heading }] : [];
+    });
+    const desktopToc = document.querySelector<HTMLElement>(
+      ".journal-toc-desktop",
+    );
+    const desktopList = desktopToc?.querySelector("ol");
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    const hover = matchMedia("(hover: hover) and (pointer: fine)");
+    let indicatorFrame = 0;
+    let currentLink: HTMLAnchorElement | null = null;
+    let hoveredLink: HTMLAnchorElement | null = null;
+    let measureToc = true;
+    const moveIndicator = (link: HTMLAnchorElement, animate: boolean) => {
+      if (!desktopToc?.offsetWidth || !desktopList) return;
+      const ready = "data-toc-indicator-ready";
+      const instant = !animate || reducedMotion.matches;
+      cancelAnimationFrame(indicatorFrame);
+      if (instant) desktopToc.removeAttribute(ready);
+      links.forEach((item) =>
+        item.toggleAttribute("data-toc-highlight", item === link),
+      );
+      const rect = link.getBoundingClientRect();
+      desktopList.style.setProperty(
+        "--toc-indicator-y",
+        `${rect.top - desktopList.getBoundingClientRect().top}px`,
+      );
+      desktopList.style.setProperty(
+        "--toc-indicator-height",
+        `${rect.height}px`,
+      );
+      desktopToc.setAttribute("data-toc-motion", "");
+      if (!desktopToc.hasAttribute(ready)) {
+        indicatorFrame = requestAnimationFrame(() => {
+          indicatorFrame = 0;
+          desktopToc.setAttribute(ready, "");
+        });
+      }
+    };
+    const setCurrent = (link: HTMLAnchorElement, animate = true) => {
+      const first = !currentLink;
+      currentLink = link;
+      [...links, ...mobileLinks].forEach((item) => {
+        if (item.hash === link.hash)
+          item.setAttribute("aria-current", "location");
+        else item.removeAttribute("aria-current");
+      });
+      moveIndicator(hoveredLink ?? link, animate && !first);
+    };
+    const clearHover = (animate = true) => {
+      if (!hoveredLink) return;
+      hoveredLink = null;
+      if (currentLink) moveIndicator(currentLink, animate);
+    };
+    links.forEach((link) => {
+      link.addEventListener(
+        "pointerenter",
+        () => {
+          if (!hover.matches) return;
+          hoveredLink = link;
+          moveIndicator(link, true);
+        },
+        { signal },
+      );
+      link.addEventListener(
+        "focus",
+        () => {
+          if (link.matches(":focus-visible")) clearHover(false);
+        },
+        { signal },
+      );
+      link.addEventListener(
+        "click",
+        (event) => {
+          if (
+            event.button ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+          )
+            return;
+          setCurrent(link, event.detail > 0);
+        },
+        { signal },
+      );
+    });
+    desktopList?.addEventListener("pointerleave", () => clearHover(), {
+      signal,
+    });
+    mobileLinks.forEach((link) => {
+      link.addEventListener(
+        "click",
+        () => {
+          const section = sections.find((item) => item.link.hash === link.hash);
+          if (section) setCurrent(section.link, false);
+          link.closest("details")?.removeAttribute("open");
+        },
+        { signal },
+      );
+    });
+    hover.addEventListener("change", () => clearHover(false), { signal });
+    reducedMotion.addEventListener(
+      "change",
+      () => {
+        clearHover(false);
+        if (currentLink) setCurrent(currentLink, false);
+      },
+      { signal },
+    );
+    const wideBlocks = [
+      ...article.querySelectorAll<HTMLElement>(
+        ".journal-code-wide, figure:has(n8n-demo)",
+      ),
+    ];
+    let frame = 0;
+    const updateToc = () => {
+      frame = 0;
+      let section = sections[0];
+      for (const item of sections) {
+        if (item.heading.getBoundingClientRect().top > 120) break;
+        section = item;
+      }
+      if (section && (section.link !== currentLink || measureToc))
+        setCurrent(section.link, !measureToc);
+      measureToc = false;
+      if (!desktopToc || !desktopToc.offsetWidth) return;
+      const tocRect = desktopToc.getBoundingClientRect();
+      desktopToc.classList.toggle(
+        "is-obscured",
+        wideBlocks.some((block) => {
+          const rect = block.getBoundingClientRect();
+          return (
+            rect.left < tocRect.right &&
+            rect.top < tocRect.bottom &&
+            rect.bottom > tocRect.top
+          );
+        }),
+      );
+    };
+    const scheduleToc = () => {
+      if (!frame) frame = requestAnimationFrame(updateToc);
+    };
+    const resizeToc = () => {
+      measureToc = true;
+      scheduleToc();
+    };
+    const resizeObserver = new ResizeObserver(resizeToc);
+    if (desktopList) resizeObserver.observe(desktopList);
+    window.addEventListener("scroll", scheduleToc, { signal, passive: true });
+    window.addEventListener(
+      "resize",
+      () => {
+        clearHover(false);
+        resizeToc();
+      },
+      { signal, passive: true },
+    );
+    updateToc();
+    cleanup = () => {
+      controller.abort();
+      resizeObserver.disconnect();
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(indicatorFrame);
+    };
+  };
+  document.addEventListener("astro:page-load", initialize);
+  document.addEventListener("astro:before-swap", () => cleanup());
+</script>

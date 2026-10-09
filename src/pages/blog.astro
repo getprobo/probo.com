@@ -7,11 +7,13 @@ import { pageSize } from "../content.config.ts";
 const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-const lastPage = Math.ceil(allPosts.length / pageSize);
-const posts = allPosts.slice(0, pageSize);
+const lastPage = Math.max(1, Math.ceil((allPosts.length - 1) / pageSize));
+const posts = allPosts.slice(0, pageSize + 1);
 ---
 
 <Layout
+  journal
+  noFrameworks
   title="Blog: Compliance, Security & SOC 2 Insights"
   description="The latest news, insights, and practical guides about compliance, security certifications, SOC 2, ISO 27001, and GDPR from the Probo team."
 >

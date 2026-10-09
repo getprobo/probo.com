@@ -1,4 +1,5 @@
 ---
+category: Engineering
 title: "How to set up PostHog: GDPR, CCPA, and global privacy laws"
 date: 2026-05-27
 excerpt: "Two clean ways to wire PostHog into a website that respects GDPR, CCPA, and the rest of the privacy-law alphabet soup, without losing your analytics."
@@ -15,6 +16,8 @@ faqs:
     answer: "With cookieless_mode: 'always' (Track 1), both rely on persistent browser storage the SDK forbids — no session replay, no identify(), and no reliable person-level feature flags. With Track 2's cookieless_mode: 'on_reject', persistence stays off while the visitor is rejected, then opt_in_capturing() + identify() unlock flags after consent. See the companion guide on PostHog feature flags behind a cookie banner."
   - question: "Does PostHog have to be the same domain to bypass ad blockers?"
     answer: "Not strictly, but it helps. Loading posthog-js from a first-party subdomain (e.g. t.yourdomain.com) via a reverse proxy reduces the chance that uBlock Origin, Brave, or Safari ITP will block or strip the request. PostHog has a built-in reverse proxy guide. Probo uses t.probo.com for this exact reason."
+coverImage: "/blog/covers-phosphor/sign-out-2x.webp"
+coverImageAlt: "Sign-out icon on a cream and fluorescent yellow background."
 ---
 
 You want to put PostHog on your site. Your legal team mentioned GDPR. Your US sales lead just learned about CCPA. Your support team asked about that LGPD thing in Brazil. Now you're staring at a "cookieless mode" setting and wondering if you have to throw the whole analytics stack away.
