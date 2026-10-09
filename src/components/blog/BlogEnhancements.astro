@@ -156,39 +156,124 @@
         { signal },
       );
     }
-    document
-      .querySelectorAll<HTMLAnchorElement>(".journal-toc-mobile a")
-      .forEach((link) => {
-        link.addEventListener(
-          "click",
-          () => link.closest("details")?.removeAttribute("open"),
-          { signal },
-        );
-      });
     const links = [
       ...document.querySelectorAll<HTMLAnchorElement>(".journal-toc-desktop a"),
     ];
-    const headings = links
-      .map((link) =>
-        document.getElementById(decodeURIComponent(link.hash.slice(1))),
-      )
-      .filter((heading): heading is HTMLElement => !!heading);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          links.forEach((link) => {
-            if (decodeURIComponent(link.hash.slice(1)) === entry.target.id)
-              link.setAttribute("aria-current", "location");
-            else link.removeAttribute("aria-current");
-          });
-        }
-      },
-      { rootMargin: "-100px 0px -65% 0px" },
-    );
-    headings.forEach((heading) => observer.observe(heading));
+    const mobileLinks = [
+      ...document.querySelectorAll<HTMLAnchorElement>(".journal-toc-mobile a"),
+    ];
+    const sections = links.flatMap((link) => {
+      const heading = document.getElementById(
+        decodeURIComponent(link.hash.slice(1)),
+      );
+      return heading ? [{ link, heading }] : [];
+    });
     const desktopToc = document.querySelector<HTMLElement>(
       ".journal-toc-desktop",
+    );
+    const desktopList = desktopToc?.querySelector("ol");
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    const hover = matchMedia("(hover: hover) and (pointer: fine)");
+    let indicatorFrame = 0;
+    let currentLink: HTMLAnchorElement | null = null;
+    let hoveredLink: HTMLAnchorElement | null = null;
+    let measureToc = true;
+    const moveIndicator = (link: HTMLAnchorElement, animate: boolean) => {
+      if (!desktopToc?.offsetWidth || !desktopList) return;
+      const ready = "data-toc-indicator-ready";
+      const instant = !animate || reducedMotion.matches;
+      cancelAnimationFrame(indicatorFrame);
+      if (instant) desktopToc.removeAttribute(ready);
+      links.forEach((item) =>
+        item.toggleAttribute("data-toc-highlight", item === link),
+      );
+      const rect = link.getBoundingClientRect();
+      desktopList.style.setProperty(
+        "--toc-indicator-y",
+        `${rect.top - desktopList.getBoundingClientRect().top}px`,
+      );
+      desktopList.style.setProperty(
+        "--toc-indicator-height",
+        `${rect.height}px`,
+      );
+      desktopToc.setAttribute("data-toc-motion", "");
+      if (!desktopToc.hasAttribute(ready)) {
+        indicatorFrame = requestAnimationFrame(() => {
+          indicatorFrame = 0;
+          desktopToc.setAttribute(ready, "");
+        });
+      }
+    };
+    const setCurrent = (link: HTMLAnchorElement, animate = true) => {
+      const first = !currentLink;
+      currentLink = link;
+      [...links, ...mobileLinks].forEach((item) => {
+        if (item.hash === link.hash)
+          item.setAttribute("aria-current", "location");
+        else item.removeAttribute("aria-current");
+      });
+      moveIndicator(hoveredLink ?? link, animate && !first);
+    };
+    const clearHover = (animate = true) => {
+      if (!hoveredLink) return;
+      hoveredLink = null;
+      if (currentLink) moveIndicator(currentLink, animate);
+    };
+    links.forEach((link) => {
+      link.addEventListener(
+        "pointerenter",
+        () => {
+          if (!hover.matches) return;
+          hoveredLink = link;
+          moveIndicator(link, true);
+        },
+        { signal },
+      );
+      link.addEventListener(
+        "focus",
+        () => {
+          if (link.matches(":focus-visible")) clearHover(false);
+        },
+        { signal },
+      );
+      link.addEventListener(
+        "click",
+        (event) => {
+          if (
+            event.button ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+          )
+            return;
+          setCurrent(link, event.detail > 0);
+        },
+        { signal },
+      );
+    });
+    desktopList?.addEventListener("pointerleave", () => clearHover(), {
+      signal,
+    });
+    mobileLinks.forEach((link) => {
+      link.addEventListener(
+        "click",
+        () => {
+          const section = sections.find((item) => item.link.hash === link.hash);
+          if (section) setCurrent(section.link, false);
+          link.closest("details")?.removeAttribute("open");
+        },
+        { signal },
+      );
+    });
+    hover.addEventListener("change", () => clearHover(false), { signal });
+    reducedMotion.addEventListener(
+      "change",
+      () => {
+        clearHover(false);
+        if (currentLink) setCurrent(currentLink, false);
+      },
+      { signal },
     );
     const wideBlocks = [
       ...article.querySelectorAll<HTMLElement>(
@@ -198,6 +283,14 @@
     let frame = 0;
     const updateToc = () => {
       frame = 0;
+      let section = sections[0];
+      for (const item of sections) {
+        if (item.heading.getBoundingClientRect().top > 120) break;
+        section = item;
+      }
+      if (section && (section.link !== currentLink || measureToc))
+        setCurrent(section.link, !measureToc);
+      measureToc = false;
       if (!desktopToc || !desktopToc.offsetWidth) return;
       const tocRect = desktopToc.getBoundingClientRect();
       desktopToc.classList.toggle(
@@ -215,13 +308,27 @@
     const scheduleToc = () => {
       if (!frame) frame = requestAnimationFrame(updateToc);
     };
+    const resizeToc = () => {
+      measureToc = true;
+      scheduleToc();
+    };
+    const resizeObserver = new ResizeObserver(resizeToc);
+    if (desktopList) resizeObserver.observe(desktopList);
     window.addEventListener("scroll", scheduleToc, { signal, passive: true });
-    window.addEventListener("resize", scheduleToc, { signal, passive: true });
+    window.addEventListener(
+      "resize",
+      () => {
+        clearHover(false);
+        resizeToc();
+      },
+      { signal, passive: true },
+    );
     updateToc();
     cleanup = () => {
       controller.abort();
-      observer.disconnect();
+      resizeObserver.disconnect();
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(indicatorFrame);
     };
   };
   document.addEventListener("astro:page-load", initialize);

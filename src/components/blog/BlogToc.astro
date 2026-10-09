@@ -13,7 +13,9 @@ const { headings } = Astro.props;
       {
         headings.map((heading) => (
           <li>
-            <a href={`#${heading.slug}`}>{heading.text}</a>
+            <a href={`#${heading.slug}`}>
+              <span class="journal-toc-label">{heading.text}</span>
+            </a>
           </li>
         ))
       }
@@ -26,7 +28,9 @@ const { headings } = Astro.props;
         {
           headings.map((heading) => (
             <li>
-              <a href={`#${heading.slug}`}>{heading.text}</a>
+              <a href={`#${heading.slug}`}>
+                <span class="journal-toc-label">{heading.text}</span>
+              </a>
             </li>
           ))
         }
