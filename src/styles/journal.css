@@ -333,7 +333,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 8px 16px 8px 24px;
+  padding: 4px 16px 4px 24px;
   color: var(--color-muted-foreground);
   border-bottom: 1px solid var(--color-border-low);
   font-size: 13px;
@@ -773,14 +773,21 @@
 .journal-code button {
   cursor: pointer;
   color: var(--color-primary);
-  padding: 8px;
-  min-height: 40px;
+  padding: 4px 8px;
+  min-height: 32px;
+  flex-shrink: 0;
   gap: 8px;
   align-items: center;
   display: inline-flex;
   border: 0;
   border-radius: 6px;
   background: transparent;
+}
+.journal-code-toolbar button img {
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  flex-shrink: 0;
 }
 .journal-code button:hover {
   background: var(--color-highlight);

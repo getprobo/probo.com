@@ -64,7 +64,7 @@ const menuId = "desktop-navigation-menu";
             class="absolute top-0 grid h-full grid-cols-[minmax(0,1fr)_420px] items-start gap-8 p-3"
             hidden
           >
-            <div class="flex min-w-0 flex-col items-start gap-6 self-start px-2 py-5">
+            <div class="flex min-w-0 flex-col items-start gap-6 self-start px-2 pt-5">
               {group.showLabel !== false && (
                 <p class="text-muted-foreground px-3 text-sm font-medium">
                   {group.label}
@@ -72,7 +72,7 @@ const menuId = "desktop-navigation-menu";
               )}
               <div
                 class:list={[
-                  "w-full",
+                  "w-full gap-y-1",
                   group.label === "Products"
                     ? "grid grid-flow-col grid-cols-2 gap-x-8"
                     : "flex flex-col",
