@@ -157,6 +157,14 @@ const htmlRedirects = {
   "/docs/product/access-review/clerk": redirect(
     "/docs/product/access-review/directory",
   ),
+  "/docs/product/tasks/linear": redirect("/docs/product/tasks/overview#linear"),
+  "/docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence":
+    redirect(
+      "/docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence",
+    ),
+  "/docs/developers/api/mcp/tools/catalog/linear": redirect(
+    "/docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence",
+  ),
   ...Object.fromEntries(
     Object.entries({
       assets: "assets-and-data",
@@ -167,13 +175,13 @@ const htmlRedirects = {
       dpias: "privacy",
       findings: "audits-and-findings",
       frameworks: "frameworks-and-controls",
-      measures: "measures-tasks-and-evidence",
+      measures: "internal-controls-tasks-and-evidence",
       obligations: "obligations",
       organizations: "organizations",
       "processing-activities": "privacy",
       risks: "risks",
       "states-of-applicability": "statements-of-applicability",
-      tasks: "measures-tasks-and-evidence",
+      tasks: "internal-controls-tasks-and-evidence",
       "third-parties": "third-parties",
       tias: "privacy",
       users: "identity-and-provisioning",

@@ -1,0 +1,134 @@
+---
+title: "Probo vs Oneleet: which compliance service fits how your company works?"
+highlight: "Probo vs Oneleet"
+eyebrow: "Comparison"
+description: "Probo vs Oneleet for SOC 2 and ISO 27001: a dedicated human compliance officer and a tailored program vs a bundled security platform. Honest comparison, including when Oneleet is the better pick."
+tag: "Comparison"
+accentColor: "from-emerald-400 to-teal-500"
+date: 2026-10-07
+---
+
+You've narrowed your [SOC 2](/hub/soc2) or [ISO 27001](/hub/iso27001) shortlist to Probo and Oneleet. On paper they look alike: both promise a team of experts instead of a dashboard you're left to figure out alone. In practice they make different bets about what a startup actually needs.
+
+Here's the straight version, including where Oneleet is the better pick.
+
+## Key takeaways
+
+- **Both offer a service on top of the software.** If you want your time back, both can take compliance work off your plate instead of leaving you alone with a dashboard.
+- **With Probo, a real human compliance officer is dedicated to you.** Available on Slack and on calls, not an AI bot. They run your controls all year and know how your company works.
+- **Probo tailors the program to how you work.** Controls, reviews and alerts are built around your stack and your real risks, not [a template applied to every customer](/blog/2025-02-17-why-a-one-size-fit-all-solution-like-vanta-is-not-ideal).
+- **With Probo, you own your compliance data.** Export it anytime: it's yours. The platform is also [open source](/blog/2025-02-04-the-case-for-open-source-compliance) (MIT licensed) and [self-hostable](/docs/deployment/self-hosting), if you want to switch to the self-hosted tool later.
+
+## What's the real difference?
+
+Oneleet offers more security resources, and that can be overkill for your company. You probably don't need a pentest for your [SOC 2](/blog/2025-10-19-do-you-need-pen-test-for-soc2) or [ISO 27001](/blog/2025-10-23-do-you-need-pen-test-for-iso27001).
+
+Probo's bet is **operations**. Compliance isn't about getting the certificate. It's about running your controls all year round, including the months when nobody on your team has time to think about access reviews. That's the work Probo's compliance officers own.
+
+And if your stage does require a pentest, Probo will advise you on what type of pentest to aim for and introduce you to the right people. Probo is a GRC company, not a pentester. Pentesting is a real expertise, unless all you want is an AI-generated scan with a pentest label on it.
+
+## What does "managed" actually mean at Probo?
+
+"Managed compliance" gets used loosely, so here's what your Probo compliance officer does in practice:
+
+**Getting you audit ready:**
+
+- **Onboarding on Probo.** They set up the integrations you need: [SCIM](/docs/product/scim/overview), your [access review tool](/products/access-review), the [device agent](/docs/product/device-agent/overview).
+- **An onboarding call to gather context.** How your team works, your stack, your customers, what you're selling and to whom.
+- **A full [risk analysis](/blog/2026-05-13-what-is-a-risk-in-compliance) of your company.** Then a gap analysis and a compliance roadmap for your target framework.
+- **Your compliance documentation, written for you.** [Risk assessments](/docs/product/risk-management), asset and data registries, [policies](/docs/product/document-management), [third parties and their assessments](/hub/third-party-risk-management).
+- **Missing evidence, collected with you.** Your officer knows what the auditor will ask for and chases the gaps before they do.
+- **Representation during the audit.** They make sure you're audit ready before it starts, then handle the back and forth with the auditor ([how audits and findings work in Probo](/docs/product/audits-and-findings)).
+
+**Then running your compliance all year:**
+
+- **Policy renewals and signatures.** Policies are reviewed, renewed and sent to your team for signature on schedule through the [employee portal](/products/employee-portal).
+- **[Quarterly access reviews](/blog/2026-09-07-user-access-review-60-tools).** They pull access from your connected tools, flag what looks wrong (departed employees, orphaned accounts, excessive privileges) and validate each finding with you in a dedicated Slack channel.
+- **[Offboarding access reviews](/blog/2026-08-17-offboarding-access-review-automation).** When someone leaves, their access is checked across your stack at that point, not three months later at the next quarterly review.
+- **New-hire controls.** Background checks done, access granted and documented, policies signed. The things auditors sample and teams forget.
+- **Alerts tailored to your stack.** Monitoring is set up for the tools you actually use and the controls you actually have in place, so you hear about what matters and nothing else.
+
+In short: an [outsourced compliance officer](/blog/2025-10-17-what-is-hands-off-compliance) running your compliance program all year. A real person dedicated to your company, reachable on Slack and on calls. Not an AI bot, and not a ticket queue in a portal.
+
+## Why tailored beats templated
+
+Most compliance platforms ship the same control set to every customer, then ask you to bend your company around it. A 10-person team on Google Workspace and Vercel gets the same checklist as a 200-person company running its own Kubernetes clusters.
+
+That doesn't make sense. Your controls should map to your risks and to how your team already works.
+
+At Probo, the program starts from your stack and your processes. If you already do [code review on every pull request](/blog/2025-11-09-do-you-need-code-reviews), that's your change management evidence. You don't need a new process just to satisfy a template. The result is fewer controls that exist only for the auditor, and more that actually reduce risk.
+
+**A template gets you through the audit. A tailored program keeps you compliant after it.**
+
+## Side-by-side comparison
+
+<div class="overflow-x-auto">
+
+|                                    | Probo                                                                                                                                                                                                                                | Oneleet                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| Model                              | Managed compliance service on an open-source platform                                                                                                                                                                                | Compliance platform bundled with security services         |
+| Who does the work                  | Dedicated human compliance officer, on Slack and calls                                                                                                                                                                               | vCISO and security programs                                |
+| What's handled for you             | Onboarding and integrations, risk and gap analysis, all documentation, evidence collection, audit representation, then year-round operations (policy renewals, access reviews, onboarding and offboarding controls, tailored alerts) | Access reviews and employee portal in the platform         |
+| Approach                           | Program tailored to your stack, processes and risks                                                                                                                                                                                  | Standardized security program across customers             |
+| Penetration testing                | Not a pentester. Advises on the right type of pentest for your stage and introduces you to specialists                                                                                                                               | Included in-house                                          |
+| Code scanning, attack surface, MDM | [Probo device agent](/device-agent) on your endpoints, open source so you can check exactly what runs on your devices                                                                                                                | Included                                                   |
+| Frameworks                         | SOC 2 Type 1 and 2, ISO 27001, ISO 27701, ISO 42001, GDPR, HIPAA, CCPA, FERPA, CASA, NIS2, DORA, and can manage others if you need them                                                                                              | SOC 2, ISO 27001, HIPAA, PCI DSS, GDPR, CIS IG1 and others |
+| Open source / self-hosting         | Yes, MIT licensed, self-hostable                                                                                                                                                                                                     | No                                                         |
+| Data ownership                     | Your compliance data is yours: export it anytime, or self-host the platform                                                                                                                                                          | Tied to the vendor platform                                |
+| Pricing                            | Depends on your company size and framework                                                                                                                                                                                           | Quote on request                                           |
+
+</div>
+
+## When Oneleet is the better choice
+
+Be honest with yourself about what you're buying. Oneleet is a strong fit if:
+
+- You've confirmed you need a pentest now and want it from the same vendor as your compliance program.
+- You don't have MDM or code scanning yet and want them bundled rather than picking separate tools.
+- Your setup is fairly standard and a well-built template program covers it.
+
+## When Probo is the better choice
+
+Probo fits better if:
+
+- You want someone to _run_ compliance after the audit, not just get you to it.
+- Your stack or processes don't fit a standard template, and you don't want to change how your team works just to pass.
+- You care about owning your compliance data, or need to self-host for privacy or regulatory reasons.
+- You're targeting frameworks beyond SOC 2 and ISO 27001, like [NIS2](/hub/nis2-compliance), DORA, ISO 42001 or ISO 27701. Not sure which one you need? Start with [which compliance framework fits your company](/hub/which-compliance-framework).
+- You don't want a tool pushing things onto your production or your devices without being able to check the code. With Probo it's open source, so you know exactly what you install.
+- You want to talk to a real person who can reassure you that your audit is going to go well.
+- You want your compliance officer to handle your audit for you.
+
+## Conclusion
+
+The real question is what happens in month four, when the quarterly access review is due and nobody on your team has opened the compliance tool since the audit.
+
+If you want to see what a program built around your stack would look like, [book a call with a Probo compliance officer](/contact).
+
+Comparing other options too? Read [Probo vs Vanta](/hub/probo-vs-vanta), [Probo vs a fractional CISO](/hub/probo-vs-fractional-ciso) and [the top compliance officer services in 2026](/hub/top-compliance-officer-services-2026).
+
+## Frequently Asked Questions
+
+### Is Probo just an open-source tool?
+
+No. The platform is open source, but most customers use Probo as a managed service: a dedicated compliance officer runs your program, from the risk analysis and documentation to the audit itself, then all year after it. You can also self-host the platform if you'd rather run it yourself.
+
+### Does Probo run access reviews for me?
+
+Yes. Your compliance officer runs quarterly access reviews and an access review at every offboarding, then validates findings with you in your Slack channel before anything changes.
+
+### Does Probo include penetration testing?
+
+No. Probo is a GRC company, not a pentester. Most companies don't need a pentest for SOC 2 or ISO 27001. If your stage requires one, your compliance officer advises on the right type of pentest and introduces you to specialists who do it well.
+
+### Can I switch from Oneleet to Probo?
+
+Yes. Migration is part of the service and takes about a week. Your compliance officer moves your existing controls, documents and evidence over and maps them to a program built around your stack.
+
+### Can I keep my auditor?
+
+Yes. Probo works with any serious auditor. Before working with one, Probo runs a reference check to make sure they're legitimate, because a report from a low-quality audit firm can cost you more deals than it wins. Here's [how to evaluate SOC 2 report quality](/hub/evaluate-soc2-report-quality).
+
+### Which is cheaper?
+
+Oneleet doesn't publish pricing. Probo's pricing depends on your company size and framework. For a breakdown of what drives the total, see [how much SOC 2 costs](/blog/2025-03-04-what-is-soc2-cost). Compare the full scope, not just the sticker price: a cheaper contract that leaves your team running access reviews alone isn't cheaper in engineering time.

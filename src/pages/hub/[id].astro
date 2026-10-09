@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import Prose from "../../components/Prose.astro";
 import FrameworkBadge from "../../components/FrameworkBadge.svelte";
 import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FAQSchema from "../../components/schema/FAQSchema.astro";
 
 export async function getStaticPaths() {
   const articles = await getCollection("hub", ({ data }) => !data.draft);
@@ -62,11 +63,12 @@ const articleSchema = {
 ---
 
 <Layout
-  title={data.title}
+  title={data.metaTitle ?? data.title}
   description={data.description}
   ogImage={data.ogImage}
 >
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  {data.faqs.length > 0 && <FAQSchema faqs={data.faqs} />}
   <main class="container my-10 sm:my-20">
     <Breadcrumbs
       items={[{ label: "Hub", href: "/hub" }, { label: data.title }]}

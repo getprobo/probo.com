@@ -110,6 +110,7 @@ export const docsSidebarGroups = [
         label: "Compliance program",
         slug: "docs/product/compliance-program",
       },
+      { label: "Tasks", slug: "docs/product/tasks/overview" },
       { label: "Risk management", slug: "docs/product/risk-management" },
       {
         label: "Third-party management",

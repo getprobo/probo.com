@@ -8,9 +8,9 @@ flowchart TB
 
   subgraph operated [What you operate]
     direction LR
-    measure["Measure"] --> task["Task"]
-    measure --> evidence["Evidence"]
-    measure --> document["Document"]
+    internalControl["Internal control"] --> task["Task"]
+    internalControl --> evidence["Evidence"]
+    internalControl --> document["Document"]
   end
 
   subgraph assurance [Risk and assurance]
@@ -19,6 +19,6 @@ flowchart TB
     audit["Audit"] --> finding["Finding"]
   end
 
-  control <-->|many-to-many| measure
-  measure -->|mitigates| risk
+  control <-->|many-to-many| internalControl
+  internalControl -->|mitigates| risk
   evidence -->|supports| audit

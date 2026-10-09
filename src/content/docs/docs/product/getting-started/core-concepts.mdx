@@ -1,6 +1,6 @@
 ---
 title: Core Concepts
-description: Understand how Probo's data model connects frameworks, controls, measures, risks, evidence, audits, documents, and other core records.
+description: Understand how Probo's data model connects frameworks, controls, internal controls, risks, evidence, audits, documents, and other core records.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
@@ -26,13 +26,13 @@ Compliance standards or custom programs your organization follows. Each framewor
 
 Specific requirements within a framework. For example, "Access controls must be implemented for all production systems" or "Data must be encrypted at rest." Controls represent what needs to be achieved.
 
-## Measures
+## Internal controls
 
-Actions and processes your organization implements to satisfy controls. A single measure can satisfy multiple controls across different frameworks. For example, a "multi-factor authentication" measure might satisfy access control requirements in both SOC 2 and ISO 27001.
+Actions and processes your organization implements to satisfy controls. A single internal control can satisfy multiple controls across different frameworks. For example, a "multi-factor authentication" internal control might satisfy access control requirements in both SOC 2 and ISO 27001.
 
 ## Risks
 
-Potential adverse outcomes tracked by the organization. Risks can be linked to measures, obligations, vendor assessments, and structured risk-assessment scenarios.
+Potential adverse outcomes tracked by the organization. Risks can be linked to internal controls, obligations, vendor assessments, and structured risk-assessment scenarios.
 
 ## Risk Assessments
 
@@ -48,11 +48,11 @@ Systems, applications, databases, and infrastructure that your organization oper
 
 ## Evidence
 
-Files and URLs that support the operation of a measure. Linking evidence to the implementation record keeps it reusable across every control supported by that measure.
+Files and URLs that support the operation of an internal control. Linking evidence to the implementation record keeps it reusable across every control supported by that internal control.
 
 ## Tasks
 
-Actionable items assigned to team members. Tasks track work like implementing a control, reviewing a third party, completing an assessment, or remediating a finding.
+Actionable items assigned to team members. Tasks track work like implementing a control, reviewing a third party, completing an assessment, or remediating a finding. A task has a state, a priority, an optional deadline, and can repeat when that deadline passes. Tasks can stay in sync with Linear. See [Tasks](/docs/product/tasks/overview).
 
 ## Audits
 
@@ -107,9 +107,9 @@ Device records represent enrolled endpoints and their reported posture. Agent ru
 The core workflow in Probo follows this chain:
 
 - **Frameworks** contain **Controls** that define what must be achieved
-- **Measures** implement Controls — a single Measure can satisfy multiple Controls across Frameworks
-- **Risks** are mitigated by Measures
-- **Evidence** supports Measures
+- **Internal controls** implement Controls — a single internal control can satisfy multiple Controls across Frameworks
+- **Risks** are mitigated by internal controls
+- **Evidence** supports internal controls
 - **Tasks** drive the day-to-day work of implementing and maintaining compliance
 - **Audits** verify that everything is in place and operating as expected
 - **Findings** preserve the issues identified during review

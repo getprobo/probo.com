@@ -5,6 +5,8 @@ description: Compares Docker Compose and Kubernetes self-hosting architectures f
 
 Probo is distributed as a containerized application backed by PostgreSQL and S3-compatible object storage. A production deployment must provide durable data services, TLS, secrets, outbound email, backups, monitoring, and an upgrade process.
 
+Probo requires **PostgreSQL 18** or newer. That minimum applies to the database bundled with Docker Compose and to any external database you connect, including managed services used with Kubernetes.
+
 ## Deployment models
 
 - **Docker Compose** is intended for a single host and smaller installations. The production compose definition in the Probo repository runs `probod` with PostgreSQL and SeaweedFS.

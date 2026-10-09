@@ -90,6 +90,10 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/dpia",
   },
   {
+    label: "Employee Portal",
+    slug: "docs/developers/cli/commands/employee-portal",
+  },
+  {
     label: "Evidence",
     slug: "docs/developers/cli/commands/evidence",
   },
@@ -102,8 +106,8 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/framework",
   },
   {
-    label: "Measure",
-    slug: "docs/developers/cli/commands/measure",
+    label: "Internal Control",
+    slug: "docs/developers/cli/commands/internal-control",
   },
   {
     label: "Obligation",
@@ -221,6 +225,10 @@ export const mcpCategoryItems = [
     slug: "docs/developers/api/mcp/tools/catalog/documents-and-approvals",
   },
   {
+    label: "Employee portal",
+    slug: "docs/developers/api/mcp/tools/catalog/employee-portal",
+  },
+  {
     label: "Frameworks and controls",
     slug: "docs/developers/api/mcp/tools/catalog/frameworks-and-controls",
   },
@@ -229,12 +237,8 @@ export const mcpCategoryItems = [
     slug: "docs/developers/api/mcp/tools/catalog/identity-and-provisioning",
   },
   {
-    label: "Linear",
-    slug: "docs/developers/api/mcp/tools/catalog/linear",
-  },
-  {
-    label: "Measures, tasks, and evidence",
-    slug: "docs/developers/api/mcp/tools/catalog/measures-tasks-and-evidence",
+    label: "Internal controls, tasks, and evidence",
+    slug: "docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence",
   },
   {
     label: "Obligations",
@@ -340,6 +344,10 @@ export const n8nResourceItems = [
     slug: "docs/developers/api/n8n/resources/dpia",
   },
   {
+    label: "Employee Portal",
+    slug: "docs/developers/api/n8n/resources/employee-portal",
+  },
+  {
     label: "Evidence",
     slug: "docs/developers/api/n8n/resources/evidence",
   },
@@ -356,8 +364,8 @@ export const n8nResourceItems = [
     slug: "docs/developers/api/n8n/resources/framework",
   },
   {
-    label: "Measure",
-    slug: "docs/developers/api/n8n/resources/measure",
+    label: "Internal Control",
+    slug: "docs/developers/api/n8n/resources/internal-control",
   },
   {
     label: "Obligation",

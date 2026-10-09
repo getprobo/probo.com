@@ -1,6 +1,6 @@
 flowchart TB
   framework["Framework"] --> control["Control"]
-  control <-->|many-to-many| measure["Measure"]
+  control <-->|many-to-many| internalControl["Internal control"]
   control --> soa["Statement of<br/>Applicability"]
-  measure --> task["Task"]
-  measure --> evidence["Evidence"]
+  internalControl --> task["Task"]
+  internalControl --> evidence["Evidence"]

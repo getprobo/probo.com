@@ -1,6 +1,6 @@
 ---
 title: Webhook Event Types
-description: Reference for every Probo webhook event type and its data payload shape, covering third parties, users, obligations, rights requests, and the document lifecycle.
+description: Reference for every Probo webhook event type and its data payload shape, covering third parties, users, obligations, rights requests, tasks, and the document lifecycle.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
@@ -48,6 +48,22 @@ The wire prefix is `right-request`. CLI, MCP, and n8n resource names use `rights
 | `right-request:created` | `RIGHT_REQUEST_CREATED` | A data subject rights request was created |
 | `right-request:updated` | `RIGHT_REQUEST_UPDATED` | A data subject rights request was updated |
 | `right-request:deleted` | `RIGHT_REQUEST_DELETED` | A data subject rights request was deleted |
+
+### Task
+
+| Wire name      | API / CLI enum | Description        |
+| -------------- | -------------- | ------------------ |
+| `task:created` | `TASK_CREATED` | A task was created |
+| `task:updated` | `TASK_UPDATED` | A task was updated |
+| `task:deleted` | `TASK_DELETED` | A task was deleted |
+
+### Task comment
+
+| Wire name              | API / CLI enum         | Description                |
+| ---------------------- | ---------------------- | -------------------------- |
+| `task-comment:created` | `TASK_COMMENT_CREATED` | A task comment was created |
+| `task-comment:updated` | `TASK_COMMENT_UPDATED` | A task comment was updated |
+| `task-comment:deleted` | `TASK_COMMENT_DELETED` | A task comment was deleted |
 
 ### Document
 
@@ -504,6 +520,72 @@ Each item in `decisions` has this shape:
 | `decidedAt`  | string \| null | Decision timestamp (RFC 3339)             |
 | `createdAt`  | string         | Creation timestamp (RFC 3339)             |
 | `updatedAt`  | string         | Last update timestamp (RFC 3339)          |
+
+### Task
+
+Sent for `task:created`, `task:updated`, and `task:deleted`. `content` is a ProseMirror JSON document. `timeEstimate` and `recurrence` are ISO-8601 durations.
+
+```json
+{
+  "id": "task_01ABC123",
+  "organizationId": "org_01DEF456",
+  "internalControlId": null,
+  "name": "Review access controls",
+  "content": "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\"}]}",
+  "state": "TODO",
+  "priority": "HIGH",
+  "rank": 1,
+  "timeEstimate": "PT2H",
+  "assignedToId": "profile_01GHI789",
+  "deadline": "2026-06-30T00:00:00Z",
+  "recurrence": "P1M",
+  "createdAt": "2026-06-01T10:00:00Z",
+  "updatedAt": "2026-06-01T10:00:00Z"
+}
+```
+
+| Field               | Type           | Description                                                          |
+| ------------------- | -------------- | -------------------------------------------------------------------- |
+| `id`                | string         | Task identifier                                                      |
+| `organizationId`    | string         | Organization identifier                                              |
+| `internalControlId` | string \| null | Linked internal control                                              |
+| `name`              | string         | Task name                                                            |
+| `content`           | string         | Description as a ProseMirror JSON document                           |
+| `state`             | string         | `BACKLOG`, `TODO`, `IN_PROGRESS`, `DONE`, `CANCELED`, or `DUPLICATE` |
+| `priority`          | string         | `URGENT`, `HIGH`, `MEDIUM`, or `LOW`                                 |
+| `rank`              | number         | Order within the state and priority                                  |
+| `timeEstimate`      | string \| null | ISO-8601 duration                                                    |
+| `assignedToId`      | string \| null | Assignee profile ID                                                  |
+| `deadline`          | string \| null | Deadline (RFC 3339)                                                  |
+| `recurrence`        | string \| null | Recurrence interval as an ISO-8601 duration                          |
+| `createdAt`         | string         | Creation timestamp (RFC 3339)                                        |
+| `updatedAt`         | string         | Last update timestamp (RFC 3339)                                     |
+
+### Task comment
+
+Sent for `task-comment:created`, `task-comment:updated`, and `task-comment:deleted`. `content` is a ProseMirror JSON document.
+
+```json
+{
+  "id": "tco_01ABC123",
+  "organizationId": "org_01DEF456",
+  "taskId": "task_01GHI789",
+  "ownerId": "profile_01JKL012",
+  "content": "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\"}]}",
+  "createdAt": "2026-06-02T10:00:00Z",
+  "updatedAt": "2026-06-02T10:00:00Z"
+}
+```
+
+| Field            | Type           | Description                                 |
+| ---------------- | -------------- | ------------------------------------------- |
+| `id`             | string         | Comment identifier                          |
+| `organizationId` | string         | Organization identifier                     |
+| `taskId`         | string         | Task identifier                             |
+| `ownerId`        | string \| null | Author profile ID                           |
+| `content`        | string         | Comment body as a ProseMirror JSON document |
+| `createdAt`      | string         | Creation timestamp (RFC 3339)               |
+| `updatedAt`      | string         | Last update timestamp (RFC 3339)            |
 
 ## Next steps
 
