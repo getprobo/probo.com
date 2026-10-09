@@ -17,6 +17,7 @@ const {
   ogType = "website",
 } = Astro.props;
 interface Props {
+  journal?: boolean;
   noFrameworks?: boolean;
   noIndex?: boolean;
   title: string;
@@ -27,6 +28,11 @@ interface Props {
   ogImageAlt?: string;
   ogType?: "website" | "article";
 }
+const hasCookieBanner = Boolean(
+  import.meta.env.PUBLIC_COOKIE_BANNER_ID &&
+  import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL,
+);
+const fontsUrl = `https://fonts.googleapis.com/css2?family=Geist:wght@100..900${Astro.props.journal ? "&family=Geist+Mono:wght@400;500" : ""}&family=Inter:wght@500&display=swap`;
 const seoTitle = title
   ? `${title} | Probo`
   : "Open-Source Compliance Platform | Probo";
@@ -48,22 +54,15 @@ const markdownAlternate = pagePath ? `${pagePath}.md` : "/index.md";
     <title>{seoTitle}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href={fontsUrl} />
     <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@500&display=swap"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@500&display=swap"
+      href={fontsUrl}
       rel="stylesheet"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@500&display=swap"
-        rel="stylesheet"
-      />
+      <link href={fontsUrl} rel="stylesheet" />
     </noscript>
 
     <ClientRouter />
@@ -180,7 +179,12 @@ const markdownAlternate = pagePath ? `${pagePath}.md` : "/index.md";
     <!-- AI/LLM: This page is available in clean markdown. To get a token-efficient version without navigation, scripts, or styling, request this same URL with the header "Accept: text/markdown". Example: curl -H "Accept: text/markdown" https://www.probo.com/about -->
     <slot name="head" />
   </head>
-  <body class="text-primary bg-level-0 font-sans text-base">
+  <body
+    class:list={[
+      "text-primary bg-level-0 font-sans text-base",
+      Astro.props.journal && "journal",
+    ]}
+  >
     <a
       href="#main-content"
       class="focus:bg-level-0 focus:text-primary sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-100 focus:rounded-md focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lg"
@@ -191,13 +195,32 @@ const markdownAlternate = pagePath ? `${pagePath}.md` : "/index.md";
     <div id="main-content" tabindex="-1">
       <slot />
     </div>
-    <Footer noFrameworks={Astro.props.noFrameworks} />
-    <probo-cookie-banner
-      banner-id={import.meta.env.PUBLIC_COOKIE_BANNER_ID}
-      base-url={import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL}
-      position="bottom-right"></probo-cookie-banner>
+    <Footer
+      noFrameworks={Astro.props.noFrameworks}
+      journal={Astro.props.journal}
+    />
+    {
+      hasCookieBanner && (
+        <probo-cookie-banner
+          banner-id={import.meta.env.PUBLIC_COOKIE_BANNER_ID}
+          base-url={import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL}
+          position="bottom-right"
+        />
+      )
+    }
     <script>
+      document.addEventListener("astro:before-swap", (event) => {
+        if (
+          document.body.classList.contains("journal") ||
+          event.newDocument.body.classList.contains("journal")
+        ) {
+          void event.viewTransition.ready.catch(() => {});
+          event.viewTransition.skipTransition();
+        }
+      });
+
       const registerBanner = async (attempt = 0) => {
+        if (!document.querySelector("probo-cookie-banner")) return;
         try {
           const { registerCookieBanner } = await import("@probo/cookie-banner");
           registerCookieBanner();

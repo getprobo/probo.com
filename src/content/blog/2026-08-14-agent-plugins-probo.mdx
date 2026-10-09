@@ -1,4 +1,5 @@
 ---
+category: Engineering
 title: "Probo has its Agent Plugins, what is it?"
 date: 2026-08-14
 excerpt: "Agent Plugins bundle an MCP server with agent skills. Here's what the standard is, what it leaves out, and how to point your assistant at your Probo data."
@@ -15,6 +16,8 @@ faqs:
     answer: "Yes. It lives in Probo's main open-source repository at packages/skills, MIT licensed, and it's published on npm as @probo/skills. You can read every skill, fork it, and adapt it. Open source and data ownership are the point, not the exception."
   - question: "What if I self-host Probo?"
     answer: "Install the plugin the same way, then point it at your own instance. Because the 1.0.0 spec doesn't expand placeholders in bundled MCP URLs, you add a self-hosted server in the agent: claude mcp add --transport http probo https://<your-host>/api/mcp/v1."
+coverImage: "/blog/covers-phosphor/scales-2x.webp"
+coverImageAlt: "Balance scales on a cream and fluorescent yellow background."
 ---
 
 Your AI assistant can write you a decent password policy from memory. What it can't do is read your actual controls, see which measures are still open, or file the policy back into your compliance platform as a draft.

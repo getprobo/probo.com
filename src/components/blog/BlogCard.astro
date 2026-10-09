@@ -1,0 +1,202 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { blogDate, postHref } from "../../lib/blog";
+import AuthorAvatar from "./AuthorAvatar.astro";
+interface Props {
+  post: CollectionEntry<"blog">;
+  featured?: boolean;
+}
+const { post, featured = false } = Astro.props;
+const image = post.data.coverImage ?? post.data.titleImage;
+---
+
+<article class:list={["journal-card", featured && "journal-featured"]}>
+  <a
+    href={postHref(post.id)}
+    class="group block rounded-lg"
+    aria-label={post.data.title}
+  >
+    <div class="journal-card-image" aria-hidden="true">
+      {
+        image && (
+          <img
+            src={image}
+            alt=""
+            loading={featured ? "eager" : "lazy"}
+            decoding="async"
+            width="1080"
+            height="540"
+          />
+        )
+      }
+    </div>
+    <div class="journal-card-copy">
+      <p class="text-muted-foreground text-sm font-medium">
+        {post.data.category}
+      </p>
+      <h2
+        class="font-semibold decoration-1 underline-offset-4 group-hover:underline"
+      >
+        {post.data.title}
+      </h2>
+      <p class="journal-card-excerpt">{post.data.excerpt}</p>
+      <div class="journal-card-meta">
+        <div class="journal-card-meta-reveal text-muted-foreground text-sm">
+          <span class="journal-card-meta-avatar" aria-hidden="true">
+            <span class="journal-card-meta-portrait">
+              <AuthorAvatar
+                author={post.data.author.name}
+                size={featured ? "medium" : "small"}
+                loading={featured ? "eager" : "lazy"}
+              />
+            </span>
+            <span class="journal-card-meta-arrow">
+              <img src="/blog/icons/right.svg" alt="" width="16" height="16" />
+            </span>
+          </span>
+          <div class="journal-card-meta-copy">
+            <p
+              class="journal-card-meta-author flex flex-wrap items-center gap-x-2 gap-y-1"
+            >
+              <span>{post.data.author.name}</span>
+              <span aria-hidden="true">·</span><time
+                datetime={post.data.date.toISOString()}
+                >{blogDate.format(post.data.date)}</time
+              >
+            </p>
+            <span class="journal-card-meta-read" aria-hidden="true">
+              <span class="journal-card-meta-label">Read article</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</article>
+
+<script>
+  let cleanup = () => {};
+
+  const initialize = () => {
+    cleanup();
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    const hover = matchMedia("(hover: hover) and (pointer: fine)");
+    const settle: (() => void)[] = [];
+    const stop: (() => void)[] = [];
+    const glyphs =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    document
+      .querySelectorAll<HTMLAnchorElement>(".journal-card > a")
+      .forEach((link) => {
+        const reveal = link.querySelector<HTMLElement>(
+          ".journal-card-meta-copy",
+        );
+        const author = link.querySelector<HTMLElement>(
+          ".journal-card-meta-author",
+        );
+        const label = link.querySelector<HTMLElement>(
+          ".journal-card-meta-label",
+        );
+        if (!reveal || !author || !label) return;
+        const source =
+          author.textContent
+            ?.replace(/\s+/g, " ")
+            .replace(/\s*·\s*/g, " · ")
+            .trim() ?? "";
+        let frame = 0;
+
+        const update = (animate = true) => {
+          cancelAnimationFrame(frame);
+          frame = 0;
+          reveal.removeAttribute("data-scrambling");
+          const focused = link.matches(":focus-visible");
+          const active = focused || (hover.matches && link.matches(":hover"));
+          const target = active ? "Read article" : source;
+          if (
+            !animate ||
+            focused ||
+            reducedMotion.matches ||
+            !hover.matches ||
+            document.hidden
+          ) {
+            label.textContent = target;
+            return;
+          }
+
+          const from = label.textContent?.trim() ?? source;
+          if (from === target) return;
+          const duration = active ? 220 : 180;
+          const length = target.length;
+          const letters = Array.from({ length }, (_, index) => {
+            const start =
+              duration * ((index / length) * 0.28 + Math.random() * 0.08);
+            return {
+              from: from[index] ?? "",
+              to: target[index] ?? "",
+              start,
+              end: start + duration * (0.35 + Math.random() * 0.2),
+              glyph: "",
+            };
+          });
+          const started = performance.now();
+          let lastTick = -1;
+          reveal.setAttribute("data-scrambling", "");
+
+          const render = (now: number) => {
+            const elapsed = now - started;
+            const tick = Math.floor(elapsed / 45);
+            label.textContent = letters
+              .map((letter) => {
+                if (
+                  letter.to === " " ||
+                  letter.from === letter.to ||
+                  elapsed >= letter.end
+                )
+                  return letter.to;
+                if (elapsed < letter.start) return letter.from;
+                if (tick !== lastTick || !letter.glyph) {
+                  letter.glyph =
+                    glyphs[Math.floor(Math.random() * glyphs.length)];
+                }
+                return letter.glyph;
+              })
+              .join("");
+            lastTick = tick;
+            if (elapsed < duration) {
+              frame = requestAnimationFrame(render);
+            } else {
+              frame = 0;
+              label.textContent = target;
+              reveal.removeAttribute("data-scrambling");
+            }
+          };
+          frame = requestAnimationFrame(render);
+        };
+
+        label.textContent = source;
+        link.addEventListener("pointerenter", () => update(), { signal });
+        link.addEventListener("pointerleave", () => update(), { signal });
+        link.addEventListener("focus", () => update(false), { signal });
+        link.addEventListener("blur", () => update(false), { signal });
+        settle.push(() => update(false));
+        stop.push(() => cancelAnimationFrame(frame));
+        update(false);
+      });
+
+    const settleAll = () => settle.forEach((update) => update());
+    reducedMotion.addEventListener("change", settleAll, { signal });
+    hover.addEventListener("change", settleAll, { signal });
+    document.addEventListener("visibilitychange", settleAll, { signal });
+    cleanup = () => {
+      controller.abort();
+      stop.forEach((cancel) => cancel());
+    };
+  };
+
+  initialize();
+  document.addEventListener("astro:page-load", initialize);
+  document.addEventListener("astro:before-swap", () => cleanup());
+</script>

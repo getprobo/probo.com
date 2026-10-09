@@ -10,7 +10,7 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
   const allPosts = (await getCollection("blog")).sort(
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
   );
-  return paginate(allPosts, { pageSize });
+  return paginate(allPosts.slice(1), { pageSize });
 }
 
 type Props = {
@@ -18,9 +18,12 @@ type Props = {
 };
 
 const { page } = Astro.props;
+if (page.currentPage === 1) return Astro.redirect("/blog", 301);
 ---
 
 <Layout
+  journal
+  noFrameworks
   title={`Blog, page ${page.currentPage}`}
   description="More articles about compliance, security certifications, SOC 2, ISO 27001, and building trust from the Probo blog."
 >

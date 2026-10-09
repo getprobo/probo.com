@@ -5,15 +5,41 @@ import AntoinePortrait from "../../assets/antoine-bourchardy.png";
 import ArthurPortrait from "../../assets/arthur-mayoux-blog.svg";
 import BryanPortrait from "../../assets/bryan_firmin.svg";
 import EmilePortrait from "../../assets/emile_blog.svg";
+import AuthorAvatar from "../blog/AuthorAvatar.astro";
 
 interface Props {
   class?: string;
   author?: string;
+  variant?: "default" | "journal";
 }
 
 const { class: className, author } = Astro.props;
 
-const showBoth = !author;
+const journal = Astro.props.variant === "journal";
+const authorDetails: Record<string, { role: string; biography: string }> = {
+  "Antoine Bouchardy": {
+    role: "CEO and co-founder",
+    biography:
+      "He writes about the challenges founders face balancing growth with regulation.",
+  },
+  "Arthur Mayoux": {
+    role: "Chief of Staff",
+    biography:
+      "Working across multiple departments, his primary objective is to help the company scale.",
+  },
+  "Bryan Frimin": {
+    role: "CTO and co-founder",
+    biography:
+      "Experienced with cyber-security, he is building the open compliance tool which adapts to your actual stack.",
+  },
+  "Émile Ré": {
+    role: "Founding engineer",
+    biography:
+      "He writes about the technical side of making compliance simple for startups.",
+  },
+};
+const details = author ? authorDetails[author] : undefined;
+const showBoth = !author && !journal;
 const isAntoine = author === "Antoine Bouchardy";
 const isArthur = author === "Arthur Mayoux";
 const isBryan = author === "Bryan Frimin";
@@ -121,7 +147,7 @@ const isEmile = author === "Émile Ré";
 }
 
 {
-  (isAntoine || isArthur || isBryan || isEmile) && (
+  !journal && (isAntoine || isArthur || isBryan || isEmile) && (
     <div
       class={clsx(
         "flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10",
@@ -229,6 +255,28 @@ const isEmile = author === "Émile Ré";
           width={164}
           height={164}
         />
+      )}
+    </div>
+  )
+}
+
+{
+  journal && (
+    <div class="journal-author">
+      <p class="text-muted-foreground text-xs">Written by</p>
+      <div class="flex flex-col items-center gap-4">
+        {author && <AuthorAvatar author={author} size="large" />}
+        <div>
+          <p class="text-h5 font-semibold">{author}</p>
+          {details && (
+            <p class="text-muted-foreground mt-1 text-sm">{details.role}</p>
+          )}
+        </div>
+      </div>
+      {details && (
+        <p class="journal-author-bio text-muted-foreground">
+          {details.biography}
+        </p>
       )}
     </div>
   )
