@@ -264,16 +264,20 @@ const isEmile = author === "Émile Ré";
   journal && (
     <div class="journal-author">
       <p class="text-muted-foreground text-xs">Written by</p>
-      <div class="flex items-center gap-3">
+      <div class="flex flex-col items-center gap-4">
         {author && <AuthorAvatar author={author} size="large" />}
         <div>
-          <p class="font-medium">{author}</p>
+          <p class="text-h5 font-semibold">{author}</p>
           {details && (
             <p class="text-muted-foreground mt-1 text-sm">{details.role}</p>
           )}
         </div>
       </div>
-      {details && <p class="text-muted-foreground">{details.biography}</p>}
+      {details && (
+        <p class="journal-author-bio text-muted-foreground">
+          {details.biography}
+        </p>
+      )}
     </div>
   )
 }

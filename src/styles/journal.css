@@ -437,28 +437,37 @@
 }
 .journal-author {
   margin-top: 48px;
-  padding-top: 24px;
+  padding-top: 48px;
   border-top: 1px solid var(--color-border-low);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 20px;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 1.5;
+  text-align: center;
+}
+.journal-author-bio {
+  max-width: 32ch;
+  font-size: 13px;
+  line-height: 1.5;
+  text-wrap: pretty;
 }
 .journal-share {
   display: flex;
-  gap: 12px;
+  justify-content: center;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-top: 24px;
-  padding-bottom: 48px;
+  margin-top: 32px;
+  padding-bottom: 64px;
 }
 .journal-share :is(button, a) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  min-height: 44px;
-  padding: 10px 20px;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 12px;
   border: 1px solid var(--color-border-low);
   border-radius: 999px;
   cursor: pointer;
@@ -529,10 +538,6 @@
   font-size: 16px;
   background: transparent;
   border: 0;
-}
-.journal-newsletter-input:focus-within {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 3px;
 }
 .journal-newsletter-input input:focus-visible {
   outline: none;
@@ -752,13 +757,6 @@
 .journal-cover {
   aspect-ratio: 16 / 9;
   margin-bottom: 64px;
-}
-.journal-share-label {
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--color-muted-foreground);
-  width: 180px;
-  align-self: center;
 }
 .journal-ai img {
   width: 18px;
@@ -1065,9 +1063,6 @@
   .journal-hero,
   .journal-cover {
     margin-bottom: 32px;
-  }
-  .journal-share-label {
-    width: 100%;
   }
   .journal-footer-legal {
     align-items: flex-start;
