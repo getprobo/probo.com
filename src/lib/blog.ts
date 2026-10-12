@@ -4,6 +4,7 @@ export const blogCategories = [
   "Compliance",
   "Engineering",
   "Perspectives",
+  "Newsletter",
 ] as const;
 export type BlogCategory = (typeof blogCategories)[number];
 export const blogDate = new Intl.DateTimeFormat("en-US", {
