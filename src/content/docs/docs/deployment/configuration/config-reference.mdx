@@ -171,12 +171,12 @@ The serialization column describes whether an empty value can be omitted from ge
 
 ## Connectors
 
-| Field                          | Type                   | Serialization      | Description | Source                                                                                             |
-| ------------------------------ | ---------------------- | ------------------ | ----------- | -------------------------------------------------------------------------------------------------- |
-| `probod.connectors[].provider` | string                 | Always emitted     | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L33) |
-| `probod.connectors[].protocol` | connector.ProtocolType | Always emitted     | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L34) |
-| `probod.connectors[].config`   | object                 | Omitted when empty | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L36) |
-| `probod.connectors[].settings` | object                 | Omitted when empty | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L38) |
+| Field                          | Type                           | Serialization      | Description | Source                                                                                             |
+| ------------------------------ | ------------------------------ | ------------------ | ----------- | -------------------------------------------------------------------------------------------------- |
+| `probod.connectors[].provider` | string                         | Always emitted     | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L33) |
+| `probod.connectors[].protocol` | connectorprotocol.ProtocolType | Always emitted     | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L34) |
+| `probod.connectors[].config`   | object                         | Omitted when empty | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L36) |
+| `probod.connectors[].settings` | object                         | Omitted when empty | —           | [View field](https://github.com/getprobo/probo/blob/main/pkg/probodconfig/connector_config.go#L38) |
 
 ## Connector Endpoints
 

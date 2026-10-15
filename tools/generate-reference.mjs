@@ -428,7 +428,7 @@ function categoryForTool(name) {
     ],
     ["Employee portal", /EmployeePortal/],
     ["Cookie consent", /Cookie|Tracker|GVL/],
-    ["Documents and approvals", /Document|Signature/],
+    ["Documents and approvals", /Document|Signature|^uploadFile$/],
     [
       "Statements of applicability",
       /Statements?OfApplicability|ApplicabilityStatement/,
@@ -710,7 +710,7 @@ async function generateEnvironmentReference() {
   const builderPath = join(bootstrapRoot, "builder.go");
   const builderSource = sources.get(builderPath);
   if (!builderSource) throw new Error(`Missing ${builderPath}`);
-  const providerRoot = join(sourceRoot, "pkg/connector/provider");
+  const providerRoot = join(sourceRoot, "pkg/connectorprotocol/provider");
   const builtinProviderSource = await readFile(
     join(providerRoot, "builtin.go"),
     "utf8",

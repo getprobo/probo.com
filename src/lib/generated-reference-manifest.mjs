@@ -98,6 +98,10 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/evidence",
   },
   {
+    label: "File",
+    slug: "docs/developers/cli/commands/file",
+  },
+  {
     label: "Finding",
     slug: "docs/developers/cli/commands/finding",
   },
@@ -290,6 +294,10 @@ export const n8nResourceItems = [
   {
     label: "Asset",
     slug: "docs/developers/api/n8n/resources/asset",
+  },
+  {
+    label: "Attachment",
+    slug: "docs/developers/api/n8n/resources/attachment",
   },
   {
     label: "Audit",
