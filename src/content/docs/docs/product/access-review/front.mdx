@@ -1,0 +1,71 @@
+---
+title: Front
+description: Connect Front as an access review source using OAuth or an API token so Probo can list your Front company's teammates, including rule, macro, and integration accounts.
+---
+
+Probo reads your Front company's teammates through the Front Core API so you can review who has access. Connecting with **OAuth** is the recommended method and requires no token management. A company API token is also available if you would rather not authorize an OAuth connection.
+
+:::caution
+The credential must be able to read teammates (`teammates:read`). For an API token, grant the **Global resources** scope with **Read** permission. A token limited to shared or private resources authenticates, and Front then refuses the teammates endpoint.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- Front administrator access, which is what Front requires to create an API token or authorize a company-wide app
+
+## Collected Fields
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+| Probo field | Front field                                              | Notes                                                                                                                              |
+| ----------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `first_name`, `last_name`                                | Joined into one display name. Falls back to `username` when both are empty, as they are on bot teammates                           |
+| Email       | `email`                                                  |                                                                                                                                    |
+| Role        | `is_admin`, `type`                                       | Displayed as `Admin` or `Teammate`. Bot teammates also carry their type, e.g. `Type: Rule`, `Type: Macro`, or `Type: Integration` |
+| Admin       | `is_admin`                                               | Flagged as administrator when `is_admin` is true                                                                                   |
+| Status      | `is_blocked`                                             | Probo reports a blocked teammate as inactive                                                                                       |
+| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                    |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                    |
+| External ID | `id`                                                     | The teammate's Front ID; stable identifier used to track the account across reviews                                               |
+| Created at  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                    |
+
+Probo includes every teammate Front returns, blocked ones included, so the reviewer decides what a blocked seat means.
+
+Front's automations also appear as teammates. Rules, macros, integrations, OAuth applications, API, AI, bulk reply, and CSAT accounts are reported as **service accounts**, and their type is added to the role so you can tell which automation holds the access. Human teammates and chat visitors are reported as users.
+
+Probo does not treat Front's availability toggle as a status: a teammate who is set to away is still active. Probo also does not collect inbox or team membership, or custom teammate fields.
+
+## Connect Front
+
+### Option A: Connect with Front (recommended)
+
+<Steps>
+
+1. In Probo, go to **Access Review** > **Connections**.
+2. Find **Front** and click **OAuth**.
+3. Sign in to Front and authorize Probo. Probo needs **`teammates:read`** to list teammates. Front grants permissions from the Probo app's own configuration rather than from the authorization request.
+
+</Steps>
+
+### Option B: API Token
+
+<Steps>
+
+1. In Front, signed in as an administrator, go to **Settings** > **Developers** and open the **API Tokens** tab.
+2. Click **Create API token** and name it (e.g. `Probo Access Review`).
+3. Select the **Global resources** scope with **Read** permission. Probo needs no other scope and no write permission.
+4. Create the token and copy it.
+5. In Probo, go to **Access Review** > **Connections** and find **Front**. Click **API Key** on that row. When your deployment also offers OAuth, **API Key** sits in the menu behind the arrow next to the **OAuth** button.
+6. Paste the token and click **Connect**.
+
+</Steps>
+
+Probo names the source `Front / <your company name>` and pulls its teammates into your campaigns.
+
+## Troubleshooting
+
+- **Token rejected.** Front returns an authentication error for a token that was revoked, deleted, or copied incompletely. Confirm the token still appears under **Settings** > **Developers** > **API Tokens** and copy it again.
+- **Token accepted but the connection still fails.** The token cannot read teammates. Edit the token in Front and grant the **Global resources** scope with **Read** permission.
+- **Unfamiliar accounts appear.** These are Front's rule, macro, and integration teammates. Probo reports them as service accounts with their type in the role, so you can review the automation that holds each grant.
+- **A teammate set to away still shows as active.** This is expected. Front's availability is a presence status, not an account state. Block the teammate in Front to mark the account inactive; the next campaign picks up the change, and a campaign already under review keeps the entries it snapshotted.
