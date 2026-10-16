@@ -21,21 +21,24 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
       </summary>
       <div className="mcp-tool__body">
         <p className="mcp-tool__description">
-          List ITAM devices for an organization. Use createDevice to issue a
-          PENDING device and a one-shot enrollment token for the agent
-          installer. Device states: PENDING (enrollment token issued, agent has
-          never checked in), ACTIVE (agent heartbeating), REVOKED (enrollment
-          revoked). Use last_seen_at as the staleness signal. latest_postures is
-          empty unless include_postures is true; when loaded it holds the newest
-          result per check_key and is empty for PENDING devices. Page with size
-          and cursor; when next_cursor is present, pass it as cursor on the next
+          include_postures defaults to false. When it is false,
+          postures_included is false and latest_postures is empty. List ITAM
+          devices for an organization. Use createDevice to issue a PENDING
+          device and a one-shot enrollment token for the agent installer. Device
+          states: PENDING (enrollment token issued, agent has never checked in),
+          ACTIVE (agent heartbeating), REVOKED (enrollment revoked). Use
+          last_seen_at as the staleness signal. When include_postures is true,
+          latest_postures holds the newest result per check_key and is empty for
+          PENDING devices. Pass query to search by the owner's name; each word
+          is a prefix match and every word must match. Page with size and
+          cursor; when next_cursor is present, pass it as cursor on the next
           call.
         </p>
         <dl className="mcp-tool__meta">
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3779-L3798">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3783-L3814">
                 <code>ListDevicesInput</code>
               </a>
             </dd>
@@ -43,7 +46,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3800-L3811">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3816-L3827">
                 <code>ListDevicesOutput</code>
               </a>
             </dd>
@@ -55,8 +58,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17702-L17713">
-                specification.yaml · L17702–L17713 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17811-L17822">
+                specification.yaml · L17811–L17822 ↗
               </a>
             </dd>
           </div>
@@ -75,19 +78,20 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
       </summary>
       <div className="mcp-tool__body">
         <p className="mcp-tool__description">
-          Get one ITAM device by ID (soft-deleted devices are not returned).
-          Same state machine as listDevices: PENDING (enrollment token issued,
-          agent has never checked in), ACTIVE (agent heartbeating), REVOKED
-          (enrollment revoked). Use last_seen_at as the staleness signal.
-          latest_postures is empty unless include_postures is true; when loaded
-          it holds the newest result per check_key and is empty for PENDING
-          devices.
+          include_postures defaults to false. When it is false,
+          postures_included is false and latest_postures is empty. Get one ITAM
+          device by ID (soft-deleted devices are not returned). Same state
+          machine as listDevices: PENDING (enrollment token issued, agent has
+          never checked in), ACTIVE (agent heartbeating), REVOKED (enrollment
+          revoked). Use last_seen_at as the staleness signal. When
+          include_postures is true, latest_postures holds the newest result per
+          check_key and is empty for PENDING devices.
         </p>
         <dl className="mcp-tool__meta">
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3813-L3823">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3829-L3839">
                 <code>GetDeviceInput</code>
               </a>
             </dd>
@@ -95,7 +99,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3825-L3831">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3841-L3847">
                 <code>GetDeviceOutput</code>
               </a>
             </dd>
@@ -107,8 +111,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17714-L17725">
-                specification.yaml · L17714–L17725 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17823-L17834">
+                specification.yaml · L17823–L17834 ↗
               </a>
             </dd>
           </div>
@@ -142,7 +146,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3833-L3843">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3849-L3859">
                 <code>CreateDeviceInput</code>
               </a>
             </dd>
@@ -150,7 +154,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3845-L3863">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3861-L3879">
                 <code>CreateDeviceOutput</code>
               </a>
             </dd>
@@ -164,8 +168,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17726-L17737">
-                specification.yaml · L17726–L17737 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17835-L17846">
+                specification.yaml · L17835–L17846 ↗
               </a>
             </dd>
           </div>
@@ -174,36 +178,37 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
     </details>
   </li>
   <li>
-    <details className="mcp-tool" id="revokeDevice">
+    <details className="mcp-tool" id="revokeDevices">
       <summary>
         <span className="mcp-tool__identity">
-          <code>revokeDevice</code>
-          <span>Revoke Device</span>
+          <code>revokeDevices</code>
+          <span>Revoke Devices</span>
         </span>
         <span className="mcp-tool__mode">Writes data</span>
       </summary>
       <div className="mcp-tool__body">
         <p className="mcp-tool__description">
-          Irreversibly revoke a device enrollment. Immediately invalidates the
-          device agent API key so the agent stops authenticating and reporting;
-          there is no un-revoke tool. Safe to call more than once: state stays
-          REVOKED and revoked_at keeps its original value. Call this before
-          deleteDevice.
+          Irreversibly revoke one or more device enrollments in one call.
+          Immediately invalidates each device agent API key so the agent stops
+          authenticating and reporting; there is no un-revoke tool. Safe to call
+          more than once: state stays REVOKED and revoked_at keeps its original
+          value. All devices must belong to one organization. If any id is
+          missing, none are revoked. Call this before deleteDevices.
         </p>
         <dl className="mcp-tool__meta">
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3865-L3872">
-                <code>RevokeDeviceInput</code>
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3881-L3892">
+                <code>RevokeDevicesInput</code>
               </a>
             </dd>
           </div>
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3874-L3880">
-                <code>RevokeDeviceOutput</code>
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3894-L3902">
+                <code>RevokeDevicesOutput</code>
               </a>
             </dd>
           </div>
@@ -214,8 +219,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17738-L17749">
-                specification.yaml · L17738–L17749 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17847-L17858">
+                specification.yaml · L17847–L17858 ↗
               </a>
             </dd>
           </div>
@@ -224,37 +229,38 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
     </details>
   </li>
   <li>
-    <details className="mcp-tool" id="deleteDevice">
+    <details className="mcp-tool" id="deleteDevices">
       <summary>
         <span className="mcp-tool__identity">
-          <code>deleteDevice</code>
-          <span>Delete Device</span>
+          <code>deleteDevices</code>
+          <span>Delete Devices</span>
         </span>
         <span className="mcp-tool__mode">Writes data</span>
       </summary>
       <div className="mcp-tool__body">
         <p className="mcp-tool__description">
-          Soft-delete a device. The device must already be REVOKED — call
-          revokeDevice first, otherwise the call fails with the error device
-          cannot be deleted. After success the device stops appearing in
-          listDevices/getDevice; enrollment tokens for the device are removed.
-          Eligible orphan rows are later hard-deleted by the ITAM garbage
-          collector.
+          Soft-delete one or more devices in one call. Every device must already
+          be REVOKED — call revokeDevices first, otherwise the call fails with
+          the error device cannot be deleted and none are deleted. All devices
+          must belong to one organization. After success the devices stop
+          appearing in listDevices/getDevice; enrollment tokens for them are
+          removed. Eligible orphan rows are later hard-deleted by the ITAM
+          garbage collector.
         </p>
         <dl className="mcp-tool__meta">
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3882-L3889">
-                <code>DeleteDeviceInput</code>
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3904-L3915">
+                <code>DeleteDevicesInput</code>
               </a>
             </dd>
           </div>
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3891-L3898">
-                <code>DeleteDeviceOutput</code>
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3917-L3926">
+                <code>DeleteDevicesOutput</code>
               </a>
             </dd>
           </div>
@@ -265,8 +271,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17750-L17761">
-                specification.yaml · L17750–L17761 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17859-L17870">
+                specification.yaml · L17859–L17870 ↗
               </a>
             </dd>
           </div>
@@ -293,7 +299,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3900-L3914">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3928-L3942">
                 <code>SetDeviceOwnerInput</code>
               </a>
             </dd>
@@ -301,7 +307,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3916-L3922">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3944-L3950">
                 <code>SetDeviceOwnerOutput</code>
               </a>
             </dd>
@@ -313,8 +319,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17762-L17773">
-                specification.yaml · L17762–L17773 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17871-L17882">
+                specification.yaml · L17871–L17882 ↗
               </a>
             </dd>
           </div>
