@@ -7,6 +7,7 @@ export type MenuIconName =
   | "code"
   | "compass"
   | "cookie"
+  | "files"
   | "github-logo"
   | "handshake"
   | "heart"
@@ -55,6 +56,12 @@ export const menuGroups: MenuGroup[] = [
         description: "Share security documents securely",
         href: "/products/compliance-portal",
         icon: "shield-check",
+      },
+      {
+        label: "Document Management",
+        description: "Draft, approve, and sign your policies",
+        href: "/products/document-management",
+        icon: "files",
       },
       {
         label: "Employee Portal",

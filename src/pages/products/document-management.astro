@@ -1,0 +1,1573 @@
+---
+import "@phosphor-icons/web/regular";
+import { Image } from "astro:assets";
+import { findDocumentManagementAsset as findAsset } from "../../lib/document-management-assets";
+import Layout from "../../layouts/Layout.astro";
+import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
+import Button from "../../components/ui/Button.svelte";
+import LogosScroll from "../../components/LogosScroll.svelte";
+import LottiePlayer from "../../components/LottiePlayer.svelte";
+import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
+import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
+
+const pageTitle = "Document Management with Approvals and E-Signatures";
+const pageDescription =
+  "Probo Document Management lets you draft policies, route them to approvers, publish minor or major versions, and collect e-signatures with email reminders.";
+const heroDescription =
+  "Draft a policy, send it to the right approvers, and collect electronic signatures from your team, while Probo sends the emails and the follow-ups.";
+
+const heroAsset = findAsset("hero-document-management");
+const heroHighResolutionAsset = findAsset("hero-document-management-2x");
+const testimonialAsset = findAsset("testimonial");
+const overviewFeatures = [
+  {
+    icon: "ph-files",
+    title: "Controlled documents, versioned",
+    description:
+      "Keep policies, procedures, plans, and registers as versioned records, each with a changelog and a classification.",
+  },
+  {
+    icon: "ph-users-three",
+    title: "Approvals from the people you choose",
+    description:
+      "Pick approvers from your user list, and publish the new version only once every one of them approves.",
+  },
+  {
+    icon: "ph-git-branch",
+    title: "Minor or major, your call",
+    description:
+      "Publish a small fix as a minor version, or a major version that goes back through approval.",
+  },
+  {
+    icon: "ph-signature",
+    title: "Electronic signatures built in",
+    description:
+      "Collect signatures inside Probo, with no separate e-signature tool and a sealed certificate for every signer.",
+  },
+  {
+    icon: "ph-envelope-simple",
+    title: "Emails and follow-ups handled",
+    description:
+      "Let Probo email each approver and signer, then follow up with reminders so you do not have to.",
+  },
+];
+const reviewSteps = [
+  {
+    title: "Send drafts to the right approvers",
+    lottie: "/lottie/access-review/1.json",
+    illustration: "workflow-approvals",
+    reverse: false,
+    bullets: [
+      "Choose approvers from your user list, or save default approvers per document.",
+      "Email every approver one link to approve or reject, with an optional comment.",
+      "Publish the major version only when every approver agrees, and return it to draft on a rejection.",
+    ],
+  },
+  {
+    title: "Publish minor or major versions",
+    lottie: "/lottie/access-review/2.json",
+    illustration: "workflow-versions",
+    reverse: true,
+    bullets: [
+      "Publish typo fixes and small edits as a minor version, with no approval round.",
+      "Publish a major version directly, or route it through an approval quorum first.",
+      "Record a changelog with every publish, so each version explains what changed.",
+    ],
+  },
+  {
+    title: "Collect electronic signatures inside Probo",
+    lottie: "/lottie/access-review/3.json",
+    illustration: "workflow-signatures",
+    reverse: false,
+    bullets: [
+      "Request signatures from one person, or from your whole team across several documents at once.",
+      "Let people review and sign from their employee portal, without another tool or account.",
+      "Send each signer a Certificate of Completion with a SHA-256 seal and a trusted timestamp.",
+    ],
+  },
+  {
+    title: "Let Probo send the emails and the follow-ups",
+    lottie: "/lottie/access-review/4.json",
+    illustration: "workflow-reminders",
+    reverse: true,
+    bullets: [
+      "Group every pending approval or signature into one email per person.",
+      "Send up to three reminders, spaced one, two, and three days apart.",
+      "Hold reminders that land on a weekend until Monday.",
+    ],
+  },
+].map((step) => ({
+  ...step,
+  foreground:
+    step.illustration === "workflow-signatures"
+      ? {
+          src: "/employee-portal/workflow-signatures-approvals-ui.svg",
+          x: 32,
+          y: 83,
+          width: 476,
+          height: 581,
+        }
+      : undefined,
+  asset: findAsset(step.illustration),
+  asset2x: findAsset(`${step.illustration}-2x`),
+}));
+const publishCards = [
+  {
+    illustration: "capability-documents",
+    title: "Documents",
+    description:
+      "Store policies, procedures, plans, registers, records, reports, and templates with a type and a classification.",
+  },
+  {
+    illustration: "capability-editor",
+    title: "Editor",
+    description:
+      "Write in a rich editor with headings, tables, code blocks, and Mermaid diagrams, or paste Markdown in.",
+  },
+  {
+    illustration: "capability-versions",
+    title: "Versions",
+    description:
+      "Track every draft, minor, and major version, each with its own changelog.",
+  },
+  {
+    illustration: "capability-approval-quorums",
+    title: "Approval Quorums",
+    description:
+      "Record who approved or rejected each version, with their comments, against that exact version.",
+  },
+  {
+    illustration: "capability-signatures",
+    title: "Signatures",
+    description:
+      "Show who signed, who is still pending, and which major version each signature covers.",
+  },
+  {
+    illustration: "capability-certificate-of-completion",
+    title: "Certificate of Completion",
+    description:
+      "Prove each signature with the file hash, signer IP address, timestamp, and signing events.",
+  },
+  {
+    illustration: "capability-pdf-export",
+    title: "PDF Export",
+    description:
+      "Download any version as a PDF, or export all your documents at once as a ZIP, with or without signatures and a custom watermark.",
+  },
+].map((card) => {
+  const versionHistory = card.illustration === "capability-versions";
+  return {
+    ...card,
+    asset: versionHistory
+      ? "/employee-portal/capability-version-history.webp"
+      : findAsset(card.illustration),
+    asset2x: versionHistory
+      ? "/employee-portal/capability-version-history-2x.webp"
+      : findAsset(`${card.illustration}-2x`),
+    asset3x: versionHistory
+      ? "/employee-portal/capability-version-history-3x.webp"
+      : findAsset(`${card.illustration}-3x`),
+  };
+});
+const automationCards = [
+  {
+    title: "MCP Server",
+    description:
+      "Create, publish, approve, and request signatures from Claude, Cursor, or any MCP client, with 24 document tools.",
+    href: "/products/ai-agents-for-compliance",
+    icon: "ph-plugs-connected",
+  },
+  {
+    title: "n8n Node",
+    description:
+      "Automate the lifecycle in n8n with 22 Document operations, from Create to Publish and Request Signature.",
+    href: "/docs/developers/api/n8n/resources/document",
+    icon: "ph-flow-arrow",
+  },
+  {
+    title: "Webhooks",
+    description:
+      "Trigger your own workflows when a version is published, rejected, approved, or signed.",
+    href: "/docs/developers/api/webhooks/event-types",
+    icon: "ph-broadcast",
+  },
+  {
+    title: "CLI",
+    description:
+      "Manage documents and versions from the terminal with prb document.",
+    href: "/docs/developers/cli/commands/document",
+    icon: "ph-terminal-window",
+  },
+];
+const automationIntro =
+  "Every step on this page is also available outside the app, so an AI agent or a workflow can draft, publish, and chase signatures for you.";
+const trustedLogos = [
+  {
+    src: "/clients/trace_for_good.svg",
+    alt: "Trace for Good",
+    class: "trusted-logo--trace",
+    width: 1023,
+    height: 154,
+  },
+  {
+    src: "/clients/jimo.svg",
+    alt: "Jimo",
+    class: "trusted-logo--jimo",
+    width: 72,
+    height: 36,
+  },
+  {
+    src: "/clients/lucis.svg",
+    alt: "Lucis",
+    class: "trusted-logo--lucis",
+    width: 246,
+    height: 74,
+  },
+  {
+    src: "/clients/filz.svg",
+    alt: "Filiz",
+    class: "trusted-logo--filiz",
+    width: 598,
+    height: 240,
+  },
+  {
+    src: "/clients/ahrefs.svg",
+    alt: "Ahrefs",
+    class: "trusted-logo--ahrefs",
+    width: 74,
+    height: 19,
+  },
+];
+const faqs = [
+  {
+    question: "Do we need a separate e-signature tool?",
+    answer:
+      "No. Signatures are handled in Probo. Each one is sealed with a SHA-256 hash and an RFC 3161 timestamp, and the signer receives a Certificate of Completion by email.",
+  },
+  {
+    question: "Who can we ask to approve a document?",
+    answer:
+      "Anyone in your user list. Pick approvers when you publish, or save default approvers on the document so every major version goes to the same people.",
+  },
+  {
+    question: "What happens if one approver rejects?",
+    answer:
+      "The version goes back to draft. Every approver has to approve before the major version is published, and you can void a pending request at any time.",
+  },
+  {
+    question: "What is the difference between a minor and a major version?",
+    answer:
+      "Approval and signatures. A minor version publishes immediately, skips approval, and keeps the signatures already collected. A major version can require approval, and you request signatures again for it.",
+  },
+  {
+    question: "Will people get one email per document?",
+    answer:
+      "No. Probo waits 15 minutes, then groups every pending approval or signature for a person into a single email with one link.",
+  },
+  {
+    question: "Do people get reminded if they forget to sign?",
+    answer:
+      "Yes. Probo sends up to three reminders, spaced one, two, and three days apart, and moves any reminder that falls on a weekend to Monday.",
+  },
+  {
+    question: "Can we request signatures from the whole team at once?",
+    answer:
+      "Yes. Select several documents and several people, and Probo creates every request in one step. Each person signs once per major version.",
+  },
+  {
+    question: "Can we automate this with an AI agent or n8n?",
+    answer:
+      "Yes. The Probo MCP server exposes 24 document tools, the n8n node has 22 Document operations, and webhooks fire on every publish, approval, and signature event.",
+  },
+  {
+    question: "What can we show our auditor?",
+    answer:
+      "Everything. Download any version as a PDF with its signatures and approval details, add a watermark with the classification, your own text, and a timestamp, link documents to controls, and use the audit log to trace every change to a controlled record.",
+  },
+  {
+    question: "Can we add diagrams and tables to our documents?",
+    answer:
+      "Yes. The editor supports headings, tables, code blocks, and Mermaid diagrams, and you can paste Markdown straight in. Diagrams render in the PDF export too.",
+  },
+  {
+    question: "Can we export all our documents?",
+    answer:
+      "Yes, in one step. Your compliance data is yours. Select every document, and Probo emails you a ZIP of PDFs with the same signature and watermark options. Probo is open source and can be self-hosted, so nothing keeps you locked in.",
+  },
+  {
+    question: "Can we publish policies on our Compliance Portal?",
+    answer:
+      "Yes. Set each document's visibility on your Compliance Portal separately, so internal drafts never leave your workspace.",
+  },
+  {
+    question: "Who keeps the documents up to date?",
+    answer:
+      "Your team does, with Probo keeping the record. Edit in a draft, publish when ready, and every earlier version stays in history with its approvals and signatures. Unless you want Probo to manage your compliance, in which case we write your documentation and you approve it.",
+  },
+].map((faq) => ({
+  ...faq,
+  answerHtml: faq.answer
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(
+      "MCP server",
+      '<a href="/products/ai-agents-for-compliance">MCP server</a>',
+    )
+    .replace(
+      "Compliance Portal",
+      '<a href="/products/compliance-portal">Compliance Portal</a>',
+    ),
+}));
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
+};
+const softwareApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Probo Document Management",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: pageDescription,
+  url: "https://www.probo.com/products/document-management",
+  publisher: {
+    "@type": "Organization",
+    name: "Probo",
+    url: "https://www.probo.com",
+  },
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  ogImageAlt="Document Management with Approvals and E-Signatures"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(softwareApplicationSchema)}
+  />
+  <main class="-mt-16 overflow-hidden pt-16" data-document-management-page>
+    <div class="product-hero relative isolate">
+      <div
+        aria-hidden="true"
+        class="trust-hero-orb pointer-events-none absolute top-[-1314px] left-1/2 z-0 size-[2265px] rounded-full border-[350px] border-[#E6FF03] blur-[96px]"
+      >
+      </div>
+
+      <section class="relative z-10 container py-16 text-center sm:py-24">
+        <div
+          class="border-border-low text-tertiary-foreground motion-safe:animate-perspective-in mx-auto mb-6 w-max rounded-lg border px-2 py-0.5 text-sm font-medium"
+          style="animation-delay: 100ms"
+        >
+          Document Management
+        </div>
+        <h1
+          class="motion-safe:animate-perspective-in mx-auto mb-6 max-w-[680px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
+          style="animation-delay: 150ms"
+        >
+          Your policies, approved and signed.
+        </h1>
+        <p
+          class="text-muted-foreground motion-safe:animate-perspective-in mx-auto mb-8 max-w-[520px] text-base"
+          style="animation-delay: 350ms"
+        >
+          {heroDescription}
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button
+            href="/contact"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 400ms"
+          >
+            Book a demo
+          </Button>
+          <Button
+            href="/docs/product/document-management"
+            variant="secondary"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 450ms">Read the docs</Button
+          >
+        </div>
+      </section>
+
+      <section class="relative z-10 container pb-0">
+        <div class="access-review-browser">
+          {
+            heroAsset ? (
+              <img
+                src={heroAsset}
+                srcset={
+                  heroHighResolutionAsset
+                    ? `${heroAsset} 1146w, ${heroHighResolutionAsset} 2292w`
+                    : undefined
+                }
+                sizes="(min-width: 1280px) 1080px, calc(100vw - 40px)"
+                alt="Information Security Policy in Probo with approvals and signatures"
+                width="1146"
+                height="786"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+                class="motion-safe:animate-slide-in"
+                style="animation-delay: 600ms"
+              />
+            ) : (
+              <div
+                class="asset-placeholder size-full rounded-2xl"
+                aria-hidden="true"
+                data-asset-slot="hero-document-management"
+              />
+            )
+          }
+        </div>
+      </section>
+    </div>
+
+    <section class="container pt-16 pb-0 text-center sm:pt-32">
+      <h2
+        class="mx-auto max-w-[552px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance text-[#141e12]"
+        data-trust-reveal
+      >
+        Every policy, from first draft to signed record, in one place.
+      </h2>
+      <p
+        class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+        data-trust-reveal
+        style="--trust-reveal-delay: 100ms"
+      >
+        Write drafts, publish minor or major versions, and collect approvals and
+        signatures that stay attached to the exact version your team reviewed.
+      </p>
+
+      <div class="overview-feature-grid mt-12">
+        {
+          overviewFeatures.map((feature, index) => (
+            <div
+              class="overview-feature"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <i
+                class:list={["ph overview-feature-icon", feature.icon]}
+                aria-hidden="true"
+              />
+              <div class="overview-feature-copy">
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section id="how-it-works" class="pt-16 pb-0 sm:pt-32">
+      <div class="container mb-12 text-center sm:mb-16">
+        <h2
+          class="mx-auto max-w-[600px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          Keep control of every version without chasing anyone
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Choose approvers, choose minor or major, and request signatures, while
+          Probo emails each person and follows up on your behalf.
+        </p>
+      </div>
+
+      <div class="space-y-8 sm:space-y-12">
+        {
+          reviewSteps.map((feature, index) => (
+            <div
+              class:list={[
+                "container grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-16",
+              ]}
+              data-trust-reveal={index === 0 ? undefined : true}
+              style={`--trust-reveal-delay: ${index * 80}ms`}
+            >
+              <div
+                class:list={[
+                  "bg-subtle relative isolate mx-auto aspect-[508/664] w-full max-w-[508px] overflow-hidden rounded-2xl",
+                  feature.reverse && "lg:order-2",
+                ]}
+                data-review-visual
+                data-review-asset-visual
+                style={`--review-asset-x: ${feature.reverse ? "104px" : "-96px"}; --review-asset-y: ${index === 0 || feature.reverse ? "0px" : "64px"}; --review-asset-scale: ${index === 0 ? 1 : 0.98}; --review-asset-duration: ${feature.reverse ? "820ms" : "860ms"};`}
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 z-0"
+                  aria-hidden="true"
+                >
+                  <LottiePlayer
+                    client:visible
+                    src={feature.lottie}
+                    label={`${feature.title} animation`}
+                    class="size-full origin-center scale-[1.12] transform-gpu"
+                  />
+                </div>
+                {feature.foreground ? (
+                  <div
+                    class="review-asset pointer-events-none absolute inset-0 z-10"
+                    aria-hidden="true"
+                  >
+                    <img
+                      src={feature.foreground.src}
+                      alt=""
+                      width={feature.foreground.width}
+                      height={feature.foreground.height}
+                      loading="lazy"
+                      decoding="async"
+                      class="absolute block h-auto max-w-none"
+                      style={`left: ${(feature.foreground.x / 508) * 100}%; top: ${(feature.foreground.y / 664) * 100}%; width: ${(feature.foreground.width / 508) * 100}%;`}
+                    />
+                  </div>
+                ) : feature.asset ? (
+                  <img
+                    src={feature.asset}
+                    srcset={
+                      feature.asset2x
+                        ? `${feature.asset} 508w, ${feature.asset2x} 1016w`
+                        : undefined
+                    }
+                    sizes="(min-width: 1024px) 508px, (min-width: 560px) 508px, calc(100vw - 48px)"
+                    alt=""
+                    aria-hidden="true"
+                    width="508"
+                    height="664"
+                    loading="lazy"
+                    decoding="async"
+                    class="review-asset pointer-events-none absolute inset-0 z-10 size-full object-contain"
+                  />
+                ) : (
+                  <div
+                    class="pointer-events-none absolute inset-0 z-10"
+                    aria-hidden="true"
+                    data-asset-slot={feature.illustration}
+                  />
+                )}
+              </div>
+
+              <div
+                class:list={[
+                  "mx-auto w-full max-w-[508px] min-w-0",
+                  feature.reverse ? "lg:order-1 lg:pr-16" : "lg:pl-16",
+                ]}
+                data-trust-reveal={index === 0 ? true : undefined}
+              >
+                <h3 class="mb-6 text-[24px] leading-8 font-semibold tracking-[-0.6px]">
+                  {feature.title}
+                </h3>
+                <ul class="text-muted-foreground space-y-3 text-[16px] leading-6">
+                  {feature.bullets.map((bullet) => (
+                    <li class="flex gap-2">
+                      <i
+                        class="ph ph-check inline-flex size-6 shrink-0 items-center justify-center text-[24px] leading-none text-current"
+                        aria-hidden="true"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="mb-16 text-center">
+        <h2
+          class="mx-auto max-w-[560px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          All your controlled documents, organized for audit
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Organize documents, versions, approvals, and signatures as one
+          connected record, instead of PDFs in shared drives and approvals
+          buried in email threads.
+        </p>
+      </div>
+
+      <div class="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          publishCards.map((card, index) => (
+            <article
+              class="mx-auto flex w-full max-w-[508px] flex-col gap-6"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <div
+                class="aspect-square w-full overflow-hidden rounded-2xl"
+                data-review-asset-visual
+              >
+                {card.asset ? (
+                  <img
+                    src={card.asset}
+                    srcset={[
+                      `${card.asset} 344w`,
+                      card.asset2x && `${card.asset2x} 688w`,
+                      card.asset3x && `${card.asset3x} 1032w`,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                    sizes="(min-width: 1024px) 344px, (min-width: 640px) calc((100vw - 72px) / 2), calc(100vw - 48px)"
+                    alt=""
+                    aria-hidden="true"
+                    width="344"
+                    height="344"
+                    loading="lazy"
+                    decoding="async"
+                    class="review-asset block aspect-square h-auto w-full object-contain"
+                  />
+                ) : (
+                  <div
+                    class="asset-placeholder aspect-square w-full rounded-2xl"
+                    aria-hidden="true"
+                    data-asset-slot={card.illustration}
+                  />
+                )}
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="text-[20px] leading-7 font-semibold tracking-[-0.4px]">
+                  {card.title}
+                </h3>
+                <p class="text-muted-foreground text-[16px] leading-6">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section
+      class="container pt-16 pb-0 sm:pt-32"
+      aria-labelledby="automation-heading"
+    >
+      <div class="mb-12 text-center" data-trust-reveal>
+        <h2
+          id="automation-heading"
+          class="text-[1.875rem] leading-9 font-semibold tracking-[-1px]"
+        >
+          Automate the lifecycle
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[600px] text-base leading-6"
+        >
+          {automationIntro}
+        </p>
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2">
+        {
+          automationCards.map((card, index) => (
+            <a
+              href={card.href}
+              class="automation-card"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <i
+                class:list={["ph text-[32px]", card.icon]}
+                aria-hidden="true"
+              />
+              <div>
+                <h3 class="mb-2 flex items-center gap-2 text-xl font-semibold tracking-[-0.4px]">
+                  {card.title}
+                  <i class="ph ph-arrow-up-right text-xl" aria-hidden="true" />
+                </h3>
+                <p class="text-muted-foreground text-base leading-6">
+                  {card.description}
+                </p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="pb-12 text-center sm:pb-16">
+        <h2
+          class="text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+          data-trust-reveal
+        >
+          Trusted by 130+ companies
+        </h2>
+        <p
+          class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Compliance teams use Probo to keep policies current, get them
+          approved, and collect every signature an auditor will ask for.
+        </p>
+      </div>
+
+      <div class="trusted-showcase">
+        <div
+          class="trusted-photo-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          {
+            testimonialAsset ? (
+              <img
+                src={testimonialAsset}
+                alt=""
+                aria-hidden="true"
+                width="528"
+                height="528"
+                class="trusted-photo"
+                loading="lazy"
+              />
+            ) : (
+              <Image
+                src={BlaxelFounders}
+                alt="Paul Sinai and the Blaxel team"
+                width={528}
+                height={528}
+                densities={[1, 2]}
+                class="trusted-photo"
+                loading="lazy"
+              />
+            )
+          }
+        </div>
+
+        <div
+          class="trusted-quote-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 180ms"
+        >
+          <span class="trusted-quote-halo" aria-hidden="true"></span>
+          <div class="trusted-quote-content">
+            <blockquote class="trusted-quote">
+              &ldquo;Probo handled our SOC 2 and compliance, so we could focus
+              on building.&rdquo;
+            </blockquote>
+
+            <div class="trusted-author">
+              <div class="trusted-author-copy">
+                <div class="trusted-author-name">Paul Sinai</div>
+                <div class="trusted-author-role">
+                  CEO &amp; Co-founder of Blaxel
+                </div>
+              </div>
+              <Image
+                src={PaulSinai}
+                alt="Paul Sinai"
+                width={48}
+                height={48}
+                densities={[1, 2]}
+                class="trusted-avatar"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <div class="trusted-logo-block">
+            <p>Trusted by teams building compliance-ready workflows</p>
+            <div class="trusted-logo-rail" aria-label="Trusted companies">
+              <LogosScroll class="trusted-logo-ticker" client:load>
+                {
+                  trustedLogos.map((logo) => (
+                    <span class:list={["trusted-logo-item", logo.class]}>
+                      <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={logo.width}
+                        height={logo.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  ))
+                }
+              </LogosScroll>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container pt-16 sm:pt-32">
+      <h2
+        class="mb-6 text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+        data-trust-reveal
+      >
+        Questions, answered
+      </h2>
+      <div class="faq-accordion mx-auto max-w-[768px]" data-faq-accordion>
+        {
+          faqs.map((faq, index) => (
+            <div
+              class="faq-item"
+              data-faq-item
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 60}ms`}
+            >
+              <h3>
+                <button
+                  class="faq-trigger"
+                  type="button"
+                  id={`document-management-faq-trigger-${index}`}
+                  aria-expanded="false"
+                  aria-controls={`document-management-faq-panel-${index}`}
+                  data-faq-trigger
+                >
+                  <span>{faq.question}</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <i class="ph ph-plus faq-icon-plus" />
+                    <i class="ph ph-minus faq-icon-minus" />
+                  </span>
+                </button>
+              </h3>
+              <div
+                class="faq-panel"
+                id={`document-management-faq-panel-${index}`}
+                role="region"
+                aria-labelledby={`document-management-faq-trigger-${index}`}
+                aria-hidden="true"
+                data-faq-panel
+              >
+                <div class="faq-panel-inner">
+                  <p set:html={faq.answerHtml} />
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+    <ProductDiscovery />
+  </main>
+</Layout>
+
+<script>
+  const initDocumentManagementAnimations = () => {
+    const page = document.querySelector<HTMLElement>(
+      "[data-document-management-page]",
+    );
+    if (!page) return;
+    const assetVisuals = Array.from(
+      page.querySelectorAll<HTMLElement>("[data-review-asset-visual]"),
+    );
+    const revealTargets = Array.from(
+      page.querySelectorAll<HTMLElement>("[data-trust-reveal]"),
+    );
+
+    if (assetVisuals.length === 0 && revealTargets.length === 0) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      assetVisuals.forEach((visual) => {
+        visual.classList.add("is-visible");
+      });
+      revealTargets.forEach((target) => {
+        target.classList.add("is-visible");
+      });
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    const assetObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          assetObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.35 },
+    );
+
+    revealTargets.forEach((target) => {
+      if (target.dataset.revealReady === "true") {
+        return;
+      }
+
+      target.dataset.revealReady = "true";
+      target.classList.add("is-awaiting-reveal");
+      revealObserver.observe(target);
+    });
+
+    assetVisuals.forEach((visual) => {
+      if (visual.dataset.motionReady === "true") {
+        return;
+      }
+
+      visual.dataset.motionReady = "true";
+      visual.classList.add("is-awaiting-animation");
+      assetObserver.observe(visual);
+    });
+  };
+
+  const initDocumentManagementFaq = () => {
+    const page = document.querySelector<HTMLElement>(
+      "[data-document-management-page]",
+    );
+    if (!page) return;
+    const faqAccordions = Array.from(
+      page.querySelectorAll<HTMLElement>("[data-faq-accordion]"),
+    );
+
+    faqAccordions.forEach((faqAccordion) => {
+      if (faqAccordion.dataset.faqReady === "true") {
+        return;
+      }
+
+      faqAccordion.dataset.faqReady = "true";
+
+      const faqItems = Array.from(
+        faqAccordion.querySelectorAll<HTMLElement>("[data-faq-item]"),
+      );
+
+      const setFaqItemState = (item: HTMLElement, shouldOpen: boolean) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+        const panel = item.querySelector<HTMLElement>("[data-faq-panel]");
+
+        if (!trigger || !panel) {
+          return;
+        }
+
+        item.classList.toggle("is-open", shouldOpen);
+        trigger.setAttribute("aria-expanded", String(shouldOpen));
+        panel.setAttribute("aria-hidden", String(!shouldOpen));
+      };
+
+      faqItems.forEach((item, index) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+
+        if (!trigger) {
+          return;
+        }
+
+        trigger.addEventListener("click", () => {
+          const shouldOpen = !item.classList.contains("is-open");
+
+          faqItems.forEach((faqItem) => {
+            setFaqItemState(faqItem, faqItem === item && shouldOpen);
+          });
+        });
+
+        trigger.addEventListener("keydown", (event) => {
+          const lastIndex = faqItems.length - 1;
+          const nextIndex =
+            event.key === "ArrowDown"
+              ? Math.min(index + 1, lastIndex)
+              : event.key === "ArrowUp"
+                ? Math.max(index - 1, 0)
+                : event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? lastIndex
+                    : index;
+
+          if (nextIndex === index) {
+            return;
+          }
+
+          event.preventDefault();
+          faqItems[nextIndex]
+            ?.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+            ?.focus();
+        });
+      });
+    });
+  };
+
+  const initDocumentManagementPage = () => {
+    initDocumentManagementAnimations();
+    initDocumentManagementFaq();
+  };
+
+  document.addEventListener("astro:page-load", initDocumentManagementPage);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initDocumentManagementPage, {
+      once: true,
+    });
+  } else {
+    initDocumentManagementPage();
+  }
+</script>
+
+<style>
+  .access-review-browser {
+    position: relative;
+    aspect-ratio: 1146 / 786;
+  }
+
+  .asset-placeholder {
+    border: 1px dashed rgba(2, 42, 2, 0.16);
+    background: #f6f9f5;
+  }
+
+  .automation-card {
+    display: flex;
+    gap: 24px;
+    padding: 32px;
+    border-radius: 16px;
+    background: #f6f9f5;
+    transition: background 160ms ease;
+  }
+
+  .automation-card:hover {
+    background: #eef4ec;
+  }
+  .automation-card:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 4px;
+  }
+  .faq-panel :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .access-review-browser img {
+    width: 100%;
+    height: auto;
+  }
+
+  .trust-hero-orb {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    transform-origin: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .trust-hero-orb {
+      animation: trust-hero-orb-scale-in cubic-bezier(0.785, 0.135, 0.15, 0.86)
+        3s both;
+      animation-delay: -1200ms;
+    }
+  }
+
+  @keyframes trust-hero-orb-scale-in {
+    from {
+      transform: translateX(-50%) scale(0);
+    }
+
+    to {
+      transform: translateX(-50%) scale(1);
+    }
+  }
+
+  [data-trust-reveal],
+  :global([data-product-discovery] [data-trust-reveal]) {
+    --trust-reveal-delay: 0ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-trust-reveal].is-awaiting-reveal,
+    :global([data-product-discovery] [data-trust-reveal].is-awaiting-reveal) {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    [data-trust-reveal].is-visible,
+    :global([data-product-discovery] [data-trust-reveal].is-visible) {
+      animation: trust-reveal-slide-in var(--spring-smooth) 850ms
+        var(--trust-reveal-delay) both;
+    }
+  }
+
+  @keyframes trust-reveal-slide-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  [data-review-asset-visual] {
+    --review-asset-x: 0px;
+    --review-asset-y: 42px;
+    --review-asset-duration: 760ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-review-asset-visual].is-awaiting-animation .review-asset {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    [data-review-asset-visual].is-visible .review-asset {
+      animation: review-asset-enter var(--review-asset-duration)
+        cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+    }
+  }
+
+  @keyframes review-asset-enter {
+    0% {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    42% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  .overview-feature-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 48px;
+  }
+
+  .overview-feature {
+    display: flex;
+    width: min(100%, 328px);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .overview-feature-icon {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    color: #343330;
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .overview-feature-copy {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .overview-feature-copy h3,
+  .overview-feature-copy p {
+    width: 100%;
+  }
+
+  .overview-feature-copy h3 {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .overview-feature-copy p {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .overview-feature-copy a {
+    color: #343330;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 640px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 48px;
+      row-gap: 56px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      column-gap: 24px;
+    }
+    .overview-feature {
+      grid-column: span 2;
+    }
+    .overview-feature:nth-child(4) {
+      grid-column: 2 / span 2;
+    }
+    .overview-feature:nth-child(5) {
+      grid-column: 4 / span 2;
+    }
+  }
+
+  .trusted-showcase {
+    display: grid;
+    width: 100%;
+    max-width: 1080px;
+    gap: 24px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .trusted-photo-card,
+  .trusted-quote-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f6f9f5;
+  }
+
+  .trusted-photo-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  .trusted-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+
+  .trusted-quote-card {
+    display: flex;
+    min-height: 420px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 72px 20px 32px;
+    text-align: center;
+  }
+
+  .trusted-quote-halo {
+    position: absolute;
+    top: -423px;
+    left: 50%;
+    z-index: 0;
+    width: 1010px;
+    height: 1010px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .trusted-quote-halo::before {
+    position: absolute;
+    inset: -17%;
+    content: "";
+    background: url("/trust-center/quote-ellipse.svg") center / 100% 100%
+      no-repeat;
+    transform: rotate(180deg) scaleY(-1);
+  }
+
+  .trusted-quote-content,
+  .trusted-logo-block {
+    position: relative;
+    z-index: 1;
+  }
+
+  .trusted-quote-content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-quote {
+    margin: 0;
+    color: #141e12;
+    font-size: 22px;
+    line-height: 30px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    text-align: center;
+    text-wrap: balance;
+    word-break: break-word;
+  }
+
+  .trusted-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .trusted-author-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .trusted-author-name {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .trusted-author-role {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .trusted-avatar {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .trusted-logo-block {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-logo-block p {
+    color: #6b716a;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .trusted-logo-rail {
+    width: 792px;
+    max-width: calc(100vw - 48px);
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker) {
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker .splide__track),
+  :global(.trusted-logo-ticker .splide__list) {
+    height: 24px;
+  }
+
+  :global(.trusted-logo-ticker .splide__slide) {
+    display: flex;
+    height: 24px;
+    align-items: center;
+  }
+
+  .trusted-logo-item {
+    display: flex;
+    height: 24px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    opacity: 0.6;
+  }
+
+  .trusted-logo-item img {
+    display: block;
+    width: 100%;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .trusted-logo--trace {
+    width: 190.5px;
+  }
+
+  .trusted-logo--jimo {
+    width: 78px;
+  }
+
+  .trusted-logo--lucis {
+    width: 109.5px;
+  }
+
+  .trusted-logo--filiz {
+    width: 115.5px;
+  }
+
+  .trusted-logo--ahrefs {
+    width: 123px;
+  }
+
+  @media (min-width: 1024px) {
+    .trusted-showcase {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .trusted-quote-card {
+      min-height: auto;
+      aspect-ratio: 1 / 1;
+      padding: 96px 32px 32px;
+    }
+
+    .trusted-quote {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border-low);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 0;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+  }
+
+  .faq-trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: padding 220ms ease;
+  }
+
+  .faq-trigger:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 4px;
+  }
+
+  .faq-trigger span:first-child {
+    flex: 1;
+  }
+
+  .faq-icon {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+
+  .faq-icon i {
+    position: absolute;
+    font-size: 16px;
+    line-height: 1;
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease;
+  }
+
+  .faq-icon-minus {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-trigger {
+    padding-bottom: 8px;
+  }
+
+  .faq-item.is-open .faq-icon-plus {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-icon-minus {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms ease;
+  }
+
+  .faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-panel p {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0 40px 16px 0;
+    color: #6b716a;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .faq-item.is-open .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-panel,
+    .faq-icon i,
+    .faq-trigger {
+      transition: none;
+    }
+  }
+</style>

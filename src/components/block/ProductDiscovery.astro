@@ -1,5 +1,6 @@
 ---
 import Icon from "../Icon.astro";
+import { findDocumentManagementAsset } from "../../lib/document-management-assets";
 
 const products = [
   {
@@ -19,6 +20,16 @@ const products = [
     asset: "/product-discovery/compliance-documents.svg",
     width: 360,
     height: 216,
+  },
+  {
+    id: "document-management",
+    title: "Document Management",
+    description: "Draft, approve, and sign your policies",
+    href: "/products/document-management",
+    asset: findDocumentManagementAsset("discovery-document-management"),
+    asset2x: findDocumentManagementAsset("discovery-document-management-2x"),
+    width: 460,
+    height: 498,
   },
   {
     id: "employee-portal",
@@ -136,15 +147,28 @@ const products = [
                 </p>
               </div>
               <span class="product-discovery-halo" aria-hidden="true" />
-              <img
-                class="product-discovery-art"
-                src={product.asset}
-                alt=""
-                width={product.width}
-                height={product.height}
-                loading="lazy"
-                decoding="async"
-              />
+              {product.asset ? (
+                <img
+                  class="product-discovery-art"
+                  src={product.asset}
+                  srcset={
+                    product.asset2x
+                      ? `${product.asset} 1x, ${product.asset2x} 2x`
+                      : undefined
+                  }
+                  alt=""
+                  width={product.width}
+                  height={product.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <div
+                  class="absolute inset-x-8 bottom-8 h-[216px] rounded-lg border border-dashed border-[rgba(2,42,2,0.16)]"
+                  aria-hidden="true"
+                  data-asset-slot="discovery-document-management"
+                />
+              )}
             </a>
           </li>
         ))
@@ -359,6 +383,29 @@ const products = [
     left: 32px;
     width: 342px;
     height: 554px;
+  }
+
+  .product-discovery-card--document-management .product-discovery-halo {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .product-discovery-card--document-management .product-discovery-halo::before {
+    inset: -171.695px;
+    border: 0;
+    border-radius: 0;
+    background: url("/document-management/figma/discovery-halo.svg") center /
+      1013.39px 1013.39px no-repeat;
+    filter: none;
+    transform: scaleX(-1);
+  }
+
+  .product-discovery-card--document-management .product-discovery-art {
+    top: 162px;
+    left: 32px;
+    width: 460px;
+    height: auto;
   }
 
   .product-discovery-card--access-review .product-discovery-halo {

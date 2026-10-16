@@ -4,6 +4,10 @@
 @import "./animation.css";
 @import "./theme.css";
 
+.product-hero {
+  clip-path: inset(-4rem 0 0);
+}
+
 @media (min-width: 640px) {
   html,
   body {
