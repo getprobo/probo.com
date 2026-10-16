@@ -6,16 +6,16 @@ description: Connect GitHub as an access review source using OAuth, an installed
 Probo reads your GitHub organization's members through the GitHub REST API so you can review who has access. Connecting with **OAuth** is the recommended method and requires no token management. Installing the **GitHub App** is an alternative that isn't tied to one person's GitHub account and also unlocks visibility into fine-grained personal access tokens (see [Service Accounts](#service-accounts)). A personal access token is also available if you would rather not authorize either.
 
 :::caution
-If your organization restricts third-party OAuth App access, an owner must grant Probo access before the organization appears in the picker. A GitHub App install is governed separately and isn't affected by that policy, but an organization owner must still approve the install the first time.
+If your organization restricts third-party OAuth App access, an owner must grant Probo access before the organization appears in the GitHub connector's **Organization** field. A GitHub App install is governed separately and isn't affected by that policy, but an organization owner must still approve the install the first time.
 :::
 
 ## Prerequisites
 
 - Probo organization administrator access
 - Membership in the GitHub organization you want to review, since GitHub or a token can only read organizations it belongs to
-- If your organization restricts OAuth App access (**Settings** > **Third-party Access** > **OAuth app policy** in the organization), an owner must approve Probo before it appears in the organization picker
+- If your organization restricts OAuth App access (**Settings** > **Third-party Access** > **OAuth app policy** in the organization), an owner must approve Probo before it appears in the connector's **Organization** field
 - For the GitHub App option: organization owner access the first time the app is installed on your organization
-- For the personal access token option: the **Organization** slug, the part of `github.com/<organization>`, which the API Key dialog asks for since a token has no picker
+- For the personal access token option: the **Organization** slug, the part of `github.com/<organization>`, which the API key form asks for since a token has no picker
 
 ## Collected Fields
 
@@ -44,7 +44,7 @@ Alongside organization members, Probo lists these as service accounts whenever t
 | SAML-authorized credentials         | `GET /orgs/<organization>/credential-authorizations` | GitHub Enterprise Cloud organizations with SAML SSO only               |
 | Deploy keys                         | Repository deploy keys (GraphQL)                     | Requires **Repository Administration: read**                           |
 
-Each category is optional: Probo omits it rather than failing the review when the connected credential lacks the permission. Fine-grained personal access tokens are visible only through a GitHub App connection — GitHub does not expose that endpoint to OAuth or classic-token requests.
+Each category is optional: Probo omits it rather than failing the review when the connected credential lacks the permission. Fine-grained personal access tokens are visible only through a GitHub App connection, because GitHub does not expose that endpoint to OAuth or classic-token requests.
 
 ## Connect GitHub
 
@@ -54,24 +54,28 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **GitHub** and click **OAuth**. When your deployment also offers the GitHub App, **OAuth** sits in the menu behind the arrow next to the **GitHub App** button.
-3. Authorize Probo on GitHub. Probo requests the **`read:org`** scope.
-4. On the new source row, pick your organization from the **Select organization** dropdown.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **GitHub** and open it. If Probo asks how to connect, choose **OAuth**.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Authorize Probo on GitHub. Probo requests the **`read:org`** scope. Back in Probo, the GitHub connector shows as **Connected**. If GitHub grants Probo a single organization, Probo selects it.
+5. Otherwise, open the GitHub connector in **Settings** > **Connectors** and choose the organization to review in the **Organization** field.
+6. Go to **Access Review** > **Sources**, click **Add sources**, tick **GitHub**, and click **Add**.
 
 </Steps>
 
-If the dropdown shows **GitHub returned no organizations**, click **Review Probo's access**, ask an organization owner to approve Probo under **Organization Settings** > **Third-party Access** > **OAuth app policy**, then reopen the dropdown.
+If the **Organization** field lists no organization, ask an organization owner to approve Probo under **Organization Settings** > **Third-party Access** > **OAuth app policy**, then reopen the field.
 
 ### Option B: GitHub App
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **GitHub** and click **GitHub App**.
-3. Sign in to GitHub and authorize Probo.
-4. If the app isn't installed on an organization you can access yet, GitHub sends you to its install page. Pick your organization, review the requested repository access, and click **Install**. If it's already installed and accessible to your account, Probo skips this step and connects immediately.
-5. Back in Probo, confirm the organization on the new source row. GitHub App installs are scoped to one organization, so only that entry appears in the **Select organization** dropdown.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **GitHub** and open it. When your deployment offers the GitHub App, choose **GitHub App**.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to GitHub and authorize Probo.
+5. If the app isn't installed on an organization you can access yet, GitHub sends you to its install page. Pick your organization, review the requested repository access, and click **Install**. If it's already installed and accessible to your account, Probo skips this step and connects immediately.
+6. Back in Probo, open the GitHub connector in **Settings** > **Connectors** and confirm the organization in the **Organization** field. GitHub App installs are scoped to one organization, so only that entry appears.
+7. Go to **Access Review** > **Sources**, click **Add sources**, tick **GitHub**, and click **Add**.
 
 </Steps>
 
@@ -81,8 +85,10 @@ If the dropdown shows **GitHub returned no organizations**, click **Review Probo
 
 1. In GitHub, signed in as a member of the organization, go to **Settings** > **Developer settings** > **Personal access tokens** > **Fine-grained tokens**, and create one scoped to the organization with the **Members** organization permission set to **Read-only**. A classic token (**Tokens (classic)**) with the **`read:org`** scope also works.
 2. Copy the token and store it securely. GitHub shows it only once.
-3. In Probo, go to **Access Review** > **Connections** and find **GitHub**. Click **API Key** on that row. When your deployment also offers OAuth or the GitHub App, **API Key** sits in the menu behind the arrow next to that button.
-4. Paste the token, enter your **Organization** (the slug from `github.com/<organization>`), and click **Connect**.
+3. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+4. Find **GitHub** and open it. If Probo asks how to connect, choose **API key**.
+5. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, enter your **Organization** (the slug from `github.com/<organization>`), and click **Connect**.
+6. Go to **Access Review** > **Sources**, click **Add sources**, tick **GitHub**, and click **Add**.
 
 </Steps>
 
@@ -90,9 +96,9 @@ Probo names the source after your GitHub organization and pulls its members into
 
 ## Troubleshooting
 
-- **The organization picker is empty.** When an organization restricts third-party OAuth App access, GitHub omits it from `GET /user/orgs` until an owner approves Probo. Click **Review Probo's access** on the source row, or ask an owner to approve Probo under **Organization Settings** > **Third-party Access** > **OAuth app policy**.
+- **The Organization field is empty.** When an organization restricts third-party OAuth App access, GitHub omits it from `GET /user/orgs` until an owner approves Probo. Ask an owner to approve Probo under **Organization Settings** > **Third-party Access** > **OAuth app policy**.
 - **Token rejected or no members appear.** Confirm the token has the `read:org` scope (classic) or the **Members: Read-only** permission (fine-grained), and that it belongs to a member of the organization entered in **Organization**.
-- **The GitHub App connection fails right after authorizing.** This happens when the app is installed on more than one organization your GitHub account can access — Probo cannot tell which one you meant. Uninstall it from the organizations you don't want to connect, or connect via OAuth or a personal access token instead.
+- **The GitHub App connection fails right after authorizing.** This happens when the app is installed on more than one organization your GitHub account can access, so Probo cannot tell which one you meant. Uninstall it from the organizations you don't want to connect, or connect via OAuth or a personal access token instead.
 - **MFA shows Unknown for every member.** Reading two-factor status requires the connected account to hold the organization owner role. Probo falls back to Unknown for the whole review when GitHub rejects that request.
 - **Emails are empty.** GitHub keeps a member's email private by default. Probo cannot read an email the member has not made public.
 - **A pending invitation is missing.** GitHub's members endpoint only returns current organization members. Probo does not collect pending invitations.

@@ -92,9 +92,9 @@ The connect page prefills the issuer, the audience (`api://AzureADTokenExchange`
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Microsoft Azure** and click **Workload Identity**.
-3. On the **Connect Azure** page, click **Install via Terraform**. The button copies a module snippet for `getprobo/audit-role/azurerm`. Paste the issuer URL into it rather than retyping it.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Microsoft Azure** and open it.
+3. On the **Connect Microsoft Azure** page, click **Install via Terraform**. The button copies a module snippet for `getprobo/audit-role/azurerm`. Paste the issuer URL into it rather than retyping it.
 4. Replace `SUBSCRIPTION_ID` with the subscription UUID you want to review.
 5. Apply the module in that subscription. When the apply finishes, copy the `tenant_id`, `client_id`, and `subscription_id` outputs.
 
@@ -112,14 +112,16 @@ For Azure Government or Azure China, set `environment` on the root `azurerm` and
 
 <Steps>
 
-1. Stay on the **Connect Azure** page. You can also reopen it from **Access Review** > **Connections** > **Microsoft Azure** > **Workload Identity**.
-2. Paste the **Directory (tenant) ID**, **Application (client) ID**, and **Subscription ID** (for example `11111111-1111-1111-1111-111111111111`), choose the **Azure environment**, then click **Connect**.
+1. Stay on the **Connect Microsoft Azure** page. You can also reopen it from **Settings** > **Connectors** > **Add more** > **Microsoft Azure**.
+2. Enter a **Name** for the connection (for example `production`).
+3. Paste the **Directory (tenant) ID**, **Application (client) ID**, and **Subscription ID** (for example `11111111-1111-1111-1111-111111111111`), choose the **Azure environment**, then click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Microsoft Azure**, and click **Add**.
 
 </Steps>
 
-Probo first names the source with the subscription ID, for example `Microsoft Azure / 11111111-1111-1111-1111-111111111111`. A background worker then replaces that ID with the subscription display name, or keeps the ID when Azure returns no name.
+Probo first names the source after the subscription ID, for example `11111111-1111-1111-1111-111111111111`. A background worker then replaces that ID with the subscription display name, or keeps the ID when Azure returns no name.
 
-Federation can take a few minutes to propagate. If Connect reports a disconnected connector, wait and try again.
+Federation can take a few minutes to propagate. If the connector shows as disconnected, wait and try again.
 
 ## Troubleshooting
 

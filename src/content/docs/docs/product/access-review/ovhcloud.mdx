@@ -48,10 +48,12 @@ OVHcloud also has no read-only OAuth scope, and exposes no per-user MFA enrolmen
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **OVHcloud** and click **OAuth**.
-3. Sign in to OVHcloud if you are not already, then confirm the account shown is the one you want to review.
-4. Review the authorization screen. It names the client Probo registered and the handle of the account you are about to connect, so confirm both. Probo requests the `account/all` scope, which OVHcloud describes as **Manage your account**. It covers the account and identity routes Probo reads and no other OVHcloud product. Click **Authorize**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **OVHcloud** and open it. If Probo asks how to connect, choose **OAuth**.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to OVHcloud if you are not already, then confirm the account shown is the one you want to review.
+5. Review the authorization screen. It names the client Probo registered and the handle of the account you are about to connect, so confirm both. Probo requests the `account/all` scope, which OVHcloud describes as **Manage your account**. It covers the account and identity routes Probo reads and no other OVHcloud product. Click **Authorize**. Back in Probo, the OVHcloud connector shows as **Connected**.
+6. Go to **Access Review** > **Sources**, click **Add sources**, tick **OVHcloud**, and click **Add**.
 
 </Steps>
 
@@ -70,12 +72,14 @@ Choose this option if you want to hold the credential yourself. Deleting the ser
 5. Name the policy, then under **Identities** open the **Service accounts** tab and select the service account you just created.
 6. Under **Product types**, select **OVHcloud customer account**. Under **Resources**, select your account.
 7. Under **Actions**, select **READ**, then click **Create**.
-8. In Probo, go to **Access Review** > **Connections** and find **OVHcloud**. **Client Credentials** sits in the menu behind the arrow next to the **OAuth** button.
-9. Paste the client ID and client secret, then click **Connect**. Leave **Scope** empty. Probo sends the scope this connector needs.
+8. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+9. Find **OVHcloud** and open it. If Probo asks how to connect, choose **Client credentials**.
+10. Enter a **Name** for the connection (e.g. `main`), paste the service account name into **Client ID** and the password into **Client secret**, then click **Connect**. Probo sends the scope this connector needs.
+11. Go to **Access Review** > **Sources**, click **Add sources**, tick **OVHcloud**, and click **Add**.
 
 </Steps>
 
-Probo names the source `OVHcloud / <your NIC handle>` and pulls the identities into your campaigns.
+Probo names the source after your OVHcloud NIC handle and pulls the identities into your campaigns.
 
 ## Troubleshooting
 

@@ -12,7 +12,7 @@ When you connect an access source with an API key or OAuth, you authorize Probo 
 
 Access reviews support these connection methods:
 
-- **OAuth.** When a provider offers **OAuth** on the **Connections** page, you approve Probo on the provider's consent screen. Probo stores OAuth tokens needed to refresh access, not your provider password. OAuth availability depends on the provider and deployment configuration.
+- **OAuth.** When a provider offers **OAuth** in **Settings** > **Connectors** > **Marketplace**, you approve Probo on the provider's consent screen. Probo stores OAuth tokens needed to refresh access, not your provider password. OAuth availability depends on the provider and deployment configuration.
 - **API key.** You create a token on the provider and paste it into Probo when you connect it. Use the least-privilege token each connector guide describes.
 - **Workload identity.** Used by [Amazon Web Services](/docs/product/access-review/aws). You create a read-only IAM role in your AWS account, and Probo assumes it with a short-lived token that it signs in memory. The only value Probo stores is the Role ARN, which is not a secret.
 - **CSV.** No live credential is stored; you upload an export for tools Probo cannot connect to directly.
@@ -30,8 +30,8 @@ The sequence diagram below follows the same lifecycle as the numbered steps that
 1. **Submission.** You connect a source over HTTPS from the Probo console. Organization administrators (and roles with equivalent connector permissions) can create connectors; viewers can see that a connector exists but never receive stored secret values.
 2. **Encryption before storage.** API keys, OAuth access and refresh tokens, and client secrets are serialized and encrypted with **AES-256-GCM** using a deployment encryption key. Each connector row stores the result in an **encrypted credential blob** with its own random nonce. Non-secret settings (for example a Crisp website ID) stay in separate configuration fields.
 3. **No echo back.** Listing connectors in the UI or API returns metadata only: connector id, provider, OAuth scopes where relevant, and creation time. Stored keys and tokens are not shown again after setup.
-4. **Use on demand.** Probo decrypts a credential only inside the application when it must authenticate an authorized request to the provider, for example during an access review sync. Listing connectors for display does not decrypt credentials.
-5. **Disconnect and delete.** Removing a source deletes the connector record and its encrypted credential from Probo. Disconnecting also stops new fetches from that integration. Revoke or rotate the token on the provider side as well so the old credential cannot be reused outside Probo.
+4. **Use on demand.** Probo decrypts a credential only inside the application when it must authenticate an authorized request to the provider, for example during an access review sync. Listing connectors never returns stored secrets, but to show a connector's health and the actions it offers, Probo may decrypt its credential in memory and call the provider.
+5. **Disconnect and delete.** Disconnecting a connector in **Settings** > **Connectors** deletes the connector record and its encrypted credential from Probo; remove the access sources that use it first. Disconnecting also stops new fetches from that integration. Revoke or rotate the token on the provider side as well so the old credential cannot be reused outside Probo.
 
 Some integrations use a **deployment-managed token** (for example the Crisp marketplace plugin). In that model Probo does not copy the shared plugin token into your organization's stored connection. Instead you approve an app installation at the provider, and Probo confirms that installation with the provider before the connection completes. Check the connector guide for your provider.
 
@@ -48,7 +48,7 @@ For network isolation, data-at-rest encryption, key custody, and backups, see [P
 ## Access control and tenant isolation
 
 - Connectors belong to your **organization**. Database access and authorization checks are scoped to your tenant.
-- **Owners and administrators** can create, reconnect, and delete connectors. **Viewers** can list connectors but cannot manage credentials.
+- **Owners and administrators** can create, reconnect, and delete connectors, and replace the API key of an API key connector. **Viewers** can list connectors but cannot manage credentials.
 - Successful connector changes are subject to the same organization **audit logging** model as other sensitive actions. Engineering standards treat credentials and tokens as data that must not appear in logs; report a concern to [security@probo.com](mailto:security@probo.com) if you believe a secret was exposed.
 
 ## What Probo collects from providers
@@ -59,10 +59,10 @@ For access reviews, Probo collects **membership metadata** the provider exposes:
 
 ## Recommendations before you connect
 
-- Use **workload identity** for Amazon Web Services. For other providers, prefer **OAuth** when the **Connections** page offers it.
+- Use **workload identity** for Amazon Web Services. For other providers, prefer **OAuth** when the **Marketplace** offers it for that provider.
 - Create a **dedicated, scoped** API token per provider (read-only where the guide allows). Avoid global or personal keys when a scoped token exists.
 - Store the token in a password manager until you paste it once into Probo; do not share it in chat or email.
-- **Rotate or revoke** at the provider when someone leaves or the integration is unused, then delete the source in Probo or reconnect with a new token.
+- **Rotate or revoke** at the provider when someone leaves or the integration is unused, then delete the source and disconnect the connector in **Settings** > **Connectors**. To keep the integration, replace the credential instead: click **Update API key** on an API key connector. An OAuth connector offers **Reconnect** once the provider stops accepting its authorization. Connectors set up with client credentials, workload identity or an app install are replaced by disconnecting and connecting again.
 - Review who has **administrator** access in your Probo organization; those users can manage connectors.
 
 Some provider APIs do not offer a read-only or narrowly scoped credential for listing accounts. Their connector guides call this out explicitly. When a broad credential is required, use a dedicated account where the provider permits it, rotate the credential on a schedule, and remove the source when the review is no longer needed.

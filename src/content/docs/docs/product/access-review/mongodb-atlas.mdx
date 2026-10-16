@@ -6,9 +6,9 @@ description: Connect MongoDB Atlas as an access source using an organization ser
 Probo reads your MongoDB Atlas organization through the Atlas Administration API so you can review who has access. The roster covers the organization's human members, its service accounts and its programmatic API keys. The last two are non-human principals that hold organization roles of their own, up to and including Organization Owner.
 
 :::caution
-Use a **service account** created inside the Atlas organization you want to review, and connect with its **Client ID** and **Client Secret**. The legacy public and private **API key** pair will **not** work for connecting, because it authenticates with HTTP Digest rather than the OAuth2 client-credentials grant this connector uses. Those API keys are still *reviewed*: they appear in the roster alongside your members and service accounts.
+Use a **service account** created inside the Atlas organization you want to review, and connect with its **Client ID** and **Client Secret**. The legacy public and private **API key** pair will **not** work for connecting, because it authenticates with HTTP Digest rather than the OAuth2 client-credentials grant this connector uses. Those API keys are still _reviewed_: they appear in the roster alongside your members and service accounts.
 
-The client secret expires, and its lifetime is fixed when the secret is created. The **Client Secret Expiration** menu offers durations from 8 hours to 365 days and starts on 90 days. The maximum comes from your organization's settings, and the duration cannot be changed once the secret exists. When the secret expires the source stops syncing. Probo cannot swap the secret on an existing client-credentials connection, so renewing it means generating a new secret on the same service account, deleting the Probo source, and connecting again.
+The client secret expires, and its lifetime is fixed when the secret is created. The **Client Secret Expiration** menu offers durations from 8 hours to 365 days and starts on 90 days. The maximum comes from your organization's settings, and the duration cannot be changed once the secret exists. When the secret expires the source stops syncing. Probo cannot swap the secret on an existing client-credentials connector, and such a connector offers no **Reconnect**, so renewing it means generating a new secret on the same service account, removing the source, disconnecting the connector in **Settings** > **Connectors**, and connecting again.
 :::
 
 ## Prerequisites
@@ -60,8 +60,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **MongoDB Atlas**, click **Client Credentials**, paste the **Client ID** and the **Client Secret**, leave **Scope** empty, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **MongoDB Atlas** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the values into **Client ID** and **Client secret**, leave **Scope** empty, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **MongoDB Atlas**, and click **Add**.
 
 </Steps>
 
@@ -70,7 +72,7 @@ Probo names the source after your Atlas organization and pulls its members, serv
 ## Troubleshooting
 
 - **Credentials rejected.** Confirm both halves were copied whole, that the service account still exists, and that the client secret has not passed its expiry. A public and private API key pair is not a service account and cannot authenticate here.
-- **A source that worked stops syncing.** The client secret reached the expiry chosen when it was created. Generate a new client secret on the same service account in Atlas, on its **Service Accounts** page under **Applications**, then delete the Probo source and connect again with it, since a client-credentials connection cannot take a new secret in place.
+- **A source that worked stops syncing.** The client secret reached the expiry chosen when it was created. Generate a new client secret on the same service account in Atlas, on its **Service Accounts** page under **Applications**, then **Delete** the source in **Access Review** > **Sources**, click the trash icon on the MongoDB Atlas connector in **Settings** > **Connectors** and confirm **Disconnect**, and connect again with the new secret, since a client-credentials connector cannot take a new secret in place.
 - **Every call is refused although the credential is valid.** Check the service account's **API Access List**. Atlas answers 403 to a request from any address outside it, even though the token itself can be minted from anywhere, and the organization setting **Require IP Access List for the Atlas Administration API** makes an access list mandatory. Atlas turns that setting on for every organization created through its console. Either turn it off and leave the list empty, or add Probo's addresses to it: the [egress address](/docs/deployment/ip-ranges) for your region on Probo Cloud, or your deployment's fixed egress addresses when self-hosted.
 - **The source syncs nothing and keeps a generic name.** Probo expects the credential to reach exactly one organization, and gives up when it reaches none or several. Create the service account inside the organization you want to review, and check that it still holds an organization permission there.
 - **No members appear.** The service account needs at least **Organization Read Only**. One holding a narrower permission, or none at all, can still mint a token, but Atlas refuses the reads and the sync fails rather than returning an empty roster.

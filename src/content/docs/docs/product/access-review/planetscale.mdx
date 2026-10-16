@@ -38,12 +38,13 @@ PlanetScale has no member status, so Probo shows every member it collects as act
 
 <Steps>
 
-1. In Probo, go to **Settings** > **Connectors** and open the **Marketplace**.
-2. Find **PlanetScale**, enter a **Name** for the connection (e.g. `main`), and click **Connect**.
-3. Sign in to PlanetScale if prompted. On the authorization screen, expand **Organizations** and tick the organization you want to review. Probo asks for **Read members** and **Read organization** on that organization, and for read access to your user profile and organization list.
-4. Click **Authorize access**. Back in Probo, the PlanetScale connector shows as **Connected**. If you ticked a single organization, Probo selects it.
-5. If you ticked more than one organization, open the PlanetScale connector in **Settings** > **Connectors** and choose the organization to review in the **Organization** field.
-6. Go to **Access Review** > **Sources**, click **Add sources**, tick **PlanetScale**, and click **Add**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **PlanetScale** and open it.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to PlanetScale if prompted. On the authorization screen, expand **Organizations** and tick the organization you want to review. Probo asks for **Read members** and **Read organization** on that organization, and for read access to your user profile and organization list.
+5. Click **Authorize access**. Back in Probo, the PlanetScale connector shows as **Connected**. If you ticked a single organization, Probo selects it.
+6. If you ticked more than one organization, open the PlanetScale connector in **Settings** > **Connectors** and choose the organization to review in the **Organization** field.
+7. Go to **Access Review** > **Sources**, click **Add sources**, tick **PlanetScale**, and click **Add**.
 
 </Steps>
 
@@ -51,7 +52,7 @@ Probo names the source after the PlanetScale organization and pulls its members 
 
 ## Troubleshooting
 
-- **Add sources shows "Pick an organization in Settings first."** Probo has no organization selected for the connector. If you ticked several organizations, choose one in the **Organization** field of the PlanetScale connector in **Settings** > **Connectors**. If that field lists none, you did not tick any organization on PlanetScale's authorization screen: reconnect PlanetScale and tick the organization under **Organizations** before clicking **Authorize access**.
-- **An organization you belong to is missing from the Organization field.** Probo lists only the organizations you ticked when you authorized it. Reconnect and tick that organization as well.
-- **The source shows as disconnected.** PlanetScale no longer accepts Probo's authorization, for example because an organization administrator opened **Settings** > **OAuth applications** > **Installed** in PlanetScale and clicked **Revoke access** on Probo. Reconnect PlanetScale and authorize Probo again.
+- **Add sources shows "Pick an organization in Settings first."** Probo has no organization selected for the connector. If you ticked several organizations, choose one in the **Organization** field of the PlanetScale connector in **Settings** > **Connectors**. If that field lists none, you did not tick any organization on PlanetScale's authorization screen: click the trash icon on the PlanetScale connector in **Settings** > **Connectors**, confirm **Disconnect**, and connect PlanetScale again, ticking the organization under **Organizations** before clicking **Authorize access**.
+- **An organization you belong to is missing from the Organization field.** Probo lists only the organizations you ticked when you authorized it. Disconnect the PlanetScale connector and connect it again, ticking that organization as well. Remove any PlanetScale source in **Access Review** > **Sources** first, because a connector that a source still uses cannot be disconnected.
+- **The source shows as disconnected.** PlanetScale no longer accepts Probo's authorization, for example because an organization administrator opened **Settings** > **OAuth applications** > **Installed** in PlanetScale and clicked **Revoke access** on Probo. Click **Reconnect** on the PlanetScale connector in **Settings** > **Connectors** and authorize Probo again.
 - **A former colleague still appears.** A campaign keeps the members it collected when it started. Remove the member from the organization in PlanetScale and the next campaign picks up the change.

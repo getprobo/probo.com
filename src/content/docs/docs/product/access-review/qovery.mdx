@@ -13,7 +13,7 @@ Create an organization **API token** (`qov_…`) in the Qovery Console under **S
 
 - Probo organization administrator access
 - The **Owner**, **Admin** or **DevOps** role in Qovery. Those three built-in roles cover organization setup, which includes API tokens. A custom role cannot generate one
-- The **Organization ID**, which the Connect dialog asks for alongside the token. It is a UUID, and Qovery uses it as the `{organizationId}` path segment of its API. With the organization open in the Console, the ID is the segment that follows `/organization/` in the address bar
+- The **Organization ID**, which the Qovery connection form asks for alongside the token. It is a UUID, and Qovery uses it as the `{organizationId}` path segment of its API. With the organization open in the Console, the ID is the segment that follows `/organization/` in the address bar
 
 ## Collected Fields
 
@@ -49,8 +49,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Qovery**, click **API Key**, paste the token, enter your **Organization ID**, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Qovery** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, enter your **Organization ID**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Qovery**, and click **Add**.
 
 </Steps>
 
