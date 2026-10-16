@@ -14,7 +14,7 @@ Create a **Public API token**, not a Config API token. Segment runs both, and on
 - Probo organization administrator access
 - A Segment workspace on the **Team** or **Business** tier
 - The **Workspace Owner** role in Segment (only a Workspace Owner can create a Public API token)
-- The workspace's **Region**, which the Connect dialog asks for alongside the token. Segment calls it the data processing region and sets it when the workspace is created; you cannot change it afterwards. New workspaces default to US, and EU data residency is a Business tier feature that a Segment account executive enables, so a Team workspace is always US
+- The workspace's **Region**, which the connection form asks for alongside the token. Segment calls it the data processing region and sets it when the workspace is created; you cannot change it afterwards. New workspaces default to US, and EU data residency is a Business tier feature that a Segment account executive enables, so a Team workspace is always US
 
 ## Collected Fields
 
@@ -48,8 +48,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Segment**, click **API Key**, paste the token, choose your **Region**, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Segment** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, choose your workspace's **Region** (**United States** or **Europe**), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Segment**, and click **Add**.
 
 </Steps>
 

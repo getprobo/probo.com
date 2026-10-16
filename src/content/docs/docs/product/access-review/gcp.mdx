@@ -90,17 +90,17 @@ The connect page prefills the issuer, the audience, the subject, and a suggested
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Google Cloud** and click **Workload Identity**.
-3. On the **Connect GCP** page, click **Install via Terraform**. The button copies a module snippet for `getprobo/audit-role/gcp`. Paste the issuer URL into it rather than retyping it.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Google Cloud** and open it. Google Cloud connects only through workload identity, so the **Connect Google Cloud** page opens directly.
+3. On the **Connect Google Cloud** page, click **Install via Terraform**. The button copies a module snippet for `getprobo/audit-role/gcp`. Paste the issuer URL into it rather than retyping it.
 4. Before you apply, enable `iam.googleapis.com`, `cloudresourcemanager.googleapis.com`, `sts.googleapis.com`, `iamcredentials.googleapis.com`, and `logging.googleapis.com` in the project.
 5. Apply the module in the project you want to review. When the apply finishes, copy the `workload_identity_provider` and `service_account_email` outputs.
 
 </Steps>
 
-You can also create the pool, provider, and service account yourself. Use the issuer, audience, and subject shown on the connect page. The provider attribute condition must pin `assertion.sub` with exact equality. Do not set `allowed_audiences`: an empty list tells Google Cloud to accept the default provider URL, which is the audience Probo signs.
+You can also create the pool, provider, and service account yourself. Use the **Issuer**, **Audience**, and **Subject** shown on the connect page. The provider attribute condition must pin `assertion.sub` with exact equality. Do not set `allowed_audiences`: an empty list tells Google Cloud to accept the default provider URL, which is the audience Probo signs.
 
-The module covers one project and does not walk folders or the organization. To review another project, apply the module there and connect another source.
+The module covers one project and does not walk folders or the organization. To review another project, apply the module there, connect it in **Settings** > **Connectors** with its own provider resource and service account, and add it as another source.
 
 Human identities on the project are Google Workspace or Cloud Identity users. Cloud IAM cannot grant Directory reads, so the module does not cover MFA. After you apply, a Super Admin can assign a Users-read admin role to `probo-audit` in the Google Admin console (**Account** > **Admin roles** > **Assign service accounts**). Probo then reads 2-Step Verification with the same token. If you do not need MFA on this source, skip that step and those accounts stay MFA unknown.
 
@@ -110,12 +110,13 @@ For Cloud de Confiance (S3NS), point the root `google` provider at that universe
 
 <Steps>
 
-1. Stay on the **Connect GCP** page. You can also reopen it from **Access Review** > **Connections** > **Google Cloud** > **Workload Identity**.
-2. Paste the **Workload identity provider** (for example `projects/123456789012/locations/global/workloadIdentityPools/probo/providers/probo`) and the **Service account email** (for example `probo-audit@PROJECT_ID.iam.gserviceaccount.com`), then click **Connect**.
+1. Stay on the **Connect Google Cloud** page. You can also reopen it from **Settings** > **Connectors** > **Add more** > **Google Cloud**.
+2. Enter a **Name** for the connection (for example `production`), paste the **Workload identity provider** (for example `projects/123456789012/locations/global/workloadIdentityPools/probo/providers/probo`) and the **Service account email** (for example `probo-audit@PROJECT_ID.iam.gserviceaccount.com`), then click **Connect**.
+3. Go to **Access Review** > **Sources**, click **Add sources**, tick **Google Cloud**, and click **Add**.
 
 </Steps>
 
-Probo first names the source with the project number, for example `Google Cloud / 123456789012`. A background worker then replaces that number with the project display name, or with the project ID when Google Cloud returns no name.
+Probo names the source after the Google Cloud project. It first shows the project number, for example `123456789012`. A background worker then replaces that number with the project display name, or with the project ID when Google Cloud returns no name.
 
 ## Troubleshooting
 

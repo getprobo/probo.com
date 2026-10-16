@@ -45,14 +45,18 @@ Use a scoped **API Token** (newly created tokens are prefixed `cfut_`) created i
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Cloudflare**, click **API Key**, paste the token, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Cloudflare** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, and click **Connect**.
+4. If the token covers more than one Cloudflare account, open the Cloudflare connector in **Settings** > **Connectors** and choose the account to review in the **Organization** field. When the token covers a single account, Probo selects it.
+5. Go to **Access Review** > **Sources**, click **Add sources**, tick **Cloudflare**, and click **Add**.
 
 </Steps>
 
-Probo pulls members from every Cloudflare account included in the token's scope. When the token covers several accounts, the source name uses the first account returned by Cloudflare even though the campaign includes members from all of them.
+Probo names the source after the selected Cloudflare account and pulls that account's members into your campaigns.
 
 ## Troubleshooting
 
 - **Token rejected.** Confirm it's a scoped API Token with **Account Settings: Read** permission. A Global API Key won't work, because it uses `X-Auth-Email` and `X-Auth-Key` headers instead of `Authorization: Bearer`.
+- **Add sources shows "Pick an organization in Settings first."** Probo has no Cloudflare account selected for the connector. Choose one in the **Organization** field of the Cloudflare connector in **Settings** > **Connectors**. If that field lists none, the token's **Account Resources** don't include any account.
 - **No members appear.** The token must be scoped to include the account you're reviewing (**Account Resources**), and its creator must be a member of that account with permission to read the account's membership.

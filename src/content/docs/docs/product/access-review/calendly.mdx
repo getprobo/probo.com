@@ -36,9 +36,11 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Calendly** and click **OAuth**.
-3. Sign in to Calendly and authorize Probo. Probo requests the **`users:read`** and **`organizations:read`** scopes.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Calendly** and open it. If Probo asks how to connect, choose **OAuth**.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to Calendly and authorize Probo. Probo requests the **`users:read`** and **`organizations:read`** scopes. Back in Probo, the Calendly connector shows as **Connected**.
+5. Go to **Access Review** > **Sources**, click **Add sources**, tick **Calendly**, and click **Add**.
 
 </Steps>
 
@@ -48,12 +50,14 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 1. In Calendly, signed in as an organization admin, go to **Integrations** > **API & Webhooks**, and under **Personal Access Tokens** click **Generate New Token**.
 2. Name it (e.g. `Probo Access Review`) and copy the token. Calendly shows it only once.
-3. In Probo, go to **Access Review** > **Connections** and find **Calendly**. Click **API Key** on that row. When your deployment also offers OAuth, **API Key** sits in the menu behind the arrow next to the **OAuth** button.
-4. Paste the token and click **Connect**.
+3. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+4. Find **Calendly** and open it. If Probo asks how to connect, choose **API key**.
+5. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, and click **Connect**.
+6. Go to **Access Review** > **Sources**, click **Add sources**, tick **Calendly**, and click **Add**.
 
 </Steps>
 
-Probo names the source "Calendly" and pulls its members into your campaigns.
+Probo adds the Calendly source and pulls its members into your campaigns.
 
 ## Troubleshooting
 

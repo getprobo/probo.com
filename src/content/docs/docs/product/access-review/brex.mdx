@@ -5,7 +5,7 @@ description: Connect Brex as an access review source using OAuth or a Business A
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-Probo reads your Brex organization's users through the Brex Team API so you can review who has access. Connecting with **Connect** (OAuth) is the recommended method and requires no token management. A Business API key is also available if you would rather not authorize an OAuth connection.
+Probo reads your Brex organization's users through the Brex Team API so you can review who has access. Connecting with **OAuth** is the recommended method and requires no token management. A Business API key is also available if you would rather not authorize an OAuth connection.
 
 ## Prerequisites
 
@@ -34,9 +34,11 @@ Brex returns every member of the organization on one endpoint. Probo skips a rec
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Brex** and click **OAuth**.
-3. Sign in to Brex as an account admin or card admin and authorize Probo. Probo requests the **`users.readonly`** and **`companies.readonly`** scopes, plus `openid` and `offline_access` so the connection keeps syncing without you reconnecting.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Brex** and open it. If Probo asks how to connect, choose **OAuth**.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to Brex as an account admin or card admin and authorize Probo. Probo requests the **`users.readonly`** and **`companies.readonly`** scopes, plus `openid` and `offline_access` so the connection keeps syncing without you reconnecting. Back in Probo, the Brex connector shows as **Connected**.
+5. Go to **Access Review** > **Sources**, click **Add sources**, tick **Brex**, and click **Add**.
 
 </Steps>
 
@@ -47,8 +49,10 @@ Brex returns every member of the organization on one endpoint. Probo skips a rec
 1. In Brex ([dashboard.brex.com](https://dashboard.brex.com)), signed in as an account admin or card admin, go to **Developer** > **Settings**, and click **Create Token**.
 2. Name it (e.g. `Probo Access Review`), and grant it read access to the **Team** and company profile data. Confirm your selection and click **Allow Access**.
 3. Copy the token (`bxt_…`). Brex shows it only once.
-4. In Probo, go to **Access Review** > **Connections** and find **Brex**. Click **API Key** on that row. When your deployment also offers OAuth, **API Key** sits in the menu behind the arrow next to the **OAuth** button.
-5. Paste the token and click **Connect**.
+4. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+5. Find **Brex** and open it. If Probo asks how to connect, choose **API key**.
+6. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, and click **Connect**.
+7. Go to **Access Review** > **Sources**, click **Add sources**, tick **Brex**, and click **Add**.
 
 </Steps>
 
@@ -57,5 +61,5 @@ Probo names the source after your Brex company's legal name and pulls its users 
 ## Troubleshooting
 
 - **Key or token rejected, or no users appear.** A Business API key starts with `bxt_`; Probo refuses a value that does not. Confirm the key (or OAuth authorization) grants read access to Team/Users data, since a key scoped only to Expenses, Payments, or another API cannot list users.
-- **The source keeps the generic name "Brex" instead of your company name.** Resolving the company name requires the `companies.readonly` scope. A Business API key without read access to company data, or an OAuth connection authorized before this scope was requested, will 403 on the lookup. Reconnect through OAuth, or recreate the API key with company data access, to pick up the name.
+- **The source keeps the generic name "Brex" instead of your company name.** Resolving the company name requires the `companies.readonly` scope. A Business API key without read access to company data, or an OAuth connection authorized before this scope was requested, will 403 on the lookup. To pick up the name, connect Brex again through OAuth, or with an API key recreated with company data access: **Delete** the source in **Access Review** > **Sources**, click the trash icon on the Brex connector in **Settings** > **Connectors** and confirm **Disconnect**, then connect Brex and add the source again.
 - **The source stops syncing after a quiet period.** Brex expires a Business API key after 90 days of inactivity, and revokes a token tied to a user who is no longer active. Create a new token, or reconnect via OAuth, to restore the source.

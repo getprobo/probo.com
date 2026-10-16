@@ -46,12 +46,14 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Dotfile**, click **API Key**, paste the key, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Dotfile** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Dotfile**, and click **Add**.
 
 </Steps>
 
-Probo names the source after your Dotfile workspace and pulls its members into your campaigns.
+The Dotfile users endpoint returns no workspace name, so Probo names the source **Dotfile** and pulls the workspace's members into your campaigns.
 
 ## Troubleshooting
 

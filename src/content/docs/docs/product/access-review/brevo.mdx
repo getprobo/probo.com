@@ -47,12 +47,14 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Brevo**, click **API Key**, paste the key, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Brevo** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Brevo**, and click **Add**.
 
 </Steps>
 
-The users endpoint returns no account name, so Probo lists the source under the fixed name Brevo and pulls the account's users into your campaigns.
+The users endpoint returns no account name, so Probo names the source Brevo and pulls the account's users into your campaigns.
 
 ## Troubleshooting
 
