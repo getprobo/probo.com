@@ -83,7 +83,6 @@ const stories = defineCollection({
     logoLightBg: z.string().optional(),
     invertLogo: z.boolean().optional().default(true),
     /** Floating logo placement on story cards; default bottom-left */
-    logoPosition: z.enum(["top-left", "bottom-left"]).optional(),
     company: z.object({
       name: z.string(),
       url: z.string().url().optional(),

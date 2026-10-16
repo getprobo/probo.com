@@ -22,7 +22,6 @@ export const StorySchema = z.object({
   logoHeight: z.number().optional(),
   logoLightBg: z.string().optional(),
   invertLogo: z.boolean().optional(),
-  logoPosition: z.enum(["top-left", "bottom-left"]).optional(),
   company: z.object({
     name: z.string(),
     url: z.string().url().optional(),
