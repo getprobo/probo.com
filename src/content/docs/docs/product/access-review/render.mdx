@@ -15,7 +15,7 @@ Create the API key from your **Account Settings** page in the Render Dashboard, 
 - A Render account that belongs to the workspace you want to review. Render documents that every workspace role can view workspace members, so the key does not have to come from an **Admin**
 - An account that satisfies the workspace's login requirements. If the workspace enforces 2FA, Render blocks its API keys from reaching workspace resources until the key's owner enables 2FA. If it enforces Google login, the key must be created while signed in through Google. If it enforces SAML SSO, existing keys stay invalid until their owner logs in through SSO
 - A workspace on the **Pro** plan or higher if it has more than one member (a Hobby workspace cannot have additional members)
-- The **Workspace ID** of the workspace Probo should review, which the Connect dialog asks for alongside the key. It appears at the top of the workspace's **Settings** page in the Render Dashboard and starts with `tea-`, or with `usr-` for a personal workspace. You can also list the workspaces a key can reach with `GET https://api.render.com/v1/owners`
+- The **Workspace ID** of the workspace Probo should review, which the Connect form asks for alongside the key. It appears at the top of the workspace's **Settings** page in the Render Dashboard and starts with `tea-`, or with `usr-` for a personal workspace. You can also list the workspaces a key can reach with `GET https://api.render.com/v1/owners`
 
 ## Collected Fields
 
@@ -51,8 +51,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Render**, click **API Key**, paste the key, enter your **Workspace ID** (the identifier at the top of the workspace's **Settings** page), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Render** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, enter your **Workspace ID** (the identifier at the top of the workspace's **Settings** page), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Render**, and click **Add**.
 
 </Steps>
 
@@ -63,4 +65,4 @@ Probo names the source after your workspace and pulls its members into your camp
 - **Key rejected.** Confirm the key was created on the Account Settings page of an account that belongs to the workspace, and that the **Workspace ID** identifies that same workspace. A key created by an account outside the workspace cannot read its members. If the workspace enforces 2FA, Google login, or SAML SSO, the key also stays unusable until its owner meets that requirement: 2FA enabled on the owner's account, the key created while signed in through Google, or the owner logged in through SSO.
 - **No members appear.** A Hobby workspace cannot have additional members, so it lists only its owner. Inviting members requires the Pro plan or higher.
 - **Workspace ID unknown.** Open the workspace's **Settings** page in the Render Dashboard; the ID sits at the top and starts with `tea-`, or with `usr-` for a personal workspace. Alternatively, call `GET https://api.render.com/v1/owners` with the key to list every workspace it can reach.
-- **Syncs stop returning members.** A Render API key authorizes the same actions as the account that created it and reaches only the workspaces that account belongs to. If that account leaves the workspace, create a new key from an account that is still a member, then reconnect the source.
+- **Syncs stop returning members.** A Render API key authorizes the same actions as the account that created it and reaches only the workspaces that account belongs to. If that account leaves the workspace, create a new key from an account that is still a member, then **Delete** the source in **Access Review** > **Sources**, click the trash icon on the Render connector in **Settings** > **Connectors** and confirm **Disconnect**, and connect Render again with the new key.

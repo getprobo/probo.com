@@ -14,7 +14,7 @@ Use a **service account token** (`glsa_…`) created inside the Grafana instance
 - Probo organization administrator access
 - Admin rights in Grafana, or the `fixed:roles:reader` and `fixed:serviceaccounts:creator` roles that Grafana requires to create a service account. Both fixed roles exist wherever Grafana role-based access control does, in Grafana Enterprise and Grafana Cloud
 - A service account that can read the organization users endpoint. Grafana documents `GET /api/org/users` as accessible to users with the org admin role, through the RBAC action `org.users:read` on scope `users:*`, so the **Admin** role covers it. On Grafana Cloud or Grafana Enterprise, a narrower role that carries that action reads the endpoint too. Probo also calls `GET /api/org` to name the source, and that endpoint needs `orgs:read`
-- The **Base URL** of the Grafana instance Probo should review, which the Connect dialog asks for alongside the token. It is the root URL you sign in to. On Grafana Cloud it has the form `https://<your-stack-slug>.grafana.net`, and the Cloud Portal shows it after you select the stack and click **Details** on the **Grafana** tile. Include the subpath when Grafana is served from one, for example `https://example.com/grafana`
+- The **Base URL** of the Grafana instance Probo should review, which the connect form asks for alongside the token. It is the root URL you sign in to. On Grafana Cloud it has the form `https://<your-stack-slug>.grafana.net`, and the Cloud Portal shows it after you select the stack and click **Details** on the **Grafana** tile. Include the subpath when Grafana is served from one, for example `https://example.com/grafana`
 
 ## Collected Fields
 
@@ -47,8 +47,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Grafana**, click **API Key**, paste the service account token, enter your **Base URL** (the root URL of that same Grafana instance), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Grafana** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the service account token into **API key**, enter your **Base URL** (the root URL of that same Grafana instance), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Grafana**, and click **Add**.
 
 </Steps>
 
@@ -58,5 +60,5 @@ Probo names the source after your Grafana organization and pulls its members int
 
 - **Token rejected.** Confirm it is a service account token (`glsa_…`) created inside the Grafana instance itself, and that the **Base URL** points at that same instance. A Grafana Cloud Access Policy token created in the Cloud Portal does not authorize access to the Grafana instance HTTP API.
 - **No members appear.** Reading the organization users endpoint requires the org admin role, or the `org.users:read` action on scope `users:*` where Grafana role-based access control is available. A service account left on Viewer or Editor with no such role gets a permission error instead of the member list. Assign it the **Admin** role with the role picker and connect again.
-- **Members of another organization are missing.** A service account token belongs to one Grafana organization, and Probo reads the members of that organization only. Add one Probo source per Grafana organization.
+- **Members of another organization are missing.** A service account token belongs to one Grafana organization, and Probo reads the members of that organization only. Connect Grafana once per organization, each time with a token from that organization, and add each connection as its own source.
 - **Base URL rejected.** It must be an `http` or `https` URL with a host, for example `https://acme.grafana.net`. Probo calls the instance from its own servers, so it cannot connect to a Grafana that is only reachable on a private network.

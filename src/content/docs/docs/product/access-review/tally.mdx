@@ -14,7 +14,7 @@ Use a Tally **API key** (`tly-…`) created under **Settings** > **API keys**. T
 - Probo organization administrator access
 - A Tally account in the organization you want to review, preferably the **organization owner**. A key has no scopes of its own: it inherits the permissions of the user who created it, so calls made with the key can do no more than that user can
 
-Probo resolves the organization from the key, so the Connect dialog asks only for the key.
+Probo resolves the organization from the key, so the connect form asks only for a **Name** and the key.
 
 ## Collected Fields
 
@@ -48,15 +48,17 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Tally**, click **API Key**, paste the key, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Tally** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Tally**, and click **Add**.
 
 </Steps>
 
-Probo checks the key against the Tally API before it creates the connection, so a rejected key fails at the Connect step and never becomes a broken source. Probo resolves the organization the key belongs to and names the source after the organization owner, because the Tally API exposes no organization name.
+Probo checks the key against the Tally API before it creates the connection, so a rejected key fails when you click **Connect** and never becomes a broken source. Probo resolves the organization the key belongs to and names the source after the organization owner, because the Tally API exposes no organization name.
 
 ## Troubleshooting
 
-- **Tally rejected the API key.** The Connect dialog shows this error when the key fails the check against the Tally API. Confirm the value is an active Tally API key (`tly-…`) copied from **Settings** > **API keys**. A key also stops working once its user is removed from the organization or leaves it, so create a replacement from an account that is still a member.
+- **Tally rejected the API key.** The connect form shows this error when the key fails the check against the Tally API. Confirm the value is an active Tally API key (`tly-…`) copied from **Settings** > **API keys**. A key also stops working once its user is removed from the organization or leaves it, so create a replacement from an account that is still a member.
 - **The source connects but fails to sync.** The Connect check only proves Tally accepts the key. The sync then reads the organization's users and invites with that key, and it can do no more than the key's user can, so an under-permissioned key passes Connect and fails later. Create the key from the organization owner's account instead.
 - **Few or no members appear.** A Tally account belongs to a single organization, and inviting team members is a Tally Pro feature, so a Free account's organization typically has only that one member.

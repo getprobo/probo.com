@@ -14,7 +14,7 @@ Create an **Okta API token** in the Admin Console under **Security** > **API** >
 - Probo organization administrator access
 - An Okta admin role that can create tokens. Okta allows super admins, org admins, group admins, group membership admins, and read-only admins to create them
 - An admin who can view **Users**, because the token inherits that admin's permissions
-- Your **Okta Domain**, which the Connect dialog asks for alongside the token. Okta has no central API gateway, so every org authenticates against its own host, such as `acme.okta.com`, `acme.oktapreview.com`, `acme.okta-emea.com`, or a custom domain. Click your username in the upper right corner of the Admin Console and the domain appears in the dropdown
+- Your **Okta Domain**, which the Okta connect form in Probo asks for alongside the token. Okta has no central API gateway, so every org authenticates against its own host, such as `acme.okta.com`, `acme.oktapreview.com`, `acme.okta-emea.com`, or a custom domain. Click your username in the upper right corner of the Admin Console and the domain appears in the dropdown
 
 ## Collected Fields
 
@@ -48,8 +48,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Okta**, click **API Key**, paste the token, enter your **Okta Domain** (the org host, for example `acme.okta.com`), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Okta** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, enter your **Okta Domain** (the org host, for example `acme.okta.com`), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Okta**, and click **Add**.
 
 </Steps>
 

@@ -80,27 +80,27 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **<Provider>**, click **API Key**, paste the key, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **<Provider>** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **<Provider>**, and click **Add**.
 
-{/_ Extra-settings providers: the Connect dialog shows extra field(s) below the API Key field
-(org slug, workspace/team ID, region, base URL, …). Rewrite step 2 as, e.g.:
-"Find <Provider>, click API Key, paste the key, enter your **<Field Label>** (<where to find
-    it>), and click Connect." Repeat per required field. Delete this note for key-only providers. _/}
+{/_ Multi-method providers: when the Registration offers more than one connection method
+(OAuth2, ClientCredentials, WorkloadIdentity, GitHub App or an app install alongside APIKey),
+the vendor page first asks "Choose how to connect <Provider>". Insert after step 2:
+"Choose **API key**." Keep it conditional ("If Probo asks how to connect, choose **API key**.")
+when the other method depends on deployment configuration (a confidential OAuth app), and state
+it plainly when it is always offered (a PublicClient OAuth2 block is auto-registered on every
+deployment). Delete this note for single-method providers. _/}
 
-{/_ Multi-method providers: "click API Key" is only literally true when API Key is the row's
-primary button. The row renders one primary button and hides the rest behind a chevron whose
-only name is an aria-label, so a reader cannot find them by searching the screen for a label.
-Order is WorkloadIdentity, GitHub App, OAuth2, API Key, ClientCredentials. If the provider's
-Registration declares any of the first three alongside APIKey, add: "When your deployment also
-offers OAuth, **API Key** sits in the menu behind the arrow next to the **OAuth** button."
-State it without the conditional when the other method is always configured (a PublicClient
-OAuth2 block is auto-registered on every deployment, as Resend's is). Delete this note for
-single-method providers. _/}
+{/_ Extra-settings providers: the form shows each ExtraSettings[].Label below the API key field
+(org slug, workspace/team ID, base URL; a region renders as **Region**). Rewrite step 3 as, e.g.:
+"Enter a **Name**, paste the key into **API key**, enter your **<Field Label>** (<where to find
+it>), and click **Connect**." Repeat per required field. Delete this note for key-only providers. _/}
 
 </Steps>
 
-Probo names the source after your organization and pulls its members into your campaigns.
+Probo names the source after your <Provider> organization and pulls its members into your campaigns.
 
 ## Troubleshooting
 
