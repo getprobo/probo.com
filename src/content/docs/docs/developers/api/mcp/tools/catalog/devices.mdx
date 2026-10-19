@@ -30,7 +30,9 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           last_seen_at as the staleness signal. When include_postures is true,
           latest_postures holds the newest result per check_key and is empty for
           PENDING devices. Pass query to search by the owner's name; each word
-          is a prefix match and every word must match. Page with size and
+          is a prefix match and every word must match. Pass states, platforms,
+          or agent_versions to keep devices that match any value in that list;
+          omit a list to leave that dimension unconstrained. Page with size and
           cursor; when next_cursor is present, pass it as cursor on the next
           call.
         </p>
@@ -38,7 +40,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3783-L3814">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3740-L3780">
                 <code>ListDevicesInput</code>
               </a>
             </dd>
@@ -46,7 +48,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3816-L3827">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3782-L3793">
                 <code>ListDevicesOutput</code>
               </a>
             </dd>
@@ -58,8 +60,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17866-L17877">
-                specification.yaml · L17866–L17877 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17832-L17843">
+                specification.yaml · L17832–L17843 ↗
               </a>
             </dd>
           </div>
@@ -91,7 +93,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3829-L3839">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3795-L3805">
                 <code>GetDeviceInput</code>
               </a>
             </dd>
@@ -99,7 +101,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3841-L3847">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3807-L3813">
                 <code>GetDeviceOutput</code>
               </a>
             </dd>
@@ -111,8 +113,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17878-L17889">
-                specification.yaml · L17878–L17889 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17844-L17855">
+                specification.yaml · L17844–L17855 ↗
               </a>
             </dd>
           </div>
@@ -146,7 +148,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3849-L3859">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3815-L3825">
                 <code>CreateDeviceInput</code>
               </a>
             </dd>
@@ -154,7 +156,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3861-L3879">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3827-L3845">
                 <code>CreateDeviceOutput</code>
               </a>
             </dd>
@@ -168,8 +170,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17890-L17901">
-                specification.yaml · L17890–L17901 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17856-L17867">
+                specification.yaml · L17856–L17867 ↗
               </a>
             </dd>
           </div>
@@ -199,7 +201,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3881-L3892">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3847-L3858">
                 <code>RevokeDevicesInput</code>
               </a>
             </dd>
@@ -207,7 +209,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3894-L3902">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3860-L3868">
                 <code>RevokeDevicesOutput</code>
               </a>
             </dd>
@@ -219,8 +221,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17902-L17913">
-                specification.yaml · L17902–L17913 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17868-L17879">
+                specification.yaml · L17868–L17879 ↗
               </a>
             </dd>
           </div>
@@ -251,7 +253,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3904-L3915">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3870-L3881">
                 <code>DeleteDevicesInput</code>
               </a>
             </dd>
@@ -259,7 +261,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3917-L3926">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3883-L3892">
                 <code>DeleteDevicesOutput</code>
               </a>
             </dd>
@@ -271,8 +273,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17914-L17925">
-                specification.yaml · L17914–L17925 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17880-L17891">
+                specification.yaml · L17880–L17891 ↗
               </a>
             </dd>
           </div>
@@ -299,7 +301,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Input</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3928-L3942">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3894-L3908">
                 <code>SetDeviceOwnerInput</code>
               </a>
             </dd>
@@ -307,7 +309,7 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Output</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3944-L3950">
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L3910-L3916">
                 <code>SetDeviceOwnerOutput</code>
               </a>
             </dd>
@@ -319,8 +321,8 @@ Select a tool to inspect its schemas and behavior. Schema links open the exact d
           <div>
             <dt>Source</dt>
             <dd>
-              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17926-L17937">
-                specification.yaml · L17926–L17937 ↗
+              <a href="https://github.com/getprobo/probo/blob/main/pkg/server/api/mcp/v1/specification.yaml#L17892-L17903">
+                specification.yaml · L17892–L17903 ↗
               </a>
             </dd>
           </div>
