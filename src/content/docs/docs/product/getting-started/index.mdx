@@ -1,62 +1,55 @@
 ---
-title: Getting Started
-description: Follow a guided path through Probo's foundational docs, covering the product overview, core concepts, glossary, deployment choice, and quickstart.
-prev:
-  link: "/docs"
-  label: "Documentation home"
-next:
-  link: "/docs/product/getting-started/product-overview"
-  label: "Product overview"
+title: Get started
+description: Start using Probo Cloud or self-hosted Probo, understand the core concepts, and set up your first organization and compliance framework.
 ---
 
-import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+import { LinkCard, Steps } from "@astrojs/starlight/components";
 
-Use these guides to understand Probo, choose how to run it, and begin your first compliance program.
-
-## Learn about Probo
-
-<CardGrid>
-  <LinkCard
-    title="Product overview"
-    description="Learn what Probo does, who it is for, and how a compliance program fits together"
-    href="/docs/product/getting-started/product-overview"
-  />
-  <LinkCard
-    title="Core concepts"
-    description="Understand the relationships between frameworks, controls, internal controls, risks, and evidence"
-    href="/docs/product/getting-started/core-concepts"
-  />
-  <LinkCard
-    title="Glossary"
-    description="Find definitions for common Probo and compliance terms"
-    href="/docs/product/getting-started/glossary"
-  />
-</CardGrid>
+Your first goal is a small, working compliance program: the right people, one framework, an internal control, and evidence that supports it. You can expand from there.
 
 ## Get up and running
 
-<CardGrid>
+<div className="docs-journey">
   <LinkCard
-    title="Choose a deployment"
-    description="Compare managed Probo Cloud with Docker Compose and Kubernetes"
-    href="/docs/product/getting-started/choose-deployment"
+    title="I am using Probo Cloud"
+    description="Find your regional console, sign in, and begin work in your organization."
+    href="/docs/product/getting-started/cloud-first-steps"
   />
   <LinkCard
-    title="Self-hosted quickstart"
-    description="Run a local Probo environment with Docker Compose in about 15 minutes"
+    title="I want to evaluate Probo locally"
+    description="Run the self-hosted Docker Compose quickstart in about 15 minutes."
     href="/docs/product/getting-started/quickstart"
   />
-  <LinkCard
-    title="Set up your first framework"
-    description="Create an organization, invite teammates, and start working with a framework"
-    href="/docs/product/getting-started/first-organization-and-framework"
-  />
-</CardGrid>
+</div>
+
+If you are still deciding, [choose a deployment](/docs/product/getting-started/choose-deployment). Cloud is managed by Probo; a production self-hosted installation needs an operator responsible for its infrastructure and maintenance.
 
 ## Recommended path
 
-1. Start with the [Product overview](/docs/product/getting-started/product-overview).
-2. [Choose a deployment](/docs/product/getting-started/choose-deployment) for your environment.
-3. If you are self-hosting, follow the [Quickstart](/docs/product/getting-started/quickstart).
-4. [Set up your organization and first framework](/docs/product/getting-started/first-organization-and-framework).
-5. Read [Core concepts](/docs/product/getting-started/core-concepts) as you begin working in Probo.
+<Steps>
+
+1. **Understand what you are setting up**
+
+   Read the [product overview](/docs/product/getting-started/product-overview) to see what Probo covers and how your team will use it.
+
+2. **Get access to an instance**
+
+   [Choose a deployment](/docs/product/getting-started/choose-deployment). Follow [Cloud first steps](/docs/product/getting-started/cloud-first-steps) for the managed service or the [self-hosted quickstart](/docs/product/getting-started/quickstart) for a local evaluation.
+
+3. **Build your first program**
+
+   [Set up your organization and first framework](/docs/product/getting-started/first-organization-and-framework): invite teammates, review controls, and collect your first evidence.
+
+4. **Connect the concepts to your work**
+
+   Use [Core concepts](/docs/product/getting-started/core-concepts) while working with requirements, internal controls, evidence, and risks. You do not need to learn every record type before starting.
+
+</Steps>
+
+## Learn about Probo
+
+- [Product overview](/docs/product/getting-started/product-overview) — what Probo does and who uses it.
+- [Core concepts](/docs/product/getting-started/core-concepts) — how the records in your program connect.
+- [Glossary](/docs/product/getting-started/glossary) — a quick reference for unfamiliar terms.
+
+Already set up? Continue with [Use Probo](/docs/product) to manage your day-to-day work.

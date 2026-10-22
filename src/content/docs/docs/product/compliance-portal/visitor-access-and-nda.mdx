@@ -7,6 +7,8 @@ import { Steps } from "@astrojs/starlight/components";
 
 Access control applies to individual documents, audit reports, and portal files. This lets visitors browse public information while protecting resources that require identity verification, approval, or an NDA.
 
+To administer access, you need an owner or admin role in the portal's organization. A viewer can review the settings and access records without changing them. See [Permissions and integrations](/docs/product/compliance-portal/permissions-and-integrations).
+
 ## Choose what requires approval
 
 Set the visibility of each resource before activating or promoting the portal:
@@ -47,47 +49,31 @@ Restricted resources remain discoverable so customers can request exactly what t
 
    The resource shows **Access requested** while the request is pending. A pending request does not grant access.
 
-5. **Sign the NDA**
+5. **Complete the NDA when required**
 
-   If the portal has an NDA, the visitor must sign it once their request is accepted, before they can open or download the approved resources. Public content remains available without an NDA.
+   Visitors can request access before signing. If the portal has an NDA, they must complete the signing flow before exporting protected documents. Public content remains available without an NDA.
 
 6. **Open approved resources**
 
-   After approval and signature, **View** replaces the request action. The grant applies only to the approved visitor and resources.
+   After approval, **View** replaces the request action. The grant applies only to the approved visitor and resources.
 
 </Steps>
 
-## Add a visitor yourself
+## Understand the access state
 
-You do not have to wait for a request. When a prospect or customer needs your documents, for example during a security review, add them as a visitor and grant access upfront.
+| Situation                                          | What it means                                                                                                |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| The resource is public                             | A visitor can open it without a resource grant.                                                              |
+| The visitor has requested access                   | The request is pending; it does not authorize access.                                                        |
+| Access is granted and no NDA is required           | The approved visitor can open the restricted resource.                                                       |
+| Access is granted but a required NDA is incomplete | The visitor still needs to finish signing before protected-document export.                                  |
+| Access is revoked                                  | The visitor can no longer use that grant to open the resource. Copies already downloaded cannot be recalled. |
 
-<Steps>
-
-1. **Add the visitor**
-
-   Open **Settings → Visitors** and select **Add visitor**. Enter the person's email address, then select **Add** followed by that address.
-
-2. **Grant the resources they need**
-
-   Select the new visitor. Under **Restricted Document Accesses**, select **Grant** for each document, audit report, or file they should receive, then save.
-
-3. **The visitor receives an email**
-
-   Probo emails the visitor that they have been granted access to your Compliance Portal, with an **Access Compliance Page** button.
-
-4. **The visitor signs the NDA and downloads**
-
-   If the portal has an NDA, the visitor signs it before downloading the documents you granted. Until then, their NDA status shows **Awaiting signature**.
-
-</Steps>
-
-The visitor shows **Not visited** until they first open the portal. Grant only what the person needs, as you would for a request.
-
-{/* Screenshot placeholder: Add visitor field and visitor detail — /docs/compliance-portal/add-visitor.webp */}
+Treat access approval and NDA completion as separate checks. A signature is not automatic authorization to every resource.
 
 ## Configure an NDA
 
-Use an NDA when visitors must accept confidentiality terms before downloading restricted resources. Visitors can request access before signing, but they must sign once their access is accepted, before they can download.
+Use an NDA when visitors must accept confidentiality terms before requesting restricted resources.
 
 Before uploading an agreement:
 
@@ -100,11 +86,11 @@ To configure it:
 
 <Steps>
 
-1. Open **Settings → Visitors**.
+1. Open the portal’s **Overview** tab.
 2. Find **Non-disclosure agreement** and select **Upload NDA**.
 3. Choose the reviewed PDF and upload it.
 4. Open the public portal with a test visitor account.
-5. Request a restricted resource, approve it, and complete the signing flow.
+5. Request a restricted resource and complete the signing flow.
 
 </Steps>
 
@@ -134,7 +120,7 @@ Probo records the signature status, completion time, certificate, and signing ev
 
 ## Review access requests
 
-Open **Settings → Visitors**. Each row in the visitor list shows:
+Open the portal’s **Access** tab. Each row shows:
 
 - Visitor name and email address
 - Date the visitor profile was created
@@ -172,7 +158,7 @@ Revoke a grant when the visitor no longer has a valid business need, their engag
 
 <Steps>
 
-1. Open **Settings → Visitors** and select the visitor.
+1. Open **Access** and select the visitor.
 2. Find each currently granted resource.
 3. Select **Revoke**, or use **Reject or revoke all** when appropriate.
 4. Review the changes and save.
@@ -191,3 +177,15 @@ Revocation removes the visitor’s portal access to the resource. It cannot reca
 - Review active grants periodically and revoke access that is no longer required.
 - Review the NDA signature status, but do not treat a signature as automatic authorization.
 - Keep sensitive information out of the portal when it should not be distributed, even under NDA.
+
+## Verify with a visitor account
+
+After changing visibility, an NDA, or grants, test the portal from the visitor's perspective:
+
+1. While signed out, check that public content opens and restricted content offers an access request.
+2. With a test visitor account, request only the resources intended for that audience.
+3. In **Access**, confirm that the request is pending before making a decision.
+4. Grant the intended resources and verify that a required NDA must still be completed before protected-document export.
+5. Revoke the test grants when the check is complete, then verify that access is removed.
+
+If approved content still cannot be exported, check that the visitor is using the approved account, that the grant covers that exact resource, and that the NDA signature is complete.

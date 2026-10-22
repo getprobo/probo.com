@@ -1,5 +1,9 @@
 ---
-import { docsSections, getDocsSectionForPath } from "../../lib/docs-navigation";
+import {
+  docsSections,
+  getDocsSectionForPath,
+  normalizeDocsPath,
+} from "../../lib/docs-navigation";
 
 const activeSection = getDocsSectionForPath(Astro.url.pathname);
 ---
@@ -18,7 +22,13 @@ const activeSection = getDocsSectionForPath(Astro.url.pathname);
             "docs-section-nav__link shrink-0 text-sm transition-colors",
             isActive ? "docs-section-nav__link--active" : "",
           ]}
-          aria-current={isActive ? "page" : undefined}
+          aria-current={
+            isActive
+              ? normalizeDocsPath(Astro.url.pathname) === section.href
+                ? "page"
+                : "location"
+              : undefined
+          }
         >
           {section.label}
         </a>
@@ -26,6 +36,24 @@ const activeSection = getDocsSectionForPath(Astro.url.pathname);
     })
   }
 </nav>
+
+<script>
+  const revealActiveSection = () => {
+    const active = document.querySelector<HTMLElement>(
+      ".docs-section-nav [aria-current]",
+    );
+    const nav = active?.parentElement;
+    if (!active || !nav) return;
+    const activeRect = active.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+    if (activeRect.left < navRect.left)
+      nav.scrollLeft -= navRect.left - activeRect.left;
+    if (activeRect.right > navRect.right)
+      nav.scrollLeft += activeRect.right - navRect.right;
+  };
+  document.addEventListener("astro:page-load", revealActiveSection);
+  revealActiveSection();
+</script>
 
 <style>
   .docs-section-nav__link {

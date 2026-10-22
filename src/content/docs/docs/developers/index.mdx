@@ -1,56 +1,49 @@
 ---
 title: Developers
-description: Overview of Probo's developer interfaces, including GraphQL, the prb CLI, MCP for AI agents, n8n workflows, webhooks, and the Device Agent API.
+description: Choose the Probo interface for your integration, authenticate safely, and automate compliance records with GraphQL, the CLI, MCP, n8n, or webhooks.
 ---
 
-import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+import { LinkCard } from "@astrojs/starlight/components";
 
-Probo exposes the same GRC records through several interfaces. Choose the interface that fits the work: GraphQL for application integrations, `prb` for terminals and CI, MCP for AI agents, n8n for visual workflows, webhooks for event-driven systems, and the Device Agent API for endpoint posture.
+Connect Probo to the tools your team already uses. Query and update organization-scoped records, build workflows, or react to changes with the interface that fits your integration.
+
+<div className="docs-journey">
+  <LinkCard
+    title="Start with API fundamentals"
+    description="Understand endpoints, authentication, organization identifiers, pagination, and errors."
+    href="/docs/developers/api-overview"
+  />
+</div>
 
 ## Interfaces
 
-<CardGrid>
-  <LinkCard
-    title="API fundamentals"
-    description="Learn endpoints, authentication, identifiers, pagination, and errors"
-    href="/docs/developers/api-overview"
-  />
-  <LinkCard
-    title="GraphQL API"
-    description="Query and mutate Probo records through the console GraphQL API"
-    href="/docs/developers/graphql"
-  />
-  <LinkCard
-    title="CLI"
-    description="Use prb interactively or in scripts and CI"
-    href="/docs/developers/cli/overview"
-  />
-  <LinkCard
-    title="MCP"
-    description="Give MCP-compatible agents controlled access to Probo"
-    href="/docs/developers/api/mcp/overview"
-  />
-  <LinkCard
-    title="n8n"
-    description="Build visual automations with the Probo community node"
-    href="/docs/developers/api/n8n/overview"
-  />
-  <LinkCard
-    title="Webhooks"
-    description="Receive signed notifications when supported records change"
-    href="/docs/developers/api/webhooks/overview"
-  />
-  <LinkCard
-    title="Device Agent API"
-    description="Build an agent that enrolls devices and reports security posture"
-    href="/docs/developers/api/agent/overview"
-  />
-</CardGrid>
+| I want to…                                                  | Use              | Start here                                                       |
+| ----------------------------------------------------------- | ---------------- | ---------------------------------------------------------------- |
+| Build an application integration                            | GraphQL          | [GraphQL API](/docs/developers/graphql)                          |
+| Work from a terminal, script, or CI job                     | `prb` CLI        | [CLI overview](/docs/developers/cli/overview)                    |
+| Give an AI assistant access to Probo                        | MCP              | [MCP overview](/docs/developers/api/mcp/overview)                |
+| Build a visual workflow                                     | n8n              | [n8n overview](/docs/developers/api/n8n/overview)                |
+| Receive signed notifications about supported record changes | Webhooks         | [Webhooks overview](/docs/developers/api/webhooks/overview)      |
+| Enroll devices and report endpoint security posture         | Device Agent API | [Device Agent API overview](/docs/developers/api/agent/overview) |
+
+## Before your first request
+
+1. **Choose the organization.** Records are scoped to an organization; use the identifier required by the operation.
+2. **Choose authentication for your client.** Use a supported interactive OAuth flow or a scoped token as described in [API fundamentals](/docs/developers/api-overview).
+3. **Start with a read.** Confirm access to the intended records before adding an operation that changes them.
+
+Keep credentials out of source code and logs. Request only the scopes your integration needs.
 
 ## Interface parity
 
-Product resources are designed to remain available across GraphQL, MCP, the
-CLI, and n8n. The interfaces differ in transport and ergonomics, so verify the
-generated [MCP tool reference](/docs/developers/api/mcp/tools), [n8n resource
-reference](/docs/developers/api/n8n/resources), and [CLI command
-reference](/docs/developers/cli/commands) when selecting an operation.
+GraphQL, MCP, the CLI, and n8n work with the same product resources, but they differ in transport, workflow, and available operations. Check the reference for the exact operation you need before choosing an interface:
+
+<div className="docs-resource-list">
+
+- [MCP tool reference](/docs/developers/api/mcp/tools) — tool inputs, outputs, and behavior.
+- [n8n resource reference](/docs/developers/api/n8n/resources) — the operations exposed by the Probo node.
+- [CLI command reference](/docs/developers/cli/commands) — command usage and implementation links.
+
+</div>
+
+If you are learning the records rather than integrating them, start with [Core concepts](/docs/product/getting-started/core-concepts).

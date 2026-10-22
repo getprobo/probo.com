@@ -23,11 +23,9 @@ const accessReviewConnectorItems = [
   { label: "Cloudflare", slug: "docs/product/access-review/cloudflare" },
   { label: "Crisp", slug: "docs/product/access-review/crisp" },
   { label: "Cursor", slug: "docs/product/access-review/cursor" },
-  { label: "Daytona", slug: "docs/product/access-review/daytona" },
   { label: "Deepgram", slug: "docs/product/access-review/deepgram" },
   { label: "Dotfile", slug: "docs/product/access-review/dotfile" },
-  { label: "Elastic Cloud", slug: "docs/product/access-review/elastic-cloud" },
-  { label: "Front", slug: "docs/product/access-review/front" },
+  { label: "ElevenLabs", slug: "docs/product/access-review/elevenlabs" },
   { label: "GitHub", slug: "docs/product/access-review/github" },
   { label: "Google Cloud", slug: "docs/product/access-review/gcp" },
   { label: "Grafana", slug: "docs/product/access-review/grafana" },
@@ -37,25 +35,29 @@ const accessReviewConnectorItems = [
   { label: "Mercury", slug: "docs/product/access-review/mercury" },
   { label: "Metabase", slug: "docs/product/access-review/metabase" },
   { label: "Microsoft Azure", slug: "docs/product/access-review/azure" },
+  { label: "MongoDB Atlas", slug: "docs/product/access-review/mongodb-atlas" },
   { label: "Neon", slug: "docs/product/access-review/neon" },
+  { label: "New Relic", slug: "docs/product/access-review/new-relic" },
   { label: "Nuki", slug: "docs/product/access-review/nuki" },
   { label: "Okta", slug: "docs/product/access-review/okta" },
   { label: "OpenAI", slug: "docs/product/access-review/openai" },
   { label: "OpenRouter", slug: "docs/product/access-review/openrouter" },
   { label: "OVHcloud", slug: "docs/product/access-review/ovhcloud" },
-  { label: "PlanetScale", slug: "docs/product/access-review/planetscale" },
   { label: "Pylon", slug: "docs/product/access-review/pylon" },
   { label: "Qovery", slug: "docs/product/access-review/qovery" },
   { label: "Railway", slug: "docs/product/access-review/railway" },
   { label: "Render", slug: "docs/product/access-review/render" },
   { label: "Resend", slug: "docs/product/access-review/resend" },
+  { label: "Retool", slug: "docs/product/access-review/retool" },
   { label: "Scaleway", slug: "docs/product/access-review/scaleway" },
   { label: "Segment", slug: "docs/product/access-review/segment" },
   { label: "SendGrid", slug: "docs/product/access-review/sendgrid" },
   { label: "SigNoz", slug: "docs/product/access-review/signoz" },
+  { label: "Slack", slug: "docs/product/access-review/slack" },
   { label: "Supabase", slug: "docs/product/access-review/supabase" },
   { label: "Tailscale", slug: "docs/product/access-review/tailscale" },
   { label: "Tally", slug: "docs/product/access-review/tally" },
+  { label: "Twingate", slug: "docs/product/access-review/twingate" },
   { label: "UpCloud", slug: "docs/product/access-review/upcloud" },
   { label: "Yousign", slug: "docs/product/access-review/yousign" },
 ].sort((a, b) => a.label.localeCompare(b.label, "en", { sensitivity: "base" }));
@@ -70,52 +72,60 @@ export const docsSidebarGroups = [
       { label: "Documentation home", slug: "docs" },
       {
         label: "Getting started",
-        collapsed: false,
-        items: [
-          {
-            label: "Overview",
-            slug: "docs/product/getting-started",
-          },
-          {
-            label: "Product overview",
-            slug: "docs/product/getting-started/product-overview",
-          },
-          {
-            label: "Choose a deployment",
-            slug: "docs/product/getting-started/choose-deployment",
-          },
-          {
-            label: "Quickstart",
-            slug: "docs/product/getting-started/quickstart",
-          },
-          {
-            label: "First organization and framework",
-            slug: "docs/product/getting-started/first-organization-and-framework",
-          },
-          {
-            label: "Core concepts",
-            slug: "docs/product/getting-started/core-concepts",
-          },
-          {
-            label: "Glossary",
-            slug: "docs/product/getting-started/glossary",
-          },
-        ],
+        slug: "docs/product/getting-started",
+      },
+      {
+        label: "Product overview",
+        slug: "docs/product/getting-started/product-overview",
+      },
+      {
+        label: "Choose a deployment",
+        slug: "docs/product/getting-started/choose-deployment",
+      },
+      {
+        label: "Quickstart",
+        slug: "docs/product/getting-started/quickstart",
+      },
+      {
+        label: "First steps with Probo Cloud",
+        slug: "docs/product/getting-started/cloud-first-steps",
+      },
+      {
+        label: "First organization and framework",
+        slug: "docs/product/getting-started/first-organization-and-framework",
+      },
+      {
+        label: "Core concepts",
+        slug: "docs/product/getting-started/core-concepts",
+      },
+      {
+        label: "Glossary",
+        slug: "docs/product/getting-started/glossary",
       },
     ],
   },
   {
     id: "compliance-program",
     sectionId: "product",
-    label: "Compliance Program",
+    label: "Manage compliance",
     items: [
-      { label: "Product hub", slug: "docs/product" },
+      { label: "Use Probo", slug: "docs/product" },
       {
         label: "Compliance program",
         slug: "docs/product/compliance-program",
       },
       { label: "Tasks", slug: "docs/product/tasks/overview" },
-      { label: "Risk management", slug: "docs/product/risk-management" },
+      {
+        label: "Risk management",
+        collapsed: true,
+        items: [
+          { label: "Overview", slug: "docs/product/risk-management" },
+          {
+            label: "Record and review a risk",
+            slug: "docs/product/risk-management/first-risk",
+          },
+        ],
+      },
       {
         label: "Third-party management",
         slug: "docs/product/third-party-management",
@@ -141,7 +151,7 @@ export const docsSidebarGroups = [
   {
     id: "identity-and-access",
     sectionId: "product",
-    label: "Identity and Access",
+    label: "Workspace and access",
     items: [
       {
         label: "Overview",
@@ -192,7 +202,7 @@ export const docsSidebarGroups = [
   {
     id: "access-reviews",
     sectionId: "product",
-    label: "Access Reviews",
+    label: "Access reviews",
     items: [
       {
         label: "Overview",
@@ -226,7 +236,7 @@ export const docsSidebarGroups = [
   {
     id: "compliance-portal",
     sectionId: "product",
-    label: "Compliance Portal",
+    label: "Share your compliance",
     items: [
       {
         label: "Overview",
@@ -287,7 +297,7 @@ export const docsSidebarGroups = [
   {
     id: "consent-and-devices",
     sectionId: "product",
-    label: "Cookie Banner",
+    label: "Cookie consent",
     items: [
       {
         label: "Cookie consent",
@@ -323,7 +333,7 @@ export const docsSidebarGroups = [
   {
     id: "probo-agent",
     sectionId: "product",
-    label: "Device Agent",
+    label: "Device security",
     items: [
       { label: "Overview", slug: "docs/product/device-agent/overview" },
       {
@@ -420,7 +430,6 @@ export const docsSidebarGroups = [
             label: "Claude.ai",
             slug: "docs/developers/api/mcp/claude-ai",
           },
-          { label: "Dust", slug: "docs/developers/api/mcp/dust" },
           {
             label: "OpenAI API",
             slug: "docs/developers/api/mcp/openai",
@@ -469,7 +478,7 @@ export const docsSidebarGroups = [
         slug: "docs/developers/api/n8n/authentication",
       },
       {
-        label: "Resource References",
+        label: "Resource reference",
         collapsed: true,
         items: [
           {
@@ -558,7 +567,7 @@ export const docsSidebarGroups = [
   {
     id: "self-hosting",
     sectionId: "deployment",
-    label: "Self-Hosting",
+    label: "Self-hosting",
     items: [
       { label: "Overview", slug: "docs/deployment/self-hosting" },
       {
