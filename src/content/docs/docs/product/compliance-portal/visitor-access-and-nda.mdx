@@ -7,6 +7,8 @@ import { Steps } from "@astrojs/starlight/components";
 
 Access control applies to individual documents, audit reports, and portal files. This lets visitors browse public information while protecting resources that require identity verification, approval, or an NDA.
 
+To administer access, you need an owner or admin role in the portal's organization. A viewer can review the settings and access records without changing them. See [Permissions and integrations](/docs/product/compliance-portal/permissions-and-integrations).
+
 ## Choose what requires approval
 
 Set the visibility of each resource before activating or promoting the portal:
@@ -37,25 +39,37 @@ Restricted resources remain discoverable so customers can request exactly what t
 
    When required, Probo asks the visitor to sign in and complete their profile before submitting the request.
 
-3. **Review and sign the NDA**
-
-   If the portal has an NDA, the visitor must complete the signing flow before the restricted-resource request can proceed. Public content remains available without an NDA.
-
-4. **Submit the request**
+3. **Submit the request**
 
    The visitor can request one resource or select multiple restricted documents, audit reports, and files and request them together.
 
    {/* Screenshot placeholder: Bulk access request — /docs/compliance-portal/bulk-access-request.webp */}
 
-5. **Wait for a decision**
+4. **Wait for a decision**
 
    The resource shows **Access requested** while the request is pending. A pending request does not grant access.
+
+5. **Complete the NDA when required**
+
+   Visitors can request access before signing. If the portal has an NDA, they must complete the signing flow before exporting protected documents. Public content remains available without an NDA.
 
 6. **Open approved resources**
 
    After approval, **View** replaces the request action. The grant applies only to the approved visitor and resources.
 
 </Steps>
+
+## Understand the access state
+
+| Situation                                          | What it means                                                                                                |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| The resource is public                             | A visitor can open it without a resource grant.                                                              |
+| The visitor has requested access                   | The request is pending; it does not authorize access.                                                        |
+| Access is granted and no NDA is required           | The approved visitor can open the restricted resource.                                                       |
+| Access is granted but a required NDA is incomplete | The visitor still needs to finish signing before protected-document export.                                  |
+| Access is revoked                                  | The visitor can no longer use that grant to open the resource. Copies already downloaded cannot be recalled. |
+
+Treat access approval and NDA completion as separate checks. A signature is not automatic authorization to every resource.
 
 ## Configure an NDA
 
@@ -163,3 +177,15 @@ Revocation removes the visitor’s portal access to the resource. It cannot reca
 - Review active grants periodically and revoke access that is no longer required.
 - Review the NDA signature status, but do not treat a signature as automatic authorization.
 - Keep sensitive information out of the portal when it should not be distributed, even under NDA.
+
+## Verify with a visitor account
+
+After changing visibility, an NDA, or grants, test the portal from the visitor's perspective:
+
+1. While signed out, check that public content opens and restricted content offers an access request.
+2. With a test visitor account, request only the resources intended for that audience.
+3. In **Access**, confirm that the request is pending before making a decision.
+4. Grant the intended resources and verify that a required NDA must still be completed before protected-document export.
+5. Revoke the test grants when the check is complete, then verify that access is removed.
+
+If approved content still cannot be exported, check that the visitor is using the approved account, that the grant covers that exact resource, and that the NDA signature is complete.

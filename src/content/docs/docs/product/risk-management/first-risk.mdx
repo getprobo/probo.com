@@ -1,0 +1,64 @@
+---
+title: Record and review a risk
+description: Create a useful risk register entry in Probo, connect relevant controls and documents, assign follow-up work, and review the result before publication.
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+A useful risk entry explains what could happen, why it matters, and how the organization responds. Start with one real exposure rather than filling the register with generic risks.
+
+This guide covers the risk register. Use a [threat-based assessment](/docs/product/risk-management#threat-based-assessments) when you need to model systems, boundaries, threats, and scenarios in more detail.
+
+## Before you start
+
+- Work in the organization that owns the risk.
+- Have permission to create or update its compliance records. See [Roles and permissions](/docs/product/roles-and-permissions).
+- Gather the context: the affected activity, the unwanted event, its consequence, and the safeguards already in place.
+
+## Build the risk entry
+
+<Steps>
+
+1. **Describe a specific exposure**
+
+   Create a risk with a clear name and category. Use its description to explain the event and consequence. Add assumptions or supporting context in the notes.
+
+   For example: “A former employee retains access to a production service, allowing unauthorized changes or disclosure.” This is more useful than a name such as “Access risk” on its own.
+
+2. **Connect the safeguards**
+
+   Link the internal controls that reduce or monitor the risk. Reuse controls already operated by your team instead of creating a second copy for the same safeguard.
+
+   Link relevant documents and obligations so reviewers can trace the decision to its supporting material. See [Compliance program](/docs/product/compliance-program) and [Assets and obligations](/docs/product/assets-and-obligations).
+
+3. **Separate what exists from what remains to do**
+
+   Record the current situation accurately. A planned safeguard is not evidence that it is operating.
+
+   Create a [task](/docs/product/tasks/overview) for follow-up work. Give it an assignee and, when needed, a deadline. Link the task to the internal control it implements.
+
+4. **Review the entry with the people responsible**
+
+   Confirm the description, assumptions, linked controls, and supporting documents. Use the same assessment method across your program so the reasoning behind your decisions stays comparable.
+
+5. **Keep the register current**
+
+   Update the risk when systems, vendors, controls, or business assumptions change. If you need a reviewed snapshot, publish the risk register as a document version. Publication records a point in time; the live register continues to evolve.
+
+</Steps>
+
+## Check the result
+
+Before treating the entry as ready for review, make sure:
+
+- Someone unfamiliar with the issue can understand the event and consequence.
+- The linked controls describe the safeguards your team actually operates.
+- Supporting documents explain the context rather than merely repeat the risk name.
+- Missing work is recorded as work to do, with a person responsible for it.
+- Changes to the underlying systems will trigger a review of the entry.
+
+## When you need a deeper assessment
+
+Use a structured risk assessment for analysis that needs scopes, nodes, boundaries, processes, threats, and scenarios. Link its scenarios to risk-register entries so the analysis and ongoing treatment remain connected without becoming duplicate records.
+
+The [risk-management overview](/docs/product/risk-management) explains this distinction and links to the CLI, MCP, and n8n operations available for automation.

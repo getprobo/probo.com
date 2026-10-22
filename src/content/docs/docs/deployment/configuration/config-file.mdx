@@ -128,6 +128,8 @@ Values in a directly managed file are literal. Secret references such as
 `awssm://secret-id` and `awsps:///parameter-name` are only interpreted by
 `probod-bootstrap`; `probod` does not resolve them.
 
+<span id="encryption-key" />
+
 The encryption key, session cookie secret, password pepper, and token-signing
 key must remain available for the lifetime of the deployment. See
 [Set persistent secrets before first

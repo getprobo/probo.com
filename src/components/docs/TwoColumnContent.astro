@@ -1,66 +1,14 @@
 ---
-const hasToc = Astro.locals.starlightRoute.toc;
+const hasToc = Boolean(Astro.locals.starlightRoute.toc);
 ---
 
-<div class="docs-body min-w-0">
+<div class:list={["docs-body", { "docs-body--with-toc": hasToc }]}>
+  <div class="docs-main-pane"><slot /></div>
   {
-    hasToc ? (
-      <div class="docs-body__grid">
-        <div class="docs-main-pane min-w-0">
-          <slot />
-        </div>
-        <aside class="docs-toc-pane">
-          <slot name="right-sidebar" />
-        </aside>
-      </div>
-    ) : (
-      <div class="docs-main-pane min-w-0">
-        <slot />
-      </div>
+    hasToc && (
+      <aside class="docs-toc-pane">
+        <slot name="right-sidebar" />
+      </aside>
     )
   }
 </div>
-
-<style>
-  .docs-main-pane {
-    width: 100%;
-    max-width: var(--docs-content-max-width);
-    margin-inline: auto;
-  }
-
-  .docs-body__grid {
-    display: grid;
-    min-width: 0;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
-  }
-
-  @media (min-width: 64rem) {
-    .docs-body__grid {
-      grid-template-columns: minmax(0, var(--docs-content-max-width)) var(
-          --docs-toc-width
-        );
-      column-gap: 4rem;
-      justify-content: center;
-      align-items: start;
-    }
-
-    .docs-main-pane {
-      grid-column: 1;
-      max-width: none;
-      margin-inline: unset;
-      width: 100%;
-    }
-
-    .docs-toc-pane {
-      grid-column: 2;
-      width: var(--docs-toc-width);
-      position: sticky;
-      top: calc(var(--sl-docs-chrome-height) + 1.5rem);
-      max-height: calc(100vh - var(--sl-docs-chrome-height) - 2rem);
-      overflow: auto;
-      padding-block-start: 2.75rem;
-      padding-inline-start: 0.5rem;
-    }
-  }
-</style>

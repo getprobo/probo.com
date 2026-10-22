@@ -1,31 +1,60 @@
 ---
 import { Image } from "astro:assets";
 import Logo from "../../assets/probo-logo.svg";
+import WhiteLogo from "../../assets/probo_white_logo.svg";
 import MobileMenuToggle from "virtual:starlight/components/MobileMenuToggle";
 import Search from "virtual:starlight/components/Search";
-import Header from "../Header.astro";
+import Icon from "../Icon.astro";
 import SectionNav from "./SectionNav.astro";
 import ThemeToggle from "./ThemeToggle.astro";
+
+const hasCookieBanner = Boolean(
+  import.meta.env.PUBLIC_COOKIE_BANNER_ID &&
+  import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL,
+);
+const isHome = Astro.url.pathname.replace(/\/$/, "") === "/docs";
 ---
 
-<div class="docs-chrome bg-level-0 sticky top-0 z-50">
-  <Header docsChrome hideBurger>
-    <MobileMenuToggle />
-  </Header>
-  <div class="docs-horizon border-border-low bg-level-0 border-b">
-    <div
-      class="docs-subnav flex flex-col gap-3 px-(--docs-page-padding-x) pb-3 sm:flex-row sm:items-center sm:gap-4 sm:pb-0"
-    >
-      <SectionNav />
-      <div class="flex items-center gap-2 sm:ms-auto">
-        <Search class="docs-chrome-search min-w-0 flex-1 sm:flex-none" />
-        <ThemeToggle />
-      </div>
+<div class="docs-chrome">
+  <header class="docs-masthead">
+    <div class="docs-brand">
+      <MobileMenuToggle />
+      <a class="docs-logo" href="/" aria-label="Probo home">
+        <Image
+          class="docs-logo-light"
+          src={Logo}
+          alt="Probo"
+          width={85}
+          height={24}
+        />
+        <Image
+          class="docs-logo-dark"
+          src={WhiteLogo}
+          alt="Probo"
+          width={85}
+          height={24}
+        />
+      </a>
+      <span class="docs-brand-divider" aria-hidden="true"></span>
+      <a class="docs-brand-title" href="/docs">Documentation</a>
     </div>
+    <div class="docs-masthead-actions">
+      <Search class="docs-chrome-search" />
+      <ThemeToggle />
+      <a class="docs-website-link" href="/">
+        Probo.com <Icon name="arrow-right" size={14} />
+      </a>
+    </div>
+  </header>
+  <div class="docs-horizon">
+    <div class="docs-subnav"><SectionNav /></div>
   </div>
 </div>
 
-<div transition:animate="none" class="docs-shell w-full">
+<div
+  transition:animate="none"
+  class:list={["docs-shell", { "docs-shell--home": isHome }]}
+>
   <div class="docs-main">
     <nav
       id="starlight__sidebar"
@@ -34,332 +63,29 @@ import ThemeToggle from "./ThemeToggle.astro";
     >
       <slot name="sidebar" />
     </nav>
-    <div class="docs-content px-(--docs-page-padding-x) py-6 lg:py-8">
-      <slot />
-    </div>
+    <div class="docs-content"><slot /></div>
   </div>
-
-  <footer class="docs-site-footer border-border-low mt-auto w-full border-t">
-    <div
-      class="mx-auto flex w-full items-center justify-between gap-4 px-4 py-3"
-    >
-      <a href="/" class="logo block leading-none opacity-85 hover:opacity-100">
-        <Image src={Logo} alt="Probo" width={73} height={20} />
-      </a>
-      <probo-settings-link
-        class="cookie-settings text-tertiary-foreground hover:text-foreground text-sm whitespace-nowrap hover:underline"
-      >
-        <a href="#">Cookie Settings</a>
-      </probo-settings-link>
+  <footer class="docs-site-footer">
+    <a href="/docs" class="docs-footer-home">Probo documentation</a>
+    <div>
+      <a href="https://github.com/getprobo/probo.com">Edit and contribute</a>
+      {
+        hasCookieBanner && (
+          <probo-settings-link class="cookie-settings">
+            <a href="#">Cookie settings</a>
+          </probo-settings-link>
+        )
+      }
     </div>
   </footer>
 </div>
 
-<style>
-  @layer starlight.core {
-    .docs-site-footer {
-      /* Slightly darker than the page background in both themes */
-      background: color-mix(in srgb, var(--color-level-0) 98%, black);
-    }
-
-    .cookie-settings :global(a) {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .docs-subnav {
-      --docs-search-highlight: rgb(255 255 255 / 0.7);
-    }
-
-    :global(:root[data-theme="dark"]) .docs-subnav {
-      --docs-search-highlight: rgb(255 255 255 / 0.05);
-    }
-
-    .docs-subnav :global(site-search.docs-chrome-search) {
-      display: block;
-      width: 100%;
-    }
-
-    @media (min-width: 40rem) {
-      .docs-subnav :global(site-search.docs-chrome-search) {
-        width: auto;
-      }
-    }
-
-    .docs-main {
-      display: grid;
-      width: 100%;
-      grid-template-columns: minmax(0, 1fr);
-      align-items: start;
-      background-color: var(--color-level-0);
-    }
-
-    @media (min-width: 64rem) {
-      .docs-main {
-        grid-template-columns: var(--docs-sidebar-width) minmax(0, 1fr);
-        min-height: calc(100vh - var(--sl-docs-chrome-height));
-      }
-
-      .sidebar {
-        position: sticky;
-        top: var(--sl-docs-chrome-height);
-        align-self: start;
-        max-height: calc(100vh - var(--sl-docs-chrome-height));
-        overflow: auto;
-        padding: 1.25rem 1rem 2rem;
-        scrollbar-width: none;
-      }
-
-      .docs-content {
-        --docs-header-glow: color-mix(
-          in srgb,
-          var(--color-accent) 12%,
-          transparent
-        );
-        position: relative;
-        isolation: isolate;
-        min-width: 0;
-        overflow: clip;
-        border-inline-start: 1px solid var(--color-border-low);
-      }
-
-      .docs-content::before {
-        position: absolute;
-        z-index: 0;
-        inset: -6rem -12% auto;
-        height: 30rem;
-        content: "";
-        pointer-events: none;
-      }
-
-      .docs-content::before {
-        background: radial-gradient(
-          ellipse 70% 90% at 62% 12%,
-          var(--docs-header-glow) 0,
-          transparent 72%
-        );
-        animation: docs-glow-drift 45s ease-in-out infinite alternate;
-        will-change: transform;
-      }
-
-      @keyframes docs-glow-drift {
-        from {
-          transform: translate3d(-3%, -1.5rem, 0) scale(1);
-        }
-        to {
-          transform: translate3d(4%, 1.5rem, 0) scale(1.12);
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .docs-content::before {
-          animation: none;
-        }
-      }
-
-      .docs-content :global(.docs-body) {
-        position: relative;
-        z-index: 1;
-      }
-
-      :global(:root[data-theme="dark"]) .docs-content {
-        --docs-header-glow: color-mix(
-          in srgb,
-          var(--color-accent) 7%,
-          transparent
-        );
-      }
-
-      .sidebar::-webkit-scrollbar {
-        display: none;
-      }
-    }
-
-    .docs-subnav
-      :global(site-search.docs-chrome-search button[data-open-modal]) {
-      width: 100%;
-      max-width: none;
-      border: 1px solid var(--color-border-low);
-      border-radius: 0.5rem;
-      padding-inline: 0.625rem 0.5rem;
-      background-color: var(--color-subtle);
-      color: var(--color-muted-foreground);
-      font-size: var(--sl-text-sm);
-      height: 2rem;
-      box-shadow: inset 0 1px 0 var(--docs-search-highlight);
-    }
-
-    @media (min-width: 40rem) {
-      .docs-subnav
-        :global(site-search.docs-chrome-search button[data-open-modal]) {
-        width: 14rem;
-      }
-    }
-
-    .docs-subnav
-      :global(site-search.docs-chrome-search button[data-open-modal]:hover) {
-      border-color: color-mix(
-        in srgb,
-        var(--docs-accent) 45%,
-        var(--color-border-mid)
-      );
-      background-color: var(--docs-accent-soft);
-      color: var(--color-primary);
-    }
-
-    .docs-subnav
-      :global(
-        site-search.docs-chrome-search button[data-open-modal]:focus-visible
-      ) {
-      outline: 2px solid var(--docs-accent);
-      outline-offset: 2px;
-    }
-
-    .docs-subnav
-      :global(site-search.docs-chrome-search button[data-open-modal] span) {
-      display: block;
-    }
-
-    @media (max-width: 63.999rem) {
-      :global(body[data-mobile-menu-expanded]) .sidebar {
-        transform: translateY(0);
-        pointer-events: all;
-        opacity: 1;
-        visibility: visible;
-      }
-
-      .sidebar {
-        position: fixed;
-        inset: var(--sl-docs-chrome-height) 0 0;
-        z-index: 200;
-        width: min(100%, 20rem);
-        padding: 1rem 0.75rem 1.5rem;
-        transition: 0.2s ease-in-out;
-        opacity: 0;
-        transform: translateY(-12px);
-        pointer-events: none;
-        visibility: hidden;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        scrollbar-gutter: stable;
-        background-color: var(--sl-color-bg);
-        box-shadow: var(--shadow-md);
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .sidebar {
-          transition: none;
-        }
-      }
-    }
-  }
-</style>
-
-<script>
-  const sidebarScrollKey = "docs-sidebar-scroll";
-
-  const restoreSidebarGroups = (sidebar: HTMLElement) => {
-    try {
-      const state = JSON.parse(
-        sessionStorage.getItem("sl-sidebar-state") || "{}",
-      );
-      const persister = sidebar.querySelector<HTMLElement>(
-        "sl-sidebar-state-persist",
-      );
-
-      if (
-        !persister ||
-        state.hash !== persister.dataset.hash ||
-        !Array.isArray(state.open)
-      ) {
-        return;
-      }
-
-      for (const restorePoint of sidebar.querySelectorAll<HTMLElement>(
-        "sl-sidebar-restore",
-      )) {
-        const index = Number.parseInt(restorePoint.dataset.index || "", 10);
-        const details = restorePoint.closest("details");
-
-        if (details && typeof state.open[index] === "boolean") {
-          details.open = state.open[index];
-        }
-      }
-    } catch {}
-  };
-
-  const persistSidebarGroups = (sidebar: HTMLElement) => {
-    const persister = sidebar.querySelector<HTMLElement>(
-      "sl-sidebar-state-persist",
-    );
-    if (!persister) return;
-
-    const open: Array<boolean | null> = [];
-    for (const restorePoint of sidebar.querySelectorAll<HTMLElement>(
-      "sl-sidebar-restore",
-    )) {
-      const index = Number.parseInt(restorePoint.dataset.index || "", 10);
-      const details = restorePoint.closest("details");
-      if (details && !Number.isNaN(index)) open[index] = details.open;
-    }
-
-    sessionStorage.setItem(
-      "sl-sidebar-state",
-      JSON.stringify({
-        hash: persister.dataset.hash,
-        open,
-        scroll: sidebar.scrollTop,
-      }),
-    );
-  };
-
-  const initializeSidebarGroups = (sidebar: HTMLElement) => {
-    const groups = sidebar.querySelectorAll<HTMLDetailsElement>("details");
-
-    for (const group of groups) {
-      if (group.dataset.accordionInitialized !== undefined) continue;
-      group.dataset.accordionInitialized = "";
-
-      group.querySelector(":scope > summary")?.addEventListener("click", () => {
-        if (group.open) return;
-
-        for (const otherGroup of groups) {
-          const isRelatedGroup =
-            otherGroup.contains(group) || group.contains(otherGroup);
-          if (otherGroup !== group && !isRelatedGroup) otherGroup.open = false;
-        }
-      });
-
-      group.addEventListener("toggle", () => persistSidebarGroups(sidebar));
-    }
-  };
-
-  document.addEventListener("astro:before-swap", () => {
-    const sidebar = document.getElementById("starlight__sidebar");
-    if (sidebar) {
-      sessionStorage.setItem(sidebarScrollKey, String(sidebar.scrollTop));
-    }
-  });
-
-  document.addEventListener("astro:after-swap", () => {
-    const sidebar = document.getElementById("starlight__sidebar");
-    const savedScroll = sessionStorage.getItem(sidebarScrollKey);
-
-    if (sidebar) {
-      restoreSidebarGroups(sidebar);
-      initializeSidebarGroups(sidebar);
-
-      if (savedScroll) {
-        sidebar.scrollTop = Number(savedScroll);
-      }
-    }
-  });
-
-  const initialSidebar = document.getElementById("starlight__sidebar");
-  if (initialSidebar) initializeSidebarGroups(initialSidebar);
-</script>
-
-<probo-cookie-banner
-  banner-id={import.meta.env.PUBLIC_COOKIE_BANNER_ID}
-  base-url={import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL}
-  position="bottom-right"></probo-cookie-banner>
+{
+  hasCookieBanner && (
+    <probo-cookie-banner
+      banner-id={import.meta.env.PUBLIC_COOKIE_BANNER_ID}
+      base-url={import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL}
+      position="bottom-right"
+    />
+  )
+}

@@ -14,11 +14,13 @@ const isDocsHome = pathname === "/docs";
 const docsSchema = {
   "@context": "https://schema.org",
   "@type": isDocsHome ? "WebPage" : "TechArticle",
+  "@id": `${pageUrl}#documentation`,
   ...(isDocsHome
     ? { name: "Probo Docs", alternateName: "Probo Documentation" }
     : { headline: entry.data.title }),
   ...(description && { description }),
   url: pageUrl,
+  mainEntityOfPage: pageUrl,
   inLanguage: "en",
   ...(lastUpdated && { dateModified: lastUpdated.toISOString() }),
   isPartOf: {
@@ -40,6 +42,7 @@ const docsSchema = {
     ],
   },
 };
+const docsSchemaJson = JSON.stringify(docsSchema).replace(/</g, "\\u003c");
 ---
 
 {
@@ -65,7 +68,7 @@ const docsSchema = {
   href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
   rel="stylesheet"
 />
-<script type="application/ld+json" set:html={JSON.stringify(docsSchema)} />
+<script type="application/ld+json" set:html={docsSchemaJson} />
 <link rel="alternate" type="text/markdown" href={markdownAlternate} />
 <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs index" />
 <link

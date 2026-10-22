@@ -1,0 +1,69 @@
+---
+title: First steps with Probo Cloud
+description: Sign in to the correct Probo Cloud region, find your organization, and start your first compliance program without deploying infrastructure.
+---
+
+import { Steps, LinkCard } from "@astrojs/starlight/components";
+
+Probo Cloud is the managed way to use Probo. Once your team has been onboarded, sign in to your region and work in your organization. Probo operates the application and infrastructure; your team manages users, integrations, and compliance content.
+
+## Before you start
+
+You need your team's Cloud region and access to its organization. Region selection is part of onboarding. If your team has not been onboarded, [contact Probo](/contact).
+
+If you have been invited to an existing organization, use that invitation rather than creating a second workspace for the same program.
+
+## Sign in and find your organization
+
+<Steps>
+
+1. **Open your regional console**
+
+   Use the region selected during onboarding:
+
+   | Region | Console                              |
+   | ------ | ------------------------------------ |
+   | EU     | [eu.probo.com](https://eu.probo.com) |
+   | US     | [us.probo.com](https://us.probo.com) |
+
+   Your organization's data is stored in its selected region.
+
+2. **Complete your account access**
+
+   Follow your invitation or your organization's sign-in instructions. Organizations using [SSO](/docs/product/sso/overview) may direct you through their identity provider.
+
+3. **Check the organization and your role**
+
+   Confirm that you are working in the organization intended for this compliance program. Your [role](/docs/product/roles-and-permissions) determines the records you can read and change.
+
+   If the organization already has frameworks and controls, continue that program. If you are setting up a new organization, follow the first-framework guide below.
+
+4. **Start with one useful outcome**
+
+   Set up the first framework, complete an assigned task, or review the program already in place. You do not need to configure every integration before using Probo.
+
+</Steps>
+
+<div className="docs-journey">
+  <LinkCard
+    title="Set up your first organization and framework"
+    description="Invite the right people, review requirements, and record the first evidence."
+    href="/docs/product/getting-started/first-organization-and-framework"
+  />
+</div>
+
+## If you cannot get started
+
+| What you see                                                | What to check                                                                                          |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| The organization you expected is missing                    | Confirm the invitation email address and Cloud region with your organization's owner.                  |
+| You can read records but cannot edit them                   | Check your assigned role. Viewers have read-only program access; owners and admins manage the program. |
+| Your invitation is still pending                            | Ask an owner or admin to review it under **People** and resend it if needed.                           |
+| Your team has not selected a region or completed onboarding | [Contact Probo](/contact) before starting another workspace.                                           |
+
+## After the first setup
+
+- [Use Probo](/docs/product) to find guides for the work your team is doing.
+- [Manage roles and permissions](/docs/product/roles-and-permissions) before inviting a wider audience.
+- [Review Cloud responsibilities](/docs/deployment/cloud) for hosting, security, and integration boundaries.
+- [Connect your tools](/docs/developers) when you are ready to automate.

@@ -27,6 +27,7 @@ import Icon from "../Icon.astro";
     connectedCallback() {
       this.btn.addEventListener("click", this.toggleExpanded);
       document.addEventListener("keydown", this.closeOnEscape);
+      document.addEventListener("click", this.closeOutside);
       document.addEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.addEventListener("change", this.closeForDesktop);
       document
@@ -38,6 +39,7 @@ import Icon from "../Icon.astro";
     disconnectedCallback() {
       this.btn.removeEventListener("click", this.toggleExpanded);
       document.removeEventListener("keydown", this.closeOnEscape);
+      document.removeEventListener("click", this.closeOutside);
       document.removeEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.removeEventListener("change", this.closeForDesktop);
       document
@@ -61,7 +63,7 @@ import Icon from "../Icon.astro";
 
       document
         .querySelectorAll<HTMLElement>(
-          ".docs-content, .right-sidebar, .sl-skip-link, probo-cookie-banner",
+          ".docs-content, .right-sidebar, .sl-skip-link, .docs-site-footer, probo-cookie-banner",
         )
         .forEach((element) => {
           element.toggleAttribute("inert", isExpanded);
@@ -71,7 +73,9 @@ import Icon from "../Icon.astro";
         window.setTimeout(
           () =>
             sidebar
-              ?.querySelector<HTMLElement>("a[href], button, summary")
+              ?.querySelector<HTMLElement>(
+                '[aria-current="page"], a[href], button, summary',
+              )
               ?.focus(),
           0,
         );
@@ -82,13 +86,49 @@ import Icon from "../Icon.astro";
       this.setExpanded(this.btn.getAttribute("aria-expanded") !== "true");
 
     closeOnEscape = (event: KeyboardEvent) => {
-      if (
-        event.key === "Escape" &&
-        this.btn.getAttribute("aria-expanded") === "true"
-      ) {
+      if (this.btn.getAttribute("aria-expanded") !== "true") return;
+      if (document.querySelector("dialog[open]")) return;
+      if (event.key === "Escape") {
         this.setExpanded(false);
         this.btn.focus();
+      } else if (
+        event.key === "Tab" &&
+        !document.querySelector("dialog[open]")
+      ) {
+        const sidebar = document.getElementById("starlight__sidebar");
+        const focusable = [
+          this.btn,
+          ...Array.from(
+            sidebar?.querySelectorAll<HTMLElement>(
+              "a[href], button, summary",
+            ) ?? [],
+          ),
+        ].filter((element) => element.getClientRects().length > 0);
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!focusable.includes(document.activeElement as HTMLElement)) {
+          event.preventDefault();
+          first?.focus();
+        } else if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
       }
+    };
+
+    closeOutside = (event: MouseEvent) => {
+      if (this.btn.getAttribute("aria-expanded") !== "true") return;
+      if (document.querySelector("dialog[open]")) return;
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        !this.contains(target) &&
+        !document.getElementById("starlight__sidebar")?.contains(target)
+      )
+        this.setExpanded(false);
     };
 
     closeAfterNavigation = (event: Event) => {
