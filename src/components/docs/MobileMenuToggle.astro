@@ -25,16 +25,16 @@ import Icon from "../Icon.astro";
     btn = this.querySelector("button")!;
     desktop = matchMedia("(min-width: 64rem)");
     focusTimer: ReturnType<typeof setTimeout> | undefined;
+    sidebar: HTMLElement | null = null;
 
     connectedCallback() {
+      this.sidebar = document.getElementById("starlight__sidebar");
       this.btn.addEventListener("click", this.toggleExpanded);
       document.addEventListener("keydown", this.closeOnEscape);
       document.addEventListener("click", this.closeOutside);
       document.addEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.addEventListener("change", this.closeForDesktop);
-      document
-        .getElementById("starlight__sidebar")
-        ?.addEventListener("click", this.closeAfterNavigation);
+      this.sidebar?.addEventListener("click", this.closeAfterNavigation);
       this.setExpanded(false, false);
     }
 
@@ -44,15 +44,13 @@ import Icon from "../Icon.astro";
       document.removeEventListener("click", this.closeOutside);
       document.removeEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.removeEventListener("change", this.closeForDesktop);
-      document
-        .getElementById("starlight__sidebar")
-        ?.removeEventListener("click", this.closeAfterNavigation);
+      this.sidebar?.removeEventListener("click", this.closeAfterNavigation);
       this.setExpanded(false, false);
     }
 
     setExpanded(expanded: boolean, motion = true) {
       const isExpanded = expanded && !this.desktop.matches;
-      const sidebar = document.getElementById("starlight__sidebar");
+      const sidebar = this.sidebar;
       const wasExpanded = this.btn.getAttribute("aria-expanded") === "true";
       clearTimeout(this.focusTimer);
       if (sidebar) {
@@ -85,15 +83,23 @@ import Icon from "../Icon.astro";
         });
 
       if (isExpanded) {
-        this.focusTimer = window.setTimeout(
-          () =>
-            sidebar
-              ?.querySelector<HTMLElement>(
-                '[aria-current="page"], a[href], button, summary',
-              )
-              ?.focus({ preventScroll: true }),
-          0,
-        );
+        this.focusTimer = window.setTimeout(() => {
+          const current = sidebar?.querySelector<HTMLElement>(
+            '[aria-current="page"]',
+          );
+          const first = Array.from(
+            sidebar?.querySelectorAll<HTMLElement>(
+              "a[href], button:not([disabled]), summary",
+            ) ?? [],
+          ).find(
+            (element) =>
+              element.getClientRects().length > 0 &&
+              !element.closest("[inert]"),
+          );
+          (current && !current.closest("[inert]") ? current : first)?.focus({
+            preventScroll: true,
+          });
+        }, 0);
       }
     }
 
@@ -110,7 +116,7 @@ import Icon from "../Icon.astro";
         event.key === "Tab" &&
         !document.querySelector("dialog[open]")
       ) {
-        const sidebar = document.getElementById("starlight__sidebar");
+        const sidebar = this.sidebar;
         const focusable = [
           this.btn,
           ...Array.from(
@@ -118,7 +124,12 @@ import Icon from "../Icon.astro";
               "a[href], button, summary",
             ) ?? [],
           ),
-        ].filter((element) => element.getClientRects().length > 0);
+        ].filter(
+          (element) =>
+            element.getClientRects().length > 0 &&
+            !element.closest("[inert]") &&
+            !element.matches('[disabled], [tabindex="-1"]'),
+        );
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
         if (!focusable.includes(document.activeElement as HTMLElement)) {

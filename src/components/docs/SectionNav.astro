@@ -71,35 +71,9 @@ const activeSection = getDocsSectionForPath(Astro.url.pathname);
     color: var(--color-primary);
   }
 
-  .docs-section-nav__link::after {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: 0;
-    height: 3px;
-    background: var(--docs-accent);
-    content: "";
-    opacity: 0;
-    transform: scaleX(0.45);
-    transition:
-      opacity 160ms ease,
-      transform 160ms ease;
-  }
-
   .docs-section-nav__link--active,
   .docs-section-nav__link[aria-current="page"] {
     color: var(--color-primary);
     font-weight: 600;
-  }
-
-  .docs-section-nav__link--active::after,
-  .docs-section-nav__link[aria-current="page"]::after {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .docs-section-nav__link::after {
-      transition: none;
-    }
   }
 </style>

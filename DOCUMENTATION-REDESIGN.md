@@ -61,3 +61,12 @@ Critère de fin renforcé à la demande de Julien : une version aboutie avec les
 - Vérification live : les 273 routes sont chargées à 1440 px puis 390 px ; contrôles structurels et débordements sur 546 vues, plus essais à 320 px. Les captures et le rapport détaillé vivent dans le dossier flexOS Documentation.
 
 Source des principes : [Benji — Morphing icons with Claude](https://benji.org/morphing-icons-with-claude), et références documentées dans la skill `benji-interface-motion` (relevé du 5 septembre 2026).
+
+## Affinage des composants — 22 octobre 2026
+
+- Navigation sans soulignement fluorescent : rubrique dans une surface neutre, page courante signalée par un point discret et un texte renforcé, sommaire sans soulignement.
+- Tableaux Markdown rendus comme de vrais tableaux dans un conteneur défilant accessible. Grille, en-têtes, longues valeurs et alignement des cellules cohérents ; focus clavier seulement si le tableau déborde.
+- Étapes : première ligne et numéro alignés, marges et décalages hérités supprimés, numérotation de départ conservée.
+- Recherche parcourable avec les flèches et Entrée, focus sur les nouveaux résultats après pagination. Sommaires mobile et ordinateur synchronisés avec les onglets ; menu et copie fiabilisés.
+- Référence observée : [Aave](https://aave.com/docs/aave-v3/overview), notamment sa navigation discrète et ses retours d'état courts. Structure Probo, articles et URL inchangés.
+- Vérification : 273 pages à 1440 px et 390 px, grille des tableaux et alignement des étapes contrôlés, puis essais ciblés à 320 px, au clavier et avec mouvement réduit. Compilation et conservation sans erreur. Les preuves sont dans le rapport flexOS « Composants et interactions ».

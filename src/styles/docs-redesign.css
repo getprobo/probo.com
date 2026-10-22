@@ -46,7 +46,7 @@
   --docs-text: #d2d1c9;
   --docs-accent-ink: #e6ff03;
   --docs-accent-soft: #38331f;
-  --docs-focus: #e6ff03;
+  --docs-focus: #f4f3eb;
   --docs-rule: #37362f;
   --docs-surface-raised: #242420;
   --color-foreground: #f4f3eb;
@@ -71,8 +71,8 @@
 }
 
 ::selection {
-  color: #21201c;
-  background: var(--docs-accent);
+  color: var(--color-primary);
+  background: var(--color-border-mid);
 }
 .docs-shell,
 .docs-chrome,
@@ -163,8 +163,7 @@ body {
   color: var(--color-primary);
 }
 .docs-section-nav__link::after {
-  height: 3px;
-  background: var(--docs-accent);
+  display: none;
 }
 
 .docs-main {
@@ -229,7 +228,22 @@ body {
   color: var(--color-primary);
   background: transparent;
   font-weight: 600;
-  box-shadow: inset 1px 0 0 var(--color-primary);
+  box-shadow: none;
+  border-radius: 0;
+}
+.docs-shell .sidebar a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -0.05rem;
+  inset-block-start: 50%;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+.docs-shell .sidebar a {
+  position: relative;
 }
 .docs-shell .sidebar summary {
   min-height: 2rem;
@@ -404,6 +418,7 @@ body {
   margin: 0;
 }
 .sl-markdown-content table:not(.not-content *) {
+  display: table;
   border-color: var(--docs-rule);
   border-radius: 0.5rem;
   box-shadow: none;
@@ -426,6 +441,7 @@ body {
   background: transparent;
 }
 .sl-markdown-content .sl-steps {
+  counter-reset: probo-step var(--sl-steps-start, 0);
   grid-template-columns: minmax(0, 1fr);
   border: 0;
   padding: 0;
@@ -434,15 +450,23 @@ body {
 }
 .sl-markdown-content .sl-steps > li {
   min-width: 0;
-  padding: 1rem 0 1.5rem 3.25rem;
+  margin: 0;
+  padding: 1rem 0 1.5rem 3rem;
 }
 .sl-markdown-content .sl-steps > li::before {
-  inset-block-start: 1.1rem;
+  inset-block-start: 0.9rem;
   transform: none;
   background: var(--color-subtle);
   border-color: var(--docs-rule);
   box-shadow: none;
   border-radius: 50%;
+}
+.sl-markdown-content .sl-steps > li > :first-child {
+  margin-block-start: 0;
+  transform: none;
+}
+.sl-markdown-content .sl-steps > li > :last-child {
+  margin-block-end: 0;
 }
 .sl-markdown-content .sl-steps > li:last-child {
   border-block-end: 0;
@@ -472,7 +496,7 @@ body {
   color: #c9c7bb;
 }
 .expressive-code .copy button:focus-visible {
-  outline-color: #e6ff03;
+  outline-color: #eeede6;
 }
 .mcp-tool__identity code,
 .mcp-tool__identity > span {
@@ -750,10 +774,21 @@ body {
 }
 .docs-toc-pane .right-sidebar a[aria-current="true"] {
   color: var(--color-primary);
-  text-decoration: underline;
-  text-decoration-color: var(--docs-accent);
-  text-decoration-thickness: 3px;
-  text-underline-offset: 0.3em;
+  font-weight: 600;
+  text-decoration: none;
+}
+.docs-toc-pane .right-sidebar a:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.docs-subnav .docs-section-nav__link {
+  margin-block: 0.35rem;
+  min-height: 2.3rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.375rem;
+}
+.docs-subnav .docs-section-nav__link[aria-current] {
+  background: var(--color-subtle);
 }
 .docs-shell--home .docs-page-header {
   margin-block-end: 1.5rem;
@@ -815,4 +850,71 @@ html[data-theme][data-has-sidebar] {
 }
 .docs-shell [id] {
   scroll-margin-top: 0;
+}
+
+/* Keep the table grid intact; only its named wrapper may scroll. */
+.sl-markdown-content .docs-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-block: 1.5rem;
+  border: 1px solid var(--docs-rule);
+  border-radius: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-mid) transparent;
+}
+.sl-markdown-content .docs-table-scroll > table {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+.sl-markdown-content .docs-table-scroll :is(th, td) {
+  min-width: 7rem;
+  overflow-wrap: break-word;
+  font-variant-numeric: tabular-nums;
+}
+.sl-markdown-content .docs-table-scroll :is(th, td) > :first-child {
+  margin-block-start: 0;
+}
+.sl-markdown-content .docs-table-scroll :is(th, td) > :last-child {
+  margin-block-end: 0;
+}
+.sl-markdown-content
+  :is(ul, ol):not(.not-content, .not-content *, .sl-steps, .mcp-tool-list)
+  > li
+  > p:first-child {
+  margin-block-start: 0;
+}
+.sl-markdown-content
+  :is(ul, ol):not(.not-content, .not-content *, .sl-steps, .mcp-tool-list)
+  > li
+  > p:last-child {
+  margin-block-end: 0;
+}
+.sl-markdown-content .mcp-tool-list {
+  padding: 0;
+}
+.sl-markdown-content .mcp-tool > summary:hover,
+.docs-shell .accordion-step summary:hover .step-title {
+  color: var(--color-primary);
+}
+.sl-markdown-content .mcp-tool > summary:hover .mcp-tool__identity,
+.docs-shell .accordion-step summary:hover .step-title {
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-mid);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+@media (max-width: 39.999rem) {
+  .docs-subnav .docs-section-nav {
+    gap: 0.25rem;
+  }
+  .docs-subnav .docs-section-nav__link {
+    padding-inline: 0.45rem;
+  }
+  .sl-markdown-content .docs-table-scroll :is(th, td) {
+    padding: 0.75rem;
+  }
 }
