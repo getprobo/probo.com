@@ -293,7 +293,7 @@
     color: var(--color-primary);
     text-decoration-color: color-mix(
       in srgb,
-      var(--docs-accent) 75%,
+      var(--docs-link) 30%,
       transparent
     );
     text-decoration-thickness: 2px;
@@ -301,7 +301,7 @@
   }
 
   .sl-markdown-content a:not(.sl-link-card a):hover {
-    text-decoration-color: var(--docs-accent);
+    text-decoration-color: currentColor;
   }
 
   .sl-markdown-content :not(pre) > code {
@@ -339,8 +339,7 @@
     margin-block: 1.25rem 1.5rem;
   }
 
-  .expressive-code .ec-line
-    :where(span[style^="--"]:not([class])) {
+  .expressive-code .ec-line :where(span[style^="--"]:not([class])) {
     color: var(--0, inherit);
     background-color: var(--0bg, transparent);
     font-style: var(--0fs, inherit);
