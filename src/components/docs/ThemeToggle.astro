@@ -48,8 +48,8 @@ const themes: { value: string; label: string; icon: IconName }[] = [
   .theme-toggle button {
     display: grid;
     place-items: center;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.875rem;
+    height: 1.875rem;
     border: 0;
     border-radius: 999px;
     background: transparent;
@@ -93,6 +93,7 @@ const themes: { value: string; label: string; icon: IconName }[] = [
 </style>
 
 <script>
+  import { customElementDefine } from "../../lib/dom";
   type Theme = "auto" | "dark" | "light";
 
   /** Shared with Starlight's inlined `ThemeProvider` script, which avoids FOUC. */
@@ -101,7 +102,13 @@ const themes: { value: string; label: string; icon: IconName }[] = [
   const parseTheme = (theme: unknown): Theme =>
     theme === "dark" || theme === "light" ? theme : "auto";
 
-  const loadTheme = (): Theme => parseTheme(localStorage.getItem(storageKey));
+  const loadTheme = (): Theme => {
+    try {
+      return parseTheme(localStorage.getItem(storageKey));
+    } catch {
+      return "auto";
+    }
+  };
 
   const preferredColorScheme = (): Theme =>
     matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
@@ -114,7 +121,11 @@ const themes: { value: string; label: string; icon: IconName }[] = [
     );
 
     root.dataset.theme = theme === "auto" ? preferredColorScheme() : theme;
-    localStorage.setItem(storageKey, theme === "auto" ? "" : theme);
+    try {
+      localStorage.setItem(storageKey, theme === "auto" ? "" : theme);
+    } catch {
+      /* The theme still works when browser storage is unavailable. */
+    }
 
     for (const button of document.querySelectorAll<HTMLButtonElement>(
       "docs-theme-toggle button[data-theme]",
@@ -131,16 +142,21 @@ const themes: { value: string; label: string; icon: IconName }[] = [
   });
 
   class DocsThemeToggle extends HTMLElement {
+    onClick = (event: Event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>(
+        "button[data-theme]",
+      );
+      if (button) applyTheme(parseTheme(button.dataset.theme));
+    };
+
     connectedCallback() {
       applyTheme(loadTheme());
-      this.addEventListener("click", (event) => {
-        const button = (event.target as Element).closest<HTMLButtonElement>(
-          "button[data-theme]",
-        );
-        if (button) applyTheme(parseTheme(button.dataset.theme));
-      });
+      this.addEventListener("click", this.onClick);
+    }
+    disconnectedCallback() {
+      this.removeEventListener("click", this.onClick);
     }
   }
 
-  customElements.define("docs-theme-toggle", DocsThemeToggle);
+  customElementDefine("docs-theme-toggle", () => DocsThemeToggle);
 </script>

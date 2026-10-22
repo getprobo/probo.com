@@ -26,7 +26,7 @@ export const docsSections: readonly DocsSection[] = [
   },
   {
     id: "product",
-    label: "Product",
+    label: "Use Probo",
     href: "/docs/product",
     match: {
       prefixes: ["/docs/product"],
@@ -43,7 +43,7 @@ export const docsSections: readonly DocsSection[] = [
   },
   {
     id: "deployment",
-    label: "Deployment",
+    label: "Deploy Probo",
     href: "/docs/deployment",
     match: {
       prefixes: ["/docs/deployment"],

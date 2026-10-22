@@ -3,17 +3,25 @@ title: Compliance Portal
 description: Share your security posture with customers and prospects through a dedicated portal connected to Probo, with control over access and visibility.
 ---
 
-import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+import { LinkCard } from "@astrojs/starlight/components";
 
-Customers and prospects increasingly expect one place to review your security posture before they buy, renew, or begin due diligence. The Compliance Portal gives them a dedicated, branded place to find that information, built directly into Probo.
+The Compliance Portal is a branded place for customers and prospects to review your security posture. Choose what to share from your Probo organization, control access to sensitive resources, and keep the information connected to your compliance program.
 
-Instead of maintaining a separate trust site, choose which frameworks, reports, documents, commitments, references, and subprocessors to expose from your existing Probo workspace. Nothing is shared automatically: you decide what is public, what requires approval, and whether visitors must sign an NDA before exporting documents.
+Nothing is shared automatically. You choose which frameworks, reports, documents, commitments, references, and subprocessors to publish, what requires approval, and whether visitors must sign an NDA before exporting protected documents.
 
 {/* Screenshot placeholder: Compliance Portal visitor home page — /docs/compliance-portal/portal-home.webp */}
 
+<div className="docs-journey">
+  <LinkCard
+    title="Launch your first portal"
+    description="Create the portal, add approved content, review access, and activate it."
+    href="/docs/product/compliance-portal/quickstart"
+  />
+</div>
+
 ## Choose what customers can see
 
-The portal is connected to the information already managed in Probo. Select the approved items you want to share:
+The portal uses information already managed in Probo. Select the approved items you want to share:
 
 - Frameworks and audit reports that show your compliance coverage
 - Policies, procedures, and other documents
@@ -31,84 +39,34 @@ For each document, audit report, or portal file, choose how it is shared:
 - **Public** — anyone visiting the portal can open it.
 - **Restricted** — visitors can see that it exists, but must sign in, request access, and receive your approval before opening it.
 
-You can also add an NDA to the portal. Visitors may request access before signing it, but they must complete the electronic signature before exporting documents.
+You can also add an NDA to the portal. Visitors may request access before signing it, but they must complete the electronic signature before exporting protected documents.
 
 ## Guides
 
-<CardGrid>
-  <LinkCard
-    title="Quickstart"
-    description="Create, configure, and activate your first portal"
-    href="/docs/product/compliance-portal/quickstart"
-  />
-  <LinkCard
-    title="Branding"
-    description="Add organization details, logos, links, and a custom domain"
-    href="/docs/product/compliance-portal/branding-and-domains"
-  />
-  <LinkCard
-    title="Publishing content"
-    description="Publish frameworks, references, documents, audits, and files"
-    href="/docs/product/compliance-portal/publishing-content"
-  />
-  <LinkCard
-    title="Commitments"
-    description="Write and organize accurate public security and privacy claims"
-    href="/docs/product/compliance-portal/commitments"
-  />
-  <LinkCard
-    title="Visitor access and NDA"
-    description="Protect resources and review visitor access requests"
-    href="/docs/product/compliance-portal/visitor-access-and-nda"
-  />
-  <LinkCard
-    title="Subprocessors"
-    description="Publish selected vendors from your third-party inventory"
-    href="/docs/product/compliance-portal/subprocessors"
-  />
-</CardGrid>
+Start with the [quickstart](/docs/product/compliance-portal/quickstart), then use these guides for each part of the setup.
+
+<div className="docs-resource-list">
+
+| I want to…                                                         | Read                                                                             |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Set the profile, logos, links, and custom domain                   | [Branding and domains](/docs/product/compliance-portal/branding-and-domains)     |
+| Choose frameworks, references, documents, audit reports, and files | [Publishing content](/docs/product/compliance-portal/publishing-content)         |
+| Explain our public security and privacy commitments                | [Commitments](/docs/product/compliance-portal/commitments)                       |
+| Review visitor requests and protect resources with an NDA          | [Visitor access and NDA](/docs/product/compliance-portal/visitor-access-and-nda) |
+| Publish selected vendors from our third-party inventory            | [Subprocessors](/docs/product/compliance-portal/subprocessors)                   |
+
+</div>
 
 ## Operations and administration
 
-<CardGrid>
-  <LinkCard
-    title="Updates and mailing list"
-    description="Publish compliance updates and manage subscribers"
-    href="/docs/product/compliance-portal/updates-and-mailing-list"
-  />
-  <LinkCard
-    title="Rights requests"
-    description="Let visitors submit and track privacy requests"
-    href="/docs/product/compliance-portal/rights-requests"
-  />
-  <LinkCard
-    title="Multiple portals"
-    description="Operate separate publishing surfaces for entities, products, or audiences"
-    href="/docs/product/compliance-portal/multiple-portals"
-  />
-  <LinkCard
-    title="SEO and discoverability"
-    description="Control indexing and machine-readable portal content"
-    href="/docs/product/compliance-portal/seo-and-discoverability"
-  />
-  <LinkCard
-    title="Permissions and integrations"
-    description="Review roles, Slack notifications, and automation options"
-    href="/docs/product/compliance-portal/permissions-and-integrations"
-  />
-</CardGrid>
+Keep the portal useful after launch: maintain its content, review who has access, and verify its public presentation.
+
+- [Updates and mailing list](/docs/product/compliance-portal/updates-and-mailing-list) — publish compliance updates and manage subscribers.
+- [Rights requests](/docs/product/compliance-portal/rights-requests) — let visitors submit and track privacy requests.
+- [Multiple portals](/docs/product/compliance-portal/multiple-portals) — operate separate publishing surfaces for entities, products, or audiences.
+- [SEO and discoverability](/docs/product/compliance-portal/seo-and-discoverability) — control indexing and review machine-readable portal content.
+- [Permissions and integrations](/docs/product/compliance-portal/permissions-and-integrations) — understand organization roles, Slack notifications, and automation access.
 
 ## Automation
 
-<CardGrid>
-  <LinkCard
-    title="MCP Compliance Portal"
-    description="Manage portal content from supported AI tools"
-    href="/docs/developers/api/mcp/tools/catalog/compliance-portal"
-  />
-  <LinkCard
-    title="n8n Compliance Portal"
-    description="Automate portal operations in n8n"
-    href="/docs/developers/api/n8n/resources/compliance-portal"
-  />
-</CardGrid>
+Use the [MCP Compliance Portal tools](/docs/developers/api/mcp/tools/catalog/compliance-portal) to manage content from a supported AI client, or the [n8n Compliance Portal operations](/docs/developers/api/n8n/resources/compliance-portal) to build workflows. See [Developers](/docs/developers) for authentication and interface guidance.

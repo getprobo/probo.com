@@ -4,28 +4,16 @@ import Icon from "../Icon.astro";
 
 const links = [
   {
-    label: "Chat with Probo developers on",
-    action: "Discord.",
+    label: "Discuss setup and usage in the",
+    action: "Probo community",
     href: "https://discord.com/invite/8qfdJYfvpY",
     icon: "terminal-window",
   },
   {
-    label: "Check out our",
-    action: "changelog.",
+    label: "See what's new in the",
+    action: "changelog",
     href: "/changelog",
     icon: "notepad",
-  },
-  {
-    label: "Questions?",
-    action: "Contact Sales.",
-    href: "/contact",
-    icon: "question",
-  },
-  {
-    label: "LLM?",
-    action: "Read llms.txt.",
-    href: "/llms.txt",
-    icon: "sparkle",
   },
 ] as const;
 ---
@@ -35,6 +23,7 @@ const links = [
 </DefaultFooter>
 
 <footer class="docs-help-footer" aria-label="Documentation help">
+  <h2>Keep going</h2>
   <ul>
     {
       links.map((link) => (
@@ -66,6 +55,13 @@ const links = [
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  .docs-help-footer h2 {
+    margin: 0 0 0.9rem;
+    color: var(--color-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
   }
 
   .docs-help-footer li {

@@ -7,6 +7,19 @@ import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
 Probo supports two related ways to reason about risk: a risk register for tracked business or security risks, and structured risk assessments for modeling systems, threats, scenarios, and their resulting risks.
 
+<div className="docs-journey">
+  <LinkCard
+    title="Record and review a risk"
+    description="Start with a specific exposure, connect safeguards, and track the work still needed."
+    href="/docs/product/risk-management/first-risk"
+  />
+</div>
+
+| Use the…                | When you need to…                                                   |
+| ----------------------- | ------------------------------------------------------------------- |
+| Risk register           | Track an exposure and keep its context and treatment current.       |
+| Threat-based assessment | Explain how threats and scenarios affect a defined system or scope. |
+
 ## Risk register
 
 A risk record describes a risk, its current state, and the context needed to evaluate it. Risks can be linked to:
@@ -27,6 +40,8 @@ Assessments and register entries have separate lifecycles: the assessment docume
 ## Publication and review
 
 Publishing risk records creates a reviewed list without preventing continued program operation. Revisit risks when systems, vendors, controls, or business assumptions change. Use internal controls and tasks for treatment work instead of placing implementation details only in the risk description.
+
+Publishing the register produces a document version. It does not replace the live risk records or mean that every risk has been resolved.
 
 ## Automation
 

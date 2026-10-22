@@ -1,6 +1,6 @@
 ---
 title: Probo documentation
-description: Probo Docs, the official documentation for the Probo open-source compliance platform, covering product areas, developer interfaces, and Cloud or self-hosted deployment options.
+description: Get started with Probo, run your compliance program, build integrations, or deploy the open-source platform on your own infrastructure.
 head:
   - tag: title
     content: "Probo Docs: Compliance Platform Documentation"
@@ -10,130 +10,67 @@ head:
       content: "Probo Docs: Compliance Platform Documentation"
 ---
 
-import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+import { LinkCard } from "@astrojs/starlight/components";
 
-Probo is an open-source governance, risk, and compliance platform for engineering, security, and compliance teams. Use these docs to understand the product model, operate a compliance program, automate records, and choose a deployment.
+Probo is an open-source governance, risk, and compliance (GRC) platform for engineering, security, and compliance teams. It brings together requirements, controls, evidence, risks, audits, and the information you share with customers. Start a program, find the steps for a task, or connect Probo to your own tools.
 
 ## Choose your path
 
-Start with the path that matches your role.
-
-<CardGrid>
+<div className="docs-journey">
   <LinkCard
-    title="Compliance lead"
-    description="Learn the product model, import a framework, and operate the compliance program"
+    title="Get started"
+    description="Understand Probo and set up your first compliance program."
     href="/docs/product/getting-started"
   />
   <LinkCard
-    title="Cloud customer"
-    description="Review Probo Cloud regions, shared responsibility, and first-organization setup"
-    href="/docs/deployment/cloud"
-  />
-  <LinkCard
-    title="Self-host operator"
-    description="Deploy with Docker Compose or Kubernetes, then configure the platform"
-    href="/docs/deployment/self-hosting"
-  />
-  <LinkCard
-    title="Integrator"
-    description="Automate Probo through GraphQL, the CLI, MCP, n8n, and webhooks"
-    href="/docs/developers"
-  />
-</CardGrid>
-
-## Explore Probo
-
-<CardGrid>
-  <LinkCard
-    title="Product overview"
-    description="Understand Probo's scope, users, interfaces, and deployment options"
-    href="/docs/product/getting-started/product-overview"
-  />
-  <LinkCard
-    title="Product"
-    description="Explore compliance, risk, privacy, audit, trust, identity, consent, and device capabilities"
+    title="Use Probo"
+    description="Work with controls, evidence, risks, audits, and your Compliance Portal."
     href="/docs/product"
   />
   <LinkCard
     title="Developers"
-    description="Automate Probo through GraphQL, the CLI, MCP, n8n, and webhooks"
+    description="Connect your tools with GraphQL, the CLI, MCP, n8n, and webhooks."
     href="/docs/developers"
   />
   <LinkCard
-    title="Deployment"
-    description="Compare Probo Cloud and self-hosting, then review configuration and operations"
+    title="Deploy Probo"
+    description="Choose Probo Cloud or operate Probo on your own infrastructure."
     href="/docs/deployment"
   />
-</CardGrid>
+</div>
+
+## Explore Probo
+
+New to the platform? The [product overview](/docs/product/getting-started/product-overview) explains how engineering, security, and compliance teams work together in Probo.
+
+Already know where you are starting?
+
+- **Cloud customer:** review [Probo Cloud](/docs/deployment/cloud), including regions, shared responsibility, and onboarding.
+- **Self-host operator:** start with [self-hosting](/docs/deployment/self-hosting), then choose Docker Compose or Kubernetes.
+- **Integrator:** use the [developer guides](/docs/developers) to choose an interface and authenticate.
 
 ## Core product areas
 
-Probo connects the records used throughout a compliance program instead of treating them as isolated checklists.
+Your records stay connected across a compliance program. Find the area that matches the work in front of you.
 
-<CardGrid>
-  <LinkCard
-    title="Compliance program"
-    description="Frameworks, controls, internal controls, tasks, evidence, and applicability"
-    href="/docs/product/compliance-program"
-  />
-  <LinkCard
-    title="Tasks"
-    description="Assign work, set deadlines, and sync tasks with Linear"
-    href="/docs/product/tasks/overview"
-  />
-  <LinkCard
-    title="Risk and third parties"
-    description="Risk registers, threat-based assessments, vendors, services, and subprocessors"
-    href="/docs/product/risk-management"
-  />
-  <LinkCard
-    title="Privacy and trust"
-    description="Processing activities, impact assessments, documents, and the Compliance Portal"
-    href="/docs/product/privacy-management"
-  />
-  <LinkCard
-    title="Identity and access"
-    description="Members, roles, SSO, SCIM, and access-review campaigns"
-    href="/docs/product/identity-and-access"
-  />
-</CardGrid>
+<div className="docs-resource-list">
+
+| I want to…                                         | Start here                                                                                                          |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Connect requirements to controls and evidence      | [Compliance program](/docs/product/compliance-program)                                                              |
+| Assign work, set deadlines, or sync with Linear    | [Tasks](/docs/product/tasks/overview)                                                                               |
+| Understand and manage exposure                     | [Risk management](/docs/product/risk-management) and [third-party management](/docs/product/third-party-management) |
+| Document processing and share approved information | [Privacy management](/docs/product/privacy-management) and [Compliance Portal](/docs/product/compliance-portal)     |
+| Manage memberships, SSO, SCIM, and access reviews  | [Identity and access](/docs/product/identity-and-access)                                                            |
+
+</div>
 
 ## Learn the model
 
-<CardGrid>
-  <LinkCard
-    title="Core concepts"
-    description="See how the main records relate across a compliance program"
-    href="/docs/product/getting-started/core-concepts"
-  />
-  <LinkCard
-    title="Glossary"
-    description="Look up product, security, privacy, and compliance terminology"
-    href="/docs/product/getting-started/glossary"
-  />
-  <LinkCard
-    title="Choose a deployment"
-    description="Compare managed Cloud, Docker Compose, and Kubernetes"
-    href="/docs/product/getting-started/choose-deployment"
-  />
-</CardGrid>
+- [Core concepts](/docs/product/getting-started/core-concepts) — how requirements, controls, evidence, and other records relate.
+- [Glossary](/docs/product/getting-started/glossary) — product, security, privacy, and compliance terminology.
+- [Choose a deployment](/docs/product/getting-started/choose-deployment) — the responsibility differences between managed Cloud, Docker Compose, and Kubernetes.
 
 ## More resources
 
-<CardGrid>
-  <LinkCard
-    title="GitHub repository"
-    description="Browse the source, contribute to Probo, or follow development"
-    href="https://github.com/getprobo/probo"
-  />
-  <LinkCard
-    title="Report an issue"
-    description="Report a bug or request a feature"
-    href="https://github.com/getprobo/probo/issues"
-  />
-  <LinkCard
-    title="Community"
-    description="Get help and talk with the Probo community on Discord"
-    href="https://discord.com/invite/8qfdJYfvpY"
-  />
-</CardGrid>
+Probo is open source. [Browse the repository](https://github.com/getprobo/probo), [report a bug or request a feature](https://github.com/getprobo/probo/issues), or [join the community](https://discord.com/invite/8qfdJYfvpY) to discuss Probo with other users.

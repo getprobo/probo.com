@@ -4,6 +4,7 @@ import { Badge } from "@astrojs/starlight/components";
 import {
   getDocsSection,
   getDocsSectionForPath,
+  normalizeDocsPath,
 } from "../../lib/docs-navigation";
 
 type Breadcrumb = {
@@ -21,7 +22,7 @@ const titleBadge =
     : typeof entry.data.sidebar?.badge === "string"
       ? { text: entry.data.sidebar.badge, variant: "default" as const }
       : undefined);
-const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
+const pathname = normalizeDocsPath(Astro.url.pathname);
 const markdownUrl = pathname ? `${pathname}.md` : "/index.md";
 const activeSection = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
 
@@ -54,42 +55,50 @@ function findCurrent(
 
 const sidebarCrumbs = findCurrent(sidebar) ?? [];
 const breadcrumbs = [
-  { label: "Home", href: "/docs" },
-  ...(activeSection.id === "product"
-    ? []
-    : [{ label: activeSection.label, href: activeSection.href }]),
-  ...sidebarCrumbs,
-].filter(
-  (crumb, index, crumbs) =>
-    index === 0 ||
-    crumb.label.toLocaleLowerCase() !==
-      crumbs[index - 1]?.label.toLocaleLowerCase(),
-);
+  { label: "Docs", href: "/docs" },
+  { label: activeSection.label, href: activeSection.href },
+  ...sidebarCrumbs.slice(0, -1),
+]
+  .map((crumb) => ({
+    ...crumb,
+    href: crumb.href ? normalizeDocsPath(crumb.href) : undefined,
+  }))
+  .filter(
+    (crumb, index, crumbs) =>
+      crumb.href &&
+      crumb.href !== pathname &&
+      !/^(overview|developer overview|deployment overview)$/i.test(
+        crumb.label,
+      ) &&
+      crumbs.findIndex((other) => other.href === crumb.href) === index,
+  );
 ---
 
 <header class="docs-page-header">
-  <nav aria-label="Breadcrumb">
-    <ol class="docs-breadcrumbs">
-      {
-        breadcrumbs.map((crumb, index) => (
-          <li>
-            {index > 0 && (
-              <span class="docs-breadcrumbs__separator" aria-hidden="true">
-                /
-              </span>
-            )}
-            {crumb.href ? (
-              <a href={crumb.href}>{crumb.label}</a>
-            ) : (
-              <span aria-current="page">{crumb.label}</span>
-            )}
-          </li>
-        ))
-      }
-    </ol>
-  </nav>
+  {
+    breadcrumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" data-pagefind-ignore>
+        <ol class="docs-breadcrumbs">
+          {breadcrumbs.map((crumb, index) => (
+            <li>
+              {index > 0 && (
+                <span class="docs-breadcrumbs__separator" aria-hidden="true">
+                  /
+                </span>
+              )}
+              {crumb.href ? (
+                <a href={crumb.href}>{crumb.label}</a>
+              ) : (
+                <span aria-current="page">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
 
-  <h1 id="_top">
+  <h1 id="_top" data-pagefind-weight="10">
     {title}
     {
       titleBadge && (
@@ -102,22 +111,29 @@ const breadcrumbs = [
       )
     }
   </h1>
-  {description && <p class="docs-page-description">{description}</p>}
+  {
+    description && (
+      <p class="docs-page-description" data-pagefind-weight="2">
+        {description}
+      </p>
+    )
+  }
 
-  <div class="docs-page-actions" aria-label="Page actions">
+  <div class="docs-page-actions" aria-label="Page actions" data-pagefind-ignore>
     <button
       type="button"
       class="docs-page-action"
       data-copy-markdown
       data-markdown-url={markdownUrl}
+      title="Copy this page as Markdown"
     >
       <Icon name="copy" size={18} />
-      <span data-copy-label aria-live="polite">Copy for LLM</span>
+      <span data-copy-label aria-live="polite">Copy page</span>
     </button>
     <span class="docs-page-actions__divider" aria-hidden="true"></span>
     <a class="docs-page-action" href={markdownUrl} rel="nofollow">
       <Icon name="markdown-logo" size={18} />
-      View as Markdown
+      Markdown
     </a>
   </div>
 </header>
@@ -226,6 +242,7 @@ const breadcrumbs = [
       await navigator.clipboard.writeText(text);
       return;
     } catch {
+      const focused = document.activeElement;
       const textarea = document.createElement("textarea");
       textarea.value = text;
       textarea.setAttribute("readonly", "");
@@ -235,6 +252,8 @@ const breadcrumbs = [
       textarea.select();
       const copied = document.execCommand("copy");
       textarea.remove();
+      if (focused instanceof HTMLElement)
+        focused.focus({ preventScroll: true });
       if (!copied) throw new Error("Clipboard write failed");
     }
   }
@@ -252,17 +271,24 @@ const breadcrumbs = [
       const url = button.dataset.markdownUrl;
       if (!label || !url) return;
 
+      button.disabled = true;
+      label.textContent = "Copying…";
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Markdown request failed`);
-        await copyText(await response.text());
+        const text = await response.text();
+        if (/^\s*<!doctype html/i.test(text))
+          throw new Error("Markdown unavailable");
+        await copyText(text);
         label.textContent = "Copied";
       } catch {
         label.textContent = "Copy failed";
+      } finally {
+        button.disabled = false;
       }
 
       window.setTimeout(() => {
-        label.textContent = "Copy for LLM";
+        label.textContent = "Copy page";
       }, 1800);
     });
   }
