@@ -4,23 +4,84 @@
   --sl-docs-chrome-height: 7rem;
   --docs-sidebar-width: 16.5rem;
   --docs-toc-width: 11.5rem;
-  --docs-content-max-width: 46rem;
+  --docs-content-max-width: 44rem;
   --docs-page-padding-x: clamp(1.25rem, 3.2vw, 3.5rem);
   --docs-link: #155dfc;
-  --docs-text: #40483e;
+  --docs-text: #45443f;
   --docs-nav-active: var(--color-primary);
-  --docs-accent: #5d770d;
-  --docs-accent-soft: #f2f6eb;
-  --docs-rule: #e9ece6;
+  --docs-accent: #e6ff03;
+  --docs-accent-ink: #655800;
+  --docs-accent-soft: #fff8c8;
+  --docs-focus: #21201c;
+  --docs-rule: #e9e8e1;
+  --docs-surface-raised: #ffffff;
+  --color-foreground: #21201c;
+  --color-primary: var(--color-foreground);
+  --color-primary-foreground: #fffffb;
+  --color-muted-foreground: #6b6961;
+  --color-tertiary-foreground: #6b6961;
+  --color-quaternary: #6b6961;
+  --color-secondary: #ffffff;
+  --color-level-0: #fffffb;
+  --color-level-1: #ffffff;
+  --color-level-3: #21201c;
+  --color-border-low: #21201c1a;
+  --color-border-mid: #21201c2e;
+  --color-border-solid: #e9e8e1;
+  --color-accent: var(--docs-accent);
+  --color-active: var(--docs-accent-soft);
+  --color-highlight: #21201c0a;
+  --color-subtle: #f5f5f0;
   --sl-color-text: var(--docs-text);
+  --sl-color-accent-high: var(--docs-accent-ink);
+  --sl-color-accent: var(--docs-accent);
+  --sl-color-accent-low: var(--docs-accent-soft);
+  --sl-color-gray-1: #34332e;
+  --sl-color-gray-5: #c7c5bb;
+  --sl-color-gray-6: #edede6;
 }
 
 :root[data-theme="dark"] {
-  --docs-link: #9cbcff;
-  --docs-text: #c6cec3;
-  --docs-accent: #bfd77d;
-  --docs-accent-soft: #242c1d;
-  --docs-rule: #31382e;
+  --docs-link: #a3bfff;
+  --docs-text: #d2d1c9;
+  --docs-accent-ink: #e6ff03;
+  --docs-accent-soft: #38331f;
+  --docs-focus: #e6ff03;
+  --docs-rule: #37362f;
+  --docs-surface-raised: #242420;
+  --color-foreground: #f4f3eb;
+  --color-primary-foreground: #181817;
+  --color-muted-foreground: #b0aea3;
+  --color-tertiary-foreground: #b0aea3;
+  --color-quaternary: #b0aea3;
+  --color-secondary: #242420;
+  --color-level-0: #181817;
+  --color-level-1: #242420;
+  --color-level-3: #f4f3eb;
+  --color-border-low: #f4f3eb1a;
+  --color-border-mid: #f4f3eb30;
+  --color-border-solid: #37362f;
+  --color-highlight: #f4f3eb0a;
+  --color-subtle: #242420;
+  --sl-color-gray-1: #e9e8e1;
+  --sl-color-gray-5: #45443b;
+  --sl-color-gray-6: #30302b;
+  --sl-color-accent-high: var(--docs-accent-ink);
+  --sl-color-accent-low: var(--docs-accent-soft);
+}
+
+::selection {
+  color: #21201c;
+  background: var(--docs-accent);
+}
+.docs-shell,
+.docs-chrome,
+site-search {
+  scrollbar-color: var(--color-border-mid) transparent;
+}
+.docs-shell input,
+site-search input {
+  caret-color: var(--docs-focus);
 }
 
 html {
@@ -99,12 +160,12 @@ body {
   font-size: 0.875rem;
   font-weight: 500;
 }
-.docs-section-nav__link[aria-current="page"] {
+.docs-section-nav__link[aria-current] {
   color: var(--color-primary);
 }
 .docs-section-nav__link::after {
-  height: 2px;
-  background: var(--color-primary);
+  height: 3px;
+  background: var(--docs-accent);
 }
 
 .docs-main {
@@ -169,7 +230,7 @@ body {
   color: var(--color-primary);
   background: var(--docs-accent-soft);
   font-weight: 600;
-  box-shadow: inset 2px 0 0 var(--docs-accent);
+  box-shadow: inset 1px 0 0 var(--docs-accent);
 }
 .docs-shell .sidebar summary {
   min-height: 2rem;
@@ -195,7 +256,7 @@ body {
 .docs-page-header #_top {
   font-size: clamp(2rem, 3.1vw, 3rem);
   font-weight: 600;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   line-height: 1.12;
   text-wrap: balance;
 }
@@ -389,30 +450,30 @@ body {
 }
 .starlight-aside {
   margin-block: 1.75rem;
-  border-inline-start-width: 2px;
+  border-inline-start-width: 1px;
 }
 .expressive-code {
   --ec-brdRad: 0.5rem;
-  --ec-brdCol: #343b34;
-  --ec-codeBg: #1d251d;
-  --ec-codeFg: #e5ede1;
-  --ec-frm-edActTabBg: #1d251d;
-  --ec-frm-edTabBarBg: #182018;
-  --ec-frm-edTabBarBrdCol: #343b34;
-  --ec-frm-edTabBarBrdBtmCol: #343b34;
-  --ec-frm-trmTtbBg: #182018;
-  --ec-frm-trmTtbFg: #c7d2c2;
-  --ec-frm-trmTtbBrdBtmCol: #343b34;
-  --ec-frm-trmBg: #1d251d;
-  --ec-frm-inlBtnFg: #c7d2c2;
-  --ec-frm-inlBtnBrd: #6d7e69;
+  --ec-brdCol: #404039;
+  --ec-codeBg: #242420;
+  --ec-codeFg: #eeede6;
+  --ec-frm-edActTabBg: #242420;
+  --ec-frm-edTabBarBg: #1d1d1a;
+  --ec-frm-edTabBarBrdCol: #404039;
+  --ec-frm-edTabBarBrdBtmCol: #404039;
+  --ec-frm-trmTtbBg: #1d1d1a;
+  --ec-frm-trmTtbFg: #c9c7bb;
+  --ec-frm-trmTtbBrdBtmCol: #404039;
+  --ec-frm-trmBg: #242420;
+  --ec-frm-inlBtnFg: #c9c7bb;
+  --ec-frm-inlBtnBrd: #8a887a;
   --ec-frm-frameBoxShdCssVal: none;
 }
 .expressive-code .frame .title {
-  color: #c7d2c2;
+  color: #c9c7bb;
 }
 .expressive-code .copy button:focus-visible {
-  outline-color: #bfd77d;
+  outline-color: #e6ff03;
 }
 .mcp-tool__identity code,
 .mcp-tool__identity > span {
@@ -452,7 +513,7 @@ body {
 }
 .docs-chrome :is(a, button, input):focus-visible,
 .docs-shell :is(a, button, summary, input, [tabindex="0"]):focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--docs-focus);
   outline-offset: 3px;
 }
 .docs-logo .docs-logo-dark {
@@ -586,11 +647,11 @@ body {
     font-size: 0.8125rem;
   }
   .docs-masthead-actions .theme-toggle {
-    display: inline-flex;
+    display: none;
   }
   .docs-chrome .docs-masthead-actions site-search [data-open-modal] {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     justify-content: center;
     padding: 0;
   }
@@ -680,4 +741,71 @@ body {
   .docs-masthead {
     padding-inline: 0.75rem;
   }
+}
+
+/* Read mode: color marks orientation; prose and interactive labels stay legible. */
+.docs-section-nav__link--active,
+.docs-section-nav__link[aria-current] {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.docs-toc-pane .right-sidebar a[aria-current="true"] {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--docs-accent);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.3em;
+}
+.docs-shell--home .docs-page-header {
+  margin-block-end: 1.5rem;
+}
+.docs-shell--home .sl-markdown-content > .sl-heading-wrapper:first-of-type h2 {
+  margin-block-start: 2rem;
+}
+.docs-page-action {
+  min-height: 2rem;
+}
+.expressive-code .copy button,
+.expressive-code .frame:hover .copy button:not(:hover) {
+  opacity: 1;
+}
+@media (max-width: 63.999rem) {
+  starlight-menu-button {
+    margin-inline-start: 0;
+  }
+  starlight-menu-button,
+  starlight-menu-button button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .docs-shell .sidebar :is(a, summary) {
+    min-height: 2.75rem;
+    align-content: center;
+  }
+  .docs-page-action {
+    min-height: 2.75rem;
+  }
+  .docs-shell .theme-toggle button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .expressive-code .copy button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .expressive-code .frame .header {
+    min-height: 3.25rem;
+  }
+}
+
+.expressive-code .copy button:hover,
+.expressive-code .copy button:focus-visible {
+  background: #3a3a32;
+  border-color: #8a887a;
+}
+.expressive-code .copy button::after {
+  background-color: #eeede6;
+}
+.expressive-code .frame.is-terminal .title:empty::before {
+  color: #c9c7bb;
 }

@@ -41,3 +41,11 @@ Les parcours Cloud, premier programme, risque et accès au portail ont été ren
 Les vérifications de navigateur portent sur l'accueil, les guides, les références techniques, la recherche, les thèmes, le menu, le sommaire et la copie. Elles ne constituent pas une recette de toutes les opérations dans une organisation Probo authentifiée. Les données Search Console et Plain restent à examiner avec l'équipe ; aucun résultat SEO/GEO n'est promis.
 
 La revue avec Julien puis Probo, le push et le déploiement restent des étapes séparées. Aucun envoi ni déploiement n'a été effectué.
+
+## Passe Impeccable — 22 octobre 2026
+
+La palette documentaire utilise désormais le jaune Probo `#E6FF03` pour les repères et sélections, des surfaces neutres et du texte contrasté. L'accent décoratif, la couleur de texte et le focus clavier ont des tokens distincts. Les blocs de code et diagrammes sont neutralisés ; les couleurs sémantiques d'alerte restent disponibles. Les sélections, boutons de copie, recherches, glossaire et états actifs suivent le même système.
+
+Le titre est légèrement moins serré, l'entrée dans les parcours plus compacte, et les contrôles mobiles plus faciles à viser. Le thème mobile est accessible dans le menu pour garder une barre supérieure lisible à 320 px. Le glossaire revient à la ligne sans largeur minimale sur téléphone.
+
+Deux lectures indépendantes et un contrôle Impeccable ont été utilisés. Le détecteur ne conserve qu'un avertissement de police courante : Geist est volontairement maintenue pour respecter les pages produit et le blog. Les ratios des principales paires texte/fond sont vérifiés (minimum 5,23:1). Le contrôle visuel utilise les captures de la version précédente ; l'accès navigateur à la nouvelle version a été bloqué pendant cette passe. Ne pas présenter cela comme une validation visuelle live du nouveau rendu.
