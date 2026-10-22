@@ -249,28 +249,33 @@ const breadcrumbs = [
       textarea.style.position = "fixed";
       textarea.style.opacity = "0";
       document.body.append(textarea);
-      textarea.select();
-      const copied = document.execCommand("copy");
-      textarea.remove();
-      if (focused instanceof HTMLElement)
-        focused.focus({ preventScroll: true });
-      if (!copied) throw new Error("Clipboard write failed");
+      try {
+        textarea.select();
+        if (!document.execCommand("copy"))
+          throw new Error("Clipboard write failed");
+      } finally {
+        textarea.remove();
+        if (focused instanceof HTMLElement)
+          focused.focus({ preventScroll: true });
+      }
     }
   }
 
   if (!document.documentElement.dataset.docsCopyMarkdown) {
     document.documentElement.dataset.docsCopyMarkdown = "true";
+    const resetTimers = new WeakMap<HTMLButtonElement, number>();
     document.addEventListener("click", async (event) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
 
       const button = target.closest<HTMLButtonElement>("[data-copy-markdown]");
-      if (!button) return;
+      if (!button || button.disabled) return;
 
       const label = button.querySelector<HTMLElement>("[data-copy-label]");
       const url = button.dataset.markdownUrl;
       if (!label || !url) return;
 
+      clearTimeout(resetTimers.get(button));
       button.disabled = true;
       label.textContent = "Copying…";
       try {
@@ -287,9 +292,13 @@ const breadcrumbs = [
         button.disabled = false;
       }
 
-      window.setTimeout(() => {
-        label.textContent = "Copy page";
-      }, 1800);
+      resetTimers.set(
+        button,
+        window.setTimeout(() => {
+          label.textContent = "Copy page";
+          resetTimers.delete(button);
+        }, 1800),
+      );
     });
   }
 </script>

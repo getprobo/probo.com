@@ -259,13 +259,14 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
   }
 
   tbody :global(a) {
-    color: var(--color-primary);
+    color: var(--docs-link);
+    text-decoration-line: underline;
     text-decoration-color: color-mix(
       in srgb,
-      var(--docs-accent) 75%,
+      var(--docs-link) 30%,
       transparent
     );
-    text-decoration-thickness: 2px;
+    text-decoration-thickness: 1px;
     text-underline-offset: 0.18em;
   }
 

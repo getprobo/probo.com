@@ -198,7 +198,15 @@ function enhanceDisclosure(details: HTMLDetailsElement) {
   };
 
   const nativeToggle = () => {
-    if (animation) return;
+    if (animation) {
+      // Native dismissal (Escape, outside click, or a selected ToC link) wins
+      // even if it arrives before the opening animation has completed.
+      if (!details.open) {
+        desiredOpen = false;
+        settle();
+      }
+      return;
+    }
     desiredOpen = details.open;
     sync();
   };
@@ -265,16 +273,54 @@ function enhanceCopyFeedback(root: HTMLElement) {
   return () => observer.disconnect();
 }
 
+function enhanceTableScrolling(root: HTMLElement) {
+  const scrollers = Array.from(
+    root.querySelectorAll<HTMLElement>(".docs-table-scroll"),
+  );
+  const previousTabIndexes = scrollers.map((element) =>
+    element.getAttribute("tabindex"),
+  );
+  const update = (element: HTMLElement) => {
+    const overflows = element.scrollWidth > element.clientWidth + 1;
+    if (overflows) element.tabIndex = 0;
+    else element.removeAttribute("tabindex");
+    element.dataset.tableOverflow = String(overflows);
+  };
+  const observer = new ResizeObserver((entries) => {
+    const changed = new Set<HTMLElement>();
+    for (const { target } of entries) {
+      const scroller = target.closest<HTMLElement>(".docs-table-scroll");
+      if (scroller) changed.add(scroller);
+    }
+    changed.forEach(update);
+  });
+  for (const element of scrollers) {
+    update(element);
+    observer.observe(element);
+    const table = element.querySelector("table");
+    if (table) observer.observe(table);
+  }
+  return () => {
+    observer.disconnect();
+    scrollers.forEach((element, index) => {
+      const previous = previousTabIndexes[index];
+      if (previous === null) element.removeAttribute("tabindex");
+      else element.setAttribute("tabindex", previous);
+      delete element.dataset.tableOverflow;
+    });
+  };
+}
+
 function setupPage() {
   disposePage?.();
   const root = document.querySelector<HTMLElement>(".docs-shell");
   if (!root) return;
   const disposers = Array.from(
     root.querySelectorAll<HTMLDetailsElement>(
-      ".sidebar details, .accordion-step > details, .sl-markdown-content details",
+      ".sidebar details, .accordion-step > details, .sl-markdown-content details, #starlight__mobile-toc",
     ),
   ).map(enhanceDisclosure);
-  disposers.push(enhanceCopyFeedback(root));
+  disposers.push(enhanceCopyFeedback(root), enhanceTableScrolling(root));
   disposePage = () => {
     disposers.forEach((dispose) => dispose());
     disposePage = undefined;

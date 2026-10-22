@@ -44,6 +44,10 @@ import Icon from "../Icon.astro";
       <button type="button" data-search-more hidden>Show more results</button>
       <p class="docs-search-hint">
         Search all documentation <span aria-hidden="true">·</span>
+        <kbd>↑</kbd><kbd>↓</kbd> to navigate
+        <span aria-hidden="true">·</span>
+        <kbd>Enter</kbd> to open
+        <span aria-hidden="true">·</span>
         <kbd>Esc</kbd> to close
       </p>
     </div>
@@ -204,6 +208,7 @@ import Icon from "../Icon.astro";
       }
     };
     onKeyDown = (event: KeyboardEvent) => {
+      if (event.isComposing) return;
       if (event.key === "Escape" && this.dialog.open) {
         event.preventDefault();
         event.stopPropagation();
@@ -215,6 +220,41 @@ import Icon from "../Icon.astro";
         this.dialog.open && !this.closing
           ? this.closeModal()
           : this.openModal();
+        return;
+      }
+      if (
+        !this.dialog.open ||
+        this.closing ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey
+      )
+        return;
+      const links = Array.from(
+        this.results.querySelectorAll<HTMLAnchorElement>("a[href]"),
+      );
+      const active = document.activeElement;
+      const index = links.findIndex((link) => link === active);
+      if (active !== this.input && index < 0) return;
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        if (!links.length) return;
+        event.preventDefault();
+        const next =
+          active === this.input
+            ? event.key === "ArrowDown"
+              ? 0
+              : links.length - 1
+            : index + (event.key === "ArrowDown" ? 1 : -1);
+        if (next < 0 || next >= links.length) this.input.focus();
+        else links[next].focus();
+      } else if (
+        event.key === "Enter" &&
+        active === this.input &&
+        links.length
+      ) {
+        event.preventDefault();
+        links[0].click();
       }
     };
 
@@ -308,10 +348,16 @@ import Icon from "../Icon.astro";
 
     showMore = async () => {
       const version = this.version;
+      const firstNewResult = this.shown;
+      const moveFocus = document.activeElement === this.more;
       this.more.disabled = true;
       this.results.setAttribute("aria-busy", "true");
       try {
         await this.renderNext(version);
+        if (moveFocus && version === this.version)
+          this.results
+            .querySelectorAll<HTMLAnchorElement>("a[href]")
+            [firstNewResult]?.focus();
       } catch {
         if (version === this.version) this.showError();
       } finally {
