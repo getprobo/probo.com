@@ -34,6 +34,8 @@ const { param = "tab" } = Astro.props;
 </docs-page-tabs>
 
 <script>
+  import { animateDocsTab } from "./docs-motion";
+
   const slugify = (label: string) =>
     label
       .trim()
@@ -41,48 +43,23 @@ const { param = "tab" } = Astro.props;
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-  /** Slides the incoming panel in from the side the reader moved towards. */
-  const slideIn = (panel: HTMLElement, direction: 1 | -1) => {
-    if (
-      typeof panel.animate !== "function" ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-
-    // `clip` keeps the offset panel from widening the page without turning the
-    // container into a scroll box.
-    const container = panel.parentElement;
-    if (container) container.style.overflowX = "clip";
-
-    const animation = panel.animate(
-      [
-        { opacity: 0, transform: `translateX(${direction * 24}px)` },
-        { opacity: 1, transform: "translateX(0)" },
-      ],
-      { duration: 220, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)" },
-    );
-
-    animation.finished
-      .catch(() => {})
-      .then(() => {
-        if (container) container.style.removeProperty("overflow-x");
-      });
-  };
-
   class DocsPageTabs extends HTMLElement {
     #initialized = false;
-    // Panels are hidden and unhidden while the page settles (deep-linked tab,
-    // Starlight hydration, router swaps). Sliding only starts once that is
-    // done, so a fresh load never animates.
     #canAnimate = false;
+    #observer: MutationObserver | undefined;
+    #animation: Animation | null = null;
+    #clipContainer: HTMLElement | null = null;
+    #previousOverflow = "";
+    #firstFrame = 0;
+    #secondFrame = 0;
+    #hashFrame = 0;
+    #hashHandler: (() => void) | undefined;
 
     connectedCallback() {
       if (this.#initialized) return;
       this.#initialized = true;
-
       const tabs = [
-        ...this.querySelectorAll<HTMLAnchorElement>(
+        ...this.querySelectorAll<HTMLElement>(
           ':scope > starlight-tabs > .tablist-wrapper [role="tab"]',
         ),
       ];
@@ -91,52 +68,147 @@ const { param = "tab" } = Astro.props;
           ':scope > starlight-tabs > [role="tabpanel"]',
         ),
       ];
-      if (tabs.length !== panels.length) return;
+      if (!tabs.length || tabs.length !== panels.length) return;
 
       const param = this.dataset.param || "tab";
       const slugs = tabs.map((tab) => slugify(tab.textContent || ""));
-
-      const requested = new URL(window.location.href).searchParams.get(param);
+      const requested = new URL(location.href).searchParams.get(param);
       const requestedIndex = requested ? slugs.indexOf(requested) : -1;
-      if (requestedIndex > 0) this.#activate(tabs, panels, requestedIndex);
+      if (requestedIndex >= 0) this.#activate(tabs, panels, requestedIndex);
 
-      tabs.forEach((tab, index) => {
-        tab.addEventListener("click", () => {
-          const url = new URL(window.location.href);
-          // The first tab is the default, so it needs no marker in the URL.
-          if (index === 0) url.searchParams.delete(param);
-          else url.searchParams.set(param, slugs[index]);
+      const syncQuery = (index: number) => {
+        const url = new URL(location.href);
+        if (index === 0) url.searchParams.delete(param);
+        else url.searchParams.set(param, slugs[index]);
+        // Do not retain an anchor owned by the panel the reader just left.
+        let target: HTMLElement | null = null;
+        try {
+          target = document.getElementById(
+            decodeURIComponent(url.hash.slice(1)),
+          );
+        } catch {
+          /* An invalid external fragment does not select a panel. */
+        }
+        const targetPanel = target
+          ? panels.findIndex((panel) => panel.contains(target))
+          : -1;
+        if (targetPanel >= 0 && targetPanel !== index) url.hash = "";
+        if (url.href !== location.href)
           history.replaceState(history.state, "", url);
+      };
+      this.#hashHandler = () => {
+        let id: string;
+        try {
+          id = decodeURIComponent(location.hash.slice(1));
+        } catch {
+          return;
+        }
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (!target) return;
+        const index = panels.findIndex((panel) => panel.contains(target));
+        if (index < 0) return;
+        // A real content fragment wins over a conflicting tab query. The
+        // native tab API updates the panel and its aria state without focus theft.
+        if (panels[index].hidden) this.#activate(tabs, panels, index);
+        syncQuery(index);
+        cancelAnimationFrame(this.#hashFrame);
+        this.#hashFrame = requestAnimationFrame(() => {
+          if (this.isConnected && !panels[index].hidden)
+            target.scrollIntoView({ block: "start", behavior: "instant" });
         });
-      });
+      };
+      window.addEventListener("hashchange", this.#hashHandler);
+      this.#hashHandler();
 
-      // Watching panel visibility rather than clicks animates pointer and
-      // keyboard switching alike.
       let activeIndex = panels.findIndex((panel) => !panel.hidden);
-      const observer = new MutationObserver(() => {
+      // Starlight owns selection and keyboard navigation. The same final
+      // visibility state drives both motion and the shareable URL.
+      this.#observer = new MutationObserver(() => {
         const nextIndex = panels.findIndex((panel) => !panel.hidden);
         if (nextIndex === -1 || nextIndex === activeIndex) return;
         const direction = nextIndex > activeIndex ? 1 : -1;
         activeIndex = nextIndex;
-        if (this.#canAnimate) slideIn(panels[nextIndex], direction);
+        this.#clearAnimation();
+        if (!this.#canAnimate) return;
+
+        syncQuery(nextIndex);
+
+        const panel = panels[nextIndex];
+        const animation = animateDocsTab(panel, direction);
+        if (!animation) return;
+        this.#animation = animation;
+        this.#clipContainer = panel.parentElement;
+        if (this.#clipContainer) {
+          this.#previousOverflow = this.#clipContainer.style.overflowX;
+          this.#clipContainer.style.overflowX = "clip";
+        }
+        void animation.finished.then(
+          () => {
+            if (this.#animation === animation) this.#clearAnimation();
+          },
+          () => {},
+        );
       });
-      for (const panel of panels) {
-        observer.observe(panel, {
+      panels.forEach((panel) =>
+        this.#observer!.observe(panel, {
           attributes: true,
           attributeFilter: ["hidden"],
-        });
-      }
+        }),
+      );
+      document.addEventListener("astro:before-swap", this.#beforeSwap);
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+      // Hydration and an initial deep link never animate reading content.
+      this.#firstFrame = requestAnimationFrame(() => {
+        this.#secondFrame = requestAnimationFrame(() => {
           this.#canAnimate = true;
         });
       });
     }
 
-    // Mirrors what Starlight's own tab switching does, so the initial state is
-    // applied before its custom element hydrates.
-    #activate(tabs: HTMLAnchorElement[], panels: HTMLElement[], index: number) {
+    disconnectedCallback() {
+      this.#observer?.disconnect();
+      this.#observer = undefined;
+      this.#clearAnimation();
+      cancelAnimationFrame(this.#firstFrame);
+      cancelAnimationFrame(this.#secondFrame);
+      cancelAnimationFrame(this.#hashFrame);
+      if (this.#hashHandler)
+        window.removeEventListener("hashchange", this.#hashHandler);
+      this.#hashHandler = undefined;
+      document.removeEventListener("astro:before-swap", this.#beforeSwap);
+      this.#initialized = false;
+      this.#canAnimate = false;
+    }
+
+    #beforeSwap = () => {
+      this.#clearAnimation();
+      cancelAnimationFrame(this.#hashFrame);
+    };
+
+    #clearAnimation() {
+      this.#animation?.cancel();
+      this.#animation = null;
+      if (this.#clipContainer) {
+        this.#clipContainer.style.overflowX = this.#previousOverflow;
+        this.#clipContainer = null;
+      }
+    }
+
+    #activate(tabs: HTMLElement[], panels: HTMLElement[], index: number) {
+      const nativeTabs = this.querySelector(":scope > starlight-tabs") as
+        | (HTMLElement & {
+            switchTab?: (
+              tab: HTMLElement,
+              index: number,
+              shouldSync?: boolean,
+            ) => void;
+          })
+        | null;
+      if (nativeTabs?.switchTab) {
+        nativeTabs.switchTab(tabs[index], index, false);
+        return;
+      }
       tabs.forEach((tab, i) => {
         tab.setAttribute("aria-selected", i === index ? "true" : "false");
         if (i === index) tab.removeAttribute("tabindex");

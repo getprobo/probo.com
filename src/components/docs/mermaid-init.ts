@@ -36,7 +36,15 @@ export async function renderMermaidDiagrams(root: ParentNode = document) {
     try {
       const { svg } = await mermaid.render(renderId, definition);
       node.innerHTML = svg;
+      const diagram = node.querySelector("svg");
+      const width = diagram?.viewBox.baseVal.width;
+      if (diagram && width) {
+        diagram.style.width = `${width}px`;
+        diagram.style.maxWidth = "none";
+        diagram.style.height = "auto";
+      }
       node.dataset.processed = "true";
+      updateDiagramOverflow();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown rendering error";
@@ -47,6 +55,24 @@ export async function renderMermaidDiagrams(root: ParentNode = document) {
       strong.textContent = "Could not render diagram.";
       node.append(strong, " ", message);
     }
+  }
+}
+
+function updateDiagramOverflow() {
+  for (const figure of document.querySelectorAll<HTMLElement>(
+    ".mermaid-diagram",
+  )) {
+    const drawing = figure.querySelector("pre.mermaid svg");
+    const overflowing = Boolean(
+      drawing &&
+      drawing.getBoundingClientRect().width + 32 > figure.clientWidth,
+    );
+    figure.dataset.diagramOverflow = String(overflowing);
+    const caption = figure.querySelector<HTMLElement>("figcaption");
+    if (caption)
+      caption.hidden =
+        !overflowing &&
+        !caption.querySelector("span:not(.diagram-scroll-hint)");
   }
 }
 
@@ -62,6 +88,15 @@ export function bindMermaidLifecycle() {
 
   run();
   document.addEventListener("astro:page-load", run);
+  let resizeFrame = 0;
+  window.addEventListener(
+    "resize",
+    () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(updateDiagramOverflow);
+    },
+    { passive: true },
+  );
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {

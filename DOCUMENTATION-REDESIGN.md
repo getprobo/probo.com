@@ -49,3 +49,15 @@ La palette documentaire utilise désormais le jaune Probo `#E6FF03` pour les rep
 Le titre est légèrement moins serré, l'entrée dans les parcours plus compacte, et les contrôles mobiles plus faciles à viser. Le thème mobile est accessible dans le menu pour garder une barre supérieure lisible à 320 px. Le glossaire revient à la ligne sans largeur minimale sur téléphone.
 
 Deux lectures indépendantes et un contrôle Impeccable ont été utilisés. Le détecteur ne conserve qu'un avertissement de police courante : Geist est volontairement maintenue pour respecter les pages produit et le blog. Les ratios des principales paires texte/fond sont vérifiés (minimum 5,23:1). Le contrôle visuel utilise les captures de la version précédente ; l'accès navigateur à la nouvelle version a été bloqué pendant cette passe. Ne pas présenter cela comme une validation visuelle live du nouveau rendu.
+
+## Audit complet et interactions — 22 octobre 2026
+
+Critère de fin renforcé à la demande de Julien : une version aboutie avec les défauts constatés corrigés, toutes les pages contrôlées et les principales interactions validées sur ordinateur et mobile, au clavier et avec mouvements réduits.
+
+- Fond clair blanc `#FFFFFF` ; page active en texte marqué et filet neutre, sans fond jaune.
+- Courbes adaptées de la skill Benji : smooth `cubic-bezier(.19,1,.22,1)` pour les panneaux et hauteurs ; snappy `cubic-bezier(.175,.885,.32,1.1)` seulement pour de petits pictogrammes. Ce sont des Bézier, pas des ressorts physiques. Détails 300/220 ms, menu/recherche 300/200 ms, onglets 240 ms ; aucune animation d'arrivée des articles.
+- Hauteurs intrinsèques restaurées après animation, inversions rapides, focus/inert et Échap préservés, nettoyage au changement de route, réduction des mouvements.
+- Corrections : guides à étapes sans débordement, un seul offset d'ancre, onglets partageables aussi au clavier et par fragment direct, diagrammes à leur échelle lisible avec défilement local accessible.
+- Vérification live : les 273 routes sont chargées à 1440 px puis 390 px ; contrôles structurels et débordements sur 546 vues, plus essais à 320 px. Les captures et le rapport détaillé vivent dans le dossier flexOS Documentation.
+
+Source des principes : [Benji — Morphing icons with Claude](https://benji.org/morphing-icons-with-claude), et références documentées dans la skill `benji-interface-motion` (relevé du 5 septembre 2026).

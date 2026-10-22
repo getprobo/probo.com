@@ -19,10 +19,12 @@ import Icon from "../Icon.astro";
 
 <script>
   import { customElementDefine } from "../../lib/dom";
+  import { animateDocsPanel, cancelDocsPanel } from "./docs-motion";
 
   class StarlightMenuButton extends HTMLElement {
     btn = this.querySelector("button")!;
     desktop = matchMedia("(min-width: 64rem)");
+    focusTimer: ReturnType<typeof setTimeout> | undefined;
 
     connectedCallback() {
       this.btn.addEventListener("click", this.toggleExpanded);
@@ -33,7 +35,7 @@ import Icon from "../Icon.astro";
       document
         .getElementById("starlight__sidebar")
         ?.addEventListener("click", this.closeAfterNavigation);
-      this.setExpanded(false);
+      this.setExpanded(false, false);
     }
 
     disconnectedCallback() {
@@ -45,12 +47,19 @@ import Icon from "../Icon.astro";
       document
         .getElementById("starlight__sidebar")
         ?.removeEventListener("click", this.closeAfterNavigation);
-      this.setExpanded(false);
+      this.setExpanded(false, false);
     }
 
-    setExpanded(expanded: boolean) {
+    setExpanded(expanded: boolean, motion = true) {
       const isExpanded = expanded && !this.desktop.matches;
       const sidebar = document.getElementById("starlight__sidebar");
+      const wasExpanded = this.btn.getAttribute("aria-expanded") === "true";
+      clearTimeout(this.focusTimer);
+      if (sidebar) {
+        if (motion && wasExpanded !== isExpanded && !this.desktop.matches)
+          void animateDocsPanel(sidebar, isExpanded, "drawer");
+        else if (!motion) cancelDocsPanel(sidebar);
+      }
 
       this.setAttribute("aria-expanded", String(isExpanded));
       this.btn.setAttribute("aria-expanded", String(isExpanded));
@@ -59,6 +68,12 @@ import Icon from "../Icon.astro";
         isExpanded ? "Close documentation menu" : "Open documentation menu",
       );
       document.body.toggleAttribute("data-mobile-menu-expanded", isExpanded);
+      if (
+        !isExpanded &&
+        !this.desktop.matches &&
+        sidebar?.contains(document.activeElement)
+      )
+        this.btn.focus({ preventScroll: true });
       sidebar?.toggleAttribute("inert", !this.desktop.matches && !isExpanded);
 
       document
@@ -70,13 +85,13 @@ import Icon from "../Icon.astro";
         });
 
       if (isExpanded) {
-        window.setTimeout(
+        this.focusTimer = window.setTimeout(
           () =>
             sidebar
               ?.querySelector<HTMLElement>(
                 '[aria-current="page"], a[href], button, summary',
               )
-              ?.focus(),
+              ?.focus({ preventScroll: true }),
           0,
         );
       }
@@ -137,8 +152,8 @@ import Icon from "../Icon.astro";
       }
     };
 
-    closeBeforeSwap = () => this.setExpanded(false);
-    closeForDesktop = () => this.setExpanded(false);
+    closeBeforeSwap = () => this.setExpanded(false, false);
+    closeForDesktop = () => this.setExpanded(false, false);
   }
 
   customElementDefine("starlight-menu-button", () => StarlightMenuButton);

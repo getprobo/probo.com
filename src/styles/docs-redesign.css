@@ -17,12 +17,12 @@
   --docs-surface-raised: #ffffff;
   --color-foreground: #21201c;
   --color-primary: var(--color-foreground);
-  --color-primary-foreground: #fffffb;
+  --color-primary-foreground: #ffffff;
   --color-muted-foreground: #6b6961;
   --color-tertiary-foreground: #6b6961;
   --color-quaternary: #6b6961;
   --color-secondary: #ffffff;
-  --color-level-0: #fffffb;
+  --color-level-0: #ffffff;
   --color-level-1: #ffffff;
   --color-level-3: #21201c;
   --color-border-low: #21201c1a;
@@ -87,7 +87,6 @@ site-search input {
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-padding-top: calc(var(--sl-docs-chrome-height) + 1.5rem);
 }
 body {
   color: var(--docs-text);
@@ -228,9 +227,9 @@ body {
 }
 .docs-shell .sidebar a[aria-current="page"] {
   color: var(--color-primary);
-  background: var(--docs-accent-soft);
+  background: transparent;
   font-weight: 600;
-  box-shadow: inset 1px 0 0 var(--docs-accent);
+  box-shadow: inset 1px 0 0 var(--color-primary);
 }
 .docs-shell .sidebar summary {
   min-height: 2rem;
@@ -287,7 +286,7 @@ body {
   margin-block: 1rem 1.5rem;
 }
 .sl-markdown-content :is(h2, h3, h4) {
-  scroll-margin-top: calc(var(--sl-docs-chrome-height) + 1.5rem);
+  scroll-margin-top: 0;
   text-wrap: balance;
 }
 .sl-markdown-content h2 {
@@ -808,4 +807,12 @@ body {
 }
 .expressive-code .frame.is-terminal .title:empty::before {
   color: #c9c7bb;
+}
+
+/* One anchor offset, shared by links, tabs, search and the table of contents. */
+html[data-theme][data-has-sidebar] {
+  scroll-padding-top: calc(var(--sl-docs-chrome-height) + 1.5rem);
+}
+.docs-shell [id] {
+  scroll-margin-top: 0;
 }
