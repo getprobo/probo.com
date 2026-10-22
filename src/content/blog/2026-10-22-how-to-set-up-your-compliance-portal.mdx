@@ -18,20 +18,20 @@ faqs:
     answer: "First, that the CNAME record matches the name and value shown in Probo exactly and is visible in public DNS. Then check for CAA records on your domain: if you restrict which certificate authorities can issue for it, you need to allow both Google Trust Services and Let's Encrypt."
   - question: "Do I need to update the portal after each audit?"
     answer: "Yes. When a new audit or certificate lands, display it and hide the previous one, so buyers always see your current status."
-coverImage: "/blog/covers-phosphor/shield-check-2x.webp"
-coverImageAlt: "Shield with a check mark on a cream and fluorescent yellow background."
-ogImage: "/blog/compliance-portal-setup/04-commitments.jpg"
+coverImage: "/blog/compliance-portal-setup/cover-2x.webp"
+coverImageAlt: "Set-up your Compliance Portal title with a shield check icon on a fluorescent yellow background."
+ogImage: "/blog/compliance-portal-setup/cover.jpg"
 ---
 
 Half of the answers in a security questionnaire are already sitting in your policies, your audit report and your vendor list. Your prospects just can't see them.
 
-That's the job of a compliance portal: one link where buyers find your certifications, your security commitments and the documents they need, without a week of email back and forth. (If you're still deciding what belongs on one, start with [what is a trust center?](/blog/2026-08-12-what-is-a-trust-center).)
+That's the job of a compliance portal: one link where buyers find your certifications, your security commitments and the documents they need, without a week of email back and forth. (If you're still deciding what belongs on one, start with [what is a compliance portal / trust center?](/blog/2026-08-12-what-is-a-trust-center).)
 
 Setting it up on Probo takes about 30 minutes. Here are the eight steps.
 
 ## Step 1: Turn the portal on
 
-Go to **Compliance portal > Hosting** and flip the toggle. Your portal is now publicly accessible.
+Go to **Compliance portal → Hosting** and flip the toggle. Your portal is now publicly accessible.
 
 ![Compliance portal is active toggle in Compliance portal > Hosting](/blog/compliance-portal-setup/01-activate.jpg)
 
@@ -39,7 +39,7 @@ It's live, but it's empty. Don't send the link to anyone yet. Do the next seven 
 
 ## Step 2: Make it look like yours
 
-Go to **Compliance portal > Landing > Branding** and fill in:
+Go to **Compliance portal → Landing → Branding** and fill in:
 
 - **Entity name**: your legal or trading name, the one buyers will recognize on the contract.
 - **Description**: one or two plain sentences about what you do and who you serve.
@@ -51,7 +51,7 @@ Go to **Compliance portal > Landing > Branding** and fill in:
 
 ## Step 3: Pick your frameworks and write your security commitments
 
-Go to **Compliance portal > Landing > Content**.
+Go to **Compliance portal → Landing → Content**.
 
 ### Frameworks
 
@@ -77,7 +77,7 @@ You can write them by hand with **Add Group** and **Add Commitment**. Or let an 
 
 ## Step 4: Choose which documents and audits to share
 
-Go to **Compliance portal > Landing > Documents**.
+Go to **Compliance portal → Landing → Documents**.
 
 ### Documents
 
@@ -115,7 +115,7 @@ Then set visibility by type:
 
 ## Step 5: List your subprocessors
 
-Go to **Compliance portal > Landing > Subprocessors**. The list comes straight from your third parties in Probo. Tick the ones you want to display.
+Go to **Compliance portal → Landing → Subprocessors**. The list comes straight from your third parties in Probo. Tick the ones you want to display.
 
 ![Subprocessors list with checkboxes to choose which vendors are displayed](/blog/compliance-portal-setup/07-subprocessors.jpg)
 
@@ -123,7 +123,7 @@ Display the vendors that actually process your customers' data: your cloud provi
 
 ## Step 6: Upload an NDA
 
-Go to **Compliance portal > Landing > Visitors** and upload your NDA as a PDF.
+Go to **Compliance portal → Landing → Visitors** and upload your NDA as a PDF.
 
 ![Visitors tab with the non-disclosure agreement upload area](/blog/compliance-portal-setup/08-nda.jpg)
 
@@ -131,7 +131,7 @@ We strongly recommend this one. Once an NDA is uploaded, anyone you grant access
 
 ## Step 7: Get access requests in Slack
 
-Go to **Compliance portal > Landing > Integrations**.
+Go to **Compliance portal → Landing → Integrations**.
 
 **1. Install the Slack bot.** Click **Install**.
 
@@ -151,7 +151,7 @@ From then on, a new access request shows up in the channel, a reviewer approves 
 
 ## Step 8: Put it on your own domain
 
-Go to **Compliance portal > Landing > Domain**.
+Go to **Compliance portal → Landing → Domain**.
 
 **1. Pick a subdomain.** Something buyers will recognize at a glance, like `trust.yourcompany.com` or `compliance.yourcompany.com`. Type it in and click **Add domain**.
 
