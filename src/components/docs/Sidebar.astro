@@ -111,7 +111,7 @@ const hasCurrent = (entries: Entry[]): boolean =>
     transform: rotate(90deg);
   }
   .sidebar-section-title:focus-visible {
-    outline: 2px solid var(--docs-accent);
+    outline: 2px solid var(--docs-focus);
     outline-offset: 2px;
   }
   .sidebar-section-links {
@@ -139,7 +139,7 @@ const hasCurrent = (entries: Entry[]): boolean =>
   }
   .sidebar-section :global(a:focus-visible),
   .sidebar-section :global(summary:focus-visible) {
-    outline: 2px solid var(--docs-accent);
+    outline: 2px solid var(--docs-focus);
     outline-offset: 1px;
   }
   .sidebar-section-links :global(summary) {
