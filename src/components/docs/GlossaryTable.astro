@@ -196,8 +196,8 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
   }
 
   .glossary-table__search:focus-within {
-    border-color: var(--docs-accent);
-    outline: 2px solid color-mix(in srgb, var(--docs-accent) 25%, transparent);
+    border-color: var(--docs-focus);
+    outline: 2px solid var(--docs-focus);
     outline-offset: 1px;
   }
 
@@ -295,6 +295,25 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
   @media (max-width: 39.999rem) {
     .glossary-table__scroll {
       margin-inline: calc(var(--docs-page-padding-x) * -1);
+    }
+  }
+  @media (max-width: 39.999rem) {
+    table {
+      min-width: 0;
+      font-size: 0.875rem;
+    }
+    th,
+    :global(td) {
+      padding: 0.875rem 0.75rem;
+      overflow-wrap: anywhere;
+    }
+    th:first-child,
+    :global(td:first-child) {
+      width: 32%;
+    }
+    .glossary-table__filters input {
+      min-height: 2.75rem;
+      font-size: 1rem;
     }
   }
 </style>
