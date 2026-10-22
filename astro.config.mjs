@@ -116,6 +116,7 @@ export default defineConfig({
       customCss: [
         "./src/styles/starlight.css",
         "./src/styles/docs-redesign.css",
+        "./src/styles/docs-motion.css",
       ],
       lastUpdated: docsLastModified.hasCompleteHistory,
       pagination: false,
