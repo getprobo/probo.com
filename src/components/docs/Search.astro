@@ -52,6 +52,11 @@ import Icon from "../Icon.astro";
 
 <script>
   import { customElementDefine } from "../../lib/dom";
+  import {
+    animateDocsPanel,
+    animateDocsResults,
+    cancelDocsPanel,
+  } from "./docs-motion";
 
   interface SearchData {
     url: string;
@@ -86,6 +91,7 @@ import Icon from "../Icon.astro";
     timer: ReturnType<typeof setTimeout> | undefined;
     previousFocus: HTMLElement | null = null;
     restoreFocus = true;
+    closing = false;
 
     connectedCallback() {
       this.openBtn = this.querySelector("[data-open-modal]")!;
@@ -104,6 +110,7 @@ import Icon from "../Icon.astro";
       this.openBtn.addEventListener("click", this.openModal);
       this.closeBtn.addEventListener("click", this.closeModal);
       this.dialog.addEventListener("close", this.onClose);
+      this.dialog.addEventListener("cancel", this.onCancel);
       this.dialog.addEventListener("click", this.onDialogClick);
       this.input.addEventListener("input", this.onInput);
       this.more.addEventListener("click", this.showMore);
@@ -115,19 +122,33 @@ import Icon from "../Icon.astro";
     disconnectedCallback() {
       clearTimeout(this.timer);
       this.version++;
+      cancelDocsPanel(this.dialog);
+      this.openBtn.removeEventListener("click", this.openModal);
+      this.closeBtn.removeEventListener("click", this.closeModal);
+      this.dialog.removeEventListener("close", this.onClose);
+      this.dialog.removeEventListener("cancel", this.onCancel);
+      this.dialog.removeEventListener("click", this.onDialogClick);
+      this.input.removeEventListener("input", this.onInput);
+      this.more.removeEventListener("click", this.showMore);
+      this.retry.removeEventListener("click", this.retrySearch);
       document.removeEventListener("keydown", this.onKeyDown);
       document.removeEventListener("astro:before-swap", this.beforeSwap);
       document.body.removeAttribute("data-search-modal-open");
     }
 
     openModal = () => {
-      if (this.dialog.open) return;
-      this.previousFocus =
-        document.activeElement instanceof HTMLElement
-          ? document.activeElement
-          : this.openBtn;
+      if (this.dialog.open && !this.closing) return;
+      const reopening = this.closing;
+      this.closing = false;
+      this.dialog.inert = false;
+      if (!reopening)
+        this.previousFocus =
+          document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : this.openBtn;
       this.restoreFocus = true;
-      this.dialog.showModal();
+      if (!this.dialog.open) this.dialog.showModal();
+      void animateDocsPanel(this.dialog, true, "search");
       document.body.setAttribute("data-search-modal-open", "");
       this.input.focus();
       if (!this.input.value.trim())
@@ -140,12 +161,27 @@ import Icon from "../Icon.astro";
           .catch(() => this.showError());
     };
 
-    closeModal = () => this.dialog.close();
+    closeModal = () => {
+      if (!this.dialog.open || this.closing) return;
+      this.closing = true;
+      this.dialog.inert = true;
+      void animateDocsPanel(this.dialog, false, "search").then((finished) => {
+        if (finished && this.closing) this.dialog.close();
+      });
+    };
+    onCancel = (event: Event) => {
+      event.preventDefault();
+      this.closeModal();
+    };
     beforeSwap = () => {
       this.restoreFocus = false;
+      cancelDocsPanel(this.dialog);
       this.dialog.close();
     };
     onClose = () => {
+      cancelDocsPanel(this.dialog);
+      this.closing = false;
+      this.dialog.inert = false;
       document.body.removeAttribute("data-search-modal-open");
       if (this.restoreFocus && this.previousFocus?.isConnected)
         this.previousFocus.focus({ preventScroll: true });
@@ -176,7 +212,9 @@ import Icon from "../Icon.astro";
       }
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
-        this.dialog.open ? this.closeModal() : this.openModal();
+        this.dialog.open && !this.closing
+          ? this.closeModal()
+          : this.openModal();
       }
     };
 
@@ -339,6 +377,7 @@ import Icon from "../Icon.astro";
         this.hits.slice(this.shown, this.shown + 8).map((hit) => hit.data()),
       );
       if (version !== this.version || !this.isConnected) return;
+      const added: HTMLElement[] = [];
       for (const data of batch) {
         const item = document.createElement("li");
         const link = document.createElement("a");
@@ -375,7 +414,9 @@ import Icon from "../Icon.astro";
         link.append(section, title, excerpt);
         item.append(link);
         this.results.append(item);
+        added.push(item);
       }
+      if (this.dialog.open && !this.closing) animateDocsResults(added);
       this.shown += batch.length;
       this.status.textContent =
         this.hits.length + (this.hits.length === 1 ? " result" : " results");

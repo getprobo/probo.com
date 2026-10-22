@@ -5,6 +5,7 @@
 <style>
   .accordion-steps {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
     margin-block: 1.75rem;
     border-block-start: 1px solid var(--color-border-low);
@@ -12,5 +13,8 @@
     padding: 0;
     list-style: none;
     counter-reset: accordion-step;
+  }
+  .accordion-steps :global(> li) {
+    min-width: 0;
   }
 </style>

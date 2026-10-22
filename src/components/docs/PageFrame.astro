@@ -89,3 +89,8 @@ const isHome = Astro.url.pathname.replace(/\/$/, "") === "/docs";
     />
   )
 }
+
+<script>
+  import { initDocsMotion } from "./docs-motion";
+  initDocsMotion();
+</script>
