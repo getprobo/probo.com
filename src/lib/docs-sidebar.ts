@@ -416,6 +416,7 @@ export const docsSidebarGroups = [
             label: "Claude.ai",
             slug: "docs/developers/api/mcp/claude-ai",
           },
+          { label: "Dust", slug: "docs/developers/api/mcp/dust" },
           {
             label: "OpenAI API",
             slug: "docs/developers/api/mcp/openai",

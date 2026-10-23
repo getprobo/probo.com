@@ -1,0 +1,83 @@
+---
+title: Dust Configuration
+description: Connect the Probo MCP server to Dust as a remote MCP tool using interactive OAuth with Client ID Metadata Documents, then add it to your agents.
+---
+
+This guide explains how to connect the Probo MCP Server to [Dust](https://dust.tt), so that your Dust agents can work with your compliance data.
+
+Dust connects to Probo with interactive OAuth. Probo supports [Client ID Metadata Documents (CIMD)](/docs/developers/api/mcp/authentication#client-id-metadata-documents-cimd), so Dust identifies itself with its own metadata URL — no OAuth app, client ID, client secret, or token to manage.
+
+## Prerequisites
+
+- A Dust workspace where you are an admin
+- A Probo account with access to the organizations your agents will use
+
+## Endpoint
+
+Choose the endpoint for your Probo environment:
+
+| Environment | MCP URL                                      |
+| ----------- | -------------------------------------------- |
+| Probo US    | `https://us.probo.com/api/mcp/v1`            |
+| Probo EU    | `https://eu.probo.com/api/mcp/v1`            |
+| Custom      | `https://your-probo-instance.com/api/mcp/v1` |
+
+The `/v1` segment is required.
+
+## Connect Probo to Dust
+
+### 1. Add the Probo MCP Server
+
+1. Log into [Dust](https://dust.tt)
+2. Go to **Spaces → Tools**
+3. Click **Add Tool**, then **Add MCP Server**
+4. Enter your Probo MCP URL:
+
+```
+https://your-probo-instance.com/api/mcp/v1
+```
+
+### 2. Authorize via OAuth
+
+1. Choose the **Automatic** authentication method
+2. Click **Connect**
+
+Dust discovers Probo's authorization server and opens a window to your Probo instance. Log in if prompted, review the requested scopes, then click **"Authorize"**.
+
+Once authorized, you'll be redirected back to Dust and the Probo tools are synced.
+
+:::note
+Tool calls run with the Probo account that authorized the connection, limited
+by the granted scopes. To give different people different access, create a
+separate Probo server per account and add each one to a restricted space.
+:::
+
+### 3. Add Probo to an Agent
+
+Open the agent you want to use, add the Probo tool from its space, and save the agent.
+
+## Verify Connection
+
+Start a conversation with the agent and ask:
+
+```
+"List all organizations I have access to"
+```
+
+The agent should use the `listOrganizations` tool and return your organizations. If it does, the connection is working.
+
+## Self-hosted deployments
+
+Self-hosted Probo instances accept only explicitly allowed CIMD clients. Add
+Dust's client metadata URL to
+[`PROBOD_OAUTH2_SERVER_CIMD_ALLOWED_CLIENT_IDS`](/docs/deployment/configuration/environment-reference#oauth-20-server)
+before connecting. If it is not allowed, the authorization step fails with an
+unknown client error.
+
+## Support
+
+Need help with the Dust integration?
+
+- [GitHub Issues](https://github.com/getprobo/probo/issues) - Report issues or request features
+- [Discord Community](https://discord.com/invite/8qfdJYfvpY) - Get help from the community
+- [Dust Documentation](https://docs.dust.tt/docs/remote-mcp-server) - Dust specific questions

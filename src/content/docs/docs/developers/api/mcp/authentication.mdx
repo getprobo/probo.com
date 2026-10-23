@@ -140,7 +140,8 @@ authorization server discovery. Public clients use
 
 Probo supports URL-based client identifiers. With CIMD, the OAuth `client_id`
 is an HTTPS URL that returns the client's metadata document. This allows
-clients such as hosted AI assistants to identify themselves without a
+clients such as hosted AI assistants (for example,
+[Dust](/docs/developers/api/mcp/dust)) to identify themselves without a
 pre-provisioned client ID or secret.
 
 The authorization server advertises support with:
@@ -178,7 +179,7 @@ Example:
 :::note
 Self-hosted deployments accept only explicitly allowed CIMD client IDs.
 Configure the exact metadata URLs with
-[`PROBOD_OAUTH2_SERVER_CIMD_ALLOWED_CLIENT_IDS`](/docs/deployment/configuration/environment-variables#oauth2-server).
+[`PROBOD_OAUTH2_SERVER_CIMD_ALLOWED_CLIENT_IDS`](/docs/deployment/configuration/environment-reference#oauth-20-server).
 An empty allowlist disables third-party CIMD clients.
 :::
 
