@@ -3,6 +3,8 @@ title: Permissions and Integrations
 description: Control who can read and manage Compliance Portals, connect access notifications to Slack, and automate portal workflows through OAuth, CLI, MCP, or n8n.
 ---
 
+import { Steps } from "@astrojs/starlight/components";
+
 Compliance Portal administration follows the person's organization role and the organization boundary.
 
 ## Console permissions
@@ -18,9 +20,22 @@ Use the least-privileged role that fits the person's work. See [Roles and permis
 
 ## Slack
 
-The portal overview can connect a Slack workspace and select a channel for Compliance Portal access-request notifications. Connecting or changing the channel requires permission to initiate connectors. A connection without a selected channel is shown as not configured.
+Send access requests to a Slack channel so reviewers can approve them without opening the console.
 
-{/* Screenshot: /docs/compliance-portal/slack-integration.webp — Configured Slack channel in the portal overview */}
+<Steps>
+
+1. Open **Settings → Integrations**.
+2. If the Probo Slack app is not installed yet, select **Install**, choose your Slack workspace, and select **Allow**.
+3. Under **Slack notifications**, choose the channel where access requests should land, such as `#access-requests`.
+4. Ask every reviewer to run `/probot login` in Slack to link their Slack account to their Probo account.
+
+</Steps>
+
+Reviewers who have not run `/probot login` still see requests in the channel, but they cannot approve or reject them until their account is linked.
+
+Connecting or changing the channel requires permission to initiate connectors. A connection without a selected channel is shown as not configured.
+
+{/* Screenshot: /docs/compliance-portal/slack-integration.webp — Configured Slack channel on the Integrations page */}
 
 ## API and automation access
 

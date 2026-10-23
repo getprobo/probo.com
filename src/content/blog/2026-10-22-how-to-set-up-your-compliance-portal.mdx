@@ -1,6 +1,6 @@
 ---
 category: Compliance
-title: "How to set up your compliance portal on Probo"
+title: "How to set up your compliance portal (trust center) on Probo"
 date: 2026-10-22
 excerpt: "A step-by-step guide to setting up your Probo compliance portal: branding, security commitments, which documents to share, NDA, Slack access requests and a custom domain."
 author:
@@ -31,7 +31,7 @@ Setting it up on Probo takes about 30 minutes. Here are the eight steps.
 
 ## Step 1: Turn the portal on
 
-Go to **Compliance portal → Hosting** and flip the toggle. Your portal is now publicly accessible.
+Go to **Compliance portal → Settings → Hosting** and flip the toggle. Your portal is now publicly accessible. (More in the [quickstart docs](/docs/product/compliance-portal/quickstart).)
 
 ![Compliance portal is active toggle in Compliance portal > Hosting](/blog/compliance-portal-setup/01-activate.jpg)
 
@@ -39,7 +39,7 @@ It's live, but it's empty. Don't send the link to anyone yet. Do the next seven 
 
 ## Step 2: Make it look like yours
 
-Go to **Compliance portal → Landing → Branding** and fill in:
+Go to **Compliance portal → Pages → Landing → Branding** ([docs](/docs/product/compliance-portal/branding-and-domains)) and fill in:
 
 - **Entity name**: your legal or trading name, the one buyers will recognize on the contract.
 - **Description**: one or two plain sentences about what you do and who you serve.
@@ -51,11 +51,11 @@ Go to **Compliance portal → Landing → Branding** and fill in:
 
 ## Step 3: Pick your frameworks and write your security commitments
 
-Go to **Compliance portal → Landing → Content**.
+Go to **Compliance portal → Pages → Landing → Content**.
 
 ### Frameworks
 
-Select the frameworks you want displayed (ISO 27001, SOC 2, HIPAA, GDPR...). Only show the ones you actually work under. A framework badge you can't back up with an audit or a policy set is a question you'll have to answer awkwardly later.
+Select the frameworks you want displayed (ISO 27001, SOC 2, HIPAA, GDPR...). Only show the ones you actually work under. A framework badge you can't back up with an audit or a policy set is a question you'll have to answer awkwardly later. (See [publishing frameworks](/docs/product/compliance-portal/publishing-content#publish-frameworks) in the docs.)
 
 ![Framework selection with ISO 27001, SOC 2, HIPAA and GDPR](/blog/compliance-portal-setup/03-frameworks.jpg)
 
@@ -73,11 +73,11 @@ That's the rule: **every commitment should trace back to a policy you've publish
 
 ![Security commitments grouped under Data protection, with encryption and data deletion cards](/blog/compliance-portal-setup/04-commitments.jpg)
 
-You can write them by hand with **Add Group** and **Add Commitment**. Or let an AI agent do the first draft: the compliance portal commitments skill from Probo reads your published policies through the [Probo MCP](/blog/2026-08-14-agent-plugins-probo) and proposes a set of commitments grounded in what they actually say. You review, cut, reword, and only then does it publish them to the portal. It never invents a control that isn't in your policies.
+You can write them by hand with **Add Group** and **Add Commitment**. Or let an AI agent do the first draft: the compliance portal commitments skill from Probo reads your published policies through the [Probo MCP](/blog/2026-08-14-agent-plugins-probo) and proposes a set of commitments grounded in what they actually say. You review, cut, reword, and only then does it publish them to the portal. It never invents a control that isn't in your policies. The [commitments docs](/docs/product/compliance-portal/commitments) cover both routes.
 
 ## Step 4: Choose which documents and audits to share
 
-Go to **Compliance portal → Landing → Documents**.
+Go to **Compliance portal → Pages → Documents** ([docs](/docs/product/compliance-portal/publishing-content)).
 
 ### Documents
 
@@ -115,7 +115,7 @@ Then set visibility by type:
 
 ## Step 5: List your subprocessors
 
-Go to **Compliance portal → Landing → Subprocessors**. The list comes straight from your third parties in Probo. Tick the ones you want to display.
+Go to **Compliance portal → Pages → Subprocessors** ([docs](/docs/product/compliance-portal/subprocessors)). The list comes straight from your third parties in Probo. Tick the ones you want to display.
 
 ![Subprocessors list with checkboxes to choose which vendors are displayed](/blog/compliance-portal-setup/07-subprocessors.jpg)
 
@@ -123,15 +123,15 @@ Display the vendors that actually process your customers' data: your cloud provi
 
 ## Step 6: Upload an NDA
 
-Go to **Compliance portal → Landing → Visitors** and upload your NDA as a PDF.
+Go to **Compliance portal → Settings → Visitors** and upload your NDA as a PDF ([docs](/docs/product/compliance-portal/visitor-access-and-nda)).
 
-![Visitors tab with the non-disclosure agreement upload area](/blog/compliance-portal-setup/08-nda.jpg)
+![Visitors page with the non-disclosure agreement upload area](/blog/compliance-portal-setup/08-nda.jpg)
 
 We strongly recommend this one. Once an NDA is uploaded, anyone you grant access to a restricted document has to **sign it electronically, directly on the compliance portal**, before they can download anything. No separate DocuSign, no chasing a countersigned PDF, and a clean record of who signed what.
 
 ## Step 7: Get access requests in Slack
 
-Go to **Compliance portal → Landing → Integrations**.
+Go to **Compliance portal → Settings → Integrations** ([docs](/docs/product/compliance-portal/permissions-and-integrations#slack)).
 
 **1. Install the Slack bot.** Click **Install**.
 
@@ -151,7 +151,7 @@ From then on, a new access request shows up in the channel, a reviewer approves 
 
 ## Step 8: Put it on your own domain
 
-Go to **Compliance portal → Landing → Domain**.
+Go to **Compliance portal → Settings → Hosting** and find **Domains** ([docs](/docs/product/compliance-portal/branding-and-domains#connect-a-custom-domain)).
 
 **1. Pick a subdomain.** Something buyers will recognize at a glance, like `trust.yourcompany.com` or `compliance.yourcompany.com`. Type it in and click **Add domain**.
 
@@ -169,4 +169,4 @@ A portal on `trust.yourcompany.com` reads as part of your company. That's the li
 
 The portal doesn't make you secure. It makes the work you've already done visible. If your policies are generic templates, your commitments will be generic too, and a sharp security reviewer will notice.
 
-Get the policies right first, then let the [compliance portal](/products/compliance-portal) do the selling. For every setting covered here and a few more (multiple portals, mailing list updates, SEO), see the [compliance portal docs](/docs/product/compliance-portal).
+Get the policies right first, then let the [compliance portal](/products/compliance-portal) do the selling. For every setting covered here and a few more ([multiple portals](/docs/product/compliance-portal/multiple-portals), [mailing list updates](/docs/product/compliance-portal/updates-and-mailing-list), [SEO](/docs/product/compliance-portal/seo-and-discoverability)), see the [compliance portal docs](/docs/product/compliance-portal).

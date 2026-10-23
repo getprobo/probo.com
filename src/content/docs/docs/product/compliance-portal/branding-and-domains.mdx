@@ -5,7 +5,7 @@ description: Configure the Compliance Portal’s public organization profile, li
 
 import { Aside, Steps } from "@astrojs/starlight/components";
 
-Use the **Brand** tab to make the portal recognizable and give visitors clear ways to verify your organization or contact the right team.
+Use **Landing → Branding** to make the portal recognizable and give visitors clear ways to verify your organization or contact the right team.
 
 ## Profile
 
@@ -45,7 +45,7 @@ Use a short, descriptive label such as **Service status** instead of a raw hostn
 
 <Steps>
 
-1. Open **Brand** and find **Custom links**.
+1. Open **Landing → Branding** and find **Custom links**.
 2. Select **Add link**.
 3. Enter the visitor-facing name and complete `https://` URL.
 4. Save the link, then drag links into the order you want visitors to see.
@@ -68,8 +68,8 @@ Probo obtains and renews TLS certificates for the managed domain automatically, 
 
 <Steps>
 
-1. In the **Domains** section, select **Configure**.
-2. Enter the hostname you want to use, such as `compliance.example.com`.
+1. Open **Settings → Hosting** and find the **Domains** section.
+2. Enter the hostname you want to use, such as `compliance.example.com` or `trust.example.com`, and select **Add domain**. A portal can use one custom domain.
 3. Create the DNS records shown by Probo. Copy the record type, name, value, and TTL exactly. Self-hosted deployments must show an operator-owned CNAME target, not `custom.getprobo.com`.
 4. Wait for the domain and TLS certificate status to become active.
 5. Open the portal from the custom hostname and verify that it loads over HTTPS. Then open the managed address and confirm that it redirects to the custom hostname.
@@ -84,10 +84,10 @@ DNS propagation and certificate provisioning can take time. Keep the records in 
 
 <Aside type="caution" title="Replace the Probo Cloud CNAME target">
   `custom.getprobo.com` routes to Probo Cloud. A self-hosted deployment must set
-  `PROBOD_CUSTOM_DOMAINS_CNAME_TARGET`, or
-  `probo.customDomains.cnameTarget` in the Helm chart, to a stable hostname that
-  reaches its own Compliance Portal entry point. Probo displays this value in
-  the DNS instructions and requires connected domains to resolve through it.
+  `PROBOD_CUSTOM_DOMAINS_CNAME_TARGET`, or `probo.customDomains.cnameTarget` in
+  the Helm chart, to a stable hostname that reaches its own Compliance Portal
+  entry point. Probo displays this value in the DNS instructions and requires
+  connected domains to resolve through it.
 </Aside>
 
 For example, set the deployment target to `portals.probo.example.com`, route that hostname to your proxy or load balancer, and create this customer-facing record:
@@ -98,9 +98,9 @@ compliance.example.com. CNAME portals.probo.example.com.
 
 The Compliance Portal uses separate HTTP and HTTPS listeners from the console and API. Route the domain according to where TLS terminates:
 
-| TLS mode  | Use when                                         | Required routing                                                                                                                                 |
-| --------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `direct`  | Probo obtains and serves the portal certificate. | Pass TCP ports 80 and 443 through to the portal HTTP and HTTPS listeners. Preserve TLS SNI; do not terminate TLS before Probo.                    |
+| TLS mode   | Use when                                         | Required routing                                                                                                                                                |
+| ---------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `direct`   | Probo obtains and serves the portal certificate. | Pass TCP ports 80 and 443 through to the portal HTTP and HTTPS listeners. Preserve TLS SNI; do not terminate TLS before Probo.                                  |
 | `external` | A trusted layer-7 proxy terminates TLS.          | Forward requests to the portal HTTP listener. Preserve the original `Host`, set one `X-Forwarded-Proto` value, and overwrite `X-Forwarded-Host` if you send it. |
 
 `direct` is the default. To use external termination, set `PROBOD_TRUST_CENTER_TLS_MODE=external`, or `probo.trustCenter.tlsMode: external` with Helm. Prevent clients from reaching the portal HTTP listener directly: external mode treats the proxy-provided host and protocol as trusted routing data.
