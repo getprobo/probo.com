@@ -3,34 +3,79 @@ title: Updates and Mailing List
 description: Manage Compliance Portal subscribers, review confirmation status, prepare compliance announcements, and queue approved updates for email delivery.
 ---
 
+import { Steps } from "@astrojs/starlight/components";
+
 Each Compliance Portal has its own mailing list. Visitors can subscribe to receive compliance updates, and portal managers can add or remove subscribers from the console.
+
+## Mailing list settings
+
+Open the portal, then select **Updates**. The **Settings** card at the top configures how your mailing list behaves.
+
+- **Reply-to email**: the address that receives replies when a subscriber answers an update email, for example `security@yourcompany.com`. Use a monitored inbox so customer questions reach your security team.
+
+## Get subscribers
+
+People join the mailing list in one of two ways:
+
+- **They subscribe themselves.** A visitor signs in to your Compliance Portal and selects **Subscribe to updates**.
+- **You add them.** Open the portal, then select **Updates** → **Subscribers** → **Add subscriber** and enter their email address. Use this when a person has asked to join outside the portal. Do not add people without an appropriate basis for contacting them.
+
+In both cases, the new subscriber must confirm by email before they receive any update.
+
+## Confirm a subscription
+
+<Steps>
+
+1. **Subscribe**
+
+   In the **Subscribe to updates** dialog, the visitor enters their email address and selects **Subscribe**. The dialog states that they agree to receive compliance updates from your company and can unsubscribe at any time.
+
+2. **Confirm by email**
+
+   Probo sends a **Confirm your subscription** email. The subscriber selects **Confirm subscription**.
+
+3. **Subscription confirmed**
+
+   A **Subscription confirmed** page tells the subscriber they will now receive updates. Their status changes from **Pending** to **Confirmed**.
+
+</Steps>
+
+Subscribers you add from the console go through the same email confirmation.
 
 ## Manage subscribers
 
 Open the portal, then select **Updates** and the **Subscribers** tab. The subscriber list shows each person's name, email address, subscription status, and subscription date.
 
-- **Pending** subscribers have not completed confirmation.
+- **Pending** subscribers have not completed confirmation and do not receive updates.
 - **Confirmed** subscribers receive updates.
 - Removing a subscriber stops future sends to that address.
-
-Use **Add subscriber** when a person has asked to join outside the portal. Do not add people without an appropriate basis for contacting them.
 
 {/* Screenshot: /docs/compliance-portal/mailing-list.webp — Subscribers tab with confirmed and pending subscribers */}
 
 ## Create and send an update
+
+<Steps>
 
 1. Open **Updates** and stay on the **Updates** tab.
 2. Select **Add update** and enter a title and body.
 3. Review the draft for confidential or customer-specific information.
 4. Select **Send**, review the confirmation, and confirm the send.
 
-Sending queues the update for delivery. A sent update becomes read-only; create a new update if you need to issue a correction. Delivery also requires working outbound email configuration.
+</Steps>
+
+A new update is saved with the **Draft** status. Each draft in the list has three actions:
+
+- **Send**: opens the **Send update to subscribers** confirmation, which shows the title and body that will be sent to all current subscribers.
+- **Edit**: changes the title or body before sending.
+- **Delete**: removes the draft.
+
+Sending queues the update for delivery and cannot be undone. A sent update becomes read-only; create a new update if you need to issue a correction. Delivery also requires working outbound email configuration.
 
 {/* Screenshot: /docs/compliance-portal/send-update.webp — Draft compliance update and send confirmation */}
 
 ## Visitor experience
 
-Sent updates appear in the portal's **Updates** section. Signed-in visitors can choose **Subscribe to updates** from the user menu and unsubscribe later. A subscription affects email delivery only; visitors can still read published updates without subscribing.
+Sent updates appear in the portal's **Updates** section as a news feed. Signed-in visitors can choose **Subscribe to updates** and unsubscribe later. A subscription affects email delivery only; visitors can still read published updates without subscribing.
 
 {/* Screenshot: /docs/compliance-portal/updates-feed.webp — Public Updates section and subscription action */}
 

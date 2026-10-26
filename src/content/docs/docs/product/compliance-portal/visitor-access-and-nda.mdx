@@ -37,29 +37,57 @@ Restricted resources remain discoverable so customers can request exactly what t
 
    When required, Probo asks the visitor to sign in and complete their profile before submitting the request.
 
-3. **Review and sign the NDA**
-
-   If the portal has an NDA, the visitor must complete the signing flow before the restricted-resource request can proceed. Public content remains available without an NDA.
-
-4. **Submit the request**
+3. **Submit the request**
 
    The visitor can request one resource or select multiple restricted documents, audit reports, and files and request them together.
 
    {/* Screenshot placeholder: Bulk access request — /docs/compliance-portal/bulk-access-request.webp */}
 
-5. **Wait for a decision**
+4. **Wait for a decision**
 
    The resource shows **Access requested** while the request is pending. A pending request does not grant access.
 
+5. **Sign the NDA**
+
+   If the portal has an NDA, the visitor must sign it once their request is accepted, before they can open or download the approved resources. Public content remains available without an NDA.
+
 6. **Open approved resources**
 
-   After approval, **View** replaces the request action. The grant applies only to the approved visitor and resources.
+   After approval and signature, **View** replaces the request action. The grant applies only to the approved visitor and resources.
 
 </Steps>
 
+## Add a visitor yourself
+
+You do not have to wait for a request. When a prospect or customer needs your documents, for example during a security review, add them as a visitor and grant access upfront.
+
+<Steps>
+
+1. **Add the visitor**
+
+   Open **Settings → Visitors** and select **Add visitor**. Enter the person's email address, then select **Add** followed by that address.
+
+2. **Grant the resources they need**
+
+   Select the new visitor. Under **Restricted Document Accesses**, select **Grant** for each document, audit report, or file they should receive, then save.
+
+3. **The visitor receives an email**
+
+   Probo emails the visitor that they have been granted access to your Compliance Portal, with an **Access Compliance Page** button.
+
+4. **The visitor signs the NDA and downloads**
+
+   If the portal has an NDA, the visitor signs it before downloading the documents you granted. Until then, their NDA status shows **Awaiting signature**.
+
+</Steps>
+
+The visitor shows **Not visited** until they first open the portal. Grant only what the person needs, as you would for a request.
+
+{/* Screenshot placeholder: Add visitor field and visitor detail — /docs/compliance-portal/add-visitor.webp */}
+
 ## Configure an NDA
 
-Use an NDA when visitors must accept confidentiality terms before requesting restricted resources.
+Use an NDA when visitors must accept confidentiality terms before downloading restricted resources. Visitors can request access before signing, but they must sign once their access is accepted, before they can download.
 
 Before uploading an agreement:
 
@@ -76,7 +104,7 @@ To configure it:
 2. Find **Non-disclosure agreement** and select **Upload NDA**.
 3. Choose the reviewed PDF and upload it.
 4. Open the public portal with a test visitor account.
-5. Request a restricted resource and complete the signing flow.
+5. Request a restricted resource, approve it, and complete the signing flow.
 
 </Steps>
 
@@ -144,7 +172,7 @@ Revoke a grant when the visitor no longer has a valid business need, their engag
 
 <Steps>
 
-1. Open **Access** and select the visitor.
+1. Open **Settings → Visitors** and select the visitor.
 2. Find each currently granted resource.
 3. Select **Revoke**, or use **Reject or revoke all** when appropriate.
 4. Review the changes and save.
