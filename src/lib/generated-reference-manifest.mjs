@@ -154,8 +154,8 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/task",
   },
   {
-    label: "ThirdParty",
-    slug: "docs/developers/cli/commands/thirdparty",
+    label: "Third Party",
+    slug: "docs/developers/cli/commands/third-party",
   },
   {
     label: "TIA",
