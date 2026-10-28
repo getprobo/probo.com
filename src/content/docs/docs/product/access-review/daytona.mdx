@@ -1,0 +1,68 @@
+---
+title: Daytona
+description: Connect Daytona as an access source using an API key created in the organization you want to review, so Probo can list its members and the assignments they hold.
+---
+
+Probo reads the members of your Daytona organization through the Daytona API so you can review who has access.
+
+:::caution
+Create the API key while the organization you want to review is selected in the Daytona dashboard. A key belongs to the organization it was created in, so a key created in your **Personal** organization or in another organization reviews that organization instead.
+
+Every Daytona API key, including a **Restricted** key with no permissions selected, can run processes and read and write files in the organization's running sandboxes. Daytona does not let you remove that access from a key. Treat the key as a credential with sandbox access.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- The **Owner** role in the Daytona organization you want to review
+
+## Collected Fields
+
+| Probo field | Daytona field                                            | Notes                                                                                                                                                                   |
+| ----------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `name`                                                   |                                                                                                                                                                         |
+| Email       | `email`                                                  |                                                                                                                                                                         |
+| Role        | `role`, `assignedRoles`                                  | `owner` and `member` map to Owner and Member. A member's assignments, such as Developer or Auditor, are listed after it. An owner has full access                       |
+| Admin       | `role`                                                   | Flagged when `role` is `owner`. A member with the Super Admin assignment is not flagged, since only owners administer the organization; the assignment shows under Role |
+| Status      | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                         |
+| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                         |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                         |
+| External ID | `userId`                                                 | Stable identifier used to track the account across reviews                                                                                                              |
+| Created at  | `createdAt`                                              | When the member joined the organization                                                                                                                                 |
+
+Daytona returns the whole member list in one response. It contains accepted members only: an API key cannot read pending invitations, and a member who leaves or is removed drops out of the list, so there is no inactive status to report.
+
+## Step 1: Create an API Key
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+![Daytona Create API Key dialog with the key named Probo Access Review and Restricted permissions selected](/docs/access-review/daytona-create-api-key.webp)
+
+<Steps>
+
+1. In the [Daytona dashboard](https://app.daytona.io/dashboard/keys), select the organization you want to review in the organization switcher at the top of the sidebar, then open **API Keys**.
+2. Click **Create API Key** and enter a **Key Name**, for example `Probo Access Review`.
+3. Under **Permissions**, choose **Restricted** and leave every permission unselected. The **Read\*** toggles on Sandboxes, Snapshots, Registries and Regions stay on and cannot be cleared. Listing members needs no permission.
+4. **Expires** is optional. If you set a date, replace the key before it, because the source stops syncing when the key expires.
+5. Click **Create**, then copy the key and store it securely. Daytona shows it only once.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Daytona** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Daytona**, and click **Add**.
+
+</Steps>
+
+Probo finds the organization from the key and pulls its members into your campaigns.
+
+## Troubleshooting
+
+- **Key rejected.** Daytona answers `401` for a key it does not accept. Check that the key was copied whole and has not been revoked or expired under **API Keys**.
+- **Only you appear, or the wrong people appear.** The key reviews the organization it was created in. Select the right organization in the sidebar and create a new key there, then click **Update API key** (the key icon) on the Daytona connector in **Settings** > **Connectors**, paste the new key, and click **Save API key**. The connector keeps its name and its source.
+- **An invited user is missing.** Pending invitations are not listed. The user appears once they accept the invitation.
