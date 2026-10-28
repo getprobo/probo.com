@@ -25,6 +25,7 @@ const accessReviewConnectorItems = [
   { label: "Cursor", slug: "docs/product/access-review/cursor" },
   { label: "Deepgram", slug: "docs/product/access-review/deepgram" },
   { label: "Dotfile", slug: "docs/product/access-review/dotfile" },
+  { label: "Elastic Cloud", slug: "docs/product/access-review/elastic-cloud" },
   { label: "Front", slug: "docs/product/access-review/front" },
   { label: "GitHub", slug: "docs/product/access-review/github" },
   { label: "Google Cloud", slug: "docs/product/access-review/gcp" },
