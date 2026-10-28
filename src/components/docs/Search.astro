@@ -16,6 +16,47 @@ const dataAttributes: DOMStringMap = {
 };
 if (project.trailingSlash === "never")
   dataAttributes["data-strip-trailing-slash"] = "";
+
+const quickLinks = [
+  {
+    section: "Get started",
+    links: [
+      {
+        label: "Core concepts",
+        href: "/docs/product/getting-started/core-concepts",
+      },
+      {
+        label: "Choose a deployment",
+        href: "/docs/product/getting-started/choose-deployment",
+      },
+    ],
+  },
+  {
+    section: "Product",
+    links: [
+      { label: "Access Review", href: "/docs/product/access-review/overview" },
+      { label: "Compliance Portal", href: "/docs/product/compliance-portal" },
+      { label: "Risk management", href: "/docs/product/risk-management" },
+    ],
+  },
+  {
+    section: "Deployment",
+    links: [
+      { label: "Probo Cloud", href: "/docs/deployment/cloud" },
+      { label: "Self-hosting", href: "/docs/deployment/self-hosting" },
+    ],
+  },
+  {
+    section: "Developers",
+    links: [
+      { label: "API", href: "/docs/developers/api-overview" },
+      { label: "CLI", href: "/docs/developers/cli/overview" },
+      { label: "MCP", href: "/docs/developers/api/mcp/overview" },
+    ],
+  },
+];
+
+const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
 ---
 
 <site-search class={Astro.props.class} {...dataAttributes}>
@@ -53,6 +94,36 @@ if (project.trailingSlash === "never")
         ) : (
           <div class="search-container">
             <div id="starlight__search" />
+            <div class="search-empty">
+              <div class="search-empty-sections">
+                {quickLinks.map(({ section, links }) => (
+                  <div>
+                    <p class="search-empty-heading">{section}</p>
+                    <ul>
+                      {links.map(({ label, href }) => (
+                        <li>
+                          <a href={href}>{label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p class="search-empty-heading">Try searching for</p>
+                <div class="search-empty-chips">
+                  {exampleQueries.map((query) => (
+                    <button type="button" data-search-query={query}>
+                      {query}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <p class="search-empty-hint">
+                <kbd>Tab</kbd> to move through results · <kbd>Enter</kbd> to
+                open · <kbd>Esc</kbd> to close
+              </p>
+            </div>
           </div>
         )
       }
@@ -157,6 +228,19 @@ if (project.trailingSlash === "never")
       });
 
       window.addEventListener("keydown", this.onKeyDown);
+
+      this.querySelectorAll<HTMLButtonElement>("[data-search-query]").forEach(
+        (chip) =>
+          chip.addEventListener("click", () => {
+            const input = this.querySelector<HTMLInputElement>(
+              ".pagefind-ui__search-input",
+            );
+            if (!input) return;
+            input.value = chip.dataset.searchQuery!;
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            input.focus();
+          }),
+      );
 
       let translations = {};
       try {
@@ -310,6 +394,87 @@ if (project.trailingSlash === "never")
       --pagefind-ui-tag: var(--sl-color-gray-6);
     }
 
+    .search-empty {
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+      font-size: var(--sl-text-sm);
+    }
+
+    .search-empty-sections {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem 1rem;
+    }
+
+    .search-empty-heading {
+      margin-bottom: 0.375rem;
+      font-size: var(--sl-text-xs);
+      font-weight: 600;
+      color: var(--sl-color-gray-3);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .search-empty ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .search-empty a {
+      color: var(--sl-color-white);
+      text-decoration: none;
+    }
+    .search-empty a:hover {
+      color: var(--sl-color-text-accent);
+    }
+
+    .search-empty-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .search-empty-chips button {
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 999px;
+      padding: 0.25rem 0.75rem;
+      background-color: var(--sl-color-black);
+      color: var(--sl-color-gray-2);
+      font-size: var(--sl-text-sm);
+      cursor: pointer;
+    }
+    .search-empty-chips button:hover {
+      border-color: var(--sl-color-gray-2);
+      color: var(--sl-color-white);
+    }
+
+    .search-empty-hint {
+      display: none;
+      color: var(--sl-color-gray-3);
+      font-size: var(--sl-text-xs);
+    }
+    .search-empty-hint kbd {
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.25rem;
+      padding-inline: 0.25rem;
+      background-color: var(--sl-color-black);
+    }
+
+    @media (min-width: 50rem) {
+      .search-empty-sections {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .search-empty-hint {
+        display: block;
+      }
+    }
+
     @media (min-width: 50rem) {
       #starlight__search {
         --sl-search-cancel-space: 0px;
@@ -338,6 +503,11 @@ if (project.trailingSlash === "never")
   @layer starlight.core {
     [data-search-modal-open] {
       overflow: hidden;
+    }
+
+    .search-container:has(.pagefind-ui__search-input:placeholder-shown)
+      .search-empty {
+      display: flex;
     }
 
     #starlight__search {
