@@ -31,7 +31,7 @@
     "@n8n_io/n8n-demo-component": "^1.0.20",
     "@phosphor-icons/core": "^2.1.1",
     "@phosphor-icons/web": "^2.1.2",
-    "@probo/cookie-banner": "^0.14.0",
+    "@probo/cookie-banner": "^0.22.0",
     "@splidejs/splide": "^4.1.4",
     "@splidejs/splide-extension-auto-scroll": "^0.5.3",
     "@splidejs/splide-extension-intersection": "^0.2.0",
