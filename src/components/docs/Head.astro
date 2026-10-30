@@ -1,8 +1,10 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import PostHog from "../posthog.astro";
+import { getDocsBreadcrumbs } from "../../lib/docs-navigation";
 
-const { head, entry, siteTitle, lastUpdated } = Astro.locals.starlightRoute;
+const { head, entry, siteTitle, lastUpdated, sidebar } =
+  Astro.locals.starlightRoute;
 const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
 const markdownAlternate = pathname ? `${pathname}.md` : "/index.md";
 const seoTitle =
@@ -11,6 +13,21 @@ const seoTitle =
 const description = entry.data.description;
 const pageUrl = `https://www.probo.com${pathname || "/docs"}`;
 const isDocsHome = pathname === "/docs";
+const breadcrumbs = getDocsBreadcrumbs(
+  Astro.url.pathname,
+  sidebar,
+  entry.data.title,
+);
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbs.map((crumb, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: crumb.label,
+    item: crumb.href ? new URL(crumb.href, pageUrl).href : pageUrl,
+  })),
+};
 const docsSchema = {
   "@context": "https://schema.org",
   "@type": isDocsHome ? "WebPage" : "TechArticle",
@@ -66,6 +83,14 @@ const docsSchema = {
   rel="stylesheet"
 />
 <script type="application/ld+json" set:html={JSON.stringify(docsSchema)} />
+{
+  breadcrumbs.length > 1 && (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(breadcrumbSchema).replaceAll("<", "\\u003c")}
+    />
+  )
+}
 <link rel="alternate" type="text/markdown" href={markdownAlternate} />
 <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs index" />
 <link

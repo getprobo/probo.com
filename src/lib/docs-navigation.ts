@@ -1,3 +1,4 @@
+import type { StarlightRouteData } from "@astrojs/starlight/route-data";
 import { docsSidebarGroups } from "./docs-sidebar.ts";
 
 export type DocsSectionId =
@@ -110,4 +111,66 @@ export function getSidebarGroupsForSection<Entry extends { type: string }>(
       },
     ];
   });
+}
+
+export type DocsBreadcrumb = {
+  label: string;
+  href?: string;
+};
+
+type SidebarEntry = StarlightRouteData["sidebar"][number];
+
+export function getDocsBreadcrumbs(
+  pathname: string,
+  sidebar: SidebarEntry[],
+  title: string,
+): DocsBreadcrumb[] {
+  const path = normalizeDocsPath(pathname);
+  if (path === "/docs") return [{ label: title }];
+
+  function firstHref(entries: SidebarEntry[]): string | undefined {
+    for (const entry of entries) {
+      if (entry.type === "link") return entry.href;
+      const href = firstHref(entry.entries);
+      if (href) return href;
+    }
+  }
+
+  function findCurrent(
+    entries: SidebarEntry[],
+    parents: DocsBreadcrumb[] = [],
+  ): DocsBreadcrumb[] | undefined {
+    for (const entry of entries) {
+      if (entry.type === "link" && entry.isCurrent) return parents;
+      if (entry.type === "group") {
+        const result = findCurrent(entry.entries, [
+          ...parents,
+          { label: entry.label, href: firstHref(entry.entries) },
+        ]);
+        if (result) return result;
+      }
+    }
+  }
+
+  const section = getDocsSection(getDocsSectionForPath(path));
+  const seen = new Set([path]);
+  const parents = [
+    { label: "Documentation home", href: "/docs" },
+    { label: section.label, href: section.href },
+    ...(findCurrent(sidebar) ?? []),
+  ].filter((crumb) => {
+    if (!crumb.href) return false;
+    const href = normalizeDocsPath(crumb.href);
+    if (seen.has(href)) return false;
+    seen.add(href);
+    return true;
+  });
+
+  return [
+    ...parents.map((crumb) => ({
+      label: crumb.label,
+      href: normalizeDocsPath(crumb.href!),
+    })),
+    { label: title },
+  ];
 }

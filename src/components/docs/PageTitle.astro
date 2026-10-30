@@ -1,18 +1,9 @@
 ---
 import Icon from "../Icon.astro";
 import { Badge } from "@astrojs/starlight/components";
-import {
-  getDocsSection,
-  getDocsSectionForPath,
-} from "../../lib/docs-navigation";
-
-type Breadcrumb = {
-  label: string;
-  href?: string;
-};
+import { getDocsBreadcrumbs } from "../../lib/docs-navigation";
 
 const { entry, sidebar } = Astro.locals.starlightRoute;
-type SidebarEntry = (typeof sidebar)[number];
 const { title, description, badge } = entry.data;
 const titleBadge =
   badge ??
@@ -23,48 +14,7 @@ const titleBadge =
       : undefined);
 const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
 const markdownUrl = pathname ? `${pathname}.md` : "/index.md";
-const activeSection = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
-
-function firstHref(entries: SidebarEntry[]): string | undefined {
-  for (const entry of entries) {
-    if (entry.type === "link") return entry.href;
-    const href = firstHref(entry.entries);
-    if (href) return href;
-  }
-}
-
-function findCurrent(
-  entries: SidebarEntry[],
-  parents: Breadcrumb[] = [],
-): Breadcrumb[] | undefined {
-  for (const entry of entries) {
-    if (entry.type === "link" && entry.isCurrent) {
-      return [...parents, { label: entry.label }];
-    }
-
-    if (entry.type === "group") {
-      const result = findCurrent(entry.entries, [
-        ...parents,
-        { label: entry.label, href: firstHref(entry.entries) },
-      ]);
-      if (result) return result;
-    }
-  }
-}
-
-const sidebarCrumbs = findCurrent(sidebar) ?? [];
-const breadcrumbs = [
-  { label: "Home", href: "/docs" },
-  ...(activeSection.id === "product"
-    ? []
-    : [{ label: activeSection.label, href: activeSection.href }]),
-  ...sidebarCrumbs,
-].filter(
-  (crumb, index, crumbs) =>
-    index === 0 ||
-    crumb.label.toLocaleLowerCase() !==
-      crumbs[index - 1]?.label.toLocaleLowerCase(),
-);
+const breadcrumbs = getDocsBreadcrumbs(Astro.url.pathname, sidebar, title);
 ---
 
 <header class="docs-page-header">
