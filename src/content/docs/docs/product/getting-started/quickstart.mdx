@@ -10,8 +10,6 @@ next:
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
-import AccordionStep from "../../../../../components/docs/AccordionStep.astro";
-import AccordionSteps from "../../../../../components/docs/AccordionSteps.astro";
 
 This guide walks you through deploying Probo locally with Docker Compose and setting up your first compliance framework. You should be up and running in about 15 minutes.
 
@@ -28,17 +26,14 @@ This quickstart creates a local evaluation environment at `http://localhost:8080
 
 ## Deploy Probo
 
-<AccordionSteps>
-  <AccordionStep title="Clone the repository" open>
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/getprobo/probo.git
 cd probo
 ```
 
-  </AccordionStep>
-
-  <AccordionStep title="Create the local environment">
+### 2. Create the local environment
 
 Generate the required secrets and application settings:
 
@@ -56,9 +51,7 @@ EOF
 
 Keep `.env` private. These values protect encrypted data and authentication sessions.
 
-  </AccordionStep>
-
-  <AccordionStep title="Start the services">
+### 3. Start the services
 
 ```bash
 docker compose -f compose.prod.yaml up -d
@@ -66,9 +59,7 @@ docker compose -f compose.prod.yaml up -d
 
 This starts the Probo server, PostgreSQL, SeaweedFS, and the headless browser used for document generation.
 
-  </AccordionStep>
-
-  <AccordionStep title="Verify the deployment">
+### 4. Verify the deployment
 
 ```bash
 curl --fail http://localhost:8080/healthz
@@ -81,26 +72,17 @@ The health request should succeed and each service should report a running or he
 docker compose -f compose.prod.yaml logs probo
 ```
 
-  </AccordionStep>
-
-  <AccordionStep title="Access the web interface">
+### 5. Access the web interface
 
 Open [http://localhost:8080](http://localhost:8080) in your browser. Create your account and log in.
 
-  </AccordionStep>
-
-  <AccordionStep title="Create your organization">
+### 6. Create your organization
 
 After logging in, create your first organization. This is the top-level entity that contains all your compliance data.
 
-  </AccordionStep>
-
-  <AccordionStep title="Import a compliance framework">
+### 7. Import a compliance framework
 
 Navigate to the frameworks section and import the framework relevant to your business — for example, SOC 2 or ISO 27001. This gives you a set of controls to work with.
-
-  </AccordionStep>
-</AccordionSteps>
 
 ## Next Steps
 
