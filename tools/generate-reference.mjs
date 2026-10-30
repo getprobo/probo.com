@@ -9,7 +9,7 @@ const args = process.argv.slice(2);
 const checkOnly = args.includes("--check");
 const sourceArgument = args.find((argument) => !argument.startsWith("--"));
 const sourceRoot = resolve(
-  process.env.PROBO_REPO_PATH ?? sourceArgument ?? join(root, "../probo"),
+  process.env.PROBO_REPO_PATH ?? sourceArgument ?? join(root, "../probo-merge4"),
 );
 const docsRoot = join(root, "src/content/docs/docs/developers");
 const configurationDocsRoot = join(
