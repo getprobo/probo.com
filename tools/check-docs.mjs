@@ -146,12 +146,15 @@ const cloudflareRedirects = await readFile(
   resolve(publicRoot, "_redirects"),
   "utf8",
 );
-for (const redirectLine of cloudflareRedirectLines()) {
-  if (!cloudflareRedirects.split("\n").includes(redirectLine)) {
-    errors.push(
-      `public/_redirects: missing generated redirect; run npm run redirects:generate (${redirectLine})`,
-    );
-  }
+const expectedCloudflareRedirects = [
+  ...cloudflareRedirectLines(),
+  "/fr/* /:splat 301",
+  "",
+].join("\n");
+if (cloudflareRedirects !== expectedCloudflareRedirects) {
+  errors.push(
+    "public/_redirects: generated redirects or their order are stale; run npm run redirects:generate",
+  );
 }
 
 for (const [from, { destination }] of Object.entries(redirects)) {
