@@ -9,7 +9,7 @@ const args = process.argv.slice(2);
 const checkOnly = args.includes("--check");
 const sourceArgument = args.find((argument) => !argument.startsWith("--"));
 const sourceRoot = resolve(
-  process.env.PROBO_REPO_PATH ?? sourceArgument ?? join(root, "../probo-merge"),
+  process.env.PROBO_REPO_PATH ?? sourceArgument ?? join(root, "../probo"),
 );
 const docsRoot = join(root, "src/content/docs/docs/developers");
 const configurationDocsRoot = join(
@@ -21,20 +21,30 @@ const mcpSpecificationUrl =
 const n8nSourceUrl =
   "https://github.com/getprobo/probo/tree/main/packages/n8n-node";
 
-const [mcpCategoryItems, n8nResourceItems, cliCommandItems] = await Promise.all(
-  [
-    generateMcpReference(),
-    generateN8nReference(),
-    generateCliReference(),
-    generateConfigurationReference(),
-    generateEnvironmentReference(),
-  ],
-);
-await writeReferenceManifest({
-  cliCommandItems,
-  mcpCategoryItems,
-  n8nResourceItems,
-});
+if (args.includes("--cli-only")) {
+  const cliCommandItems = await generateCliReference();
+  const { mcpCategoryItems, n8nResourceItems } =
+    await import("../src/lib/generated-reference-manifest.mjs");
+  await writeReferenceManifest({
+    cliCommandItems,
+    mcpCategoryItems,
+    n8nResourceItems,
+  });
+} else {
+  const [mcpCategoryItems, n8nResourceItems, cliCommandItems] =
+    await Promise.all([
+      generateMcpReference(),
+      generateN8nReference(),
+      generateCliReference(),
+      generateConfigurationReference(),
+      generateEnvironmentReference(),
+    ]);
+  await writeReferenceManifest({
+    cliCommandItems,
+    mcpCategoryItems,
+    n8nResourceItems,
+  });
+}
 
 console.log(
   `${checkOnly ? "Verified" : "Generated"} reference documentation from ${sourceRoot}`,
@@ -282,50 +292,145 @@ async function generateCliReference() {
   const commandRoot = join(sourceRoot, "pkg/cmd");
   const files = await collectFiles(commandRoot, ".go");
   const commands = [];
-  const directoryNames = new Map();
-  const cliSourceUrl = "https://github.com/getprobo/probo/blob/main/pkg/cmd";
+  const definitions = new Map();
+  const sharedFlagsSource = await readFile(
+    join(commandRoot, "cmdutil/flags.go"),
+    "utf8",
+  );
+  async function enumFlagUsage(type, file, listFunction) {
+    const source = await readFile(
+      join(sourceRoot, "pkg/coredata", file),
+      "utf8",
+    );
+    const values = [
+      ...source.matchAll(
+        new RegExp(`\\b${type}\\w+\\s+${type}\\s*=\\s*"([^"]+)"`, "g"),
+      ),
+    ].map((match) => match[1]);
+    const help = sharedFlagsSource.match(
+      new RegExp(
+        `return ("[^"]*") \\+ strings\\.Join\\(${listFunction}\\(\\), ("[^"]*")\\)`,
+      ),
+    );
+    if (!help || !values.length)
+      throw new Error(`Cannot resolve ${type} flag help`);
+    return `${goString(help[1])}${values.join(goString(help[2]))}`;
+  }
+  const dynamicFlagDescriptions = new Map([
+    [
+      "cmdutil.TaskStateFlagUsage()",
+      await enumFlagUsage("TaskState", "task_state.go", "TaskStates"),
+    ],
+    [
+      "cmdutil.TaskPriorityFlagUsage()",
+      await enumFlagUsage("TaskPriority", "task_priority.go", "TaskPriorities"),
+    ],
+  ]);
+  const rootSource = await readFile(join(commandRoot, "root/root.go"), "utf8");
+  const globalFlags = flagsFromSource(rootSource, dynamicFlagDescriptions);
 
   for (const file of files) {
-    const path = relative(commandRoot, file).split(sep);
-    if (path[0] === "root") continue;
-    const command = await commandFromFile(file);
-    if (!command) continue;
-    const directory = path.slice(0, -1).join("/");
-    const fileKey = basename(file, ".go").replaceAll(/[-_]/g, "");
-    const directoryKey = basename(directory).replaceAll(/[-_]/g, "");
-    if (fileKey === directoryKey) {
-      directoryNames.set(directory, command.use.split(/\s+/, 1)[0]);
+    if (file.endsWith("_test.go")) continue;
+    const fileSource = await readFile(file, "utf8");
+    const directory = relative(commandRoot, dirname(file)).split(sep).join("/");
+    const imports = new Map(
+      [
+        ...fileSource.matchAll(
+          /^\s*(?:(\w+)\s+)?"go\.probo\.inc\/probo\/pkg\/cmd\/([^"]+)"/gm,
+        ),
+      ].map((match) => [match[1] ?? basename(match[2]), match[2]]),
+    );
+    for (const fn of goFunctions(fileSource)) {
+      definitions.set(`${directory}:${fn.name}`, {
+        ...fn,
+        file,
+        fileSource,
+        directory,
+        imports,
+      });
     }
   }
 
-  for (const file of files) {
-    const path = relative(commandRoot, file).split(sep);
-    if (path[0] === "root" || path.some((part) => part.endsWith("_test.go"))) {
-      continue;
+  function resolveCommand(key, bindings = new Map()) {
+    const fn = definitions.get(key);
+    if (!fn) throw new Error(`Cannot resolve registered CLI command ${key}`);
+    if (!fn.source.includes("&cobra.Command{")) {
+      const delegate = fn.source.match(/\breturn\s+(\w+)\(/);
+      if (!delegate)
+        throw new Error(`Cannot resolve CLI command factory ${key}`);
+      const targetKey = `${fn.directory}:${delegate[1]}`;
+      const target = definitions.get(targetKey);
+      if (!target)
+        throw new Error(`Cannot resolve CLI command factory ${targetKey}`);
+      const values = goCallArguments(
+        fn.source,
+        delegate.index + delegate[0].length,
+      );
+      const parameters = new Map(
+        target.parameters.map((parameter, index) => [
+          parameter,
+          goStringExpression(values[index], fn.fileSource, bindings),
+        ]),
+      );
+      return resolveCommand(targetKey, parameters);
     }
-
-    const command = await commandFromFile(file);
-    if (!command) continue;
-
-    const directories = path.slice(0, -1);
-    const namedDirectories = directories.flatMap((directory, index) => {
-      const key = directories.slice(0, index + 1).join("/");
-      const name = directoryNames.get(key);
-      return name ? [name] : [];
+    const command = commandFromSource(fn.source, fn.fileSource, bindings);
+    const children = [
+      ...fn.source.matchAll(/\bcmd\.AddCommand\(\s*(?:(\w+)\.)?(\w+)\(/g),
+    ].map(
+      (match) =>
+        `${match[1] ? fn.imports.get(match[1]) : fn.directory}:${match[2]}`,
+    );
+    const helpers = [
+      ...fn.source.matchAll(/\b(\w+)\.(\w+)\(\s*cmd(?:\s*,|\s*\))/g),
+    ].flatMap((match) => {
+      const helper = definitions.get(`${fn.imports.get(match[1])}:${match[2]}`);
+      if (!helper) return [];
+      const values = goCallArguments(
+        fn.source,
+        match.index + match[0].indexOf("(") + 1,
+      );
+      const helperBindings = new Map(dynamicFlagDescriptions);
+      helper.parameters.forEach((parameter, index) => {
+        const value = goStringExpression(
+          values[index],
+          fn.fileSource,
+          dynamicFlagDescriptions,
+        );
+        if (parameter && value !== undefined)
+          helperBindings.set(parameter, value);
+      });
+      return flagsFromSource(helper.source, helperBindings, helper.fileSource);
     });
-    const rootName = namedDirectories[0];
-    const commandName = command.use.split(/\s+/, 1)[0];
-    const pathParts = namedDirectories;
-    if (pathParts.at(-1) !== commandName) pathParts.push(commandName);
-
-    commands.push({
-      group: rootName,
-      path: `prb ${pathParts.join(" ")}`,
+    return {
+      ...command,
       usage: command.use,
       description: command.short,
-      source: `${cliSourceUrl}/${relative(commandRoot, file).split(sep).join("/")}`,
-    });
+      children,
+      source: goSourceLink(fn.file, fn.line + command.line - 1),
+      flags: [
+        ...flagsFromSource(fn.source, dynamicFlagDescriptions, fn.fileSource),
+        ...helpers,
+      ].sort((left, right) => left.name.localeCompare(right.name)),
+    };
   }
+
+  function visit(key, parents = []) {
+    const command = resolveCommand(key);
+    const pathParts =
+      key === "root:NewCmdRoot"
+        ? []
+        : [...parents, command.use.split(/\s+/, 1)[0]];
+    if (pathParts.length) {
+      commands.push({
+        ...command,
+        group: pathParts[0],
+        path: `prb ${pathParts.join(" ")}`,
+      });
+    }
+    for (const child of command.children) visit(child, pathParts);
+  }
+  visit("root:NewCmdRoot");
 
   const uniqueCommands = [
     ...new Map(commands.map((command) => [command.path, command])).values(),
@@ -335,17 +440,26 @@ async function generateCliReference() {
   const body = [
     "---",
     "title: CLI command reference",
-    `description: Complete reference for ${groups.size} top-level prb commands — the Probo CLI you use to manage compliance programs directly from the terminal`,
+    `description: Reference for ${groups.size} top-level prb commands, with command usage, accepted flags, defaults, required flags, and examples from the CLI source`,
     "---",
     "",
     "{/* Generated by tools/generate-reference.mjs. Do not edit manually. */}",
     "",
     `The \`prb\` CLI provides **${groups.size} top-level commands**. This catalog is generated from the Cobra command definitions in the Probo repository, so command names, summaries, and usage match the current source.`,
     "",
-    "Your installed version can differ from the current source. Run `prb <command> --help` for its flags, accepted values, and examples.",
+    "Each command page includes flag types and registered defaults, flags marked required by Cobra, and examples where the command defines them. Runtime validation or interactive prompts can impose additional requirements; the flag descriptions explain these when the source provides them.",
+    "",
+    "Your installed version can differ from the current source. Run `prb <command> --help` to confirm its behavior. Examples are based on the command definitions and use the flags listed here; replace placeholder IDs and names with your own values.",
+    "",
+    "## Global flags",
+    "",
+    "These root flags are inherited by every command. Boolean flags can be enabled without a value or explicitly set with `--flag=false`.",
+    "",
+    ...cliFlagTable(globalFlags),
+    "## Commands",
     "",
     ...[...groups.entries()].flatMap(([group, entries]) => [
-      `- [\`prb ${group}\`](/docs/developers/cli/commands/${slugify(group)}) — ${withPeriod(entries[0].description)} ${commandLabel(entries.length)}`,
+      `- [\`prb ${group}\`](/docs/developers/cli/commands/${cliGroupSlug(group)}) — ${withPeriod(entries[0].description)} ${commandLabel(entries.length)}`,
       "",
     ]),
   ].join("\n");
@@ -354,27 +468,32 @@ async function generateCliReference() {
 
   const expectedPaths = new Set(["index.mdx"]);
   for (const [group, entries] of groups) {
-    const filename = `${slugify(group)}.mdx`;
+    const filename = `${cliGroupSlug(group)}.mdx`;
     expectedPaths.add(filename);
     const groupBody = [
       "---",
       `title: prb ${group} command reference`,
-      `description: Command reference for ${commandLabel(entries.length)} under prb ${group}, showing full usage, accepted flags, and a link to the exact CLI implementation source`,
+      `description: Reference for ${commandLabel(entries.length)} under prb ${group}, including usage, flag types and defaults, required flags, source examples, and implementation links`,
       "---",
       "",
       "{/* Generated by tools/generate-reference.mjs. Do not edit manually. */}",
       "",
       `${withPeriod(entries[0].description)} This page documents **${commandLabel(entries.length)}** under \`prb ${group}\`.`,
       "",
-      "Run any command with `--help` to inspect the flags, accepted values, and examples provided by your installed version. Return to the [complete CLI command reference](/docs/developers/cli/commands) to browse another command.",
+      "Flags and examples below come from the command definitions. A **Required** flag is explicitly marked required by Cobra; an unmarked flag can still be needed by runtime validation or a non-interactive workflow. Empty strings and empty lists are registered defaults, not sample values.",
+      "",
+      "Every command also inherits the [global flags](/docs/developers/cli/commands#global-flags). Run `prb <command> --help` to check your installed version. Replace placeholder IDs and names in source examples before running them. Return to the [complete CLI command reference](/docs/developers/cli/commands) to browse another command.",
+      "",
+      "## Commands",
       "",
       "| Command | Description | Usage | Source |",
       "| --- | --- | --- | --- |",
       ...entries.map(
         (command) =>
-          `| \`${escapeTable(command.path)}\` | ${escapeProse(withPeriod(command.description))} | \`${escapeTable(usageFor(command))}\` | [View implementation](${command.source}) |`,
+          `| [\`${escapeTable(command.path)}\`](#${slugify(command.path)}) | ${escapeProse(withPeriod(command.description))} | \`${escapeTable(usageFor(command))}\` | [View implementation](${command.source}) |`,
       ),
       "",
+      ...entries.flatMap(cliCommandDetails),
     ].join("\n");
 
     await writeGenerated(
@@ -389,22 +508,331 @@ async function generateCliReference() {
   );
 
   return [...groups.keys()].map((group) => ({
-    label: titleCase(group),
-    slug: `docs/developers/cli/commands/${slugify(group)}`,
+    label: titleCase(cliGroupSlug(group)),
+    slug: `docs/developers/cli/commands/${cliGroupSlug(group)}`,
   }));
 }
 
-async function commandFromFile(file) {
-  const source = await readFile(file, "utf8");
+function commandFromSource(source, fileSource, bindings) {
+  const declaration = source.indexOf("&cobra.Command{");
+  const fields = source.slice(declaration);
+  const fieldValue = (field) =>
+    goStringField(fields, field) ??
+    goStringExpression(
+      fields.match(new RegExp(`^\\s*${field}:\\s*([^\\n]+),\\s*$`, "m"))?.[1],
+      fileSource,
+      bindings,
+    );
+  const use = fieldValue("Use");
+  const short = fieldValue("Short");
+  if (!use || !short)
+    throw new Error("Cannot resolve Cobra command Use and Short fields");
+  const args = source.match(/^\s*Args:\s*(.+),\s*$/m)?.[1];
+  const exact = args?.match(/cobra\.ExactArgs\((\d+)\)/)?.[1];
+  const minimum = args?.match(/cobra\.MinimumNArgs\((\d+)\)/)?.[1];
+  const maximum = args?.match(/cobra\.MaximumNArgs\((\d+)\)/)?.[1];
+  const range = args?.match(/cobra\.RangeArgs\((\d+),\s*(\d+)\)/);
+  const positional =
+    args === "cobra.NoArgs"
+      ? "Accepts no positional arguments."
+      : exact
+        ? `Requires ${exact} positional argument${exact === "1" ? "" : "s"}.`
+        : minimum
+          ? `Requires at least ${minimum} positional arguments.`
+          : maximum
+            ? `Accepts at most ${maximum} positional argument${maximum === "1" ? "" : "s"}.`
+            : range
+              ? `Accepts ${range[1]} to ${range[2]} positional arguments.`
+              : undefined;
+  return {
+    use,
+    short,
+    long: goStringField(source.slice(declaration), "Long"),
+    example: goStringField(source.slice(declaration), "Example"),
+    arguments: positional,
+    line: source.slice(0, declaration).split("\n").length,
+  };
+}
+
+function goFunctions(source) {
+  return [...source.matchAll(/^func (\w+)\(/gm)].map((match) => {
+    const start = match.index + match[0].length;
+    const parameters = goCallArguments(source, start).map(
+      (value) => value.match(/^\w+/)?.[0],
+    );
+    const parameterEnd = goScopeEnd(source, start - 1, "(", ")");
+    const bodyStart = source.indexOf("{", parameterEnd);
+    const bodyEnd = goScopeEnd(source, bodyStart, "{", "}");
+    return {
+      name: match[1],
+      parameters,
+      source: source.slice(match.index, bodyEnd + 1),
+      line: source.slice(0, match.index).split("\n").length,
+    };
+  });
+}
+
+function goScopeEnd(source, start, opening, closing) {
+  let depth = 0;
+  let quote;
+  let comment;
+  for (let index = start; index < source.length; index += 1) {
+    const character = source[index];
+    const pair = source.slice(index, index + 2);
+    if (comment === "line") {
+      if (character === "\n") comment = undefined;
+      continue;
+    }
+    if (comment === "block") {
+      if (pair === "*/") {
+        comment = undefined;
+        index += 1;
+      }
+      continue;
+    }
+    if (quote) {
+      if (character === "\\" && quote !== "`") index += 1;
+      else if (character === quote) quote = undefined;
+      continue;
+    }
+    if (pair === "//" || pair === "/*") {
+      comment = pair === "//" ? "line" : "block";
+      index += 1;
+      continue;
+    }
+    if (['"', "`", "'"].includes(character)) {
+      quote = character;
+      continue;
+    }
+    if (character === opening) depth += 1;
+    if (character === closing && --depth === 0) return index;
+  }
+  throw new Error(`Unterminated Go scope starting at ${start}`);
+}
+
+function goStringField(source, field) {
   const match = source.match(
-    /&cobra\.Command\{[\s\S]*?\bUse:\s*"([^"]+)"[\s\S]*?\bShort:\s*"([^"]+)"/,
+    new RegExp(`\\b${field}:\\s*("(?:[^"\\\\]|\\\\.)*"|\x60[^\x60]*\x60)`),
   );
-  return match ? { use: match[1], short: match[2] } : null;
+  return match ? goString(match[1]) : undefined;
+}
+
+function goString(value) {
+  if (value.startsWith("`")) return value.slice(1, -1);
+  return JSON.parse(value);
+}
+
+function flagsFromSource(source, dynamicDescriptions, fileSource = source) {
+  const flags = [];
+  const pattern = /cmd\.(?:Persistent)?Flags\(\)\.([A-Za-z]+)\(/g;
+  for (const match of source.matchAll(pattern)) {
+    const method = match[1];
+    if (
+      ["Changed", "GetBool", "GetString", "SetNormalizeFunc"].includes(method)
+    )
+      continue;
+    const kind = method.match(
+      /^(StringArray|StringSlice|String|Int|Bool)(Var)?(P)?$/,
+    );
+    if (!kind)
+      throw new Error(`Unsupported Cobra flag registration: ${method}`);
+    const values = goCallArguments(source, match.index + match[0].length);
+    if (kind[2]) values.shift();
+    const name = goString(values.shift());
+    const shorthand = kind[3] ? goString(values.shift()) : undefined;
+    const defaultValue = values.shift();
+    const descriptionValue = values.shift();
+    if (values.length || !defaultValue || !descriptionValue) {
+      throw new Error(`Cannot parse Cobra flag --${name}`);
+    }
+    const description = goStringExpression(
+      descriptionValue,
+      fileSource,
+      dynamicDescriptions,
+    );
+    if (description === undefined)
+      throw new Error(
+        `Cannot resolve description for --${name}: ${descriptionValue}`,
+      );
+    const stringDefault = goStringExpression(
+      defaultValue,
+      fileSource,
+      dynamicDescriptions,
+    );
+    if (
+      stringDefault === undefined &&
+      !/^(?:true|false|-?\d+|nil)$/.test(defaultValue)
+    ) {
+      throw new Error(`Cannot resolve default for --${name}: ${defaultValue}`);
+    }
+    const defaultLabel =
+      stringDefault !== undefined
+        ? JSON.stringify(stringDefault)
+        : defaultValue === "nil"
+          ? "[]"
+          : defaultValue;
+    flags.push({
+      name,
+      shorthand,
+      type: {
+        StringArray: "string array",
+        StringSlice: "string list",
+        String: "string",
+        Int: "integer",
+        Bool: "boolean",
+      }[kind[1]],
+      defaultValue: defaultLabel,
+      required: source.includes(`cmd.MarkFlagRequired("${name}")`),
+      description,
+    });
+  }
+  return flags;
+}
+
+function goStringExpression(expression, source, dynamicDescriptions) {
+  if (expression === undefined) return undefined;
+  if (dynamicDescriptions.has(expression))
+    return dynamicDescriptions.get(expression);
+  const concatenation = expression.match(
+    /^([\w.]+(?:\(\))?)\s*\+\s*("(?:[^"\\]|\\.)*"|`[^`]*`)$/,
+  );
+  if (concatenation) {
+    const prefix = goStringExpression(
+      concatenation[1],
+      source,
+      dynamicDescriptions,
+    );
+    return prefix === undefined
+      ? undefined
+      : prefix + goString(concatenation[2]);
+  }
+  if (/^("|`)/.test(expression)) return goString(expression);
+  if (/^[A-Za-z_]\w*$/.test(expression)) {
+    const constant = source.match(
+      new RegExp(
+        `\\b${expression}\\s*(?:string\\s*)?=\\s*("(?:[^"\\\\]|\\\\.)*"|\x60[^\x60]*\x60)`,
+      ),
+    );
+    return constant ? goString(constant[1]) : undefined;
+  }
+  if (expression.startsWith("fmt.Sprintf(")) {
+    const values = goCallArguments(expression, "fmt.Sprintf(".length).map(
+      (value) => goStringExpression(value, source, dynamicDescriptions),
+    );
+    if (values.some((value) => value === undefined)) return undefined;
+    const [template, ...substitutions] = values;
+    let index = 0;
+    const result = template.replace(/%[s%]/g, (specifier) =>
+      specifier === "%%" ? "%" : substitutions[index++],
+    );
+    if (index !== substitutions.length || /%[^%]/.test(result))
+      return undefined;
+    return result;
+  }
+}
+
+// Go flag declarations can span lines and contain commas inside quoted help text.
+function goCallArguments(source, start) {
+  const values = [];
+  let valueStart = start;
+  let depth = 0;
+  let quote;
+  for (let index = start; index < source.length; index += 1) {
+    const character = source[index];
+    if (quote) {
+      if (character === "\\" && quote !== "`") index += 1;
+      else if (character === quote) quote = undefined;
+      continue;
+    }
+    if (['"', "`", "'"].includes(character)) {
+      quote = character;
+      continue;
+    }
+    if (["(", "[", "{"].includes(character)) depth += 1;
+    else if (character === ")" && depth === 0) {
+      const last = source.slice(valueStart, index).trim();
+      if (last) values.push(last);
+      return values;
+    } else if ([")", "]", "}"].includes(character)) depth -= 1;
+    else if (character === "," && depth === 0) {
+      values.push(source.slice(valueStart, index).trim());
+      valueStart = index + 1;
+    }
+  }
+  throw new Error("Unterminated Go flag registration");
+}
+
+function cliFlagTable(flags) {
+  if (!flags.length) return [];
+  return [
+    "| Flag | Type | Default | Required | Description |",
+    "| --- | --- | --- | --- | --- |",
+    ...flags.map(
+      (flag) =>
+        `| \`--${flag.name}\`${flag.shorthand ? `, \`-${flag.shorthand}\`` : ""} | ${flag.type} | \`${escapeTable(flag.defaultValue)}\` | ${flag.required ? "Required" : "—"} | ${escapeProse(flag.description)} |`,
+    ),
+    "",
+  ];
+}
+
+function cliCommandDetails(command) {
+  return [
+    `## ${command.path}`,
+    "",
+    escapeProse(withPeriod(command.description)),
+    "",
+    "### Usage",
+    "",
+    "```text",
+    usageFor(command),
+    "```",
+    "",
+    ...(command.arguments ? [command.arguments, ""] : []),
+    ...(command.long
+      ? ["### Additional help", "", "```text", command.long.trim(), "```", ""]
+      : []),
+    ...(command.flags.length
+      ? ["### Flags", "", ...cliFlagTable(command.flags)]
+      : []),
+    ...(command.example
+      ? ["### Examples", "", "```bash", cliExamples(command), "```", ""]
+      : []),
+    `[View command implementation](${command.source}).`,
+    "",
+  ];
+}
+
+function cliExamples(command) {
+  let example = command.example.replace(/^  /gm, "").trim();
+  // Some upstream examples predate AddOutputFlag's --output interface.
+  if (command.flags.some((flag) => flag.name === "output")) {
+    example = example.replace(/--json\b/g, "--output json");
+  } else if (!command.flags.some((flag) => flag.name === "json")) {
+    example = example
+      .split(/\n\s*\n/)
+      .filter((block) => !/--json\b/.test(block))
+      .join("\n\n");
+  }
+  const legacyGroups = new Map([
+    ["thirdParty", ["third-party", "third_party"]],
+    ["compliance-portal", ["trust-center"]],
+  ]);
+  for (const name of legacyGroups.get(command.group) ?? []) {
+    example = example.replace(
+      new RegExp(`\\bprb ${name}(?=\\s|$)`, "g"),
+      `prb ${command.group}`,
+    );
+  }
+  return example;
 }
 
 function usageFor(command) {
   const suffix = command.usage.split(/\s+/).slice(1).join(" ");
   return suffix ? `${command.path} ${suffix}` : command.path;
+}
+
+function cliGroupSlug(group) {
+  return slugify(group.replace(/([a-z0-9])([A-Z])/g, "$1-$2"));
 }
 
 function commandLabel(count) {
@@ -414,7 +842,10 @@ function commandLabel(count) {
 function categoryForTool(name) {
   const categories = [
     ["Access reviews", /AccessReview|AccessEntr|Connector/],
-    ["Internal controls, tasks, and evidence", /InternalControl|Task|Evidence|Linear/],
+    [
+      "Internal controls, tasks, and evidence",
+      /InternalControl|Task|Evidence|Linear/,
+    ],
     ["AI systems", /AiSystem/],
     ["Risk assessments", /RiskAssessment/],
     ["Third parties", /ThirdPart(?:y|ies)/],
