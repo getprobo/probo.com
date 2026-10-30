@@ -1,32 +1,97 @@
 ---
-title: Risk management
-description: Learn how Probo's risk register tracks business and security risks while structured risk assessments model systems, threats, and scenarios.
+title: Risk management in Probo
+description: Create a risk in Probo, score it in a treatment plan, assign an owner, link internal controls, and review the results of your risk analysis.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
-Probo supports two related ways to reason about risk: a risk register for tracked business or security risks, and structured risk assessments for modeling systems, threats, scenarios, and their resulting risks.
+Use Probo's risk register to describe what could go wrong, then use a risk analysis to evaluate and treat it. This walkthrough follows one risk from its first description to a scored treatment plan and a reviewable record.
 
-## Risk register
+## How the records fit together
 
-A risk record describes a risk, its current state, and the context needed to evaluate it. Risks can be linked to:
+| Record         | Purpose                                                                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Risk           | The named business or security risk, with its category, description, and notes. Reuse it across analyses.                                        |
+| Scenario       | An explanation of how a risk could occur, recorded in a diagram within a risk analysis. It links the analysis to risks and, optionally, threats. |
+| Treatment plan | The risk's owner, treatment decision, likelihood and impact scores, and linked internal controls for that analysis.                              |
 
-- internal controls that reduce or monitor the risk;
-- obligations that make treatment necessary;
-- third-party assessments that identify vendor exposure;
-- risk-assessment scenarios that explain how the risk may occur.
+Scores and ownership are set on treatment plans. Creating a risk alone does not assess it.
 
-Keep the risk statement understandable without relying on a score alone. Record the affected activity or asset, the undesirable event, and the likely consequence.
+## Walkthrough: assess unauthorized access to customer data
 
-## Threat-based assessments
+You'll need permission to create risks, risk analyses, and treatment plans. To carry out the mitigation work, you'll also need access to internal controls and tasks. The names and scores below are illustrative; use your organization's scope and scoring method when assessing a real risk.
 
-A risk assessment can contain scopes, nodes, boundaries, processes, threats, and scenarios. Scenarios connect threats to one or more risks and make the assessment’s reasoning reviewable. Scope diagrams can be exported as Mermaid for use in technical review.
+### 1. Create the risk
 
-Assessments and register entries have separate lifecycles: the assessment documents analysis, while linked risks are the items the organization tracks and treats over time.
+Open **Risk Management → All Risks**, select **New Risk**, and complete these fields:
 
-## Publication and review
+| Field         | Example                                                                                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Risk category | **Cybersecurity**                                                                                                                                                         |
+| Risk name     | Unauthorized access to production customer data                                                                                                                           |
+| Description   | A compromised administrator account could allow an attacker to export customer data from production, causing a confidentiality breach and disrupting customer operations. |
+| Note          | Record the affected systems, assumptions, and evidence behind the assessment.                                                                                             |
 
-Publishing risk records creates a reviewed list without preventing continued program operation. Revisit risks when systems, vendors, controls, or business assumptions change. Use internal controls and tasks for treatment work instead of placing implementation details only in the risk description.
+You can choose a template after selecting a category, then adapt its name and description. Select **Create risk**. Probo assigns a reference ID so you can identify the same risk in later analyses.
+
+### 2. Create an analysis with a clear scope
+
+Open **Risk Management → Risk Analyses** and select **New Risk Analysis**.
+
+- Name it `Production customer data access`.
+- In **Description**, define the systems and data in scope, the assessment horizon, and how your team interprets likelihood and impact.
+- Choose **5×5** for **Matrix size** to follow the example below. Probo also supports 3×3 and 4×4 matrices.
+- Set **Period start** and **Period end** if the analysis covers a defined period, then select **Create**.
+
+Use the same scoring method throughout an analysis so its scores are comparable.
+
+### 3. Link the risk to a scenario
+
+Open the analysis, select **Diagrams**, and choose **Add Diagram**. Name the diagram `Production access`, then expand it.
+
+In **Scenarios**, select **Add**. Name the scenario `Stolen administrator credentials allow a customer data export`. Describe the entry point and consequences, select the risk you created under **Risks**, and select **Add**.
+
+A risk must be linked to a scenario in the analysis before you can create its treatment plan. If the risk is missing from the treatment-plan selector, check this link first.
+
+For a fuller threat model, add nodes, processes, boundaries, and threats to the diagram, then link relevant threats to scenarios. The scenario-to-risk link is still what makes the risk available for treatment.
+
+### 4. Score the risk and assign its treatment
+
+Open **Risks and Treatment Plans**, select **Add treatment plan**, and choose the linked risk. Set an **Owner** who will follow the treatment through, then choose **Mitigate** under **Treatment**.
+
+The other treatment choices are **Accept**, **Avoid**, and **Transfer**. Choose the decision that matches what your organization will actually do.
+
+Set **Impact** and **Likelihood** for both **Inherent risk** and **Residual risk**:
+
+| Assessment                                  | Likelihood   | Impact          | Score |
+| ------------------------------------------- | ------------ | --------------- | ----- |
+| Inherent: before the proposed controls      | 4 — Probable | 4 — Significant | 16    |
+| Residual: target after the controls operate | 2 — Remote   | 4 — Significant | 8     |
+
+Probo calculates each score as likelihood × impact. In this example, stronger authentication reduces the chance of compromise, while a successful breach could still have a significant impact. Explain that reasoning in the analysis description or the risk's note.
+
+Select **Create treatment plan**. Residual scores are a treatment target; entering a lower number does not establish that the controls work. If you choose **Accept**, residual likelihood and impact must equal the inherent values, and the plan cannot have linked internal controls.
+
+### 5. Connect the treatment to work and evidence
+
+Expand the treatment-plan row. Use **New internal control** or **Link internal control** to attach the controls supporting the treatment, for example:
+
+- Require MFA for all production administrator accounts.
+- Review privileged access every quarter.
+
+Open each internal control to track its implementation. Use its **Tasks** tab to assign work with a deadline, such as enforcing MFA or checking the administrator list. Attach evidence supporting the control's operation. See [Compliance program](/docs/product/compliance-program) for the relationship between controls, tasks, and evidence, and [Tasks](/docs/product/tasks/overview) for recurring work.
+
+The analysis shows inherent, net, and residual risk. **Net** uses the residual values only when at least one internal control is linked to the plan and every linked control is **Implemented**. Otherwise it uses the inherent values. Check the evidence as well as the implementation states before relying on the result.
+
+You can also open the risk's **Treatment Plans** tab to see the analyses in which it is treated.
+
+### 6. Review and publish the result
+
+Review the scenario, scoring rationale, owner, treatment, linked controls, and supporting evidence with the responsible team. Update the treatment plan from its **Edit** action when the decision or scores change.
+
+Use **Publish** on the analysis to create a document version. Select approvers if your review process requires approval, or publish directly when appropriate. The risk list also has its own **Publish** action. These documents capture a version for review; publishing does not close the risks or prevent continued updates.
+
+Create a recurring task for the next review and revisit the analysis when systems, vendors, controls, or assumptions change. A review task gives the work an assignee and deadline; the risk itself has no next-review-date field.
 
 ## Automation
 
