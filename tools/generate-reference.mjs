@@ -628,7 +628,14 @@ function flagsFromSource(source, dynamicDescriptions, fileSource = source) {
   for (const match of source.matchAll(pattern)) {
     const method = match[1];
     if (
-      ["Changed", "GetBool", "GetString", "SetNormalizeFunc"].includes(method)
+      [
+        "Changed",
+        "GetBool",
+        "GetString",
+        "MarkDeprecated",
+        "MarkHidden",
+        "SetNormalizeFunc",
+      ].includes(method)
     )
       continue;
     const kind = method.match(
@@ -639,6 +646,13 @@ function flagsFromSource(source, dynamicDescriptions, fileSource = source) {
     const values = goCallArguments(source, match.index + match[0].length);
     if (kind[2]) values.shift();
     const name = goString(values.shift());
+    // Cobra leaves deprecated and hidden flags out of --help.
+    if (
+      new RegExp(
+        `cmd\\.(?:Persistent)?Flags\\(\\)\\.Mark(?:Deprecated|Hidden)\\("${name}"`,
+      ).test(source)
+    )
+      continue;
     const shorthand = kind[3] ? goString(values.shift()) : undefined;
     const defaultValue = values.shift();
     const descriptionValue = values.shift();
