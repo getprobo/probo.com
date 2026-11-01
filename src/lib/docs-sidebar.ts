@@ -77,6 +77,7 @@ const accessReviewConnectorItems = [
   { label: "Tally", slug: "docs/product/access-review/tally" },
   { label: "Twingate", slug: "docs/product/access-review/twingate" },
   { label: "UpCloud", slug: "docs/product/access-review/upcloud" },
+  { label: "UniFi", slug: "docs/product/access-review/unifi" },
   { label: "Yousign", slug: "docs/product/access-review/yousign" },
 ].sort((a, b) => a.label.localeCompare(b.label, "en", { sensitivity: "base" }));
 
