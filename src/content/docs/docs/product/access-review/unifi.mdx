@@ -1,0 +1,73 @@
+---
+title: UniFi
+description: Connect a UniFi console as an access source using a UniFi Site Manager API key and the console ID, so Probo can list the console's Network administrators and the users of its RADIUS server.
+---
+
+Probo reads one UniFi console through UniFi Site Manager so you can review who administers its Network application and who holds a credential on its built-in RADIUS server.
+
+:::caution
+Create the API key in **UniFi Site Manager** at unifi.ui.com. A personal key must be created by the UniFi account that **owns** the console, and an organization key works for the consoles of its organization. A key created by an administrator who does not own the console cannot reach it. A key created on the console itself, under its Network integrations settings, is for local access only, and Probo reaches the console through Site Manager.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- The UniFi account that owns the console, or an organization API key for the console's organization
+- A console running **UniFi OS 5.0.3** or later and the UniFi Network application, connected to UniFi Site Manager
+- The **Console ID**, which appears in the Site Manager address when you open the console: `unifi.ui.com/consoles/<Console ID>/network/default`
+
+## Collected Fields
+
+Probo lists two kinds of accounts: the administrators of the console's Network application, and the users of its built-in RADIUS server.
+
+| Probo field | UniFi field                                              | Notes                                                                                                                                                                                                                                                                                       |
+| ----------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `name`                                                   | For an administrator, falls back to `first_name` and `last_name`. For a RADIUS user, this is the username                                                                                                                                                                                   |
+| Email       | `email`                                                  | Administrators only. A RADIUS user has no email address                                                                                                                                                                                                                                     |
+| Role        | `is_owner`, `is_super`, `roles`, `vlan`                  | Owner for the console owner, otherwise Super Admin for a super administrator, then each site role once: `admin` maps to Admin, `readonly` to View Only, and any other role is passed through as UniFi spells it. A RADIUS user is listed as RADIUS user, with its VLAN when one is assigned |
+| Admin       | `is_owner`, `is_super`, `roles`                          | Flagged for the Owner, a Super Admin, and an administrator with the Admin role on at least one site. Not flagged for an administrator whose site roles are all View Only or another role, nor for RADIUS users                                                                              |
+| Status      | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                                                                                                                                             |
+| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                                                                                                                                             |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                                                                                                                                             |
+| External ID | `_id`                                                    | Stable identifier used to track the account across reviews                                                                                                                                                                                                                                  |
+| Created at  | `time_created`                                           | Administrators only: when the administrator's record was created in the Network application                                                                                                                                                                                                 |
+
+UniFi's API lists a Network administrator only after they first open the Network application on the console. An administrator who was invited or created but has never signed in to Network is not in the review, so check the console's people in Site Manager for anyone missing. Probo reads only the Network application's administrator list, so access to other UniFi applications, such as Protect, is not part of the review.
+
+The RADIUS endpoint returns each user's password. Probo discards it and stores only the username, VLAN and identifier.
+
+## Step 1: Create an API Key
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+<Steps>
+
+1. Sign in to [UniFi Site Manager](https://unifi.ui.com) and go to **Settings** > **API Keys**. For a personal key, sign in with the account that owns the console.
+2. Create an API key and name it, for example `Probo Access Review`.
+3. Select **Site Manager** and **UniFi Applications**, with **Network** among the applications and **All Sites** as the sites.
+4. Choose an expiration. When the key expires, Probo can no longer read the console until you replace it.
+5. Copy the key and store it securely. It is shown only once.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **UniFi** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, enter the **Console ID** (open the console in Site Manager and copy the part of the address between `/consoles/` and the next `/`), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **UniFi**, and click **Add**.
+
+</Steps>
+
+When you click **Connect**, Probo asks Site Manager for the console's administrators. A Console ID that Site Manager refuses is reported on the **Console ID** field and nothing is saved. A key that Site Manager rejects is still saved, and the connector then shows **Disconnected** in **Settings** > **Connectors**.
+
+Probo names the source after the console as Site Manager shows it and pulls its administrators and RADIUS users into your campaigns. To review several consoles, connect each one with its own Console ID.
+
+## Troubleshooting
+
+- **The connector shows Disconnected.** Site Manager rejected the key. Confirm it was copied whole and has not expired or been deleted in Site Manager. To use a new key, click **Update API key** (the key icon) on the UniFi connector in **Settings** > **Connectors**, paste the new key, and click **Save API key**. With several consoles connected, open the **UniFi** card and use the key icon on the console's connector.
+- **Console ID rejected.** Site Manager refused this key for that console. Copy the ID again from the console's address in Site Manager, and check that the key was created by the console's owner or is an organization key for the console's organization, with **UniFi Applications** and **Network** selected.
+- **Console not reachable.** Site Manager reaches only consoles running UniFi OS 5.0.3 or later. Update the console, then connect again.
+- **An administrator is missing.** Probo lists Network administrators once they have opened the Network application on that console. Ask them to sign in to Network once. They appear in the next campaign you start.
