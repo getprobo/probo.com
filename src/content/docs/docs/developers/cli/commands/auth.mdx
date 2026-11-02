@@ -52,14 +52,14 @@ prb auth login
 ### Examples
 
 ```bash
-# Interactive login (select region, opens browser for device authorization)
+# Choose US, EU, or a custom host, then authorize in the browser
 prb auth login
-
-# Login to Probo EU
-prb auth login --hostname eu.probo.com
 
 # Login to Probo US
 prb auth login --hostname us.probo.com
+
+# Login to Probo EU
+prb auth login --hostname eu.probo.com
 
 # Login to a self-hosted instance
 prb auth login --hostname probo.example.com
