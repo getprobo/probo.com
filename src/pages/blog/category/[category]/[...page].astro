@@ -35,15 +35,27 @@ interface Props {
   posts: CollectionEntry<"blog">[];
 }
 const { category, currentPage } = Astro.props;
+
+const categoryDescriptions: Partial<Record<BlogCategory, string>> = {
+  Compliance:
+    "Practical guides to SOC 2, ISO 27001, GDPR and NIS2 for startups: costs, timelines, auditors and what to do first, from the Probo compliance team.",
+  Engineering:
+    "How the Probo team builds an open-source compliance platform: cookie consent, access reviews, integrations and the code behind them.",
+  Perspectives:
+    "How the Probo team thinks compliance should work for startups: open source, honest pricing, and audits that actually mean something.",
+  Newsletter:
+    "Every edition of the Probo newsletter: product updates, compliance news and practical tips for startups working on SOC 2, ISO 27001 and GDPR.",
+  "Probo guide":
+    "Step-by-step guides to setting up and using Probo: compliance portal, access reviews, cookie banner, policies and more, from the Probo team.",
+};
 ---
 
 <Layout
   journal
   noFrameworks
   title={`${category} | The Compliance Journal${currentPage > 1 ? `, page ${currentPage}` : ""}`}
-  description={category === "Probo guide"
-    ? "Step-by-step guides to setting up and using Probo, from the Probo team."
-    : `Practical ${category.toLowerCase()} guides and perspectives from the Probo team.`}
+  description={categoryDescriptions[category] ??
+    `Practical ${category.toLowerCase()} guides and perspectives from the Probo team.`}
 >
   <BlogIndex {...Astro.props} />
 </Layout>
