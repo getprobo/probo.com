@@ -1,0 +1,86 @@
+name: "daily"
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: write
+    steps:
+      - uses: "actions/checkout@v4"
+        with:
+          ref: "v2"
+      - uses: "actions/setup-node@v4"
+        with:
+          node-version: "24"
+          cache: "npm"
+      - uses: "actions/checkout@v4"
+        with:
+          repository: "getprobo/probo"
+          path: "probo"
+      - run: npm ci
+      - run: npm run docs:generate
+        env:
+          PROBO_REPO_PATH: ${{ github.workspace }}/probo
+      - run: npm run check:docs
+      - name: "Commit regenerated reference"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add --all src
+          if git diff --cached --quiet; then
+            echo "Reference documentation is up to date."
+            exit 0
+          fi
+
+          tmp="$(mktemp -d)"
+          git diff --cached --no-renames --name-only --diff-filter=d -z |
+            while IFS= read -r -d '' path; do
+              base64 -w0 "$path" > "$tmp/contents"
+              jq -n --arg path "$path" --rawfile contents "$tmp/contents" \
+                '{path: $path, contents: $contents}'
+            done > "$tmp/additions.json"
+          git diff --cached --no-renames --name-only --diff-filter=D -z |
+            while IFS= read -r -d '' path; do
+              jq -n --arg path "$path" '{path: $path}'
+            done > "$tmp/deletions.json"
+
+          jq -n \
+            --arg repo "$GITHUB_REPOSITORY" \
+            --arg oid "$(git rev-parse HEAD)" \
+            --arg headline "Regenerate reference docs from Probo $(git -C probo rev-parse --short HEAD)" \
+            --slurpfile additions "$tmp/additions.json" \
+            --slurpfile deletions "$tmp/deletions.json" \
+            '{
+              query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { url } } }",
+              variables: {
+                input: {
+                  branch: { repositoryNameWithOwner: $repo, branchName: "v2" },
+                  expectedHeadOid: $oid,
+                  message: { headline: $headline },
+                  fileChanges: { additions: $additions, deletions: $deletions }
+                }
+              }
+            }' |
+            gh api graphql --input - --jq '.data.createCommitOnBranch.commit.url'
+
+  indexnow:
+    runs-on: "ubuntu-latest"
+    needs: "reference"
+    steps:
+      - uses: "actions/checkout@v4"
+        with:
+          ref: "v2"
+      - uses: "actions/setup-node@v4"
+        with:
+          node-version: "24"
+      - run: node tools/submit-indexnow.mjs
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
