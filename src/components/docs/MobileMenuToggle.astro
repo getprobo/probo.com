@@ -34,6 +34,7 @@ import Icon from "../Icon.astro";
       document.addEventListener("click", this.closeOutside);
       document.addEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.addEventListener("change", this.closeForDesktop);
+      window.addEventListener("resize", this.revealFocusedItem);
       this.sidebar?.addEventListener("click", this.closeAfterNavigation);
       this.setExpanded(false, false);
     }
@@ -44,6 +45,7 @@ import Icon from "../Icon.astro";
       document.removeEventListener("click", this.closeOutside);
       document.removeEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.removeEventListener("change", this.closeForDesktop);
+      window.removeEventListener("resize", this.revealFocusedItem);
       this.sidebar?.removeEventListener("click", this.closeAfterNavigation);
       this.setExpanded(false, false);
     }
@@ -76,7 +78,7 @@ import Icon from "../Icon.astro";
 
       document
         .querySelectorAll<HTMLElement>(
-          ".docs-content, .right-sidebar, .sl-skip-link, .docs-site-footer, probo-cookie-banner",
+          ".docs-content, .right-sidebar, .sl-skip-link, probo-cookie-banner",
         )
         .forEach((element) => {
           element.toggleAttribute("inert", isExpanded);
@@ -96,9 +98,7 @@ import Icon from "../Icon.astro";
               element.getClientRects().length > 0 &&
               !element.closest("[inert]"),
           );
-          (current && !current.closest("[inert]") ? current : first)?.focus({
-            preventScroll: true,
-          });
+          (current && !current.closest("[inert]") ? current : first)?.focus();
         }, 0);
       }
     }
@@ -165,6 +165,24 @@ import Icon from "../Icon.astro";
 
     closeBeforeSwap = () => this.setExpanded(false, false);
     closeForDesktop = () => this.setExpanded(false, false);
+    revealFocusedItem = () => {
+      if (
+        this.desktop.matches ||
+        this.btn.getAttribute("aria-expanded") !== "true"
+      )
+        return;
+      const list = this.sidebar?.querySelector<HTMLElement>(
+        ".docs-sidebar-scroll",
+      );
+      const focused = document.activeElement;
+      if (!list || !(focused instanceof HTMLElement) || !list.contains(focused))
+        return;
+      const bounds = list.getBoundingClientRect();
+      const item = focused.getBoundingClientRect();
+      if (item.top < bounds.top) list.scrollTop -= bounds.top - item.top;
+      else if (item.bottom > bounds.bottom)
+        list.scrollTop += item.bottom - bounds.bottom;
+    };
   }
 
   customElementDefine("starlight-menu-button", () => StarlightMenuButton);

@@ -4,15 +4,20 @@ import Logo from "../../assets/probo-logo.svg";
 import WhiteLogo from "../../assets/probo_white_logo.svg";
 import MobileMenuToggle from "virtual:starlight/components/MobileMenuToggle";
 import Search from "virtual:starlight/components/Search";
-import Icon from "../Icon.astro";
-import SectionNav from "./SectionNav.astro";
+import Button from "../ui/Button.svelte";
 import ThemeToggle from "./ThemeToggle.astro";
+import {
+  getDocsSection,
+  getDocsSectionForPath,
+  normalizeDocsPath,
+} from "../../lib/docs-navigation";
 
 const hasCookieBanner = Boolean(
   import.meta.env.PUBLIC_COOKIE_BANNER_ID &&
   import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL,
 );
-const isHome = Astro.url.pathname.replace(/\/$/, "") === "/docs";
+const isHome = normalizeDocsPath(Astro.url.pathname) === "/docs";
+const section = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
 ---
 
 <div class="docs-chrome">
@@ -35,20 +40,21 @@ const isHome = Astro.url.pathname.replace(/\/$/, "") === "/docs";
           height={24}
         />
       </a>
-      <span class="docs-brand-divider" aria-hidden="true"></span>
-      <a class="docs-brand-title" href="/docs">Documentation</a>
-    </div>
-    <div class="docs-masthead-actions">
-      <Search class="docs-chrome-search" />
-      <ThemeToggle />
-      <a class="docs-website-link" href="/">
-        Probo.com <Icon name="arrow-right" size={14} />
+      <span class="docs-brand-separator" aria-hidden="true"></span>
+      <a
+        class="docs-home-link"
+        href="/docs"
+        aria-label={`${section.label} — documentation home`}
+      >
+        {section.label}
       </a>
     </div>
+    <Search class="docs-chrome-search" />
+    <div class="docs-masthead-actions">
+      <ThemeToggle />
+      <Button href="/contact" class="docs-compliant">Get compliant</Button>
+    </div>
   </header>
-  <div class="docs-horizon">
-    <div class="docs-subnav"><SectionNav /></div>
-  </div>
 </div>
 
 <div
@@ -65,19 +71,6 @@ const isHome = Astro.url.pathname.replace(/\/$/, "") === "/docs";
     </nav>
     <div class="docs-content"><slot /></div>
   </div>
-  <footer class="docs-site-footer">
-    <a href="/docs" class="docs-footer-home">Probo documentation</a>
-    <div>
-      <a href="https://github.com/getprobo/probo.com">Edit and contribute</a>
-      {
-        hasCookieBanner && (
-          <probo-settings-link class="cookie-settings">
-            <a href="#">Cookie settings</a>
-          </probo-settings-link>
-        )
-      }
-    </div>
-  </footer>
 </div>
 
 {

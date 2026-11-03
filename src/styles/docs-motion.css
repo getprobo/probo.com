@@ -5,6 +5,22 @@
   --docs-motion-feedback: 140ms;
 }
 
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+  mix-blend-mode: normal;
+}
+
+.docs-toc-pane
+  starlight-toc[data-toc-positioned]:not([data-toc-instant])
+  > nav
+  > ul::before {
+  transition:
+    transform 180ms var(--docs-motion-smooth),
+    height 180ms var(--docs-motion-smooth);
+}
+
 .docs-chrome :is(a, button),
 .docs-shell :is(a, button, summary),
 site-search :is(button, a),
@@ -17,11 +33,14 @@ site-search .docs-search-field {
 }
 
 /* Rotate the existing sign immediately, independently from the reading space. */
-.docs-shell details > summary :is(.caret, .step-caret, svg),
+.docs-shell details > summary :is(.caret, .step-caret),
 .docs-shell .mcp-tool > summary::after {
   transition: transform 220ms var(--docs-motion-snappy);
 }
-.docs-shell details[data-docs-disclosure="closed"] > .sidebar-section-title svg,
+.docs-shell
+  details[data-docs-disclosure="closed"]
+  > .sidebar-section-title
+  .caret,
 .docs-shell details[data-docs-disclosure="closed"] > summary .caret {
   transform: rotate(0deg);
 }
@@ -114,7 +133,7 @@ site-search dialog[data-docs-panel-state="closing"]::backdrop {
   :root {
     --docs-motion-feedback: 80ms;
   }
-  .docs-shell details > summary :is(.caret, .step-caret, svg),
+  .docs-shell details > summary :is(.caret, .step-caret),
   .docs-shell .mcp-tool > summary::after,
   .docs-website-link svg,
   .docs-shell .sl-link-card .icon,
@@ -125,6 +144,12 @@ site-search dialog[data-docs-panel-state="closing"]::backdrop {
   .docs-shell .expressive-code .copy .feedback,
   .docs-shell .sidebar,
   site-search dialog::backdrop {
+    transition: none;
+  }
+  .docs-toc-pane
+    starlight-toc[data-toc-positioned]:not([data-toc-instant])
+    > nav
+    > ul::before {
     transition: none;
   }
   .docs-website-link:is(:hover, :focus-visible) svg,

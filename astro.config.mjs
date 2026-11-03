@@ -14,6 +14,7 @@ import { documentationLastModified } from "./tools/docs-lastmod.mjs";
 import { unified } from "@astrojs/markdown-remark";
 import { remarkRequireImageAlt } from "./src/lib/remark-require-image-alt";
 import { rehypeDocsTables } from "./src/lib/rehype-docs-tables.mjs";
+import { rehypeDocsImageDimensions } from "./src/lib/rehype-docs-image-dimensions.mjs";
 
 const docsLastModified = documentationLastModified();
 
@@ -86,7 +87,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkRequireImageAlt],
-      rehypePlugins: [rehypeDocsTables],
+      rehypePlugins: [rehypeDocsTables, rehypeDocsImageDimensions],
     }),
   },
 

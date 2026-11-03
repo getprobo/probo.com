@@ -283,6 +283,7 @@ function enhanceTableScrolling(root: HTMLElement) {
   const update = (element: HTMLElement) => {
     const overflows = element.scrollWidth > element.clientWidth + 1;
     if (overflows) element.tabIndex = 0;
+    else if (element === document.activeElement) element.tabIndex = -1;
     else element.removeAttribute("tabindex");
     element.dataset.tableOverflow = String(overflows);
   };
@@ -311,6 +312,102 @@ function enhanceTableScrolling(root: HTMLElement) {
   };
 }
 
+function enhanceTabLinks(root: HTMLElement) {
+  type NativeTabs = HTMLElement & {
+    switchTab?: (tab: HTMLAnchorElement, index: number, sync: boolean) => void;
+  };
+  const groups = Array.from(
+    root.querySelectorAll<NativeTabs>(".sl-markdown-content starlight-tabs"),
+  ).filter((group) => !group.closest("docs-page-tabs"));
+  if (!groups.length) return () => {};
+
+  let frame = 0;
+  let disposed = false;
+  const linkedPanel = () => {
+    let id: string;
+    try {
+      id = decodeURIComponent(location.hash.slice(1));
+    } catch {
+      return;
+    }
+    const target = id ? document.getElementById(id) : null;
+    const panel = target?.closest<HTMLElement>('[role="tabpanel"]');
+    const group = panel?.parentElement as NativeTabs | null;
+    if (target && panel && group && groups.includes(group))
+      return { target, panel, group };
+  };
+  const observer = new MutationObserver(() => {
+    const linked = linkedPanel();
+    if (!linked?.panel.hidden) return;
+    const url = new URL(location.href);
+    url.hash = "";
+    history.replaceState(history.state, "", url);
+  });
+  const reveal = () => {
+    observer.disconnect();
+    if (disposed) return;
+    const linked = linkedPanel();
+    if (!linked?.group.switchTab) return;
+    const tabs = (group: NativeTabs) =>
+      Array.from(
+        group.querySelectorAll<HTMLAnchorElement>(
+          ':scope > .tablist-wrapper [role="tab"]',
+        ),
+      );
+    const index = Array.from(
+      linked.group.querySelectorAll(':scope > [role="tabpanel"]'),
+    ).indexOf(linked.panel);
+    const tab = tabs(linked.group)[index];
+    if (!tab) return;
+    const label = tab.textContent?.trim();
+    const key = linked.group.dataset.syncKey;
+    // Match synced groups without persisting a preference or moving focus.
+    for (const group of groups) {
+      if (group !== linked.group && (!key || group.dataset.syncKey !== key))
+        continue;
+      const groupTabs = tabs(group);
+      const match = groupTabs.findIndex(
+        (item) => item.textContent?.trim() === label,
+      );
+      if (match >= 0) {
+        group.switchTab?.(groupTabs[match], match, false);
+        groupTabs[match].scrollIntoView({
+          block: "nearest",
+          inline: "nearest",
+          behavior: "instant",
+        });
+      }
+    }
+    (linked.target === linked.panel
+      ? linked.group
+      : linked.target
+    ).scrollIntoView({
+      block: "start",
+      behavior: "instant",
+    });
+    for (const group of groups)
+      observer.observe(group, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["hidden"],
+      });
+  };
+  const schedule = () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(reveal);
+  };
+  window.addEventListener("hashchange", schedule);
+  void customElements.whenDefined("starlight-tabs").then(() => {
+    if (!disposed) schedule();
+  });
+  return () => {
+    disposed = true;
+    cancelAnimationFrame(frame);
+    observer.disconnect();
+    window.removeEventListener("hashchange", schedule);
+  };
+}
+
 function setupPage() {
   disposePage?.();
   const root = document.querySelector<HTMLElement>(".docs-shell");
@@ -320,7 +417,11 @@ function setupPage() {
       ".sidebar details, .accordion-step > details, .sl-markdown-content details, #starlight__mobile-toc",
     ),
   ).map(enhanceDisclosure);
-  disposers.push(enhanceCopyFeedback(root), enhanceTableScrolling(root));
+  disposers.push(
+    enhanceCopyFeedback(root),
+    enhanceTableScrolling(root),
+    enhanceTabLinks(root),
+  );
   disposePage = () => {
     disposers.forEach((dispose) => dispose());
     disposePage = undefined;

@@ -1,25 +1,53 @@
 ---
+import Icon, { type IconName } from "../Icon.astro";
 import {
-  docsSections,
   getDocsSectionForPath,
   normalizeDocsPath,
 } from "../../lib/docs-navigation";
 
+interface Props {
+  placement?: "header" | "sidebar";
+}
+
+const { placement = "header" } = Astro.props;
 const activeSection = getDocsSectionForPath(Astro.url.pathname);
+const spaces = [
+  {
+    id: "product",
+    label: "Docs",
+    href: "/docs/product",
+    icon: "book-open-text",
+  },
+  {
+    id: "developers",
+    label: "Developers",
+    href: "/docs/developers",
+    icon: "code",
+  },
+  {
+    id: "deployment",
+    label: "Deployment",
+    href: "/docs/deployment",
+    icon: "terminal-window",
+  },
+] as const;
+const sections = spaces;
 ---
 
 <nav
-  class="docs-section-nav flex min-w-0 [scrollbar-width:none] gap-7 overflow-x-auto [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-  aria-label="Documentation sections"
+  class:list={["docs-section-nav", `docs-section-nav--${placement}`]}
+  aria-label={placement === "sidebar"
+    ? "Documentation spaces"
+    : "Documentation sections"}
 >
   {
-    docsSections.map((section) => {
+    sections.map((section) => {
       const isActive = section.id === activeSection;
       return (
         <a
           href={section.href}
           class:list={[
-            "docs-section-nav__link shrink-0 text-sm transition-colors",
+            "docs-section-nav__link",
             isActive ? "docs-section-nav__link--active" : "",
           ]}
           aria-current={
@@ -30,6 +58,9 @@ const activeSection = getDocsSectionForPath(Astro.url.pathname);
               : undefined
           }
         >
+          {"icon" in section && (
+            <Icon name={section.icon as IconName} size={16} />
+          )}
           {section.label}
         </a>
       );
@@ -37,43 +68,64 @@ const activeSection = getDocsSectionForPath(Astro.url.pathname);
   }
 </nav>
 
-<script>
-  const revealActiveSection = () => {
-    const active = document.querySelector<HTMLElement>(
-      ".docs-section-nav [aria-current]",
-    );
-    const nav = active?.parentElement;
-    if (!active || !nav) return;
-    const activeRect = active.getBoundingClientRect();
-    const navRect = nav.getBoundingClientRect();
-    if (activeRect.left < navRect.left)
-      nav.scrollLeft -= navRect.left - activeRect.left;
-    if (activeRect.right > navRect.right)
-      nav.scrollLeft += activeRect.right - navRect.right;
-  };
-  document.addEventListener("astro:page-load", revealActiveSection);
-  revealActiveSection();
-</script>
-
 <style>
+  .docs-section-nav {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+  .docs-section-nav--header {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .docs-section-nav--header::-webkit-scrollbar {
+    display: none;
+  }
   .docs-section-nav__link {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 0.625rem;
     position: relative;
-    padding-block: 0.875rem;
-    margin-bottom: -1px;
+    min-height: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
     white-space: nowrap;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--color-muted-foreground);
   }
 
   .docs-section-nav__link:hover {
     text-decoration: none;
     color: var(--color-primary);
+    background: var(--color-subtle);
   }
 
   .docs-section-nav__link--active,
   .docs-section-nav__link[aria-current="page"] {
     color: var(--color-primary);
     font-weight: 600;
+  }
+  .docs-section-nav--sidebar {
+    display: grid;
+    gap: 0.125rem;
+  }
+  .docs-section-nav--sidebar .docs-section-nav__link {
+    width: 100%;
+  }
+  .docs-section-nav--sidebar :global(svg) {
+    color: var(--color-tertiary-foreground);
+    flex-shrink: 0;
+  }
+  .docs-section-nav--sidebar .docs-section-nav__link--active :global(svg) {
+    color: var(--color-primary);
+  }
+  @media (max-width: 63.999rem) {
+    .docs-section-nav--header {
+      display: none;
+    }
   }
 </style>
