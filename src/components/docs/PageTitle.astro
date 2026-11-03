@@ -56,7 +56,9 @@ function findCurrent(
 const sidebarCrumbs = findCurrent(sidebar) ?? [];
 const breadcrumbs = [
   { label: "Docs", href: "/docs" },
-  { label: activeSection.label, href: activeSection.href },
+  ...(activeSection.id === "product"
+    ? []
+    : [{ label: activeSection.label, href: activeSection.href }]),
   ...sidebarCrumbs.slice(0, -1),
 ]
   .map((crumb) => ({
@@ -128,7 +130,10 @@ const breadcrumbs = [
       title="Copy this page as Markdown"
     >
       <Icon name="copy" size={18} />
-      <span data-copy-label aria-live="polite">Copy page</span>
+      <span class="docs-copy-status">
+        <span data-copy-label aria-live="polite">Copy page</span>
+        <span class="docs-copy-placeholder" aria-hidden="true">Copy page</span>
+      </span>
     </button>
     <span class="docs-page-actions__divider" aria-hidden="true"></span>
     <a class="docs-page-action" href={markdownUrl} rel="nofollow">
@@ -221,6 +226,19 @@ const breadcrumbs = [
 
   .docs-page-action:hover {
     color: var(--color-primary);
+  }
+
+  .docs-page-action[data-copy-markdown] {
+    min-inline-size: 0;
+  }
+  .docs-copy-status {
+    display: grid;
+  }
+  .docs-copy-status > span {
+    grid-area: 1 / 1;
+  }
+  .docs-copy-placeholder {
+    visibility: hidden;
   }
 
   .docs-page-action:focus-visible {

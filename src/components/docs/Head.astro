@@ -82,5 +82,5 @@ const docsSchemaJson = JSON.stringify(docsSchema).replace(/</g, "\\u003c");
   import { registerCookieBanner } from "@probo/cookie-banner";
   registerCookieBanner();
 </script>
-<ClientRouter />
+<ClientRouter fallback="swap" />
 <PostHog />

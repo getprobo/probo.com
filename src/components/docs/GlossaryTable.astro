@@ -19,7 +19,7 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
           <th scope="col">Definition</th>
         </tr>
         <tr class="glossary-table__filters">
-          <th scope="row">
+          <th scope="row" colspan="2">
             <label class="sr-only" for={id}>Filter glossary terms</label>
             <span class="glossary-table__search">
               <Icon name="magnifying-glass" size={16} />
@@ -32,7 +32,6 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
               />
             </span>
           </th>
-          <th></th>
         </tr>
       </thead>
       <tbody id={`${id}-body`}>
@@ -192,7 +191,7 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
     border-radius: 0.3125rem;
     background: var(--docs-surface-raised);
     color: var(--color-quaternary);
-    box-shadow: 0 1px 2px rgb(20 30 18 / 0.04);
+    box-shadow: none;
   }
 
   .glossary-table__search:focus-within {
@@ -211,6 +210,10 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
     color: var(--color-primary);
     font: inherit;
     font-weight: 400;
+  }
+
+  .glossary-table .glossary-table__search input:focus-visible {
+    outline: none;
   }
 
   input::placeholder {
