@@ -47,12 +47,14 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Scaleway**, click **API Key**, paste the **secret key**, enter your **Organization ID** (from **Organization Settings**), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Scaleway** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the **secret key** into **API key**, enter your **Organization ID** (from **Organization Settings**), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Scaleway**, and click **Add**.
 
 </Steps>
 
-Probo names the source after your Organization and pulls its IAM users into your campaigns.
+Probo names the source after your Organization ID and pulls its IAM users into your campaigns.
 
 ## Troubleshooting
 

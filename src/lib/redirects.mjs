@@ -22,6 +22,8 @@ function movedDocsRedirects(fromPrefix, toPrefix, exactDestination = toPrefix) {
  */
 const redirect = (destination) => ({ status: 301, destination });
 
+const apiSectionsWithOverview = ["agent", "mcp", "n8n", "webhooks"];
+
 /**
  * Mirror exact HTML docs redirects as .md URLs so leftover markdown URLs
  * resolve to the same final document instead of 404ing. Wildcard rules
@@ -42,6 +44,10 @@ function markdownDocsMirrors(htmlRedirects) {
     "/docs/developers/api",
     "/docs/developers/api/overview",
     "/docs/developers/api/graphql",
+    ...apiSectionsWithOverview.flatMap((section) => [
+      `/docs/api/${section}`,
+      `/docs/developers/api/${section}`,
+    ]),
     "/docs/deployment/configuration",
   ];
   /** @type {Record<string, { status: 301; destination: string }>} */
@@ -92,6 +98,15 @@ const htmlRedirects = {
   "/docs/developers/api": redirect("/docs/developers/api-overview"),
   "/docs/developers/api/overview": redirect("/docs/developers/api-overview"),
   "/docs/developers/api/graphql": redirect("/docs/developers/graphql"),
+  ...Object.fromEntries(
+    apiSectionsWithOverview.flatMap((section) => {
+      const destination = `/docs/developers/api/${section}/overview`;
+      return [
+        [`/docs/api/${section}`, redirect(destination)],
+        [`/docs/developers/api/${section}`, redirect(destination)],
+      ];
+    }),
+  ),
   "/docs/deployment/configuration": redirect(
     "/docs/deployment/configuration/overview",
   ),
@@ -198,9 +213,15 @@ export const redirects = {
 };
 
 export function cloudflareRedirectLines() {
-  return Object.entries(redirects).map(([from, { destination, status }]) => {
-    const source = from.replaceAll(/\[([^\]]+)\]/g, ":$1");
-    const target = destination.replaceAll(/\[([^\]]+)\]/g, ":$1");
-    return `${source} ${target} ${status}`;
-  });
+  return Object.entries(redirects)
+    .sort(
+      ([a], [b]) =>
+        Number(a.includes("*") || a.includes("[")) -
+        Number(b.includes("*") || b.includes("[")),
+    )
+    .map(([from, { destination, status }]) => {
+      const source = from.replaceAll(/\[([^\]]+)\]/g, ":$1");
+      const target = destination.replaceAll(/\[([^\]]+)\]/g, ":$1");
+      return `${source} ${target} ${status}`;
+    });
 }

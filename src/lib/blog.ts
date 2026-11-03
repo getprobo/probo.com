@@ -5,6 +5,7 @@ export const blogCategories = [
   "Engineering",
   "Perspectives",
   "Newsletter",
+  "Probo guide",
 ] as const;
 export type BlogCategory = (typeof blogCategories)[number];
 export const blogDate = new Intl.DateTimeFormat("en-US", {
@@ -14,8 +15,10 @@ export const blogDate = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
 });
 export const postHref = (id: string) => `/blog/${id.split("/").at(-1)}`;
+export const categorySlug = (category: BlogCategory) =>
+  category.toLowerCase().replace(/\s+/g, "-");
 export const categoryHref = (category?: BlogCategory, page = 1) => {
-  const base = category ? `/blog/category/${category.toLowerCase()}` : "/blog";
+  const base = category ? `/blog/category/${categorySlug(category)}` : "/blog";
   return page === 1 ? base : `${base}/page/${page}`;
 };
 export const newestFirst = (

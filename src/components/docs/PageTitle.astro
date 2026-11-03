@@ -2,18 +2,11 @@
 import Icon from "../Icon.astro";
 import { Badge } from "@astrojs/starlight/components";
 import {
-  getDocsSection,
-  getDocsSectionForPath,
+  getDocsBreadcrumbs,
   normalizeDocsPath,
 } from "../../lib/docs-navigation";
 
-type Breadcrumb = {
-  label: string;
-  href?: string;
-};
-
 const { entry, sidebar } = Astro.locals.starlightRoute;
-type SidebarEntry = (typeof sidebar)[number];
 const { title, description, badge } = entry.data;
 const titleBadge =
   badge ??
@@ -24,56 +17,11 @@ const titleBadge =
       : undefined);
 const pathname = normalizeDocsPath(Astro.url.pathname);
 const markdownUrl = pathname ? `${pathname}.md` : "/index.md";
-const activeSection = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
-
-function firstHref(entries: SidebarEntry[]): string | undefined {
-  for (const entry of entries) {
-    if (entry.type === "link") return entry.href;
-    const href = firstHref(entry.entries);
-    if (href) return href;
-  }
-}
-
-function findCurrent(
-  entries: SidebarEntry[],
-  parents: Breadcrumb[] = [],
-): Breadcrumb[] | undefined {
-  for (const entry of entries) {
-    if (entry.type === "link" && entry.isCurrent) {
-      return [...parents, { label: entry.label }];
-    }
-
-    if (entry.type === "group") {
-      const result = findCurrent(entry.entries, [
-        ...parents,
-        { label: entry.label, href: firstHref(entry.entries) },
-      ]);
-      if (result) return result;
-    }
-  }
-}
-
-const sidebarCrumbs = findCurrent(sidebar) ?? [];
-const breadcrumbs = [
-  { label: "Docs", href: "/docs" },
-  ...(activeSection.id === "product"
-    ? []
-    : [{ label: activeSection.label, href: activeSection.href }]),
-  ...sidebarCrumbs.slice(0, -1),
-]
-  .map((crumb) => ({
-    ...crumb,
-    href: crumb.href ? normalizeDocsPath(crumb.href) : undefined,
-  }))
-  .filter(
-    (crumb, index, crumbs) =>
-      crumb.href &&
-      crumb.href !== pathname &&
-      !/^(overview|developer overview|deployment overview)$/i.test(
-        crumb.label,
-      ) &&
-      crumbs.findIndex((other) => other.href === crumb.href) === index,
-  );
+const breadcrumbs = getDocsBreadcrumbs(
+  Astro.url.pathname,
+  sidebar,
+  title,
+).filter((crumb) => crumb.href);
 ---
 
 <header class="docs-page-header">

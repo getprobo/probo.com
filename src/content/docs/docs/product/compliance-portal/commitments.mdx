@@ -29,8 +29,8 @@ Each group requires a title and description. Each commitment contains:
 
 ## Create a commitment group
 
-1. Open the portal’s **Commitments** tab.
-2. Select **Add group**.
+1. Open **Landing → Content** and find **Security Commitments**.
+2. Select **Add Group**.
 3. Enter a specific title that describes the shared theme.
 4. Explain in the description what the group covers.
 5. Save the group.
@@ -40,7 +40,7 @@ Keep groups distinct. A small number of well-defined sections is easier to scan 
 ## Add a commitment
 
 1. Find the group where the commitment belongs.
-2. Select **Add commitment**.
+2. Select **Add Commitment**.
 3. Choose an icon.
 4. Optionally enter an eyebrow as a short category or qualifier.
 5. Enter the title and description.
@@ -70,6 +70,12 @@ Prefer language that is specific enough to be useful and narrow enough to remain
 **Keep evidence separate.** A commitment can summarize a practice, while a restricted policy or audit report provides substantiation.
 
 **Write for customers.** Expand uncommon acronyms and avoid internal system names, implementation notes, and control identifiers unless they help visitors.
+
+## Draft commitments with an AI agent
+
+The `compliance-portal-commitments` skill, part of the [Probo agent skills](https://github.com/getprobo/probo/tree/main/packages/skills), drafts commitments for you. It reads your published policies through the [Probo MCP server](/docs/developers/api/mcp/overview) and proposes groups and commitments grounded in what those policies say. It does not invent controls that are not in your policies.
+
+Review, cut, and reword the proposal before the agent creates the commitments on the portal. The guidance above still applies to every commitment it drafts.
 
 ## Arrange the public layout
 

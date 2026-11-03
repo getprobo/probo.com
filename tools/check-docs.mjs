@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import { extname, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parse } from "yaml";
 import {
   cliCommandItems,
   mcpCategoryItems,
@@ -40,6 +41,18 @@ for (const file of files) {
   }
 
   if (!publishedFiles.includes(file)) continue;
+
+  const metadata = parse(frontmatter[1]);
+  for (const direction of ["prev", "next"]) {
+    const link = metadata[direction]?.link;
+    if (typeof link !== "string" || !link.startsWith("/docs")) continue;
+    checkedLinks += 1;
+    if (!routes.has(normalizeRoute(link))) {
+      errors.push(
+        `${displayPath(file)}: broken ${direction} documentation link ${link}`,
+      );
+    }
+  }
 
   for (const target of findDocLinks(content)) {
     checkedLinks += 1;
@@ -146,12 +159,15 @@ const cloudflareRedirects = await readFile(
   resolve(publicRoot, "_redirects"),
   "utf8",
 );
-for (const redirectLine of cloudflareRedirectLines()) {
-  if (!cloudflareRedirects.split("\n").includes(redirectLine)) {
-    errors.push(
-      `public/_redirects: missing generated redirect; run npm run redirects:generate (${redirectLine})`,
-    );
-  }
+const expectedCloudflareRedirects = [
+  ...cloudflareRedirectLines(),
+  "/fr/* /:splat 301",
+  "",
+].join("\n");
+if (cloudflareRedirects !== expectedCloudflareRedirects) {
+  errors.push(
+    "public/_redirects: generated redirects or their order are stale; run npm run redirects:generate",
+  );
 }
 
 for (const [from, { destination }] of Object.entries(redirects)) {

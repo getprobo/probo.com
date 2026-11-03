@@ -14,7 +14,7 @@ Assign the key to the **Administrators** group. A Metabase API key has exactly t
 - Probo organization administrator access
 - Membership of the **Administrators** group in Metabase (only an administrator can open Admin settings and create an API key)
 - Metabase 49 or later, the release that added API keys
-- The **Instance URL**, which the Connect dialog asks for alongside the key. It is the base URL you open Metabase with: an `http://` or `https://` address, such as `https://example.metabaseapp.com` on Metabase Cloud, or your own hostname when self-hosted. Probo calls that address directly, so it has to be reachable from the internet
+- The **Instance URL**, which the Metabase connect form asks for alongside the key. It is the base URL you open Metabase with: an `http://` or `https://` address, such as `https://example.metabaseapp.com` on Metabase Cloud, or your own hostname when self-hosted. Probo calls that address directly, so it has to be reachable from the internet
 
 ## Collected Fields
 
@@ -48,8 +48,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Metabase**, click **API Key**, paste the key, enter your **Instance URL** (the base address of your Metabase, e.g. `https://example.metabaseapp.com`), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Metabase** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, enter your **Instance URL** (the base address of your Metabase, e.g. `https://example.metabaseapp.com`), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Metabase**, and click **Add**.
 
 </Steps>
 

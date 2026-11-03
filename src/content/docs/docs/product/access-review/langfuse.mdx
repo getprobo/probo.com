@@ -14,7 +14,7 @@ Create an **organization-scoped API key** from your organization's settings, not
 - Probo organization administrator access
 - The **Owner** role in the Langfuse organization (Langfuse grants `organization:CRUD_apiKeys` to Owner only, so an Admin, Member or Viewer cannot create the key)
 - A Langfuse plan that includes the organization management API, which Langfuse gates behind the `admin-api` entitlement. On Langfuse Cloud that means **Enterprise**, or **Pro with the Teams add-on**; self-hosting requires the **Enterprise Edition**. Hobby, Core and plain Pro do not have it, and neither does the open source or the self-hosted Pro edition. The pricing page lists no Team tier, because the add-on is bought on top of Pro. Once it is active the organization badge reads **Team** and an **API Keys** tab appears in organization settings, which is how you confirm the entitlement before going further. Without it Langfuse hides that tab and the memberships endpoint answers `This feature is not available on your current plan.` If your organization is on a legacy or individually negotiated plan, confirm the entitlement with Langfuse.
-- The **Base URL** of the Langfuse instance you are reviewing, which the Connect dialog asks for alongside the key. On Langfuse Cloud it is the host you sign in to: `https://cloud.langfuse.com` (EU), `https://us.cloud.langfuse.com` (US), `https://jp.cloud.langfuse.com` (Japan) or `https://hipaa.cloud.langfuse.com` (HIPAA). A self-hosted instance uses its own deployment URL. Enter the host on its own, without the `/api/public` path
+- The **Base URL** of the Langfuse instance you are reviewing, which Probo asks for alongside the key when you connect. On Langfuse Cloud it is the host you sign in to: `https://cloud.langfuse.com` (EU), `https://us.cloud.langfuse.com` (US), `https://jp.cloud.langfuse.com` (Japan) or `https://hipaa.cloud.langfuse.com` (HIPAA). A self-hosted instance uses its own deployment URL. Enter the host on its own, without the `/api/public` path
 
 ## Collected Fields
 
@@ -51,12 +51,14 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Langfuse**, click **API Key**, paste the two keys as one `pk-lf-…:sk-lf-…` string (public key, a colon, then the secret key) into the API key field, enter your **Base URL** (the Langfuse host you sign in to, or your self-hosted deployment URL), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Langfuse** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the two keys as one `pk-lf-…:sk-lf-…` string (public key, a colon, then the secret key) into **API key**, enter your **Base URL** (the Langfuse host you sign in to, or your self-hosted deployment URL), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Langfuse**, and click **Add**.
 
 </Steps>
 
-Probo names the source **Langfuse** and pulls your organization's members into your campaigns. The memberships endpoint carries no organization name, so the source keeps that generic name.
+Probo names the source after the **Base URL** you entered and pulls your organization's members into your campaigns. The memberships endpoint carries no organization name, so the source keeps the URL as its name.
 
 ## Troubleshooting
 

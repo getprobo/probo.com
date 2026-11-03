@@ -49,8 +49,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **New Relic**, click **API Key**, paste the key, fill in **Region (us, eu or jp)** with the region the key's New Relic account is in, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **New Relic** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, enter your **Region (us, eu or jp)** (the region the key's New Relic account is in), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **New Relic**, and click **Add**.
 
 </Steps>
 
@@ -59,5 +61,5 @@ Probo names the source after your New Relic organization and pulls its users int
 ## Troubleshooting
 
 - **Key rejected.** Confirm the key is a user key, not a license or ingest key, and that it has not been deleted.
-- **Connection refused after the key is accepted.** This is usually the wrong **Region**. Each endpoint refuses a key belonging to another region's account. Reconnect with the region that matches the account the key came from.
+- **Connection refused after the key is accepted.** This is usually the wrong **Region**. Each endpoint refuses a key belonging to another region's account. **Delete** the source in **Access Review** > **Sources**, click the trash icon on the New Relic connector in **Settings** > **Connectors** and confirm **Disconnect**, then connect New Relic again with the region that matches the account the key came from.
 - **No members appear.** Listing the organization's users needs both a Core or Full platform account type and the **Authentication Domain Manager** role. Ask a New Relic administrator to grant whichever is missing to the key's owner, or to create the key from an account that has both.

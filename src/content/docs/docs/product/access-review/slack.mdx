@@ -38,17 +38,19 @@ Probo reads MFA only from the `has_2fa` value Slack reports. If your members sig
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Slack** and click **OAuth**.
-3. Sign in to Slack as a workspace admin or owner, pick the workspace you want to review, then click **Allow**. Probo requests the **`users:read`** and **`users:read.email`** user scopes.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Slack** and open it.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to Slack as a workspace admin or owner, pick the workspace you want to review, then click **Allow**. Probo requests the **`users:read`** and **`users:read.email`** user scopes.
+5. Go to **Access Review** > **Sources**, click **Add sources**, tick **Slack**, and click **Add**.
 
 </Steps>
 
-Probo names the source `Slack / <workspace name>` and pulls its members into your campaigns. Each connection covers one workspace. To review several workspaces of an Enterprise Grid organization, connect each workspace separately.
+Probo names the source after the Slack workspace and pulls its members into your campaigns. Each connection covers one workspace. To review several workspaces of an Enterprise Grid organization, connect each workspace separately.
 
 ## Troubleshooting
 
-- **"Slack must be connected by a workspace admin or owner, the only role Slack shares MFA status with."** The person who authorized Probo is not an admin or owner of the workspace. Click **OAuth** again and authorize as an **Admin**, **Owner**, or **Primary Owner**.
-- **The source says Slack is disconnected.** The token was revoked, for example because the person who authorized Probo left the workspace or removed the app, or the connection predates MFA collection and still uses a bot token, which cannot read it. Click **Reconnect** and authorize as a workspace admin or owner.
-- **The source says Slack refused this request.** The person who authorized the connection is no longer an admin or owner, so Slack stopped returning MFA status to their token. Click **Reconnect** and authorize as a current admin or owner.
+- **"Slack must be connected by a workspace admin or owner, the only role Slack shares MFA status with."** The person who authorized Probo is not an admin or owner of the workspace, so Probo rejected the connection. Connect Slack again from the **Marketplace** and authorize as an **Admin**, **Owner**, or **Primary Owner**.
+- **The source says Slack is disconnected.** The token was revoked, for example because the person who authorized Probo left the workspace or removed the app, or the connection predates MFA collection and still uses a bot token, which cannot read it. Open the Slack connector in **Settings** > **Connectors**, click **Reconnect**, and authorize as a workspace admin or owner.
+- **The source says Slack refused this request.** The person who authorized the connection is no longer an admin or owner, so Slack stopped returning MFA status to their token. Click **Reconnect** on the Slack source in **Access Review** > **Sources** and authorize as a current admin or owner.
 - **A member is missing.** Probo skips Slackbot and every member without an email address, which in practice leaves out bots and apps.

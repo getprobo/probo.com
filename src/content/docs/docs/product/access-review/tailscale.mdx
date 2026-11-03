@@ -49,8 +49,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Tailscale**, click **API Key**, paste the access token, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Tailscale** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the access token into **API key**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Tailscale**, and click **Add**.
 
 </Steps>
 
@@ -59,6 +61,6 @@ Probo names the source after the most common login domain among the imported use
 ## Troubleshooting
 
 - **Token rejected.** Confirm it is an API access token (`tskey-api-…`). Neither an auth key (`tskey-auth-…`) nor an OAuth client secret (`tskey-client-…`) authenticates a Tailscale API request.
-- **The source stops syncing after a few weeks.** A Tailscale access token expires after the 1 to 90 days chosen when it was generated. Generate a new token and reconnect the source.
+- **The source stops syncing after a few weeks.** A Tailscale access token expires after the 1 to 90 days chosen when it was generated. Generate a new token, then click **Update API key** (the key icon) on the Tailscale connector in **Settings** > **Connectors**, paste the new token, and click **Save API key**. The connector keeps its name and its source.
 - **No members appear.** An access token has the same permissions as the user who created it, and the users endpoint returns 404 when that user cannot read the tailnet's users. Generate the token from an Owner, Admin, IT admin, or Network admin account, and confirm that account can still read the tailnet's users.
 - **A user shared in from another tailnet is missing.** The users endpoint returns tailnet members by default, so Probo does not import users shared in from elsewhere.

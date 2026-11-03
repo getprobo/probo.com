@@ -149,7 +149,7 @@ The "consent state" comes from `getConsent()`, the framework-agnostic [Consent M
 
 ### Minimum configuration
 
-This is the smallest viable React setup. The full working example with the floating consent UI, debug panel, and three different banner styles lives at <a href="https://github.com/getprobo/probo/tree/main/examples/cookie-banner-react" target="_blank" rel="noopener noreferrer"><code>getprobo/probo/examples/cookie-banner-react</code></a>. The relevant PostHog wiring is in <a href="https://github.com/getprobo/probo/blob/main/examples/cookie-banner-react/src/lib/posthog.ts" target="_blank" rel="noopener noreferrer"><code>src/lib/posthog.ts</code></a>.
+This is the smallest viable React setup. The full working example with the floating consent UI, debug panel, and three different banner styles lives at <a href="https://github.com/getprobo/probo/tree/main/examples/cookie-banner" target="_blank" rel="noopener noreferrer"><code>getprobo/probo/examples/cookie-banner</code></a>. The relevant PostHog wiring is in <a href="https://github.com/getprobo/probo/blob/main/examples/cookie-banner/shared/src/posthog.ts" target="_blank" rel="noopener noreferrer"><code>shared/src/posthog.ts</code></a>.
 
 ```ts
 // posthog.ts
@@ -289,7 +289,7 @@ In either case:
 - Use `defaults: "2026-01-30"` to lock SDK behavior.
 - Run from a first-party `api_host` to survive ad blockers.
 
-The Probo cookie banner handles the regulation-to-mode mapping, GPC detection, existing-consent precedence, third-party resource blocking, and the audit trail so you don't have to. If you want to see it end-to-end with a working PostHog integration, theming, and a debug panel that shows the resolved consent mode in real time, clone <a href="https://github.com/getprobo/probo/tree/main/examples/cookie-banner-react" target="_blank" rel="noopener noreferrer"><code>examples/cookie-banner-react</code></a> and point it at your Probo instance.
+The Probo cookie banner handles the regulation-to-mode mapping, GPC detection, existing-consent precedence, third-party resource blocking, and the audit trail so you don't have to. If you want to see it end-to-end with a working PostHog integration, theming, and a debug panel that shows the resolved consent mode in real time, clone <a href="https://github.com/getprobo/probo/tree/main/examples/cookie-banner" target="_blank" rel="noopener noreferrer"><code>examples/cookie-banner</code></a> and point it at your Probo instance.
 
 If you don't have a Probo instance yet, the [Cookie Banner overview](/docs/product/cookie-banner/overview) and [quickstart](/docs/product/cookie-banner/quickstart) get you to a published banner in under fifteen minutes.
 

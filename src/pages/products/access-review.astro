@@ -244,15 +244,13 @@ const faqSchema = {
   })),
 };
 
-const softwareApplicationSchema = {
+const serviceSchema = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  "@type": "Service",
   name: "Probo Access Review",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
   description: pageDescription,
   url: "https://www.probo.com/products/access-review",
-  publisher: {
+  provider: {
     "@type": "Organization",
     name: "Probo",
     url: "https://www.probo.com",
@@ -262,10 +260,7 @@ const softwareApplicationSchema = {
 
 <Layout title={pageTitle} description={pageDescription}>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(softwareApplicationSchema)}
-  />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   <main class="-mt-16 overflow-hidden pt-16">
     <div class="product-hero relative isolate">
       <div

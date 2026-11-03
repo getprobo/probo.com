@@ -5,7 +5,7 @@ description: Browse every access-review connector Probo supports, the credential
 
 Probo connects to these providers as access sources. Each guide covers the connection method, the data Probo collects, and the steps to connect.
 
-The connection buttons shown in **Access Review** > **Connections** are the source of truth for the methods available in your deployment. Some providers use OAuth or client credentials even when the guides below focus on API-key connectors.
+The connection methods Probo offers when you open a vendor in **Settings** > **Connectors** > **Add more** (the **Marketplace**) are the source of truth for the methods available in your deployment. Some providers use OAuth or client credentials even when the guides below focus on API-key connectors.
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
@@ -108,7 +108,7 @@ import { LinkCard, CardGrid } from "@astrojs/starlight/components";
   />
   <LinkCard
     title="1Password"
-    description="SCIM Bridge bearer token"
+    description="OAuth application client ID and secret (recommended), or SCIM Bridge bearer token"
     href="/docs/product/access-review/one-password"
   />
   <LinkCard
@@ -150,6 +150,21 @@ import { LinkCard, CardGrid } from "@astrojs/starlight/components";
     title="ClickHouse Cloud"
     description="Cloud API key ID and secret"
     href="/docs/product/access-review/clickhouse"
+  />
+  <LinkCard
+    title="Daytona"
+    description="Organization API key"
+    href="/docs/product/access-review/daytona"
+  />
+  <LinkCard
+    title="Elastic Cloud"
+    description="Elastic Cloud API key (Organization owner role)"
+    href="/docs/product/access-review/elastic-cloud"
+  />
+  <LinkCard
+    title="Front"
+    description="OAuth (recommended) or an API token with Teammates read"
+    href="/docs/product/access-review/front"
   />
   <LinkCard
     title="GitHub"
@@ -200,6 +215,11 @@ import { LinkCard, CardGrid } from "@astrojs/starlight/components";
     title="Okta"
     description="Okta API token plus org domain"
     href="/docs/product/access-review/okta"
+  />
+  <LinkCard
+    title="PlanetScale"
+    description="OAuth (tick the organization when authorizing)"
+    href="/docs/product/access-review/planetscale"
   />
   <LinkCard
     title="Pylon"

@@ -34,9 +34,11 @@ If the connected account belongs to a Cal.com **organization**, Probo lists ever
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Cal.com** and click **OAuth**.
-3. Sign in to Cal.com and authorize Probo. Probo requests the **`PROFILE_READ`**, **`TEAM_PROFILE_READ`**, **`TEAM_MEMBERSHIP_READ`**, and **`ORG_MEMBERSHIP_READ`** scopes.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Cal.com** and open it. If Probo asks how to connect, choose **OAuth**.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to Cal.com and authorize Probo. Probo requests the **`PROFILE_READ`**, **`TEAM_PROFILE_READ`**, **`TEAM_MEMBERSHIP_READ`**, and **`ORG_MEMBERSHIP_READ`** scopes. Back in Probo, the Cal.com connector shows as **Connected**.
+5. Go to **Access Review** > **Sources**, click **Add sources**, tick **Cal.com**, and click **Add**.
 
 </Steps>
 
@@ -46,12 +48,14 @@ If the connected account belongs to a Cal.com **organization**, Probo lists ever
 
 1. In Cal.com, signed in as a team or organization admin, go to **Settings** > **Developer** > **API keys**, and create one.
 2. Name it (e.g. `Probo Access Review`) and copy the key (`cal_live_…`, or `cal_…` for a test mode key). Cal.com shows it only once.
-3. In Probo, go to **Access Review** > **Connections** and find **Cal.com**. Click **API Key** on that row. When your deployment also offers OAuth, **API Key** sits in the menu behind the arrow next to the **OAuth** button.
-4. Paste the key and click **Connect**.
+3. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+4. Find **Cal.com** and open it. If Probo asks how to connect, choose **API key**.
+5. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, and click **Connect**.
+6. Go to **Access Review** > **Sources**, click **Add sources**, tick **Cal.com**, and click **Add**.
 
 </Steps>
 
-Probo names the source "Cal.com" and pulls its members into your campaigns.
+Probo adds the Cal.com source and pulls its members into your campaigns.
 
 ## Troubleshooting
 

@@ -47,8 +47,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Mercury**, click **API Key**, paste the token, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Mercury** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Mercury**, and click **Add**.
 
 </Steps>
 
@@ -59,4 +61,4 @@ Mercury's users endpoint carries no organization name, so the source keeps the g
 - **Token rejected.** Paste the token with its `secret-token:` prefix, since Probo sends it as `Authorization: Bearer <token>`. A sandbox token is rejected as well: Probo calls `api.mercury.com`, and a token created in the sandbox belongs to the separate `api-sandbox.mercury.com` environment.
 - **The Tokens page offers no way to create a token.** The signed-in user does not hold the permission. An admin on the Mercury account can grant it or create the token instead.
 - **No users appear, or the wrong ones do.** A token is bound to the organization it was created in, so create it from the **All Settings** > **Tokens** page of the organization you want to review. A **Custom** token also reaches only the scopes granted at creation, and those cannot be edited afterwards.
-- **The source stops syncing after a quiet period.** Mercury deletes a token that goes unused for 45 days and emails account admins seven days beforehand. Create a new token and reconnect the source.
+- **The source stops syncing after a quiet period.** Mercury deletes a token that goes unused for 45 days and emails account admins seven days beforehand. Create a new token, then click **Update API key** (the key icon) on the Mercury connector in **Settings** > **Connectors**, paste the new token, and click **Save API key**. The connector keeps its name and its source.
