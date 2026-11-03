@@ -39,12 +39,13 @@ Probo lists joined operators only. Operators who were invited but have not accep
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Crisp** and click **App Install**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Crisp** and open it.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
 
 </Steps>
 
-Probo sends you to Crisp without opening a dialog or asking you for a value.
+Probo asks for no other value and sends you to Crisp.
 
 ## Step 2: Approve the Plugin in Crisp
 
@@ -58,18 +59,28 @@ Probo sends you to Crisp without opening a dialog or asking you for a value.
 
 Finish signed in to the same Probo account that started the connection, with a session that is still valid. Probo ties the installation link to the person who started it, so returning as anyone else is refused. Staying in the same browser is the simplest way to meet that, though it is the account that matters, not the browser.
 
-Probo checks the installation with Crisp. It then names the source after your Crisp website and pulls its operators into your campaigns. The installation link works once, so start again from Probo if you need to connect another website.
+Probo checks the installation with Crisp and returns you to **Settings** > **Connectors**, where Crisp appears under **Connected**. The installation link works once, so start again from the **Marketplace** if you need to connect another website.
+
+## Step 3: Add Crisp as a Source
+
+<Steps>
+
+1. Go to **Access Review** > **Sources**, click **Add sources**, tick **Crisp**, and click **Add**.
+
+</Steps>
+
+Probo names the source after your Crisp website and pulls its operators into your campaigns.
 
 ## Troubleshooting
 
-Each entry quotes the message Probo shows on the connections page after a failed installation.
+Each entry quotes the message Probo shows on the **Connectors** page after a failed installation.
 
-- **"This installation link was already used. Start the connection again from Probo."** Each installation link works only once. Return to **Access Review** > **Connections** and click **App Install** again.
-- **"The installation could not be verified. Start the connection again from Probo."** Crisp did not confirm the installation for that website. Click **App Install** again and approve the plugin on the website you want to review.
-- **"The provider could not be reached to verify the installation. Please try again in a moment."** Probo could not reach Crisp to confirm the installation, usually because Crisp was busy or briefly unavailable. Nothing was spent, so click **App Install** again. If the same message keeps appearing, Probo's own Crisp credential may need attention, so contact your Probo administrator.
-- **"Something went wrong while finishing the installation. Please try again."** Probo could not save the connection. Click **App Install** again, and contact your Probo administrator if it persists.
+- **"This installation link was already used. Start the connection again from Probo."** Each installation link works only once. Open **Crisp** in the **Marketplace** again and click **Connect**.
+- **"The installation could not be verified. Start the connection again from Probo."** Crisp did not confirm the installation for that website. Open **Crisp** in the **Marketplace**, click **Connect** again, and approve the plugin on the website you want to review.
+- **"The provider could not be reached to verify the installation. Please try again in a moment."** Probo could not reach Crisp to confirm the installation, usually because Crisp was busy or briefly unavailable. Nothing was spent, so open **Crisp** in the **Marketplace** and click **Connect** again. If the same message keeps appearing, Probo's own Crisp credential may need attention, so contact your Probo administrator.
+- **"Something went wrong while finishing the installation. Please try again."** Probo could not save the connection. Open **Crisp** in the **Marketplace** and click **Connect** again, and contact your Probo administrator if it persists.
 - **"You no longer have permission to connect this provider for this organization."** Your access to this organization changed while you were in Crisp. Ask an administrator to restore it, then start again from Probo.
-- **An authorization error instead of the connections page.** Probo refused the return trip because you came back as a different account, your session had expired, or your permission was withdrawn before Crisp sent you back. Sign in again as the account that started the connection and click **App Install** again.
+- **An authorization error instead of the Connectors page.** Probo refused the return trip because you came back as a different account, your session had expired, or your permission was withdrawn before Crisp sent you back. Sign in again as the account that started the connection, open **Crisp** in the **Marketplace**, and click **Connect** again.
 - **"invalid connector install callback".** The installation link was malformed or more than ten minutes old. Start again from Probo.
-- **Crisp is not listed in Connections.** The connector is enabled per deployment. Contact your Probo administrator if Crisp does not appear.
+- **Crisp is not listed in the Marketplace.** The connector is enabled per deployment. Contact your Probo administrator if Crisp does not appear.
 - **No operators appear.** Confirm you approved the plugin on the website you meant to review. Operators are read when a campaign that includes the Crisp source runs, so add the source to a campaign and start it. Probo lists operators (agents), not visitors.

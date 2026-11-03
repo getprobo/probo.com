@@ -328,15 +328,13 @@ const faqSchema = {
     acceptedAnswer: { "@type": "Answer", text: faq.answer },
   })),
 };
-const softwareApplicationSchema = {
+const serviceSchema = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  "@type": "Service",
   name: "Probo Document Management",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
   description: pageDescription,
   url: "https://www.probo.com/products/document-management",
-  publisher: {
+  provider: {
     "@type": "Organization",
     name: "Probo",
     url: "https://www.probo.com",
@@ -350,10 +348,7 @@ const softwareApplicationSchema = {
   ogImageAlt="Document Management with Approvals and E-Signatures"
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(softwareApplicationSchema)}
-  />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   <main class="-mt-16 overflow-hidden pt-16" data-document-management-page>
     <div class="product-hero relative isolate">
       <div

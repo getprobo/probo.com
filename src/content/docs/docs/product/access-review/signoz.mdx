@@ -15,7 +15,7 @@ Use a **service account API key**, created under **Settings** > **Service Accoun
 - A SigNoz user holding the **SigNoz-Admin** (`signoz-admin`) role. SigNoz states the requirement as a role with the transactions needed to create a service account, attach a role to it and create its API key. `signoz-admin` is the only managed role that carries them
 - A service account assigned the **SigNoz-Admin** (`signoz-admin`) role, so its key can list the organization's members, service accounts, roles and API keys. The member endpoints Probo reads are admin only, and SigNoz's fine-grained access control does not cover the user resource yet, so no narrower role can read members
 - SigNoz v0.118.0 or later. A self-hosted instance on an older version does not serve all the member and role endpoints Probo reads
-- The **Base URL** of your SigNoz instance, which the Connect dialog asks for alongside the key. It is the `http` or `https` address you use to reach SigNoz: on SigNoz Cloud that is your instance URL, which includes its region (for example `https://your-instance.us.signoz.cloud`), and on a self-hosted deployment it is your own server address. Include the base path when SigNoz is served under one, for example `https://example.com/signoz`. Leave off any query string or fragment, and make sure the instance is reachable from the public internet
+- The **Base URL** of your SigNoz instance, which the SigNoz connect form asks for alongside the key. It is the `http` or `https` address you use to reach SigNoz: on SigNoz Cloud that is your instance URL, which includes its region (for example `https://your-instance.us.signoz.cloud`), and on a self-hosted deployment it is your own server address. Include the base path when SigNoz is served under one, for example `https://example.com/signoz`. Leave off any query string or fragment, and make sure the instance is reachable from the public internet
 
 ## Collected Fields
 
@@ -54,8 +54,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **SigNoz**, click **API Key**, paste the key, enter your **Base URL** (the address of the instance the key was created on), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **SigNoz** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, enter your **Base URL** (the address of the instance the key was created on), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **SigNoz**, and click **Add**.
 
 </Steps>
 

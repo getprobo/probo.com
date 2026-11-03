@@ -82,7 +82,7 @@ The practical point for integrators: switching Track 2 to always `"on_reject"` d
 
 ## Wire consent → identify → flags
 
-Minimum pattern, aligned with <a href="https://github.com/getprobo/probo/blob/main/examples/cookie-banner-react/src/lib/posthog.ts" target="_blank" rel="noopener noreferrer"><code>examples/cookie-banner-react/src/lib/posthog.ts</code></a>:
+Minimum pattern, aligned with <a href="https://github.com/getprobo/probo/blob/main/examples/cookie-banner/shared/src/posthog.ts" target="_blank" rel="noopener noreferrer"><code>examples/cookie-banner/shared/src/posthog.ts</code></a>:
 
 ```ts
 import posthog from "posthog-js";
@@ -163,13 +163,13 @@ Targeting a distinct ID is only needed when you want the feature limited to that
 The React example ships the full loop — status panel, consent-gated flag, and a "Beta panel" that only renders when the flag is enabled:
 
 - <a
-    href="https://github.com/getprobo/probo/tree/main/examples/cookie-banner-react"
+    href="https://github.com/getprobo/probo/tree/main/examples/cookie-banner"
     target="_blank"
     rel="noopener noreferrer"
   >
-    <code>getprobo/probo/examples/cookie-banner-react</code>
+    <code>getprobo/probo/examples/cookie-banner</code>
   </a>
-- Wiring: <a href="https://github.com/getprobo/probo/blob/main/examples/cookie-banner-react/src/lib/posthog.ts" target="_blank" rel="noopener noreferrer"><code>src/lib/posthog.ts</code></a>
+- Wiring: <a href="https://github.com/getprobo/probo/blob/main/examples/cookie-banner/shared/src/posthog.ts" target="_blank" rel="noopener noreferrer"><code>shared/src/posthog.ts</code></a>
 - Env: `PUBLIC_POSTHOG_FEATURE_FLAG`, `PUBLIC_POSTHOG_DEMO_DISTINCT_ID` (see `.env.example`)
 
 Point it at your banner and PostHog project, accept analytics on the Themed Banner tab, and watch the flag rows flip.

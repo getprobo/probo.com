@@ -271,15 +271,13 @@ const faqSchema = {
   })),
 };
 
-const softwareApplicationSchema = {
+const serviceSchema = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  "@type": "Service",
   name: "Probo Employee Portal",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
   description: pageDescription,
   url: "https://www.probo.com/products/employee-portal",
-  publisher: {
+  provider: {
     "@type": "Organization",
     name: "Probo",
     url: "https://www.probo.com",
@@ -296,10 +294,7 @@ const softwareApplicationSchema = {
   ogImageAlt="Acme Employee Portal home with signatures, approvals, devices, and Slack"
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(softwareApplicationSchema)}
-  />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   <main class="-mt-16 overflow-hidden pt-16">
     <div class="product-hero relative isolate">
       <div

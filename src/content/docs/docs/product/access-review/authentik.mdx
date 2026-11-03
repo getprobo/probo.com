@@ -14,7 +14,7 @@ Use an authentik **Token** whose **Intent** is set to **API Token**, created und
 - Probo organization administrator access
 - An authentik administrator to create the token. Copying a token value out of authentik requires the **View token's key** permission, which super-users hold
 - A user for the token to belong to, with read access to the data Probo collects. authentik grants permissions through roles and groups, and a service account can be added to either. The permissions are **Can view User** for the account list, **Can view TOTP Device**, **Can view WebAuthn Device**, **Can view Duo Device** and **Can view SMS Device** for the MFA state, and **Can view Brand** for the source name. Only **Can view User** is mandatory. The token usually belongs to a dedicated service account, but any authentik user works
-- The **Base URL** of the authentik instance Probo should review. The Connect dialog asks for it alongside the token. It is the root URL you sign in to, for example `https://authentik.example.com`. Include the subpath when authentik is served from one
+- The **Base URL** of the authentik instance Probo should review. The Probo connect form asks for it alongside the token. It is the root URL you sign in to, for example `https://authentik.example.com`. Include the subpath when authentik is served from one
 
 ## Collected Fields
 
@@ -50,8 +50,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **authentik**, click **API Key**, paste the token, enter your **Base URL** (the root URL of that same authentik instance), and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **authentik** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, enter your **Base URL** (the root URL of that same authentik instance), and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **authentik**, and click **Add**.
 
 </Steps>
 
@@ -60,9 +62,9 @@ Probo names the source after the branding title of your authentik brand, preferr
 ## Troubleshooting
 
 - **Token rejected.** Confirm the value is a token whose **Intent** is **API Token**. The app password returned when a service account is created is a different credential and authentik does not accept it on the API. The Intent recorded in authentik is what tells the two credentials apart. Open **Directory** > **Tokens and App passwords** and check the intent recorded on the token, then create a new one if it is wrong.
-- **Token worked before and stopped working.** authentik rotates an expiring API token when it expires, and the new value differs from the one stored in Probo. Create a non-expiring token, or update the source after each rotation.
+- **Token worked before and stopped working.** authentik rotates an expiring API token when it expires, and the new value differs from the one stored in Probo. Create a non-expiring token, then click **Update API key** (the key icon) on the authentik connector in **Settings** > **Connectors**, paste the new token, and click **Save API key**. The connector keeps its name and its source.
 - **The connection succeeds but the sync fails on permissions.** Probo checks the credential against an endpoint that answers for any authenticated token. A token can therefore connect and still fail to read the account list. Reading that list requires **Can view User**. Assign the permission through a role or a group and connect again.
 - **Some users are missing.** Without the global **Can view User** permission, authentik returns only the users the token holds an object permission on. Assign the permission globally so the whole directory is reviewed.
 - **MFA shows as unknown for everyone.** One of the device endpoints answered 403 or 404, either because the token lacks the matching view permission or because the stage is not installed on the instance. Add **Can view TOTP Device**, **Can view WebAuthn Device**, **Can view Duo Device** and **Can view SMS Device** to the role. A user that already has a readable device is still reported as enabled, and a service account holding no device stays unknown even when all four endpoints are readable.
-- **The source has no name.** Probo reads the brands endpoint to name the source, and that endpoint needs **Can view Brand**. Without the permission, Probo still collects the users but leaves the source unnamed.
+- **The source is named after the instance URL.** Probo reads the brands endpoint to name the source, and that endpoint needs **Can view Brand**. Without the permission, Probo still collects the users but keeps the **Base URL** as the source name.
 - **Base URL rejected.** It must be an `http` or `https` URL with a host, for example `https://authentik.example.com`. Probo calls the instance from its own servers, so it cannot reach an authentik that is only available on a private network.

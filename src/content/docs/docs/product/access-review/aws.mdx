@@ -74,29 +74,30 @@ The connect page prefills the issuer, the audience (`sts.amazonaws.com`), the su
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Amazon Web Services** and click **Workload Identity**.
-3. On the **Connect AWS** page, choose an install method:
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Amazon Web Services** and open it. AWS connects only through workload identity, so the **Connect Amazon Web Services** page opens directly.
+3. Choose an install method at the top of the page:
    - **Install via CloudFormation** opens the AWS console with the issuer, subject, and role name already filled in. Create the stack in the account you want to review. Leave **Deploy to the whole organization** set to **No**, unless you also want the role in your member accounts for later.
    - **Install via Terraform** copies a module snippet for `getprobo/audit-role/aws`. Paste the issuer URL into it rather than retyping it.
 4. When the stack or the apply finishes, copy the `RoleARN` output.
 
 </Steps>
 
-You can also create the role yourself. Use the issuer, audience, and subject shown on the connect page. The trust policy must allow `sts:AssumeRoleWithWebIdentity` and pin both `aud` and `sub` with `StringEquals`.
+You can also create the role yourself. Use the **Issuer**, **Audience**, and **Subject** shown on the connect page. The trust policy must allow `sts:AssumeRoleWithWebIdentity` and pin both `aud` and `sub` with `StringEquals`.
 
-CloudFormation can deploy the same role to every member account. Probo still reviews only the account whose Role ARN you connect. To review another account, connect another source.
+CloudFormation can deploy the same role to every member account. Probo still reviews only the account whose Role ARN you connect. To review another account, connect it in **Settings** > **Connectors** with its own Role ARN and add it as another source.
 
 ## Step 2: Connect in Probo
 
 <Steps>
 
-1. Stay on the **Connect AWS** page. You can also reopen it from **Access Review** > **Connections** > **Amazon Web Services** > **Workload Identity**.
-2. Paste the **Role ARN** (for example `arn:aws:iam::123456789012:role/ProboAudit`) and click **Connect**.
+1. Stay on the **Connect Amazon Web Services** page. You can also reopen it from **Settings** > **Connectors** > **Add more** > **Amazon Web Services**.
+2. Enter a **Name** for the connection (for example `production`), paste the **Role ARN** (for example `arn:aws:iam::123456789012:role/ProboAudit`), and click **Connect**.
+3. Go to **Access Review** > **Sources**, click **Add sources**, tick **Amazon Web Services**, and click **Add**.
 
 </Steps>
 
-Probo first names the source with the 12-digit account ID, for example `Amazon Web Services / 123456789012`. A background worker then replaces that ID with the account name, or with the IAM sign-in alias when AWS returns no name.
+Probo names the source after the AWS account. It first shows the 12-digit account ID, for example `123456789012`. A background worker then replaces that ID with the account name, or with the IAM sign-in alias when AWS returns no name.
 
 ## Troubleshooting
 

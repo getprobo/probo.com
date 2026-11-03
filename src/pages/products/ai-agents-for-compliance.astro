@@ -13,7 +13,7 @@ import aiClients from "../../data/ai-clients.json";
 
 const pageTitle = "AI Agents for Compliance";
 const pageDescription =
-  "Connect Claude, Cursor, ChatGPT or any MCP client to your live Probo data. Ask what is failing, update the risk register, prepare the audit. Every agent stays inside the permissions of the person who connected it.";
+  "Connect Claude, Cursor, ChatGPT or any MCP client to live Probo data. Ask what is failing, update risks, prepare the audit, within each user's permissions.";
 
 const overviewFeatures = [
   {
@@ -247,15 +247,13 @@ const faqSchema = {
   })),
 };
 
-const softwareApplicationSchema = {
+const serviceSchema = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  "@type": "Service",
   name: "Probo AI Agents",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
   description: pageDescription,
   url: "https://www.probo.com/products/ai-agents-for-compliance",
-  publisher: {
+  provider: {
     "@type": "Organization",
     name: "Probo",
     url: "https://www.probo.com",
@@ -265,10 +263,7 @@ const softwareApplicationSchema = {
 
 <Layout title={pageTitle} description={pageDescription}>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(softwareApplicationSchema)}
-  />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   <main class="-mt-16 overflow-hidden pt-16">
     <div class="product-hero relative isolate">
       <div

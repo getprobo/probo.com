@@ -1,0 +1,79 @@
+---
+title: Front
+description: Connect Front as an access review source using OAuth or an API token so Probo can list your Front company's teammates and their admin status.
+---
+
+Probo reads your Front company's teammates through the Front Core API so you can review who has access. Connecting with **OAuth** is the recommended method and avoids creating and copying a token. A company API token is also available if you would rather not authorize an OAuth connection.
+
+:::caution
+The credential must be able to read **Teammates**. For an API token, select the **Access resources** feature and the **Global resources** namespace, then give **Teammates** the **Read** permission. Front creates a token with no resource permissions by default. That token still authenticates, but Front refuses its requests to the teammates endpoint.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- Front company administrator access, which is what Front requires to authorize an OAuth app or create an API token
+
+## Collected Fields
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+| Probo field | Front field                                              | Notes                                                                                                   |
+| ----------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Name        | `first_name`, `last_name`                                | Joined into one display name. Falls back to `username` when both are empty, as on a pending invitation |
+| Email       | `email`                                                  |                                                                                                         |
+| Role        | `is_admin`                                               | Displayed as `Admin` or `Teammate`                                                                      |
+| Admin       | `is_admin`                                               | Flagged as administrator when `is_admin` is true                                                        |
+| Status      | `is_blocked`                                             | Front leaves blocked teammates out of the list, so every listed teammate is reported as active          |
+| MFA         | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                         |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                         |
+| External ID | `id`                                                     | The teammate's Front ID; stable identifier used to track the account across reviews                     |
+| Created at  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                         |
+
+Front lists a teammate as soon as they are invited, before they accept. A pending invitation therefore appears in your campaign as an active teammate, named after its Front username.
+
+If Front lists an automation as a teammate (a `type` of `rule`, `macro`, `integration`, `application`, `api`, `ai`, `csat`, `smart_csat`, or `bulk_reply` rather than `user`), Probo reports it as a service account.
+
+## Connect Front
+
+### Option A: Connect with Front (recommended)
+
+<Steps>
+
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Front** and open it. If Probo asks how to connect, choose **OAuth**.
+3. Enter a **Name** for the connection (e.g. `main`) and click **Connect**.
+4. Sign in to Front as a company administrator and click **Authorize**.
+5. Go to **Access Review** > **Sources**, click **Add sources**, tick **Front**, and click **Add**.
+
+</Steps>
+
+### Option B: API Token
+
+![Front API token resource permissions with Read ticked on the Teammates row](/docs/access-review/front-create-api-key.webp)
+
+<Steps>
+
+1. In Front, open **Settings**, switch to the **Company** settings, go to **Developers**, and open the **API tokens** tab.
+2. Click **Create API token** and, under **Token details**, name it (e.g. `Probo Access Review`).
+3. Under **Feature access**, tick **Access resources**.
+4. Under **Namespace access**, tick **Global resources**.
+5. Under **Resource permissions**, tick **Read** on the **Teammates** row. Leave every other permission unticked.
+6. Click **Create**, then copy the token from the **Copy your API token** dialog. Front shows the token only once.
+7. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+8. Find **Front** and open it. If Probo asks how to connect, choose **API key**.
+9. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, and click **Connect**.
+10. Go to **Access Review** > **Sources**, click **Add sources**, tick **Front**, and click **Add**.
+
+</Steps>
+
+Probo names the source after your Front company and pulls its teammates into your campaigns.
+
+## Troubleshooting
+
+- **An API token connection shows Disconnected.** Front rejected the token: it was deleted or copied incompletely. Front does not show an existing token again, so create a new one.
+- **An API token connection shows Not authorized.** Front accepted the token but refused the teammates endpoint, because the token has no **Read** permission on **Teammates**. Create a token with the **Global resources** namespace and **Teammates** set to **Read**.
+- **Replacing an API token.** Delete the source in **Access Review** > **Sources**, disconnect the connector in **Settings** > **Connectors**, and connect again with the new token.
+- **An OAuth connection asks to reconnect.** Front OAuth authorizations expire after six months unless renewed, and an administrator can revoke one earlier. Click **Reconnect** on the connector in **Settings** > **Connectors** and authorize again.
+- **A teammate who never joined appears.** Front lists invited teammates before they accept. Withdraw the invitation in Front if the person should not have access; the next campaign picks up the change, and a campaign already under review keeps the entries it snapshotted.
+- **A blocked teammate is missing.** Front omits blocked teammates from its teammate list, and a blocked teammate cannot sign in.

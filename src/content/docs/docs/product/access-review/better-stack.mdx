@@ -13,7 +13,7 @@ Create a **Global API token** in **Better Stack** > **API tokens** and enter the
 
 - Probo organization administrator access
 - The **Admin** role in Better Stack. Only Admins can edit API tokens, and a Team lead can only view them
-- The **Team Name** of the team Probo should review, which the Connect dialog asks for alongside the token. Better Stack lists your teams at **Settings** > **Teams**. Enter the name exactly as Better Stack spells it, including capitalization
+- The **Team Name** of the team Probo should review, which the Better Stack connect form asks for alongside the token. Better Stack lists your teams at **Settings** > **Teams**. Enter the name exactly as Better Stack spells it, including capitalization
 
 ## Collected Fields
 
@@ -49,12 +49,14 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Better Stack**, click **API Key**, paste the token, enter your **Team Name**, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Better Stack** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, enter your **Team Name**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Better Stack**, and click **Add**.
 
 </Steps>
 
-When you click **Connect**, Probo uses the token to request that team's members from Better Stack. If Better Stack has no team by that name for the token, the dialog shows an error under **Team Name** and Probo does not save the connection. After you connect, Probo names the source after the team name you entered and pulls that team's members into your campaigns.
+When you click **Connect**, Probo uses the token to request that team's members from Better Stack. If Better Stack has no team by that name for the token, Probo shows a **Could not connect** error and does not save the connection. After you add the source, Probo names the source after the team name you entered and pulls that team's members into your campaigns.
 
 With a team-based **Uptime API token**, Better Stack ignores the team name and lists the token's own team, so enter that team's name to keep the source label accurate.
 

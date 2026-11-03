@@ -13,7 +13,7 @@ Create an **organization API key** from the organization's **Settings** > **API 
 
 - Probo organization administrator access
 - The **Admin** role in the Neon organization (only organization admins can create an organization API key)
-- The **Organization ID**, which the Connect dialog asks for alongside the key. Neon shows it on the organization's **Settings** page, under **General information**, in the form `org-example-12345678`
+- The **Organization ID**, which the connect form asks for alongside the key. Neon shows it on the organization's **Settings** page, under **General information**, in the form `org-example-12345678`
 
 ## Collected Fields
 
@@ -47,8 +47,10 @@ import { Steps, Badge } from "@astrojs/starlight/components";
 
 <Steps>
 
-1. In Probo, go to **Access Review** > **Connections**.
-2. Find **Neon**, click **API Key**, paste the key, enter your **Organization ID**, and click **Connect**.
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Neon** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the key into **API key**, enter your **Organization ID**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Neon**, and click **Add**.
 
 </Steps>
 

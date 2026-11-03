@@ -1,120 +1,140 @@
 ---
 category: Compliance
-title: "SOC 2 Compliance Cost in 2026 for Startups."
-date: 2026-01-19
-excerpt: "SOC 2 costs $25k–$80k for most startups in 2026. Here's exactly what you're paying for — audit, tooling, implementation — and where to cut."
+showCover: true
+title: "SOC 2 cost in 2026: what a startup actually pays"
+date: 2026-11-02
+excerpt: "SOC 2 has three costs: the audit, the platform, and the people doing the work. Real 2026 numbers by company size, what moves them, where founders overpay."
 author:
   name: "Antoine Bouchardy"
-ogImage: "/blog/What_is_soc2_cost.png"
-coverImage: "/blog/covers-phosphor/scales-2x.webp"
-coverImageAlt: "Balance scales on a cream and fluorescent yellow background."
+ogImage: "/blog/soc2-cost/cover.jpg"
+coverImage: "/blog/soc2-cost/cover-v2-2x.webp"
+coverImageAlt: "Coins icon on a cream and fluorescent yellow background."
+faqs:
+  - question: "How much does SOC 2 cost for a startup in 2026?"
+    answer: "Budget about $15,000 for year one if you are under 15 people: roughly $4,000 for the platform, $6,000 for the people doing the work, and $5,000 for a Type 2 audit. Between 15 and 30 people, expect $20,000 to $22,000. Above 30 people the quote is scoped to your headcount and infrastructure. Doing it yourself with a tool looks cheaper on paper until you count 40 to 100 hours of founder or engineer time."
+  - question: "Is the audit included in the price of a compliance platform?"
+    answer: "Almost never. Vanta, Drata, Secureframe and most other platforms sell the software, and you pay a CPA firm separately for the audit. Probo also keeps the audit separate: you pay the auditor at cost and we take no margin on it. Whatever vendor you talk to, ask for all three numbers (audit, platform, people) before you compare."
+  - question: "Should I pay for a SOC 2 Type 1 before the Type 2?"
+    answer: "Usually not. The checklist is the same. Type 2 adds a three-month observation period, and doing both only adds about $1,500 at the auditor. Only three of our customers ever needed a Type 1, each because a deal was closing within six weeks. Go straight to Type 2 and show the auditor's engagement letter while you wait."
+  - question: "Does SOC 2 get cheaper in year two?"
+    answer: "The audit comes back every year, because a Type 2 report covers a period and expires. Expect the same audit fee and the same platform fee unless your company doubles in size. If you want to run the program yourself in year two, keep the platform alone at about $4,000 a year, or self-host the open-source version and export your data."
+  - question: "Why is a $1,000 or $2,000 SOC 2 audit a red flag?"
+    answer: "A SOC 2 report is worth the auditor who signs it. At that price the firm cannot spend the days a real examination takes. Before you pay, ask who signs the report, ask for the firm's AICPA peer review letter and verify it on the AICPA site, and ask how many audit days are planned. A buyer's security team will run the same checks on your report."
+  - question: "Do I need a penetration test to get SOC 2?"
+    answer: "No. SOC 2 does not require a penetration test, and most auditors do not ask for one at startup size. If your customers or your sector expect one, an automated pentest costs about $1,000 to $2,000 and a manual one about $5,000 to $6,000. Budget it as a separate line, not as part of SOC 2."
 ---
 
-![SOC 2 compliance cost illustration](/blog/SOC2-cost-illustration.jpg)
+A customer asked for your SOC 2 report. You searched for the price and got the two answers everyone gets: "it depends" and a contact-sales button.
 
-SOC 2 has become a must-have for many businesses. Whether or not you agree with it, you'll probably need it. But it doesn't have to be painful or absurdly expensive.
+Here is the version we give founders on a 15-minute call, with the numbers.
 
-You've probably searched "SOC 2 compliance cost" a dozen times already. And every time, you've gotten the same frustrating answer: "It depends."
+SOC 2 is not one cost. It is three: the audit, the platform, and the people doing the work. Vendors quote one of the three and let you discover the others later. Once you see all three next to each other, the price stops being mysterious.
 
-Here's the truth that most vendors won't tell you upfront: SOC 2 pricing is deliberately opaque. Auditors quote ranges so wide they're almost meaningless. Compliance platforms bury their real costs behind "contact sales" buttons. And consultants? They benefit from your confusion. The less you know, the more they can charge.
+## Key takeaways
 
-Before we dive into specific numbers, understand this: [SOC 2](/blog/2025-10-28-what-is-soc2) cost isn't a single line item. It's a combination of audit fees, internal resources, tooling, and ongoing maintenance. For **most startups in 2026**, year one usually falls in the **$25,000–$80,000** range, depending on scope and how much you outsource. Larger or more complex organizations can still go well beyond that.
+- **Three numbers, not one.** Audit, platform, people. Ask any vendor for all three before you compare anything.
+- **A startup under 15 people pays about $15,000 in year one.** Roughly $4,000 for the platform, $6,000 for the people, $5,000 for a Type 2 audit. Between 15 and 30 people, budget $20,000 to $22,000.
+- **The expensive part is your time, not the invoice.** Doing it yourself with a tool means 40 to 100 hours of founder or engineer time. Done for you, it is 5 to 10 hours.
+- **A $2,000 audit is a red flag, not a bargain.** A SOC 2 report is worth the auditor who signs it.
 
-Here's what you actually need to budget for and where you can avoid unnecessary spending.
+## SOC 2 has three costs, not one
 
-## **What the SOC 2 process looks like**
+People search for "SOC 2 certification cost". SOC 2 is not a certification, it is an attestation report written by a licensed CPA firm after examining your controls (here is [what SOC 2 actually is](/blog/2025-10-28-what-is-soc2)). That detail matters for the price, because it means three different parties get paid.
 
-1. Compare the SOC 2 framework to what you're already doing.
-2. Implement what's missing. This could mean adding security measures (e.g., 2FA), policies (e.g., [third-party management](/docs/product/third-party-management)), or processes (e.g., [access reviews](/products/access-review)).
-3. Hire a third-party auditor to assess your compliance.
+**1. The audit.** A CPA firm examines your controls and signs a report. For a Type 2, they observe you over a period of at least three months. This is the only cost that is strictly required.
 
-Sounds simple. But costs can stack up fast.
+**2. The platform.** Somewhere to keep policies, risks, vendors, evidence and the auditor's requests. It can be a compliance platform, a spreadsheet, or an open-source tool you host yourself.
 
-## **How much the audit costs**
+**3. The people.** Someone has to write the policies for your company, run the risk analysis, review your vendors, collect the evidence, and answer the auditor. This is where most of the money goes, and it is the number most vendors leave out of their pricing page because it is your time.
 
-The SOC 2 audit is your official proof of compliance. Costs depend on the scope:
+![SOC 2 cost breakdown: $4K platform plus $6K people plus $5K audit, about $15K in year one](/blog/soc2-cost/cost-breakdown-2x.webp)
 
-- **Type 1 Audit** – A one-time snapshot of your security controls. Faster, cheaper. (The starting point for companies facing their first enterprise deal with a compliance requirement.)
-- **Type 2 Audit** – Assesses your security over a period (3-12 months). Takes longer, costs more. See our guide on [how long SOC 2 actually takes](/blog/2025-10-09-how-long-for-soc2) for a detailed timeline.
+## What a startup pays in 2026
 
-**Budget:** For a small business, $6,000–$7,000 is a reasonable budget.
+These are the figures we quote on calls, rounded. Platform and people are yearly fees, shown as platform + people. The audit line is what the US peer-reviewed CPA firm most of our customers use charges for a Type 2; we pass it through at cost.
 
-But costs can rise significantly for larger organizations, sometimes exceeding $100,000. This wide range exists because a 10-person startup with a simple AWS setup will pay far less than a 200-person company with multiple data centers, complex integrations, and extensive vendor relationships.
+| Size            | Platform + people                | Type 2 audit  | Year one             |
+| --------------- | -------------------------------- | ------------- | -------------------- |
+| Under 15 people | about $4K + $6K                  | about $5K     | **about $15K**       |
+| 15 to 30        | $5K to 6K + about $8K            | $6.5K to 7.5K | **$20K to 22K**      |
+| 30 to 80        | $6K to 8K + $15K to 25K (scoped) | $9K to 15K    | **$30K to 50K**      |
+| 80 and up       | scoped, service in days          | $9K and up    | **written proposal** |
 
-Auditor fees vary based on several factors:
+Two notes on the table.
 
-- **Company size:** More employees means more access reviews, more endpoints, more complexity
-- **Infrastructure complexity:** Multi-cloud environments, on-premise systems, and custom applications increase audit scope
-- **Trust Services Criteria selected**
-- **Auditor reputation**
+Above about 50 people, nobody should quote you a flat number on a first call. The honest answer is a scoped proposal within 48 hours, after someone has asked about your entities, your infrastructure and your procurement process.
 
-Be careful with audit price that seem too good to be true. There's a good chance the firm isn't legitimate. When selling to enterprise customers, they will verify your auditor's credibility. If it doesn't check out, you'll have wasted both time and money.
+The "people" column is the one that changes most between vendors. With a pure software platform it is zero on the invoice and 40 to 100 hours on your calendar. With a consultancy it is a day rate. With us it is a compliance officer who does the work for the price above.
 
-## **The hidden cost of implementation**
+## What moves the audit price
 
-The audit fee is just the visible part of your SOC 2 investment. The hidden costs often exceed the audit itself, yet they're rarely discussed in vendor marketing materials.
+The audit is the part founders worry about most and understand least. Five things move it.
 
-Before the audit, you need to put policies, controls, and security measures in place.
+**Headcount.** More people means more access reviews, more laptops, more onboarding and offboarding evidence. A 10-person team and a 100-person team are not the same examination.
 
-- **Readiness assessment**
-- **Policy creation/updates**
-- **Control implementation**
-- **Evidence collection**
-- **Auditor communication**
-- **Remediation**
+**Infrastructure.** One cloud account with managed services is cheap to audit. Multi-cloud, on-premise servers or a data centre in scope is not.
 
-That takes time, effort, and someone to own it.
+**Trust Services Criteria.** Security is mandatory. Adding Availability, Confidentiality, Processing Integrity or Privacy adds controls and days. Most startups only need Security, sometimes Confidentiality. Add criteria because a customer asked, not because the list looked short.
 
-Who's doing the work?
+**Type 1 plus Type 2, or Type 2 only.** The checklist is identical. Doing both adds about $1,500 at the auditor. Only three of our customers ever needed a Type 1, each because a deal was closing within six weeks. Everyone else [went straight to Type 2](/hub/soc2-type1-vs-type2) and showed the auditor's engagement letter while the observation period ran. Here is [how to talk about SOC 2 in progress](/blog/2026-09-17-how-to-announce-soc-2-in-progress) without overclaiming.
 
-- **Your team:** Expect at least 6 months of effort, often a full-time job. Plus, this is time your engineers aren't building product.
-- **A consultant:** That'll run you $50,000+ (and you'll still have to do a ton of work).
-- **An automation platform:** Brings costs down to $10,000 but still requires oversight.
+**The firm's brand.** A-LIGN, Coalfire or Schellman charge $15,000 to $30,000 for the same report at startup size. Pay that only when a specific customer insists on a specific firm. Most buyers check that the auditor is a licensed, peer-reviewed CPA firm. They do not check the logo.
 
-**Budget:** For small businesses, less than $3,000 should go toward content, the real cost is in execution.
+### The cheap audit problem
 
-**Budget-friendly option:** Open-source tools like Probo or Comply (from StrongDM) let you access knowledge for free and cut costs.
+You will find SOC 2 audits advertised at $1,000 or $2,000, sometimes bundled into a platform subscription. A real Type 2 examination takes days of a CPA's time. At that price something is missing, and your customer's security team will find it when they [read the report](/hub/evaluate-soc2-report-quality).
 
-## **What's worth paying for**
+Three checks take 20 minutes:
 
-Not everything the compliance industry pushes is necessary.
+1. Ask who signs the report. A named CPA firm, not the platform vendor.
+2. Ask for the firm's AICPA peer review letter and look the firm up in the AICPA peer review register.
+3. Ask how many audit days are planned. If the answer is vague, so is the audit.
 
-### **Penetration testing**
+## Doing it yourself with a tool versus done for you
 
-[SOC 2 doesn't require penetration testing](/blog/2025-10-19-do-you-need-pen-test-for-soc2). For early-stage startups, it might not even be useful—your product is still evolving, and security testing makes more sense once it stabilizes.
+Here is the comparison nobody puts on a pricing page.
 
-If you do go for it, manual testing is worth it.
+|                           | Tool, you do the work                                | Officer plus platform (Probo)                |
+| ------------------------- | ---------------------------------------------------- | -------------------------------------------- |
+| Software                  | $3,000 to $20,000 a year, often priced per framework | about $4,000 a year, all frameworks          |
+| Who writes the policies   | you, from templates                                  | written for your company                     |
+| Who talks to the auditor  | you                                                  | the compliance officer, with you in the room |
+| Your time                 | 40 to 100 hours over the project                     | 5 to 10 hours, in 30-minute calls            |
+| Audit                     | separate, you find the firm                          | separate, at cost, firm already vetted       |
+| Year one, under 15 people | tool plus audit, plus the hours                      | about $15,000                                |
 
-**Budget:** A proper penetration test starts at $5,000.
+The tool column is where founders overpay without noticing. Sixty hours of a CTO's time is a real cost even if it never shows up on an invoice. Several companies came to us after one or two years on a platform without ever booking an auditor: the subscription was paid, the checklist was green, the report did not exist. If you are weighing platforms, we compared the main ones in [Vanta alternatives in 2026](/hub/vanta-alternatives-2026).
 
-### **Security training**
+That said, if you have a technical co-founder with time, a simple AWS setup and a customer who will wait, the do-it-yourself route works. The templates are the easy part; the open-source version of Probo is free to self-host and comes with them. You are paying a service for the person who knows what the auditor will ask, and who chases it before they do.
 
-Security training for employees is a good investment, but don't overpay. Plenty of **free resources exist**, and some vendors offer free tiers for startups.
+## What is not worth paying for yet
 
-**Budget:** $100/month is more than enough.
+**A penetration test.** [SOC 2 does not require one](/blog/2025-10-19-do-you-need-pen-test-for-soc2). If your sector expects it, an automated pentest costs $1,000 to $2,000 and a manual one $5,000 to $6,000. Keep it as its own line.
 
-## **Keeping SOC 2 costs low every year**
+**Two frameworks at once.** If a prospect says "SOC 2 and ISO 27001", ask which one they accept. Under 200 people almost nobody runs both. The work overlaps by 70% to 90%; the second audit does not overlap at all. Pick one ([here is how](/blog/2025-10-08-soc2-or-iso27001)) and add the other as a $5,000 to $6,000 service add-on later if a contract forces it.
 
-SOC 2 isn't a one-time achievement—it's an ongoing commitment. Your report expires, and customers expect continuous compliance.
+**A Type 1.** See above. Unless a deal closes in the next six weeks, skip it.
 
-**Annual renewal costs include:**
+**Expensive training.** Security awareness training is required. A hundred dollars a month covers a startup; free options exist.
 
-- **Annual audit fees:** 70-90% of initial audit cost
-- **Platform subscriptions:** Ongoing monthly/annual fees
-- **Continuous monitoring:** Staff time reviewing alerts, maintaining evidence
-- **Control updates:** Adapting to new threats, technologies, and business changes
-- **Policy reviews:** Annual updates to reflect organizational changes
+**A trust page product.** Buyers want to see that you hold a report and request it under NDA. That is a [compliance portal](/products/compliance-portal) fed by your live compliance data, not a separate $5,000 subscription.
 
-Once you get your SOC 2 report, you'll need to maintain compliance annually. But that doesn't mean bloated processes or expensive tools.
+## Year two and after
 
-Example: Instead of a complex ticketing system for access management, a simple Slack channel with timestamped approvals works just fine.
+A Type 2 report covers a period, so it expires. The audit comes back every year at roughly the same fee. The platform fee stays the same unless you double in size.
 
-**Budget:** No need to scale expenses unnecessarily, stick to the same costs as your first year.
+What changes is the work. Year two is quarterly access reviews, policy reviews, vendor re-assessments, security questionnaires from new customers, and a shorter audit. If you want to take that in-house, two options cost less than the full service: keep the platform alone at about $4,000 a year, or self-host the open-source version and export everything.
 
-## **The bottom line**
+## Pay after the revenue
 
-SOC 2 compliance doesn't need to cost six figures. With a lean approach, small businesses can stay compliant for around $10,000 per year, without wasting time or money on unnecessary complexity, so they can focus on what truly matters: building their business.
+The best answer to "can we afford this now?" is to not pay before the deal that justifies it.
 
-## **SOC 2 with Probo**
+If a customer's contract depends on SOC 2, write the commitment into that contract: certified within four months. Sign with your compliance provider the day the customer signs with you. The auditor is booked within a week, the observation period starts, and the "SOC 2 in progress" sentence on your security page is true. The $15,000 lands after the revenue it unlocks.
 
-If you want a SOC 2 report **without turning compliance into a second full-time job**, [Probo](https://www.probo.com/) is a great fit. You get a [hands-off compliance service](/blog/2025-10-17-what-is-hands-off-compliance) (so your team isn't stuck writing policies, chasing evidence, and managing auditors) paired with an **open-source platform** that keeps everything structured, auditable, and easy to maintain year after year.
+And if nobody has asked yet, do not start. Keep your policies and a security page in order, and send the first request you get to someone who can quote the three numbers the same day.
+
+## The bottom line
+
+For a startup under 15 people, SOC 2 costs about $15,000 in year one and 5 to 10 hours of your time, with a report three to four months after you start. Anything much cheaper is missing one of the three parts. Anything much more expensive is paying for a brand or for a consultancy's day rate.
+
+If you want the three numbers for your company in one sentence, [book a 15-minute call](/contact). We ask about headcount and infrastructure first, then tell you the price on the call, not in a follow-up email.
