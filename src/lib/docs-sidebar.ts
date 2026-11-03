@@ -64,12 +64,10 @@ const accessReviewConnectorItems = [
 
 export const docsSidebarGroups = [
   {
-    id: "overview",
-    sectionId: "overview",
-    label: "Overview",
-    showHeading: false,
+    id: "getting-started",
+    sectionId: "product",
+    label: "Get started",
     items: [
-      { label: "Documentation home", slug: "docs" },
       {
         label: "Getting started",
         slug: "docs/product/getting-started",

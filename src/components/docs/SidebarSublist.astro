@@ -1,0 +1,110 @@
+---
+import { Badge } from "@astrojs/starlight/components";
+import SidebarRestorePoint from "@astrojs/starlight/components/SidebarRestorePoint.astro";
+import Icon from "../Icon.astro";
+import { getDocsSidebarIcon } from "../../lib/docs-navigation";
+
+type Entry = (typeof Astro.locals.starlightRoute.sidebar)[number];
+interface Props {
+  sublist: Entry[];
+}
+const { sublist } = Astro.props;
+const hasCurrent = (entries: Entry[]): boolean =>
+  entries.some((entry) =>
+    entry.type === "link" ? entry.isCurrent : hasCurrent(entry.entries),
+  );
+---
+
+<ul>
+  {
+    sublist.map((entry) => (
+      <li>
+        {entry.type === "link" ? (
+          <a
+            {...entry.attrs}
+            href={entry.href}
+            aria-current={entry.isCurrent ? "page" : undefined}
+            class:list={["docs-sidebar-link", entry.attrs.class]}
+          >
+            <Icon
+              name={getDocsSidebarIcon(entry.label)}
+              size={16}
+              class="docs-nav-icon"
+            />
+            <span>{entry.label}</span>
+            {entry.badge && (
+              <Badge
+                variant={entry.badge.variant}
+                class={entry.badge.class}
+                text={entry.badge.text}
+              />
+            )}
+          </a>
+        ) : (
+          <details open={hasCurrent(entry.entries) || !entry.collapsed}>
+            <summary>
+              <span class="docs-sidebar-group-label">
+                <Icon
+                  name={getDocsSidebarIcon(entry.label)}
+                  size={16}
+                  class="docs-nav-icon"
+                />
+                <span>{entry.label}</span>
+                {entry.badge && (
+                  <Badge
+                    variant={entry.badge.variant}
+                    class={entry.badge.class}
+                    text={entry.badge.text}
+                  />
+                )}
+              </span>
+              <Icon name="caret-right" size={14} class="caret" />
+            </summary>
+            <SidebarRestorePoint />
+            <Astro.self sublist={entry.entries} />
+          </details>
+        )}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    overflow-wrap: anywhere;
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 2rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: 0.375rem;
+    color: var(--color-muted-foreground);
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover {
+    color: var(--color-primary);
+    background: var(--color-subtle);
+  }
+  summary .caret {
+    flex-shrink: 0;
+  }
+  details[open] > summary .caret {
+    transform: rotate(90deg);
+  }
+  .docs-sidebar-link > span,
+  .docs-sidebar-group-label > span {
+    min-width: 0;
+  }
+</style>
