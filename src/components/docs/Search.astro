@@ -1,5 +1,46 @@
 ---
 import Icon from "../Icon.astro";
+
+const quickLinks = [
+  {
+    section: "Get started",
+    links: [
+      {
+        label: "Core concepts",
+        href: "/docs/product/getting-started/core-concepts",
+      },
+      {
+        label: "Choose a deployment",
+        href: "/docs/product/getting-started/choose-deployment",
+      },
+    ],
+  },
+  {
+    section: "Product",
+    links: [
+      { label: "Access Review", href: "/docs/product/access-review/overview" },
+      { label: "Compliance Portal", href: "/docs/product/compliance-portal" },
+      { label: "Risk management", href: "/docs/product/risk-management" },
+    ],
+  },
+  {
+    section: "Deployment",
+    links: [
+      { label: "Probo Cloud", href: "/docs/deployment/cloud" },
+      { label: "Self-hosting", href: "/docs/deployment/self-hosting" },
+    ],
+  },
+  {
+    section: "Developers",
+    links: [
+      { label: "API", href: "/docs/developers/api-overview" },
+      { label: "CLI", href: "/docs/developers/cli/overview" },
+      { label: "MCP", href: "/docs/developers/api/mcp/overview" },
+    ],
+  },
+];
+
+const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
 ---
 
 <site-search class={Astro.props.class}>
@@ -41,6 +82,36 @@ import Icon from "../Icon.astro";
           Search for a feature, task, or error message.
         </p>
         <button type="button" data-search-retry hidden>Try again</button>
+      </div>
+      <div class="docs-search-empty" data-search-empty>
+        <div class="docs-search-empty-sections">
+          {
+            quickLinks.map(({ section, links }) => (
+              <section aria-label={section}>
+                <p class="docs-search-empty-heading">{section}</p>
+                <ul>
+                  {links.map(({ label, href }) => (
+                    <li>
+                      <a href={href}>{label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+        <div>
+          <p class="docs-search-empty-heading">Try searching for</p>
+          <div class="docs-search-empty-chips">
+            {
+              exampleQueries.map((query) => (
+                <button type="button" data-search-query={query}>
+                  {query}
+                </button>
+              ))
+            }
+          </div>
+        </div>
       </div>
       <ol id="docs-search-results" aria-label="Search results"></ol>
       <button type="button" data-search-more hidden>Show more results</button>
@@ -90,6 +161,7 @@ import Icon from "../Icon.astro";
     results!: HTMLOListElement;
     more!: HTMLButtonElement;
     retry!: HTMLButtonElement;
+    empty!: HTMLElement;
     engine: Promise<SearchEngine> | null = null;
     hits: SearchHit[] = [];
     shown = 0;
@@ -108,6 +180,7 @@ import Icon from "../Icon.astro";
       this.results = this.querySelector("ol")!;
       this.more = this.querySelector("[data-search-more]")!;
       this.retry = this.querySelector("[data-search-retry]")!;
+      this.empty = this.querySelector("[data-search-empty]")!;
       this.openBtn.disabled = false;
       if (/(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
         this.querySelector("[data-shortcut-modifier]")!.textContent = "⌘";
@@ -195,7 +268,12 @@ import Icon from "../Icon.astro";
     onDialogClick = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
-      if (target.closest("a[href]")) {
+      const example = target.closest<HTMLButtonElement>("[data-search-query]");
+      if (example) {
+        this.input.value = example.dataset.searchQuery ?? "";
+        this.onInput();
+        this.input.focus();
+      } else if (target.closest("a[href]")) {
         this.restoreFocus = false;
         this.closeModal();
       } else if (target === this.dialog) {
@@ -283,8 +361,13 @@ import Icon from "../Icon.astro";
     };
 
     onInput = () => {
+      this.empty.hidden = Boolean(this.input.value.trim());
       clearTimeout(this.timer);
       this.version++;
+      if (!this.input.value.trim()) {
+        void this.search();
+        return;
+      }
       this.timer = setTimeout(this.search, 180);
     };
 
@@ -614,6 +697,65 @@ import Icon from "../Icon.astro";
     background: var(--color-subtle);
     color: var(--color-primary);
     cursor: pointer;
+  }
+  .docs-search-empty {
+    display: grid;
+    gap: 1.25rem;
+    min-height: 0;
+    padding: 0.5rem 1rem 1.25rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    font-size: 0.8125rem;
+  }
+  .docs-search-empty[hidden] {
+    display: none;
+  }
+  .docs-search-empty-sections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  .docs-search-empty-heading {
+    margin: 0 0 0.375rem;
+    font-weight: 600;
+  }
+  .docs-search-empty ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .docs-search-empty a {
+    display: block;
+    padding-block: 0.375rem;
+    color: var(--color-muted-foreground);
+    text-decoration: none;
+  }
+  .docs-search-empty a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+  .docs-search-empty-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .docs-search-empty-chips button {
+    min-height: 2.25rem;
+    padding: 0.375rem 0.625rem;
+    border: 0;
+    border-radius: 0.375rem;
+    background: var(--color-subtle);
+    color: var(--color-muted-foreground);
+    font: inherit;
+    cursor: pointer;
+  }
+  .docs-search-empty-chips button:hover {
+    color: var(--color-primary);
+    background: var(--color-highlight);
+  }
+  .docs-search-empty :is(a, button):focus-visible {
+    outline: 2px solid var(--docs-focus);
+    outline-offset: 2px;
   }
   #docs-search-results {
     min-height: 0;

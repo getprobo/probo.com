@@ -155,11 +155,17 @@ export function getDocsBreadcrumbs(
   const section = getDocsSection(getDocsSectionForPath(path));
   const seen = new Set([path]);
   const parents = [
-    { label: "Documentation home", href: "/docs" },
-    { label: section.label, href: section.href },
+    { label: "Docs", href: "/docs" },
+    ...(section.id === "product"
+      ? []
+      : [{ label: section.label, href: section.href }]),
     ...(findCurrent(sidebar) ?? []),
   ].filter((crumb) => {
-    if (!crumb.href) return false;
+    if (
+      !crumb.href ||
+      /^(overview|developer overview|deployment overview)$/i.test(crumb.label)
+    )
+      return false;
     const href = normalizeDocsPath(crumb.href);
     if (seen.has(href)) return false;
     seen.add(href);
