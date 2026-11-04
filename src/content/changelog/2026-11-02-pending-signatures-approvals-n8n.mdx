@@ -1,0 +1,15 @@
+---
+title: "Pending signatures and approvals in n8n"
+description: "Two new n8n operations list who still has to sign or approve a document, which document it is, and how long the request has been waiting. Build reminder workflows without stitching documents and versions together."
+date: 2026-11-02
+images: ["/changelog/2026-11-02-pending-signatures-approvals-n8n-1.png"]
+tags: ["Documents"]
+---
+
+The [Probo n8n node](/docs/developers/api/n8n/resources/document) has two new document operations: Get Pending Signatures and Get Pending Approvals.
+
+Each item is one open request. It includes the person, with their email, the document, and how long the request has been waiting (`waitingSince`, `waitingDuration`, `waitingSeconds`). Before, you had to list documents, then versions, then signatures, and line them up yourself.
+
+The obvious use is a reminder. Every Monday, send a Slack message to everyone who has had a policy to sign for more than a week. We run that exact workflow at Probo.
+
+Heads up: in the same release, list operations return one n8n item per record instead of a single item holding an array. Workflows that read fields like `$json.documents` need to read each item directly.

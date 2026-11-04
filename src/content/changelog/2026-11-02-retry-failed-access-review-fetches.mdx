@@ -1,0 +1,13 @@
+---
+title: "Retry a failed access review source"
+description: "When a source fails to fetch its accounts, retry it from the campaign page instead of starting over. A campaign can no longer be completed while a source has failed."
+date: 2026-11-02
+images: ["/changelog/2026-11-02-retry-failed-access-review-fetches-1.png"]
+tags: ["Access Review"]
+---
+
+Sometimes a source fails to fetch its accounts. The vendor rate-limits the request, the API times out, or a key is missing a scope. Until now that source stayed failed, and the only fix was a new campaign.
+
+A failed source now has a Retry button on the [campaign](/docs/product/access-review/campaigns) page. The campaign goes back to in progress while the fetch runs, and decisions are paused until it finishes. Retry is also available from the API, MCP, `prb access-review campaign retry-fetch`, and n8n.
+
+A campaign can't be completed while any source has failed. Otherwise the record would say you reviewed accounts that were never fetched. If a source can't be fixed, cancel the campaign. Cancelling now also stops any fetch still running.
