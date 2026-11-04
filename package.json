@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "npm run check:assets",
+    "prebuild": "(git rev-parse --is-shallow-repository | grep -q true && git fetch --quiet --unshallow) || true; npm run check:assets",
     "build": "astro build",
     "check:docs": "node tools/check-docs.mjs",
     "docs:check-reference": "node tools/generate-reference.mjs --check",
