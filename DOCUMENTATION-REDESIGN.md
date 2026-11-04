@@ -1,72 +1,44 @@
-# Documentation Probo — refonte du 22 octobre 2026
+# Documentation interface
 
-Version locale de la documentation, basée sur `getprobo/probo.com`, branche `v2`, commit `0f61da075174072cc0f4d4d96d6eca5b4458f950`. Le site public n'a pas été modifié.
+The documentation uses the existing Probo brand and Geist typography, with a neutral reading palette and responsive navigation across Docs, Developers, and Deployment.
 
-## Ce qui change
+## Navigation and reading
 
-- Quatre entrées : **Get started**, **Use Probo**, **Developers**, **Deploy Probo**. Les URL existantes restent en place.
-- Navigation par groupes repliables, position courante visible, sommaire adapté à la largeur, menu mobile et navigation au clavier.
-- Style aligné sur le site : Geist, surfaces sobres, colonne de lecture limitée, liens explicites, tableaux et blocs de code lisibles, thèmes clair et sombre.
-- Accueils orientés vers les tâches. 23 articles existants revus ; deux guides ajoutés : premiers pas Cloud et premier risque. Les références techniques complètes sont conservées.
-- Recherche Pagefind : contexte de rubrique, priorité aux titres, états vide/erreur, pagination. La politique CSP permet le WebAssembly nécessaire uniquement dans les docs et leur worker de recherche ; l'évaluation JavaScript reste interdite.
-- Titres, descriptions, canonicals, JSON-LD, sitemap, Markdown et index LLM conservés. Les dates proviennent de l'historique Git complet, jamais de la date de compilation.
+- A single header links the Probo logo to the marketing site and the contextual space label to `/docs`. Search is centered, with theme and contact controls alongside it.
+- The left sidebar groups pages into collapsible sections. Only the current page has a persistent background. Every row has an icon; subsection icons are quieter than section icons, and the current icon is emphasized.
+- Expanded groups have a thin vertical guide aligned with the parent icon and a consistent 24 px indent at every depth. A darker segment on the nearest guide marks the current page in both themes.
+- Space links remain at the bottom of the sidebar. The global documentation home shows the entry paths without a contextual page list.
+- The table of contents follows the visible article sections, including headings inside tabs. Its marker moves for pointer interactions and updates immediately for keyboard navigation.
+- Articles change without a page fade. Menu, disclosure, search, and copy feedback preserve keyboard access and respect reduced motion.
+- Tables and code scroll locally when necessary. Code tabs sit 8 px above their code panel, and successful code-copy feedback uses a white background.
+- Neutral code and Mermaid surfaces work in both themes. Print, forced colors, long headings, small viewports, and unavailable browser storage have dedicated handling.
 
-## Prévisualiser
+## Content and upstream integration
 
-Node.js 24 est requis par le projet.
+Existing routes, Markdown exports, search indexing, canonical metadata, structured data, and the LLM index remain available. The initial redesign adds task-oriented entry pages and Cloud/first-risk guides. Subsequent interface refinements preserve the article content.
+
+The branch incorporates `v2` through `f8328ef`. Recent upstream connector guides, generated references, visitor/NDA instructions, risk walkthrough, search suggestions, breadcrumbs, and next/previous links are retained. Legacy risk-section anchors remain available alongside the updated walkthrough.
+
+## Local preview
+
+Use Node.js 24:
 
 ```sh
 npm ci
+npm run check:docs
 npm run build
 npm run preview:cloudflare
 ```
 
-Ouvrir `http://127.0.0.1:4330/docs`. Ce serveur local reproduit aussi les en-têtes et le routage Markdown Cloudflare. L'aperçu Astro seul ne reproduit pas les Functions qui servent les URL `.md`.
+Open `http://127.0.0.1:4330/docs`. The Cloudflare preview also serves Markdown routes and applies the response headers used by documentation search.
 
-## Vérifier la conservation
+## Validation
 
 ```sh
-npm run check:docs
-node tools/check-docs-preservation.mjs \
-  --base 0f61da075174072cc0f4d4d96d6eca5b4458f950 \
-  --dist dist --report documentation-preservation.txt
+PROBO_REPO_PATH=/path/to/probo npm run docs:check-reference
+node tools/check-docs-preservation.mjs --base origin/v2 --dist dist
 ```
 
-Le contrôle compare les sources et les fichiers compilés : présence des 283 fichiers originaux, 1 618 ancres, 20 assets référencés, accessibilité des 273 pages par la navigation, liens internes, exports Markdown, canonicals, JSON-LD et sitemap. Les changements de métadonnées sont signalés pour relecture ; ils ne représentent pas une perte de contenu.
+The preservation checker reports source changes, missing routes, anchors, assets, internal links, Markdown exports, canonical metadata, structured data, and sitemap entries. Editorial changes are reported for review rather than silently accepted.
 
-## Périmètre éditorial et validation
-
-Les parcours Cloud, premier programme, risque et accès au portail ont été renforcés. Les synthèses métier et références existantes restent disponibles ; aucune procédure UI non vérifiée ni capture fictive n'a été inventée. La clarification de l'accès NDA a été recoupée avec le code public du produit (`getprobo/probo`, commit `700c31057d1598bfe2646906fc932337c0406924`, `pkg/server/api/complianceportal/v1/nda.go`).
-
-Les vérifications de navigateur portent sur l'accueil, les guides, les références techniques, la recherche, les thèmes, le menu, le sommaire et la copie. Elles ne constituent pas une recette de toutes les opérations dans une organisation Probo authentifiée. Les données Search Console et Plain restent à examiner avec l'équipe ; aucun résultat SEO/GEO n'est promis.
-
-La revue avec Julien puis Probo, le push et le déploiement restent des étapes séparées. Aucun envoi ni déploiement n'a été effectué.
-
-## Passe Impeccable — 22 octobre 2026
-
-La palette documentaire utilise désormais le jaune Probo `#E6FF03` pour les repères et sélections, des surfaces neutres et du texte contrasté. L'accent décoratif, la couleur de texte et le focus clavier ont des tokens distincts. Les blocs de code et diagrammes sont neutralisés ; les couleurs sémantiques d'alerte restent disponibles. Les sélections, boutons de copie, recherches, glossaire et états actifs suivent le même système.
-
-Le titre est légèrement moins serré, l'entrée dans les parcours plus compacte, et les contrôles mobiles plus faciles à viser. Le thème mobile est accessible dans le menu pour garder une barre supérieure lisible à 320 px. Le glossaire revient à la ligne sans largeur minimale sur téléphone.
-
-Deux lectures indépendantes et un contrôle Impeccable ont été utilisés. Le détecteur ne conserve qu'un avertissement de police courante : Geist est volontairement maintenue pour respecter les pages produit et le blog. Les ratios des principales paires texte/fond sont vérifiés (minimum 5,23:1). Le contrôle visuel utilise les captures de la version précédente ; l'accès navigateur à la nouvelle version a été bloqué pendant cette passe. Ne pas présenter cela comme une validation visuelle live du nouveau rendu.
-
-## Audit complet et interactions — 22 octobre 2026
-
-Critère de fin renforcé à la demande de Julien : une version aboutie avec les défauts constatés corrigés, toutes les pages contrôlées et les principales interactions validées sur ordinateur et mobile, au clavier et avec mouvements réduits.
-
-- Fond clair blanc `#FFFFFF` ; page active en texte marqué et filet neutre, sans fond jaune.
-- Courbes adaptées de la skill Benji : smooth `cubic-bezier(.19,1,.22,1)` pour les panneaux et hauteurs ; snappy `cubic-bezier(.175,.885,.32,1.1)` seulement pour de petits pictogrammes. Ce sont des Bézier, pas des ressorts physiques. Détails 300/220 ms, menu/recherche 300/200 ms, onglets 240 ms ; aucune animation d'arrivée des articles.
-- Hauteurs intrinsèques restaurées après animation, inversions rapides, focus/inert et Échap préservés, nettoyage au changement de route, réduction des mouvements.
-- Corrections : guides à étapes sans débordement, un seul offset d'ancre, onglets partageables aussi au clavier et par fragment direct, diagrammes à leur échelle lisible avec défilement local accessible.
-- Vérification live : les 273 routes sont chargées à 1440 px puis 390 px ; contrôles structurels et débordements sur 546 vues, plus essais à 320 px. Les captures et le rapport détaillé vivent dans le dossier flexOS Documentation.
-
-Source des principes : [Benji — Morphing icons with Claude](https://benji.org/morphing-icons-with-claude), et références documentées dans la skill `benji-interface-motion` (relevé du 5 septembre 2026).
-
-## Affinage des composants — 22 octobre 2026
-
-- Navigation sans soulignement fluorescent : rubrique dans une surface neutre, page courante signalée par un point discret et un texte renforcé, sommaire sans soulignement.
-- Tableaux Markdown rendus comme de vrais tableaux dans un conteneur défilant accessible. Grille, en-têtes, longues valeurs et alignement des cellules cohérents ; focus clavier seulement si le tableau déborde.
-- Étapes : première ligne et numéro alignés, marges et décalages hérités supprimés, numérotation de départ conservée.
-- Recherche parcourable avec les flèches et Entrée, focus sur les nouveaux résultats après pagination. Sommaires mobile et ordinateur synchronisés avec les onglets ; menu et copie fiabilisés.
-- Référence observée : [Aave](https://aave.com/docs/aave-v3/overview), notamment sa navigation discrète et ses retours d'état courts. Structure Probo, articles et URL inchangés.
-- Vérification : 273 pages à 1440 px et 390 px, grille des tableaux et alignement des étapes contrôlés, puis essais ciblés à 320 px, au clavier et avec mouvement réduit. Compilation et conservation sans erreur. Les preuves sont dans le rapport flexOS « Composants et interactions ».
+Browser verification covers desktop and mobile navigation, the search dialog and results, themes, tab switching, section links, table scrolling, and copy feedback. It does not validate product operations inside an authenticated Probo organization.
