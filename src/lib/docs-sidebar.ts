@@ -3,6 +3,21 @@ import {
   mcpCategoryItems,
   n8nResourceItems,
 } from "./generated-reference-manifest.mjs";
+import type { IconName } from "../components/Icon.astro";
+
+type SidebarItem<Extra> = { label: string } & Extra &
+  ({ slug: string } | { items: SidebarItem<Extra>[]; collapsed?: boolean });
+
+export type DocsSidebarItem = SidebarItem<{ icon?: IconName }>;
+
+export type DocsSidebarGroup = {
+  id: string;
+  sectionId: string;
+  label: string;
+  icon?: IconName;
+  showHeading?: boolean;
+  items: DocsSidebarItem[];
+};
 
 // Sorted by label so the sidebar cannot drift as connectors are added.
 // Entries are compared case-insensitively, which keeps incident.io among
@@ -65,42 +80,51 @@ const accessReviewConnectorItems = [
   { label: "Yousign", slug: "docs/product/access-review/yousign" },
 ].sort((a, b) => a.label.localeCompare(b.label, "en", { sensitivity: "base" }));
 
-export const docsSidebarGroups = [
+export const docsSidebarGroups: DocsSidebarGroup[] = [
   {
     id: "getting-started",
     sectionId: "product",
     label: "Get started",
+    icon: "compass",
     items: [
       {
         label: "Getting started",
+        icon: "compass",
         slug: "docs/product/getting-started",
       },
       {
         label: "Product overview",
+        icon: "book-open-text",
         slug: "docs/product/getting-started/product-overview",
       },
       {
         label: "Choose a deployment",
+        icon: "terminal-window",
         slug: "docs/product/getting-started/choose-deployment",
       },
       {
         label: "Quickstart",
+        icon: "sparkle",
         slug: "docs/product/getting-started/quickstart",
       },
       {
         label: "First steps with Probo Cloud",
+        icon: "compass",
         slug: "docs/product/getting-started/cloud-first-steps",
       },
       {
         label: "First organization and framework",
+        icon: "briefcase",
         slug: "docs/product/getting-started/first-organization-and-framework",
       },
       {
         label: "Core concepts",
+        icon: "files",
         slug: "docs/product/getting-started/core-concepts",
       },
       {
         label: "Glossary",
+        icon: "article",
         slug: "docs/product/getting-started/glossary",
       },
     ],
@@ -109,42 +133,59 @@ export const docsSidebarGroups = [
     id: "compliance-program",
     sectionId: "product",
     label: "Manage compliance",
+    icon: "shield-check",
     items: [
-      { label: "Use Probo", slug: "docs/product" },
+      { label: "Use Probo", icon: "book-open-text", slug: "docs/product" },
       {
         label: "Compliance program",
+        icon: "shield-check",
         slug: "docs/product/compliance-program",
       },
-      { label: "Tasks", slug: "docs/product/tasks/overview" },
+      {
+        label: "Tasks",
+        icon: "list-checks",
+        slug: "docs/product/tasks/overview",
+      },
       {
         label: "Risk management",
+        icon: "shield-warning",
         collapsed: true,
         items: [
-          { label: "Overview", slug: "docs/product/risk-management" },
+          {
+            label: "Overview",
+            icon: "book-open-text",
+            slug: "docs/product/risk-management",
+          },
           {
             label: "Record and review a risk",
+            icon: "shield-warning",
             slug: "docs/product/risk-management/first-risk",
           },
         ],
       },
       {
         label: "Third-party management",
+        icon: "handshake",
         slug: "docs/product/third-party-management",
       },
       {
         label: "Privacy management",
+        icon: "fingerprint",
         slug: "docs/product/privacy-management",
       },
       {
         label: "Audits and findings",
+        icon: "list-checks",
         slug: "docs/product/audits-and-findings",
       },
       {
         label: "Document management",
+        icon: "files",
         slug: "docs/product/document-management",
       },
       {
         label: "Assets and obligations",
+        icon: "briefcase",
         slug: "docs/product/assets-and-obligations",
       },
     ],
@@ -153,24 +194,33 @@ export const docsSidebarGroups = [
     id: "identity-and-access",
     sectionId: "product",
     label: "Workspace and access",
+    icon: "users-three",
     items: [
       {
         label: "Overview",
+        icon: "book-open-text",
         slug: "docs/product/identity-and-access",
       },
       {
         label: "Roles and permissions",
+        icon: "key",
         slug: "docs/product/roles-and-permissions",
       },
       {
         label: "Audit log",
+        icon: "clock-counter-clockwise",
         slug: "docs/product/audit-log",
       },
       {
         label: "SSO",
+        icon: "key",
         collapsed: true,
         items: [
-          { label: "Overview", slug: "docs/product/sso/overview" },
+          {
+            label: "Overview",
+            icon: "book-open-text",
+            slug: "docs/product/sso/overview",
+          },
           {
             label: "Microsoft Entra ID",
             slug: "docs/product/sso/microsoft-entra-id",
@@ -184,9 +234,14 @@ export const docsSidebarGroups = [
       },
       {
         label: "SCIM",
+        icon: "users-three",
         collapsed: true,
         items: [
-          { label: "Overview", slug: "docs/product/scim/overview" },
+          {
+            label: "Overview",
+            icon: "book-open-text",
+            slug: "docs/product/scim/overview",
+          },
           {
             label: "Microsoft 365",
             slug: "docs/product/scim/microsoft-365",
@@ -204,25 +259,31 @@ export const docsSidebarGroups = [
     id: "access-reviews",
     sectionId: "product",
     label: "Access reviews",
+    icon: "list-checks",
     items: [
       {
         label: "Overview",
+        icon: "book-open-text",
         slug: "docs/product/access-review/overview",
       },
       {
         label: "Run a campaign",
+        icon: "list-checks",
         slug: "docs/product/access-review/campaigns",
       },
       {
         label: "CSV sources",
+        icon: "files",
         slug: "docs/product/access-review/csv-sources",
       },
       {
         label: "Credential security",
+        icon: "key",
         slug: "docs/product/access-review/integration-security",
       },
       {
         label: "Connectors",
+        icon: "plugs-connected",
         collapsed: true,
         items: [
           {
@@ -238,21 +299,26 @@ export const docsSidebarGroups = [
     id: "compliance-portal",
     sectionId: "product",
     label: "Share your compliance",
+    icon: "handshake",
     items: [
       {
         label: "Overview",
+        icon: "book-open-text",
         slug: "docs/product/compliance-portal",
       },
       {
         label: "Quickstart",
+        icon: "sparkle",
         slug: "docs/product/compliance-portal/quickstart",
       },
       {
         label: "Branding",
+        icon: "paint-brush",
         slug: "docs/product/compliance-portal/branding-and-domains",
       },
       {
         label: "Content management",
+        icon: "files",
         collapsed: true,
         items: [
           {
@@ -275,14 +341,17 @@ export const docsSidebarGroups = [
       },
       {
         label: "Visitor access and NDA",
+        icon: "key",
         slug: "docs/product/compliance-portal/visitor-access-and-nda",
       },
       {
         label: "Rights requests",
+        icon: "fingerprint",
         slug: "docs/product/compliance-portal/rights-requests",
       },
       {
         label: "Multiple portals",
+        icon: "files",
         slug: "docs/product/compliance-portal/multiple-portals",
       },
       {
@@ -291,6 +360,7 @@ export const docsSidebarGroups = [
       },
       {
         label: "Permissions and integrations",
+        icon: "plugs-connected",
         slug: "docs/product/compliance-portal/permissions-and-integrations",
       },
     ],
@@ -299,13 +369,16 @@ export const docsSidebarGroups = [
     id: "consent-and-devices",
     sectionId: "product",
     label: "Cookie consent",
+    icon: "cookie",
     items: [
       {
         label: "Cookie consent",
+        icon: "cookie",
         slug: "docs/product/cookie-banner/overview",
       },
       {
         label: "Quickstart",
+        icon: "sparkle",
         slug: "docs/product/cookie-banner/quickstart",
       },
       {
@@ -314,17 +387,24 @@ export const docsSidebarGroups = [
       },
       {
         label: "JavaScript SDK",
+        icon: "code",
         slug: "docs/product/cookie-banner/javascript-sdk",
       },
       {
         label: "React Integration",
+        icon: "code",
         slug: "docs/product/cookie-banner/react",
       },
       {
         label: "Consent Manager API",
+        icon: "code",
         slug: "docs/product/cookie-banner/consent-manager",
       },
-      { label: "Theming", slug: "docs/product/cookie-banner/theming" },
+      {
+        label: "Theming",
+        icon: "paint-brush",
+        slug: "docs/product/cookie-banner/theming",
+      },
       {
         label: "Blocking resources",
         slug: "docs/product/cookie-banner/blocking-resources",
@@ -335,17 +415,28 @@ export const docsSidebarGroups = [
     id: "probo-agent",
     sectionId: "product",
     label: "Device security",
+    icon: "monitor",
     items: [
-      { label: "Overview", slug: "docs/product/device-agent/overview" },
+      {
+        label: "Overview",
+        icon: "book-open-text",
+        slug: "docs/product/device-agent/overview",
+      },
       {
         label: "Security",
+        icon: "shield-check",
         slug: "docs/product/device-agent/security",
       },
       {
         label: "Install",
+        icon: "terminal-window",
         collapsed: true,
         items: [
-          { label: "Overview", slug: "docs/product/device-agent/install" },
+          {
+            label: "Overview",
+            icon: "book-open-text",
+            slug: "docs/product/device-agent/install",
+          },
           { label: "macOS", slug: "docs/product/device-agent/macos" },
           { label: "Windows", slug: "docs/product/device-agent/windows" },
           { label: "Linux", slug: "docs/product/device-agent/linux" },
@@ -364,35 +455,49 @@ export const docsSidebarGroups = [
     label: "Developer Overview",
     showHeading: false,
     items: [
-      { label: "Overview", slug: "docs/developers" },
-      { label: "API fundamentals", slug: "docs/developers/api-overview" },
-      { label: "GraphQL API", slug: "docs/developers/graphql" },
+      { label: "Overview", icon: "book-open-text", slug: "docs/developers" },
+      {
+        label: "API fundamentals",
+        icon: "book-open-text",
+        slug: "docs/developers/api-overview",
+      },
+      { label: "GraphQL API", icon: "graph", slug: "docs/developers/graphql" },
     ],
   },
   {
     id: "cli",
     sectionId: "developers",
     label: "CLI",
+    icon: "terminal-window",
     items: [
-      { label: "Overview", slug: "docs/developers/cli/overview" },
+      {
+        label: "Overview",
+        icon: "book-open-text",
+        slug: "docs/developers/cli/overview",
+      },
       {
         label: "Authentication",
+        icon: "key",
         slug: "docs/developers/cli/authentication",
       },
       {
         label: "Configuration",
+        icon: "sliders-horizontal",
         slug: "docs/developers/cli/configuration",
       },
       {
         label: "Autocomplete",
+        icon: "terminal-window",
         slug: "docs/developers/cli/autocomplete",
       },
       {
         label: "Command reference",
+        icon: "terminal-window",
         collapsed: true,
         items: [
           {
             label: "Overview",
+            icon: "book-open-text",
             slug: "docs/developers/cli/commands",
           },
           ...cliCommandItems,
@@ -404,19 +509,27 @@ export const docsSidebarGroups = [
     id: "mcp",
     sectionId: "developers",
     label: "MCP",
+    icon: "sparkle",
     items: [
-      { label: "Overview", slug: "docs/developers/api/mcp/overview" },
+      {
+        label: "Overview",
+        icon: "book-open-text",
+        slug: "docs/developers/api/mcp/overview",
+      },
       {
         label: "Authentication",
+        icon: "key",
         slug: "docs/developers/api/mcp/authentication",
       },
       { label: "Pagination", slug: "docs/developers/api/mcp/pagination" },
       {
         label: "Integrations",
+        icon: "plugs-connected",
         collapsed: true,
         items: [
           {
             label: "Overview",
+            icon: "book-open-text",
             slug: "docs/developers/api/mcp/integrations",
           },
           {
@@ -454,10 +567,12 @@ export const docsSidebarGroups = [
       },
       {
         label: "Tool reference",
+        icon: "sliders-horizontal",
         collapsed: true,
         items: [
           {
             label: "Overview",
+            icon: "book-open-text",
             slug: "docs/developers/api/mcp/tools",
           },
           ...mcpCategoryItems,
@@ -469,22 +584,31 @@ export const docsSidebarGroups = [
     id: "n8n",
     sectionId: "developers",
     label: "n8n",
+    icon: "flow-arrow",
     items: [
-      { label: "Overview", slug: "docs/developers/api/n8n/overview" },
+      {
+        label: "Overview",
+        icon: "book-open-text",
+        slug: "docs/developers/api/n8n/overview",
+      },
       {
         label: "Installation",
+        icon: "terminal-window",
         slug: "docs/developers/api/n8n/installation",
       },
       {
         label: "Authentication",
+        icon: "key",
         slug: "docs/developers/api/n8n/authentication",
       },
       {
         label: "Resource reference",
+        icon: "files",
         collapsed: true,
         items: [
           {
             label: "Overview",
+            icon: "book-open-text",
             slug: "docs/developers/api/n8n/resources",
           },
           ...n8nResourceItems,
@@ -500,10 +624,16 @@ export const docsSidebarGroups = [
     id: "webhooks",
     sectionId: "developers",
     label: "Webhooks",
+    icon: "broadcast",
     items: [
-      { label: "Overview", slug: "docs/developers/api/webhooks/overview" },
+      {
+        label: "Overview",
+        icon: "book-open-text",
+        slug: "docs/developers/api/webhooks/overview",
+      },
       {
         label: "Quickstart",
+        icon: "sparkle",
         slug: "docs/developers/api/webhooks/quickstart",
       },
       {
@@ -524,13 +654,16 @@ export const docsSidebarGroups = [
     id: "device-agent",
     sectionId: "developers",
     label: "Device agent",
+    icon: "monitor",
     items: [
       {
         label: "Overview",
+        icon: "book-open-text",
         slug: "docs/developers/api/agent/overview",
       },
       {
         label: "Authentication",
+        icon: "key",
         slug: "docs/developers/api/agent/authentication",
       },
       {
@@ -548,16 +681,24 @@ export const docsSidebarGroups = [
     sectionId: "deployment",
     label: "Deployment Overview",
     showHeading: false,
-    items: [{ label: "Overview", slug: "docs/deployment" }],
+    items: [
+      { label: "Overview", icon: "book-open-text", slug: "docs/deployment" },
+    ],
   },
   {
     id: "cloud",
     sectionId: "deployment",
     label: "Cloud",
+    icon: "cloud",
     items: [
-      { label: "Overview", slug: "docs/deployment/cloud" },
+      {
+        label: "Overview",
+        icon: "book-open-text",
+        slug: "docs/deployment/cloud",
+      },
       {
         label: "Infrastructure security",
+        icon: "shield-check",
         slug: "docs/deployment/infrastructure-security",
       },
       {
@@ -570,14 +711,21 @@ export const docsSidebarGroups = [
     id: "self-hosting",
     sectionId: "deployment",
     label: "Self-hosting",
+    icon: "terminal-window",
     items: [
-      { label: "Overview", slug: "docs/deployment/self-hosting" },
+      {
+        label: "Overview",
+        icon: "book-open-text",
+        slug: "docs/deployment/self-hosting",
+      },
       {
         label: "Docker Compose",
+        icon: "terminal-window",
         slug: "docs/deployment/self-hosting/docker-compose",
       },
       {
         label: "Kubernetes",
+        icon: "cloud",
         slug: "docs/deployment/self-hosting/kubernetes",
       },
     ],
@@ -586,17 +734,21 @@ export const docsSidebarGroups = [
     id: "configuration",
     sectionId: "deployment",
     label: "Configuration",
+    icon: "sliders-horizontal",
     items: [
       {
         label: "Overview",
+        icon: "book-open-text",
         slug: "docs/deployment/configuration/overview",
       },
       {
         label: "Config file",
+        icon: "sliders-horizontal",
         slug: "docs/deployment/configuration/config-file",
       },
       {
         label: "Environment variables",
+        icon: "sliders-horizontal",
         slug: "docs/deployment/configuration/environment-variables",
       },
       {
@@ -605,10 +757,12 @@ export const docsSidebarGroups = [
         items: [
           {
             label: "Configuration file",
+            icon: "sliders-horizontal",
             slug: "docs/deployment/configuration/config-reference",
           },
           {
             label: "Environment variables",
+            icon: "sliders-horizontal",
             slug: "docs/deployment/configuration/environment-reference",
           },
         ],
@@ -617,7 +771,21 @@ export const docsSidebarGroups = [
   },
 ];
 
+// Starlight rejects unknown keys on sidebar links, so icons stay in this
+// config and are paired with the resolved sidebar entries by position.
+function withoutIcons(items: DocsSidebarItem[]): SidebarItem<{}>[] {
+  return items.map(({ icon: _icon, ...item }) =>
+    "items" in item ? { ...item, items: withoutIcons(item.items) } : item,
+  );
+}
+
 export const docsSidebar = docsSidebarGroups.map(
-  ({ id: _id, sectionId: _sectionId, showHeading: _showHeading, ...group }) =>
-    group,
+  ({
+    id: _id,
+    sectionId: _sectionId,
+    showHeading: _showHeading,
+    icon: _icon,
+    items,
+    ...group
+  }) => ({ ...group, items: withoutIcons(items) }),
 );

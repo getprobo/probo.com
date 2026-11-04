@@ -1,82 +1,5 @@
 import type { StarlightRouteData } from "@astrojs/starlight/route-data";
-import { docsSidebarGroups } from "./docs-sidebar.ts";
-import type { IconName } from "../components/Icon.astro";
-
-const sidebarIcons: Record<string, IconName> = {
-  "Get started": "compass",
-  "Getting started": "compass",
-  "Product overview": "book-open-text",
-  "Choose a deployment": "terminal-window",
-  Quickstart: "sparkle",
-  "First steps with Probo Cloud": "compass",
-  "First organization and framework": "briefcase",
-  "Core concepts": "files",
-  Glossary: "article",
-  "Manage compliance": "shield-check",
-  "Use Probo": "book-open-text",
-  "Compliance program": "shield-check",
-  Tasks: "list-checks",
-  "Risk management": "shield-warning",
-  "Third-party management": "handshake",
-  "Privacy management": "fingerprint",
-  "Audits and findings": "list-checks",
-  "Document management": "files",
-  "Assets and obligations": "briefcase",
-  "Workspace and access": "users-three",
-  "Access reviews": "list-checks",
-  "Share your compliance": "handshake",
-  "Cookie consent": "cookie",
-  "Device security": "monitor",
-  "API fundamentals": "book-open-text",
-  "GraphQL API": "graph",
-  CLI: "terminal-window",
-  MCP: "sparkle",
-  n8n: "flow-arrow",
-  Webhooks: "broadcast",
-  "Device agent": "monitor",
-  Cloud: "cloud",
-  "Self-hosting": "terminal-window",
-  Configuration: "sliders-horizontal",
-  SSO: "key",
-  SCIM: "users-three",
-  Connectors: "plugs-connected",
-  Overview: "book-open-text",
-  "Record and review a risk": "shield-warning",
-  "Roles and permissions": "key",
-  "Audit log": "clock-counter-clockwise",
-  Authentication: "key",
-  Autocomplete: "terminal-window",
-  "Command reference": "terminal-window",
-  "Tool reference": "sliders-horizontal",
-  "Resource reference": "files",
-  Integrations: "plugs-connected",
-  Installation: "terminal-window",
-  Install: "terminal-window",
-  Security: "shield-check",
-  "Infrastructure security": "shield-check",
-  "Credential security": "key",
-  "Run a campaign": "list-checks",
-  "CSV sources": "files",
-  "Content management": "files",
-  Branding: "paint-brush",
-  "Visitor access and NDA": "key",
-  "Rights requests": "fingerprint",
-  "Multiple portals": "files",
-  "Permissions and integrations": "plugs-connected",
-  "JavaScript SDK": "code",
-  "React Integration": "code",
-  "Consent Manager API": "code",
-  Theming: "paint-brush",
-  "Docker Compose": "terminal-window",
-  Kubernetes: "cloud",
-  "Config file": "sliders-horizontal",
-  "Configuration file": "sliders-horizontal",
-  "Environment variables": "sliders-horizontal",
-};
-
-export function getDocsSidebarIcon(label: string): IconName {
-  return sidebarIcons[label] ?? "article";
-}
+import { docsSidebarGroups, type DocsSidebarGroup } from "./docs-sidebar.ts";
 
 export type DocsSectionId =
   "overview" | "product" | "developers" | "deployment";
@@ -163,6 +86,7 @@ export function getSidebarGroupsForSection<Entry extends { type: string }>(
   sectionId: DocsSectionId,
 ): Array<{
   group: Extract<Entry, { type: "group" }>;
+  definition: DocsSidebarGroup;
   showHeading: boolean;
 }> {
   if (sidebar.length !== docsSidebarGroups.length) {
@@ -182,8 +106,8 @@ export function getSidebarGroupsForSection<Entry extends { type: string }>(
     return [
       {
         group: group as Extract<Entry, { type: "group" }>,
-        showHeading:
-          !("showHeading" in definition) || definition.showHeading !== false,
+        definition,
+        showHeading: definition.showHeading !== false,
       },
     ];
   });
