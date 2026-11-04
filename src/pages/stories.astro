@@ -1,38 +1,43 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
-import Logos from "../components/block/Logos.astro";
-import StoryCard from "../components/StoryCard.astro";
+import StoryListCard from "../components/StoryListCard.astro";
 import { sortStoriesForListing } from "../lib/stories.ts";
 
-const stories = sortStoriesForListing(await getCollection("stories"));
+const [featured, ...stories] = sortStoriesForListing(
+  await getCollection("stories"),
+);
 ---
 
 <Layout
   title="Customer stories"
   description="Real Probo customers share how they got SOC 2 and ISO 27001 certified faster, without hiring a dedicated compliance team."
 >
-  <main class="my-10 sm:my-20">
-    <div class="container">
-      <h1
-        class="text-h2 sm:text-h1 mb-3 overflow-hidden text-center font-medium"
+  <main class="my-12 sm:my-20">
+    <header class="container max-w-3xl">
+      <p
+        class="text-muted-foreground animate-perspective-in text-sm font-medium"
       >
-        <span class="animate-perspective-in inline-block">Customer</span>
-        <span class="animate-perspective-in animation-delay-100 inline-block"
-          >Stories</span
-        >
+        Customer stories
+      </p>
+      <h1
+        class="text-h3 sm:text-h1 animate-perspective-in animation-delay-100 mt-3 font-medium text-balance"
+      >
+        Teams that got compliant without slowing down
       </h1>
       <p
-        class="text-muted-foreground animate-perspective-in animation-delay-200 text-center text-base"
+        class="text-muted-foreground animate-perspective-in animation-delay-200 mt-5 max-w-xl text-lg"
       >
-        Inspiring stories, real Probo customers
+        How startups and scale-ups reach SOC 2, ISO 27001 and HIPAA with Probo,
+        without hiring a compliance team.
       </p>
-    </div>
-    <Logos class="animate-slide-in animation-delay-300 my-6" constrained />
-    <div
-      class="animate-slide-in animation-delay-250 container grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6"
+    </header>
+
+    <section
+      class="animate-slide-in animation-delay-250 container mt-12 grid grid-cols-1 gap-4 sm:mt-16 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
     >
-      {stories.map((item) => <StoryCard story={item} />)}
-    </div>
+      {featured && <StoryListCard story={featured} featured />}
+      {stories.map((story) => <StoryListCard story={story} />)}
+    </section>
   </main>
 </Layout>

@@ -1,0 +1,260 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import { dynamicImages } from "../lib/images.ts";
+
+interface Props {
+  story: CollectionEntry<"stories">;
+  featured?: boolean;
+}
+
+const { story, featured = false } = Astro.props;
+const { data } = story;
+
+const images = dynamicImages(
+  import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/stories/*.{jpeg,jpg,png,gif,svg}",
+  ),
+);
+
+const url =
+  "/" +
+  (story.id.includes("/")
+    ? story.id.replace("/", "/stories/")
+    : `stories/${story.id}`);
+
+const title = data.title.replace(/\s*\n\s*/g, " ");
+const cover = images(data.previewImage ?? data.image);
+const logo = images(data.logo);
+const lh = data.logoHeight ?? 23;
+const logoSize =
+  lh <= 23 ? "h-6 sm:h-7" : lh <= 38 ? "h-7 sm:h-8" : "h-8 sm:h-9";
+const highlight = data.impacts[0];
+
+const trailer = data.trailer;
+const youtubeId = story.body?.match(/youtube\.com\/embed\/([\w-]+)/)?.[1];
+const interviewSrc =
+  trailer && youtubeId
+    ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`
+    : undefined;
+---
+
+<article
+  data-story-card
+  class:list={[
+    "group border-border-low bg-level-1 hover:border-border-mid relative flex flex-col overflow-hidden rounded-2xl border p-2 transition-[border-color,box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-12px_rgba(20,30,18,0.18)]",
+    featured && "lg:col-span-full lg:grid lg:grid-cols-[1.35fr_1fr]",
+  ]}
+>
+  <div
+    class:list={[
+      "group/media relative overflow-hidden rounded-xl bg-[#eef1ee]",
+      featured
+        ? "aspect-[16/10] lg:aspect-auto lg:min-h-[26rem]"
+        : "aspect-[16/10]",
+    ]}
+  >
+    <Image
+      src={cover}
+      alt={data.imageAlt ?? title}
+      widths={featured ? [640, 960, 1400] : [480, 720, 960]}
+      sizes={featured
+        ? "(min-width: 1024px) 60vw, 100vw"
+        : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
+      loading={featured ? "eager" : "lazy"}
+      class="absolute inset-0 size-full object-cover transition-transform duration-700 [transition-timing-function:cubic-bezier(0.33,1,0.68,1)] group-hover:scale-[1.03]"
+    />
+    {
+      trailer && (
+        <video
+          data-story-preview
+          data-src={trailer}
+          muted
+          loop
+          playsinline
+          preload="none"
+          aria-hidden="true"
+          class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-500 group-data-[previewing]/media:opacity-100"
+        />
+      )
+    }
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[rgba(0,0,0,0.45)] to-transparent transition-opacity duration-500 group-data-[previewing]/media:opacity-0"
+      aria-hidden="true"
+    >
+    </div>
+    <Image
+      src={logo}
+      alt={`${data.company.name} logo`}
+      class={`absolute bottom-4 left-4 block w-auto max-w-[60%] ${logoSize} [filter:brightness(0)_invert(1)] transition-opacity duration-500 group-data-[previewing]/media:opacity-0 sm:bottom-5 sm:left-5`}
+    />
+    {
+      interviewSrc && (
+        <button
+          type="button"
+          data-story-interview={interviewSrc}
+          data-story-title={`${data.company.name} interview`}
+          class="group/play absolute inset-0 z-20 cursor-pointer focus-visible:outline-none"
+          aria-label={`Watch the ${data.company.name} interview`}
+        >
+          <span class="absolute right-4 bottom-4 inline-flex items-center gap-1.5 text-sm font-medium text-[#fff] transition-opacity duration-300 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)] group-hover/play:opacity-80 sm:right-5 sm:bottom-5">
+            <svg
+              viewBox="0 0 24 24"
+              class="size-3 [filter:drop-shadow(0_1px_6px_rgba(0,0,0,0.45))]"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <span class="underline-offset-4 group-hover/play:underline">
+              Watch interview
+            </span>
+          </span>
+        </button>
+      )
+    }
+  </div>
+
+  <div
+    class:list={[
+      "flex flex-1 flex-col",
+      featured ? "p-4 pt-6 sm:p-6 lg:p-10" : "p-4 pt-5 sm:p-5",
+    ]}
+  >
+    <p class="text-muted-foreground text-xs">
+      {data.company.name}
+      <span aria-hidden="true" class="mx-1.5 opacity-50">·</span>
+      {data.company.industry}
+    </p>
+
+    <h2
+      class:list={[
+        "mt-2 font-medium text-balance",
+        featured ? "text-h4 sm:text-h3" : "sm:text-h5 text-lg leading-snug",
+      ]}
+    >
+      <a
+        href={url}
+        class="after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline-none"
+      >
+        {title}
+      </a>
+    </h2>
+
+    {
+      featured && (
+        <p class="text-muted-foreground mt-4 text-base">{data.company.about}</p>
+      )
+    }
+
+    {
+      featured && highlight && /\d/.test(highlight.title) && (
+        <div class="border-border-low mt-8 border-t pt-6">
+          <p class="text-h2 font-medium">{highlight.title}</p>
+          <p class="text-muted-foreground mt-1 text-sm">{highlight.label}</p>
+        </div>
+      )
+    }
+
+    <span
+      class:list={[
+        "mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-medium",
+        featured && "lg:pt-10",
+      ]}
+    >
+      Read the story
+      <svg
+        viewBox="0 0 16 16"
+        class="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 8h10m0 0L9 4m4 4l-4 4"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+    </span>
+  </div>
+</article>
+
+<script>
+  const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  document
+    .querySelectorAll<HTMLVideoElement>("video[data-story-preview]")
+    .forEach((video) => {
+      const media = video.parentElement!;
+      const card = video.closest<HTMLElement>("[data-story-card]")!;
+      video.addEventListener("playing", () =>
+        media.setAttribute("data-previewing", ""),
+      );
+      card.addEventListener("pointerenter", () => {
+        if (!canHover.matches || reduceMotion.matches) return;
+        if (!video.src && video.dataset.src) video.src = video.dataset.src;
+        void video.play().catch(() => {});
+      });
+      card.addEventListener("pointerleave", () => {
+        video.pause();
+        media.removeAttribute("data-previewing");
+      });
+    });
+
+  let dialog: HTMLDialogElement | null = null;
+
+  function openInterview(src: string, title: string) {
+    if (!dialog) {
+      dialog = document.createElement("dialog");
+      dialog.className =
+        "m-auto w-[min(64rem,calc(100vw-2rem))] overflow-visible bg-transparent p-0 backdrop:bg-[rgba(0,0,0,0.8)] backdrop:backdrop-blur-sm";
+      dialog.innerHTML = `
+        <button type="button" data-close aria-label="Close video"
+          class="absolute -top-11 right-0 flex size-9 cursor-pointer items-center justify-center rounded-full bg-[rgba(255,255,255,0.15)] text-[#fff] hover:bg-[rgba(255,255,255,0.25)]">
+          <svg viewBox="0 0 16 16" class="size-4" fill="none" aria-hidden="true">
+            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div data-frame class="relative aspect-video overflow-hidden rounded-2xl bg-[#000]"></div>`;
+      dialog
+        .querySelector("[data-close]")!
+        .addEventListener("click", () => dialog!.close());
+      dialog.addEventListener("click", (e) => {
+        if (e.target === dialog) dialog!.close();
+      });
+      dialog.addEventListener("close", () => {
+        dialog!.querySelector("[data-frame]")!.replaceChildren();
+      });
+      document.body.append(dialog);
+    }
+
+    const iframe = document.createElement("iframe");
+    iframe.className = "absolute inset-0 size-full";
+    iframe.title = title;
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.allowFullscreen = true;
+    if (document.querySelector("probo-cookie-banner")) {
+      iframe.setAttribute("data-cookie-consent", "functional");
+      iframe.setAttribute("data-src", src);
+    } else {
+      iframe.src = src;
+    }
+    dialog.querySelector("[data-frame]")!.replaceChildren(iframe);
+    dialog.showModal();
+  }
+
+  document
+    .querySelectorAll<HTMLButtonElement>("button[data-story-interview]")
+    .forEach((button) =>
+      button.addEventListener("click", () =>
+        openInterview(
+          button.dataset.storyInterview!,
+          button.dataset.storyTitle ?? "Interview",
+        ),
+      ),
+    );
+</script>
