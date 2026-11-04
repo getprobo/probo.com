@@ -15,21 +15,12 @@ export async function onRequest(context: {
     url.pathname.endsWith(".md") || url.pathname.startsWith("/md/");
   const isMarkdownAlternate =
     url.pathname.endsWith(".md") && !url.pathname.startsWith("/md/");
-  const isDocumentationPath =
-    url.pathname === "/docs" ||
-    url.pathname === "/docs.html" ||
-    url.pathname.startsWith("/docs/");
-  const isDocumentationSearchWorker =
-    url.pathname === "/pagefind/pagefind-worker.js";
 
   if (
     url.pathname.startsWith("/api/") ||
     url.pathname.startsWith("/_astro/") ||
     url.pathname.startsWith("/static/") ||
-    (url.pathname.match(/\.\w+$/) &&
-      !isMarkdownPath &&
-      !isDocumentationPath &&
-      !isDocumentationSearchWorker)
+    (url.pathname.match(/\.\w+$/) && !isMarkdownPath)
   ) {
     return context.next();
   }
@@ -62,47 +53,12 @@ export async function onRequest(context: {
 
   const headers = new Headers(response.headers);
   addVaryAccept(headers);
-  if (
-    (isDocumentationPath &&
-      headers.get("Content-Type")?.toLowerCase().startsWith("text/html")) ||
-    isDocumentationSearchWorker
-  ) {
-    allowDocumentationSearch(headers);
-  }
 
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
     headers,
   });
-}
-
-function allowDocumentationSearch(headers: Headers): void {
-  const policy = headers.get("Content-Security-Policy");
-  if (!policy) return;
-
-  // Pagefind compiles WebAssembly; JavaScript eval stays disallowed.
-  const scriptSources = policy.match(/(?:^|;)\s*script-src\s+([^;]*)/);
-  if (scriptSources) {
-    if (!scriptSources[1].includes("'wasm-unsafe-eval'")) {
-      headers.set(
-        "Content-Security-Policy",
-        policy.replace(
-          /((?:^|;)\s*script-src\s+[^;]*)/,
-          "$1 'wasm-unsafe-eval'",
-        ),
-      );
-    }
-    return;
-  }
-
-  const defaultSources = policy.match(/(?:^|;)\s*default-src\s+([^;]*)/)?.[1];
-  if (defaultSources) {
-    headers.set(
-      "Content-Security-Policy",
-      `${policy}; script-src ${defaultSources} 'wasm-unsafe-eval'`,
-    );
-  }
 }
 
 function withMarkdownHeaders(
