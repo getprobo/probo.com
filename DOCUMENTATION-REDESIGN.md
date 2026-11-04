@@ -6,6 +6,7 @@ The documentation uses the existing Probo brand and Geist typography, with a neu
 
 - A single header links the Probo logo to the marketing site and the contextual space label to `/docs`. Search is centered, with theme and contact controls alongside it.
 - The left sidebar groups pages into collapsible sections. Only the current page has a persistent background. Every row has an icon; subsection icons are quieter than section icons, and the current icon is emphasized.
+- Expanded groups have a thin vertical guide aligned with the parent icon and a consistent 24 px indent at every depth. A darker segment on the nearest guide marks the current page in both themes.
 - Space links remain at the bottom of the sidebar. The global documentation home shows the entry paths without a contextual page list.
 - The table of contents follows the visible article sections, including headings inside tabs. Its marker moves for pointer interactions and updates immediately for keyboard navigation.
 - Articles change without a page fade. Menu, disclosure, search, and copy feedback preserve keyboard access and respect reduced motion.
