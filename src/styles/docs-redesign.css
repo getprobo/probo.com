@@ -184,6 +184,8 @@ body {
   border-inline-end: 1px solid var(--docs-rule);
 }
 .docs-sidebar-scroll {
+  --docs-nav-indent: 1.5rem;
+  --docs-nav-guide-offset: 1.125rem;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -288,14 +290,33 @@ body {
   outline: 2px solid var(--docs-focus);
   outline-offset: 1px;
 }
-.docs-shell .sidebar .sidebar-section-links {
-  padding-block: 0.125rem 0.375rem;
-}
 .docs-shell .sidebar .sidebar-section-links > ul > li > a,
-.docs-shell .sidebar .sidebar-section-links > ul > li > details > summary,
-.docs-shell .sidebar .sidebar-section-links > ul > li > details > ul {
+.docs-shell .sidebar .sidebar-section-links > ul > li > details > summary {
   width: 100%;
   margin-inline-start: 0;
+}
+.docs-shell .sidebar .sidebar-section-links,
+.docs-shell .sidebar .docs-sidebar-scroll details > ul {
+  width: auto;
+  margin-block: 0.125rem 0.375rem;
+  margin-inline: var(--docs-nav-guide-offset) 0;
+  padding-block: 0;
+  padding-inline: calc(
+      var(--docs-nav-indent) - var(--docs-nav-guide-offset) - 1px
+    )
+    0;
+  border-inline-start: 1px solid var(--sl-color-gray-5);
+}
+.docs-shell .docs-sidebar-scroll details a[aria-current="page"]::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset-block: 0.5rem;
+  inset-inline-start: calc(
+    var(--docs-nav-guide-offset) - var(--docs-nav-indent)
+  );
+  width: 1px;
+  background: var(--color-muted-foreground);
 }
 .docs-shell .sidebar .sidebar-section-links > ul > li + li {
   margin-block-start: 0;
@@ -1169,6 +1190,13 @@ html[data-theme][data-has-sidebar] {
   }
 }
 @media (forced-colors: active) {
+  .docs-shell .sidebar .sidebar-section-links,
+  .docs-shell .sidebar .docs-sidebar-scroll details > ul {
+    border-inline-start-color: CanvasText;
+  }
+  .docs-shell .docs-sidebar-scroll details a[aria-current="page"]::before {
+    background: CanvasText;
+  }
   .docs-shell .sidebar a[aria-current],
   .sl-markdown-content [role="tab"][aria-selected="true"] {
     outline: 1px solid CanvasText;
