@@ -24,11 +24,12 @@ export async function renderMermaidDiagrams(root: ParentNode = document) {
   if (nodes.length === 0) return;
 
   const mermaid = await getMermaid();
-  mermaid.initialize(mermaidConfig(themeFromDocument()));
+  const config = mermaidConfig(themeFromDocument());
+  mermaid.initialize(config);
 
   for (const node of nodes) {
     if (!(node instanceof HTMLPreElement)) continue;
-    const definition = node.textContent?.trim() ?? "";
+    const definition = node.dataset.diagram || node.textContent?.trim() || "";
     if (!definition) continue;
     if (!node.dataset.diagram) node.dataset.diagram = definition;
 
@@ -36,7 +37,28 @@ export async function renderMermaidDiagrams(root: ParentNode = document) {
     try {
       const { svg } = await mermaid.render(renderId, definition);
       node.innerHTML = svg;
+      const diagram = node.querySelector("svg");
+      const width = diagram?.viewBox.baseVal.width;
+      if (diagram && width) {
+        const bounds = diagram.viewBox.baseVal;
+        const background = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect",
+        );
+        background.setAttribute("x", String(bounds.x));
+        background.setAttribute("y", String(bounds.y));
+        background.setAttribute("width", String(bounds.width));
+        background.setAttribute("height", String(bounds.height));
+        background.setAttribute("aria-hidden", "true");
+        // A drawn background survives printing with CSS backgrounds disabled.
+        background.style.fill = config.themeVariables.primaryColor;
+        diagram.prepend(background);
+        diagram.style.width = `${width}px`;
+        diagram.style.maxWidth = "none";
+        diagram.style.height = "auto";
+      }
       node.dataset.processed = "true";
+      updateDiagramOverflow();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown rendering error";
@@ -47,6 +69,24 @@ export async function renderMermaidDiagrams(root: ParentNode = document) {
       strong.textContent = "Could not render diagram.";
       node.append(strong, " ", message);
     }
+  }
+}
+
+function updateDiagramOverflow() {
+  for (const figure of document.querySelectorAll<HTMLElement>(
+    ".mermaid-diagram",
+  )) {
+    const drawing = figure.querySelector("pre.mermaid svg");
+    const overflowing = Boolean(
+      drawing &&
+      drawing.getBoundingClientRect().width + 32 > figure.clientWidth,
+    );
+    figure.dataset.diagramOverflow = String(overflowing);
+    const caption = figure.querySelector<HTMLElement>("figcaption");
+    if (caption)
+      caption.hidden =
+        !overflowing &&
+        !caption.querySelector("span:not(.diagram-scroll-hint)");
   }
 }
 
@@ -62,6 +102,15 @@ export function bindMermaidLifecycle() {
 
   run();
   document.addEventListener("astro:page-load", run);
+  let resizeFrame = 0;
+  window.addEventListener(
+    "resize",
+    () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(updateDiagramOverflow);
+    },
+    { passive: true },
+  );
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
@@ -73,8 +122,7 @@ export function bindMermaidLifecycle() {
           .querySelectorAll("pre.mermaid[data-processed]")
           .forEach((el) => {
             if (!(el instanceof HTMLPreElement)) return;
-            const definition = el.dataset.diagram;
-            if (definition) el.textContent = definition;
+            // Keep the current SVG until its replacement is ready, preserving layout.
             delete el.dataset.processed;
             el.classList.remove("mermaid-error");
           });

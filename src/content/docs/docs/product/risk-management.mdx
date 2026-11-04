@@ -7,6 +7,16 @@ import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
 Use Probo's risk register to describe what could go wrong, then use a risk analysis to evaluate and treat it. This walkthrough follows one risk from its first description to a scored treatment plan and a reviewable record.
 
+<div className="docs-journey">
+  <LinkCard
+    title="Record and review a risk"
+    description="Start with a specific exposure, connect safeguards, and track the work still needed."
+    href="/docs/product/risk-management/first-risk"
+  />
+</div>
+
+<span id="risk-register" />
+
 ## How the records fit together
 
 | Record         | Purpose                                                                                                                                          |
@@ -16,6 +26,8 @@ Use Probo's risk register to describe what could go wrong, then use a risk analy
 | Treatment plan | The risk's owner, treatment decision, likelihood and impact scores, and linked internal controls for that analysis.                              |
 
 Scores and ownership are set on treatment plans. Creating a risk alone does not assess it.
+
+<span id="threat-based-assessments" />
 
 ## Walkthrough: assess unauthorized access to customer data
 
@@ -84,6 +96,8 @@ Open each internal control to track its implementation. Use its **Tasks** tab to
 The analysis shows inherent, net, and residual risk. **Net** uses the residual values only when at least one internal control is linked to the plan and every linked control is **Implemented**. Otherwise it uses the inherent values. Check the evidence as well as the implementation states before relying on the result.
 
 You can also open the risk's **Treatment Plans** tab to see the analyses in which it is treated.
+
+<span id="publication-and-review" />
 
 ### 6. Review and publish the result
 

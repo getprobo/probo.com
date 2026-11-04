@@ -1,90 +1,58 @@
 ---
-import Icon, { type IconName } from "../Icon.astro";
+import Icon from "../Icon.astro";
 
-type Props = {
-  class?: string;
-};
-
+type Props = { class?: string };
 const { class: className } = Astro.props;
-
-const themes: { value: string; label: string; icon: IconName }[] = [
-  { value: "light", label: "Light", icon: "sun" },
-  { value: "dark", label: "Dark", icon: "moon" },
-  { value: "auto", label: "System", icon: "monitor" },
-];
 ---
 
-<docs-theme-toggle
-  class:list={["theme-toggle", className]}
-  role="group"
-  aria-label="Theme"
->
-  {
-    themes.map(({ value, label, icon }) => (
-      <button
-        type="button"
-        data-theme={value}
-        aria-pressed="false"
-        title={`${label} theme`}
-      >
-        <Icon name={icon} size={14} label={`${label} theme`} />
-      </button>
-    ))
-  }
+<docs-theme-toggle class:list={["theme-toggle", className]}>
+  <button
+    type="button"
+    class="theme-toggle-trigger"
+    data-theme-trigger
+    aria-label="Switch to dark mode"
+    title="Switch to dark mode"
+  >
+    <span data-theme-icon="light"><Icon name="sun" size={16} /></span>
+    <span data-theme-icon="dark"><Icon name="moon" size={16} /></span>
+  </button>
 </docs-theme-toggle>
 
 <style>
   .theme-toggle {
     display: inline-flex;
-    align-items: center;
     flex-shrink: 0;
-    gap: 0.125rem;
-    border: 1px solid var(--color-border-low);
-    border-radius: 999px;
-    padding: 0.125rem;
-    background: var(--color-subtle);
   }
-
-  .theme-toggle button {
+  .theme-toggle-trigger {
     display: grid;
     place-items: center;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border: 0;
-    border-radius: 999px;
+    border-radius: 0.5rem;
+    color: var(--color-muted-foreground);
     background: transparent;
-    color: var(--color-tertiary-foreground);
-    transition:
-      background-color 160ms ease,
-      color 160ms ease;
+    cursor: pointer;
   }
-
-  .theme-toggle button:hover {
+  .theme-toggle-trigger:hover {
     color: var(--color-primary);
+    background: var(--color-subtle);
   }
-
-  .theme-toggle button[aria-pressed="true"] {
-    background: var(--color-level-1);
-    box-shadow: inset 0 0 0 1px var(--color-border-mid);
-    color: var(--color-primary);
+  [data-theme-icon] {
+    display: grid;
+    place-items: center;
   }
-
-  .theme-toggle button:focus-visible {
-    outline: 2px solid var(--docs-accent);
-    outline-offset: 1px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .theme-toggle button {
-      transition: none;
-    }
+  .theme-toggle-trigger:focus-visible {
+    outline: 2px solid var(--docs-focus);
+    outline-offset: 3px;
   }
 </style>
 
 <style is:global>
-  /* Theme swaps repaint in a single frame, but elements with a `transition`
-     animate towards the new palette instead, which desyncs text from its
-     background. Freeze transitions while the new theme is applied. */
+  html[data-theme="light"] [data-theme-icon="dark"],
+  html[data-theme="dark"] [data-theme-icon="light"] {
+    display: none;
+  }
   html[data-theme-switching] *,
   html[data-theme-switching] *::before,
   html[data-theme-switching] *::after {
@@ -93,54 +61,67 @@ const themes: { value: string; label: string; icon: IconName }[] = [
 </style>
 
 <script>
+  import { customElementDefine } from "../../lib/dom";
   type Theme = "auto" | "dark" | "light";
-
-  /** Shared with Starlight's inlined `ThemeProvider` script, which avoids FOUC. */
   const storageKey = "starlight-theme";
-
-  const parseTheme = (theme: unknown): Theme =>
-    theme === "dark" || theme === "light" ? theme : "auto";
-
-  const loadTheme = (): Theme => parseTheme(localStorage.getItem(storageKey));
-
-  const preferredColorScheme = (): Theme =>
-    matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-
-  const applyTheme = (theme: Theme) => {
-    const root = document.documentElement;
-    root.dataset.themeSwitching = "";
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => delete root.dataset.themeSwitching),
-    );
-
-    root.dataset.theme = theme === "auto" ? preferredColorScheme() : theme;
-    localStorage.setItem(storageKey, theme === "auto" ? "" : theme);
-
-    for (const button of document.querySelectorAll<HTMLButtonElement>(
-      "docs-theme-toggle button[data-theme]",
-    )) {
-      button.setAttribute(
-        "aria-pressed",
-        String(button.dataset.theme === theme),
-      );
+  const loadTheme = (): Theme => {
+    try {
+      const theme = localStorage.getItem(storageKey);
+      return theme === "dark" || theme === "light" ? theme : "auto";
+    } catch {
+      return "auto";
     }
   };
-
-  matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
-    if (loadTheme() === "auto") applyTheme("auto");
+  let preference = loadTheme();
+  const colorScheme = matchMedia("(prefers-color-scheme: light)");
+  const applyTheme = () => {
+    const root = document.documentElement;
+    const resolved =
+      preference === "auto"
+        ? colorScheme.matches
+          ? "light"
+          : "dark"
+        : preference;
+    if (root.dataset.theme !== resolved) {
+      root.dataset.themeSwitching = "";
+      root.dataset.theme = resolved;
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => delete root.dataset.themeSwitching),
+      );
+    }
+    const label = `Switch to ${resolved === "light" ? "dark" : "light"} mode`;
+    for (const trigger of document.querySelectorAll("[data-theme-trigger]")) {
+      trigger.setAttribute("aria-label", label);
+      trigger.setAttribute("title", label);
+    }
+  };
+  colorScheme.addEventListener("change", () => {
+    if (preference === "auto") applyTheme();
+  });
+  window.addEventListener("storage", (event) => {
+    if (event.key === storageKey || event.key === null) {
+      preference = loadTheme();
+      applyTheme();
+    }
   });
 
   class DocsThemeToggle extends HTMLElement {
+    trigger = this.querySelector<HTMLButtonElement>("[data-theme-trigger]")!;
     connectedCallback() {
-      applyTheme(loadTheme());
-      this.addEventListener("click", (event) => {
-        const button = (event.target as Element).closest<HTMLButtonElement>(
-          "button[data-theme]",
-        );
-        if (button) applyTheme(parseTheme(button.dataset.theme));
-      });
+      applyTheme();
+      this.trigger.addEventListener("click", this.toggle);
     }
+    disconnectedCallback() {
+      this.trigger.removeEventListener("click", this.toggle);
+    }
+    toggle = () => {
+      preference =
+        document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      try {
+        localStorage.setItem(storageKey, preference);
+      } catch {}
+      applyTheme();
+    };
   }
-
-  customElements.define("docs-theme-toggle", DocsThemeToggle);
+  customElementDefine("docs-theme-toggle", () => DocsThemeToggle);
 </script>

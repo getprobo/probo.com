@@ -18,137 +18,219 @@ import TableOfContents from "virtual:starlight/components/TableOfContents";
 
 <script>
   type StarlightToc = HTMLElement & { _current?: Element | null };
+  let disposePage: (() => void) | undefined;
+  let frame = 0;
+  let keyboardInput = false;
+  let currentLinks = new WeakMap<StarlightToc, HTMLAnchorElement>();
+  let initializing = true;
+  let readyFrame = 0;
 
   const tableOfContents = () =>
-    document.querySelectorAll<StarlightToc>("starlight-toc");
+    document.querySelectorAll<StarlightToc>(
+      "starlight-toc, mobile-starlight-toc",
+    );
 
-  const setCurrent = (toc: StarlightToc, link: Element | undefined) => {
-    if (!link || link.getAttribute("aria-current") === "true") return;
-    for (const other of toc.querySelectorAll("a"))
-      other.removeAttribute("aria-current");
-    link.setAttribute("aria-current", "true");
-    // Keep Starlight's own pointer in sync so it clears our highlight later.
+  const headingId = (link: HTMLAnchorElement) => {
+    try {
+      return decodeURIComponent(link.hash.slice(1));
+    } catch {
+      return "";
+    }
+  };
+
+  const setCurrent = (
+    toc: StarlightToc,
+    link: HTMLAnchorElement | undefined,
+  ) => {
+    if (!link) return;
+    const changed = currentLinks.get(toc) !== link;
+    currentLinks.set(toc, link);
+    if (link.getAttribute("aria-current") !== "true") {
+      for (const other of toc.querySelectorAll("a"))
+        other.removeAttribute("aria-current");
+      link.setAttribute("aria-current", "true");
+    }
+    // Keep the native observer and mobile summary aligned with our selection.
     toc._current = link;
+    const display = toc.querySelector<HTMLElement>(".display-current");
+    if (display) display.textContent = link.textContent;
+    updateMarker(toc, link, changed);
   };
 
-  /** Bottom of the band Starlight's intersection observer watches. */
-  const observedBandBottom = (toc: StarlightToc) => {
-    const navBarHeight =
-      document.querySelector("header")?.getBoundingClientRect().height || 0;
-    const mobileTocHeight =
-      toc.querySelector("summary")?.getBoundingClientRect().height || 0;
-    return navBarHeight + mobileTocHeight + 32 + 53;
+  const updateMarker = (
+    toc: StarlightToc,
+    link: HTMLAnchorElement,
+    changed: boolean,
+  ) => {
+    if (toc.localName !== "starlight-toc") return;
+    const list = toc.querySelector<HTMLElement>(":scope > nav > ul");
+    if (!list?.getClientRects().length || !list.offsetHeight) return;
+    const listRect = list.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    toc.toggleAttribute("data-toc-instant", keyboardInput);
+    toc.style.setProperty(
+      "--docs-toc-active-y",
+      `${linkRect.top - listRect.top}px`,
+    );
+    toc.style.setProperty("--docs-toc-active-height", `${linkRect.height}px`);
+    if (!initializing && !toc.hasAttribute("data-toc-positioned")) {
+      // Place the first marker before enabling transitions between sections.
+      getComputedStyle(list, "::before").transform;
+      toc.setAttribute("data-toc-positioned", "");
+    }
+    if (changed) {
+      const pane = toc.closest<HTMLElement>(".docs-toc-pane");
+      if (!pane || pane.scrollHeight <= pane.clientHeight) return;
+      const paneRect = pane.getBoundingClientRect();
+      if (linkRect.top < paneRect.top + 12)
+        pane.scrollTop -= paneRect.top + 12 - linkRect.top;
+      else if (linkRect.bottom > paneRect.bottom - 12)
+        pane.scrollTop += linkRect.bottom - paneRect.bottom + 12;
+    }
   };
 
-  const headingIdsInHiddenTabPanels = () => {
-    const ids = new Set<string>();
+  const readingLine = (toc: StarlightToc) => {
+    const chromeBottom =
+      document.querySelector(".docs-chrome")?.getBoundingClientRect().bottom ||
+      document.querySelector("header")?.getBoundingClientRect().bottom ||
+      0;
+    const summary = toc.querySelector("summary");
+    const summaryBottom = summary?.getClientRects().length
+      ? summary.getBoundingClientRect().bottom
+      : 0;
+    return Math.max(chromeBottom, summaryBottom) + 24;
+  };
+
+  const syncTocWithTabs = () => {
+    const hiddenIds = new Set<string>();
     for (const panel of document.querySelectorAll<HTMLElement>(
       '[role="tabpanel"][hidden]',
     )) {
       for (const heading of panel.querySelectorAll<HTMLElement>(
-        "h2[id], h3[id], h4[id]",
+        "h2[id], h3[id], h4[id], h5[id], h6[id]",
       )) {
-        if (heading.id) ids.add(heading.id);
+        if (heading.id) hiddenIds.add(heading.id);
       }
     }
-    return ids;
-  };
-
-  /** Hide TOC entries for headings that live in inactive tab panels. */
-  const syncTocWithTabs = () => {
-    const hiddenIds = headingIdsInHiddenTabPanels();
     for (const toc of tableOfContents()) {
       for (const link of toc.querySelectorAll<HTMLAnchorElement>(
         "a[href^='#']",
       )) {
-        const id = decodeURIComponent(link.hash.slice(1));
         const item = link.closest("li");
-        if (!item) continue;
-        item.hidden = hiddenIds.has(id);
+        if (item) item.hidden = hiddenIds.has(headingId(link));
       }
     }
   };
 
-  const visibleTocLinks = (toc: StarlightToc) =>
-    [...toc.querySelectorAll<HTMLAnchorElement>("a")].filter(
-      (link) => !link.closest("li")?.hidden,
-    );
-
-  // Starlight only highlights a heading once it crosses that band, so a freshly
-  // loaded page stays unhighlighted until the first scroll.
-  const highlightHeadingAtRest = () => {
+  const updateCurrent = () => {
+    const atBottom =
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 2;
     for (const toc of tableOfContents()) {
-      if (toc.querySelector('li:not([hidden]) a[aria-current="true"]'))
-        continue;
-
-      const links = visibleTocLinks(toc);
-      const bottom = observedBandBottom(toc);
+      const links = Array.from(
+        toc.querySelectorAll<HTMLAnchorElement>("a"),
+      ).filter((link) => !link.closest("li[hidden]"));
       let current = links[0];
-
-      for (const link of links) {
-        const heading = document.getElementById(
-          decodeURIComponent(link.hash.slice(1)),
-        );
-        if (!heading) continue;
-        if (heading.getBoundingClientRect().top > bottom) break;
-        current = link;
+      if (atBottom) current = links[links.length - 1];
+      else {
+        const line = readingLine(toc);
+        for (const link of links) {
+          const heading = document.getElementById(headingId(link));
+          if (!heading || !heading.getClientRects().length) continue;
+          // Fragment scrolling can round to a fraction below the reading line.
+          if (heading.getBoundingClientRect().top > line + 1) break;
+          current = link;
+        }
       }
-
       setCurrent(toc, current);
     }
   };
 
-  const highlightLastHeading = () => {
-    const scrolled = window.innerHeight + window.scrollY;
-    if (scrolled < document.documentElement.scrollHeight - 2) return;
-
-    for (const toc of tableOfContents()) {
-      const links = visibleTocLinks(toc);
-      setCurrent(toc, links[links.length - 1]);
-    }
-  };
-
-  let queued = false;
   const schedule = () => {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(() => {
-      queued = false;
-      highlightLastHeading();
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      updateCurrent();
     });
   };
 
-  const watchTabPanels = () => {
-    for (const panel of document.querySelectorAll<HTMLElement>(
-      '[role="tabpanel"]',
-    )) {
-      if (panel.dataset.proboTocTabWatched !== undefined) continue;
-      panel.dataset.proboTocTabWatched = "";
-      new MutationObserver(() => {
-        syncTocWithTabs();
-        highlightHeadingAtRest();
-      }).observe(panel, { attributes: true, attributeFilter: ["hidden"] });
-    }
-  };
-
   const init = () => {
-    syncTocWithTabs();
-    highlightHeadingAtRest();
-    watchTabPanels();
-
-    // Starlight's intersection observer can overwrite the highlight after a scroll.
+    disposePage?.();
+    keyboardInput = false;
+    currentLinks = new WeakMap();
+    initializing = true;
+    cancelAnimationFrame(readyFrame);
+    for (const toc of tableOfContents())
+      toc.removeAttribute("data-toc-positioned");
+    const observers: MutationObserver[] = [];
+    const tabsObserver = new MutationObserver(() => {
+      syncTocWithTabs();
+      schedule();
+    });
+    for (const panel of document.querySelectorAll('[role="tabpanel"]')) {
+      tabsObserver.observe(panel, {
+        attributes: true,
+        attributeFilter: ["hidden"],
+      });
+    }
+    observers.push(tabsObserver);
+    const layoutObserver = new ResizeObserver(schedule);
+    const article = document.querySelector(".docs-main-pane");
+    if (article) layoutObserver.observe(article);
+    for (const toc of tableOfContents()) layoutObserver.observe(toc);
+    // The native observer can update during the same scroll; settle on the
+    // heading aligned with the full documentation chrome once per frame.
     for (const toc of tableOfContents()) {
-      if (toc.dataset.proboTocWatched !== undefined) continue;
-      toc.dataset.proboTocWatched = "";
-      new MutationObserver(schedule).observe(toc, {
+      const observer = new MutationObserver(schedule);
+      observer.observe(toc, {
         subtree: true,
         attributeFilter: ["aria-current"],
       });
+      observers.push(observer);
     }
+    disposePage = () => {
+      observers.forEach((observer) => observer.disconnect());
+      layoutObserver.disconnect();
+    };
+    syncTocWithTabs();
+    updateCurrent();
+    readyFrame = requestAnimationFrame(() => {
+      readyFrame = requestAnimationFrame(() => {
+        initializing = false;
+        updateCurrent();
+        readyFrame = 0;
+      });
+    });
   };
 
   window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule, { passive: true });
+  window.addEventListener("hashchange", schedule);
+  document.addEventListener("keydown", () => {
+    keyboardInput = true;
+  });
+  document.addEventListener(
+    "pointerdown",
+    () => {
+      keyboardInput = false;
+    },
+    { passive: true },
+  );
+  window.addEventListener(
+    "wheel",
+    () => {
+      keyboardInput = false;
+    },
+    { passive: true },
+  );
   document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", () => {
+    disposePage?.();
+    cancelAnimationFrame(frame);
+    cancelAnimationFrame(readyFrame);
+    frame = 0;
+    readyFrame = 0;
+  });
   init();
 </script>
 
@@ -178,7 +260,7 @@ import TableOfContents from "virtual:starlight/components/TableOfContents";
       color: var(--sl-color-white);
     }
     .right-sidebar :global(a[aria-current="true"]) {
-      color: var(--color-success);
+      color: var(--color-primary);
       font-weight: 600;
     }
 
@@ -197,14 +279,6 @@ import TableOfContents from "virtual:starlight/components/TableOfContents";
       line-height: 1.45;
     }
 
-    .right-sidebar__desktop :global(li:not([style*="--depth: 0"])) {
-      border-inline-start: 1px solid var(--color-border-low);
-    }
-
-    .right-sidebar__desktop :global(li:not([style*="--depth: 0"]) > a) {
-      padding-inline-start: 1rem;
-    }
-
     .right-sidebar :global(nav) {
       left: 0;
       width: 100%;
@@ -212,13 +286,13 @@ import TableOfContents from "virtual:starlight/components/TableOfContents";
       background-color: var(--color-level-0);
     }
 
-    @media (max-width: 63.999rem) {
+    @media (max-width: 79.999rem) {
       .right-sidebar :global(nav) {
         border-bottom: solid 1px var(--color-border-low);
       }
     }
 
-    @media (min-width: 64rem) {
+    @media (min-width: 80rem) {
       .right-sidebar__mobile {
         display: none;
       }

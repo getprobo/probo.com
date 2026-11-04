@@ -18,6 +18,7 @@
     "check:assets": "node tools/optimize-assets.mjs --check",
     "format": "node tools/format-changed.mjs",
     "preview": "astro preview",
+    "preview:cloudflare": "wrangler pages dev dist --ip 127.0.0.1 --port 4330 --show-interactive-dev-session=false",
     "astro": "astro",
     "deploy": "npm run build && wrangler pages deploy dist"
   },

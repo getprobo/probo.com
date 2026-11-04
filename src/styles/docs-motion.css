@@ -1,0 +1,162 @@
+/* Interaction motion only. Reading content is visible without JavaScript. */
+:root {
+  --docs-motion-smooth: cubic-bezier(0.19, 1, 0.22, 1);
+  --docs-motion-snappy: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --docs-motion-feedback: 140ms;
+}
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+  mix-blend-mode: normal;
+}
+
+.docs-toc-pane
+  starlight-toc[data-toc-positioned]:not([data-toc-instant])
+  > nav
+  > ul::before {
+  transition:
+    transform 180ms var(--docs-motion-smooth),
+    height 180ms var(--docs-motion-smooth);
+}
+
+.docs-chrome :is(a, button),
+.docs-shell :is(a, button, summary),
+site-search :is(button, a),
+site-search .docs-search-field {
+  transition:
+    color var(--docs-motion-feedback) var(--docs-motion-smooth),
+    background-color var(--docs-motion-feedback) var(--docs-motion-smooth),
+    border-color var(--docs-motion-feedback) var(--docs-motion-smooth),
+    text-decoration-color var(--docs-motion-feedback) var(--docs-motion-smooth);
+}
+
+/* Rotate the existing sign immediately, independently from the reading space. */
+.docs-shell details > summary :is(.caret, .step-caret),
+.docs-shell .mcp-tool > summary::after {
+  transition: transform 220ms var(--docs-motion-snappy);
+}
+.docs-shell
+  details[data-docs-disclosure="closed"]
+  > .sidebar-section-title
+  .caret,
+.docs-shell details[data-docs-disclosure="closed"] > summary .caret {
+  transform: rotate(0deg);
+}
+.docs-shell details[data-docs-disclosure="closed"] > summary .step-caret {
+  transform: rotate(45deg) translate(-1px, 1px);
+}
+.docs-shell .mcp-tool[data-docs-disclosure="closed"] > summary::after {
+  transform: rotate(45deg) translate(-2px, 2px);
+}
+
+.docs-website-link svg,
+.docs-shell .sl-link-card .icon {
+  transition: transform 220ms var(--docs-motion-snappy);
+}
+.docs-website-link:is(:hover, :focus-visible) svg,
+.docs-shell .sl-link-card:is(:hover, :focus-within) .icon {
+  transform: translateX(2px);
+}
+.docs-chrome :is(button, [role="button"]) > svg,
+.docs-shell :is(.docs-page-action, .copy button) > svg,
+site-search button > svg {
+  transform-origin: center;
+  transition: transform 180ms var(--docs-motion-snappy);
+}
+.docs-chrome button:active > svg,
+.docs-shell .docs-page-action:active > svg,
+site-search button:active > svg {
+  transform: scale(0.9);
+}
+[data-copy-markdown] {
+  min-inline-size: 6.5rem;
+}
+.docs-shell .expressive-code .copy .feedback {
+  transition:
+    opacity 160ms var(--docs-motion-smooth),
+    transform 220ms var(--docs-motion-smooth);
+}
+
+/* The native dialog remains modal until its brief exit is complete. */
+site-search dialog[data-docs-panel-state] {
+  transform-origin: top center;
+}
+site-search dialog::backdrop {
+  transition: background-color 200ms var(--docs-motion-smooth);
+}
+site-search dialog[data-docs-panel-state="closing"]::backdrop {
+  background-color: transparent;
+}
+
+@media (max-width: 63.999rem) {
+  .docs-shell .sidebar {
+    box-shadow: 15rem 0 0 15rem rgb(0 0 0 / 0);
+    transition: box-shadow 200ms var(--docs-motion-smooth);
+  }
+  body[data-mobile-menu-expanded] .docs-shell .sidebar {
+    box-shadow: 15rem 0 0 15rem rgb(0 0 0 / 0.25);
+  }
+  .docs-shell .sidebar[data-docs-panel-state] {
+    visibility: visible;
+  }
+  .docs-shell .sidebar[data-docs-panel-state="closing"] {
+    pointer-events: none;
+  }
+  .docs-chrome starlight-menu-button button {
+    position: relative;
+  }
+  .docs-chrome starlight-menu-button :is(.open-menu, .close-menu) {
+    display: block;
+    position: absolute;
+    transition:
+      opacity 140ms var(--docs-motion-smooth),
+      transform 220ms var(--docs-motion-snappy);
+  }
+  .docs-chrome starlight-menu-button .open-menu,
+  .docs-chrome starlight-menu-button[aria-expanded="true"] .close-menu {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+  .docs-chrome starlight-menu-button .close-menu {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.85);
+  }
+  .docs-chrome starlight-menu-button[aria-expanded="true"] .open-menu {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --docs-motion-feedback: 80ms;
+  }
+  .docs-shell details > summary :is(.caret, .step-caret),
+  .docs-shell .mcp-tool > summary::after,
+  .docs-website-link svg,
+  .docs-shell .sl-link-card .icon,
+  .docs-chrome :is(button, [role="button"]) > svg,
+  .docs-shell :is(.docs-page-action, .copy button) > svg,
+  site-search button > svg,
+  .docs-chrome starlight-menu-button :is(.open-menu, .close-menu),
+  .docs-shell .expressive-code .copy .feedback,
+  .docs-shell .sidebar,
+  site-search dialog::backdrop {
+    transition: none;
+  }
+  .docs-toc-pane
+    starlight-toc[data-toc-positioned]:not([data-toc-instant])
+    > nav
+    > ul::before {
+    transition: none;
+  }
+  .docs-website-link:is(:hover, :focus-visible) svg,
+  .docs-shell .sl-link-card:is(:hover, :focus-within) .icon,
+  .docs-chrome button:active > svg,
+  .docs-shell .docs-page-action:active > svg,
+  site-search button:active > svg {
+    transform: none;
+  }
+}

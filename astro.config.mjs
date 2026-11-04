@@ -10,8 +10,13 @@ import { docsSidebar } from "./src/lib/docs-sidebar.ts";
 import { redirects } from "./src/lib/redirects.mjs";
 import { generateMarkdown } from "./tools/generateMarkdown";
 import { generateSecurityTxt } from "./tools/generateSecurityTxt";
+import { documentationLastModified } from "./tools/docs-lastmod.mjs";
 import { unified } from "@astrojs/markdown-remark";
 import { remarkRequireImageAlt } from "./src/lib/remark-require-image-alt";
+import { rehypeDocsTables } from "./src/lib/rehype-docs-tables.mjs";
+import { rehypeDocsImageDimensions } from "./src/lib/rehype-docs-image-dimensions.mjs";
+
+const docsLastModified = documentationLastModified();
 
 const sitemapExcludedPaths = new Set(
   Object.keys(redirects)
@@ -82,6 +87,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkRequireImageAlt],
+      rehypePlugins: [rehypeDocsTables, rehypeDocsImageDimensions],
     }),
   },
 
@@ -92,7 +98,6 @@ export default defineConfig({
         ContentPanel: "./src/components/docs/ContentPanel.astro",
         Footer: "./src/components/docs/Footer.astro",
         Head: "./src/components/docs/Head.astro",
-        Footer: "./src/components/docs/Footer.astro",
         PageFrame: "./src/components/docs/PageFrame.astro",
         PageTitle: "./src/components/docs/PageTitle.astro",
         Search: "./src/components/docs/Search.astro",
@@ -111,8 +116,12 @@ export default defineConfig({
         alt: "Probo Logo",
       },
       defaultLocale: "root",
-      customCss: ["./src/styles/starlight.css"],
-      lastUpdated: true,
+      customCss: [
+        "./src/styles/starlight.css",
+        "./src/styles/docs-redesign.css",
+        "./src/styles/docs-motion.css",
+      ],
+      lastUpdated: docsLastModified.hasCompleteHistory,
       pagination: false,
       editLink: {
         baseUrl: "https://github.com/getprobo/probo.com/edit/v2/",
@@ -135,6 +144,7 @@ export default defineConfig({
     generateSecurityTxt(),
     mdx(),
     svelte(),
+    docsLastModified.integration,
     sitemap({
       chunks: {
         docs: (item) =>
@@ -184,6 +194,8 @@ export default defineConfig({
       },
       serialize(item) {
         item.url = item.url.replace(/\/+$/, "") || item.url;
+        const lastModified = docsLastModified.dates.get(item.url);
+        if (lastModified) item.lastmod = lastModified;
         if (item.url === "https://www.probo.com") {
           item.changefreq = /** @type {import('sitemap').EnumChangefreq} */ (
             "weekly"

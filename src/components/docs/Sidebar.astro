@@ -1,107 +1,111 @@
 ---
 import MobileMenuFooter from "virtual:starlight/components/MobileMenuFooter";
-import SidebarSublist from "@astrojs/starlight/components/SidebarSublist.astro";
+import SidebarSublist from "./SidebarSublist.astro";
+import Icon from "../Icon.astro";
+import SectionNav from "./SectionNav.astro";
 import {
   getDocsSectionForPath,
   getSidebarGroupsForSection,
+  getDocsSidebarIcon,
 } from "../../lib/docs-navigation";
 
 const sectionId = getDocsSectionForPath(Astro.url.pathname);
+const hasCookieBanner = Boolean(
+  import.meta.env.PUBLIC_COOKIE_BANNER_ID &&
+  import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL,
+);
 const sidebarGroups = getSidebarGroupsForSection(
   Astro.locals.starlightRoute.sidebar,
   sectionId,
 );
+type Entry = (typeof Astro.locals.starlightRoute.sidebar)[number];
+const hasCurrent = (entries: Entry[]): boolean =>
+  entries.some((entry) =>
+    entry.type === "link" ? entry.isCurrent : hasCurrent(entry.entries),
+  );
 ---
 
-{
-  sidebarGroups.map(({ group, showHeading }) => (
-    <section class="sidebar-section" aria-label={group.label}>
-      {showHeading && <h2>{group.label}</h2>}
-      <div class="sidebar-section-links">
-        <SidebarSublist sublist={group.entries} nested />
-      </div>
-    </section>
-  ))
-}
-
-<script>
-  let hasScrolledToActiveLink = false;
-
-  document.addEventListener("astro:page-load", () => {
-    if (hasScrolledToActiveLink) return;
-
-    const sidebar = document.getElementById("starlight__sidebar");
-    if (!sidebar) return;
-
-    const activeLink = sidebar.querySelector<HTMLElement>(
-      '[aria-current="page"]',
-    );
-    if (!activeLink) return;
-    hasScrolledToActiveLink = true;
-
-    window.requestAnimationFrame(() => {
-      if (!sidebar.isConnected) return;
-
-      const sidebarRect = sidebar.getBoundingClientRect();
-      const activeLinkRect = activeLink.getBoundingClientRect();
-      const top =
-        sidebar.scrollTop +
-        activeLinkRect.top -
-        sidebarRect.top -
-        (sidebarRect.height - activeLinkRect.height) / 2;
-
-      sidebar.scrollTo({
-        top,
-        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "auto"
-          : "smooth",
-      });
-    });
-  });
-</script>
-
-<div class="md:sl-hidden">
-  <MobileMenuFooter />
+<div class="docs-sidebar-scroll">
+  {
+    sidebarGroups.map(({ group, showHeading }) =>
+      showHeading ? (
+        <details class="sidebar-section" open={hasCurrent(group.entries)}>
+          <summary class="sidebar-section-title">
+            <span class="sidebar-section-label">
+              <>
+                <Icon
+                  name={getDocsSidebarIcon(group.label)}
+                  size={16}
+                  class="docs-nav-icon"
+                />
+                <span>{group.label}</span>
+              </>
+            </span>
+            <Icon name="caret-right" size={14} class="caret" />
+          </summary>
+          <div class="sidebar-section-links">
+            <SidebarSublist sublist={group.entries} />
+          </div>
+        </details>
+      ) : (
+        <div class="sidebar-section sidebar-section--plain">
+          <SidebarSublist sublist={group.entries} />
+        </div>
+      ),
+    )
+  }
+</div>
+<div class="docs-sidebar-footer">
+  <SectionNav placement="sidebar" />
+  <div class="lg:hidden"><MobileMenuFooter /></div>
+  {
+    hasCookieBanner && (
+      <probo-settings-link class="cookie-settings">
+        <a href="#">Cookie settings</a>
+      </probo-settings-link>
+    )
+  }
 </div>
 
-<style>
-  .sidebar-section + .sidebar-section {
-    margin-top: 1rem;
-    border-top: 1px solid var(--sl-color-hairline-light);
-    padding-top: 1rem;
-  }
-
-  h2 {
-    margin: 0 0 0.35rem;
-    color: var(--color-primary);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  :global(.sidebar) {
-    interpolate-size: allow-keywords;
-  }
-
-  :global(.sidebar details::details-content) {
-    block-size: 0;
-    overflow-y: clip;
-    opacity: 0;
-    transition:
-      block-size 180ms cubic-bezier(0.4, 0, 0.2, 1),
-      content-visibility 180ms allow-discrete,
-      opacity 180ms ease;
-  }
-
-  :global(.sidebar details[open]::details-content) {
-    block-size: auto;
-    opacity: 1;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    :global(.sidebar details::details-content) {
-      transition: none;
+<script>
+  const revealCurrentPage = () => {
+    const sidebar = document.querySelector<HTMLElement>(".docs-sidebar-scroll");
+    const active = sidebar?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!sidebar || !active) return;
+    let parent = active.parentElement;
+    while (parent && parent !== sidebar) {
+      if (parent instanceof HTMLDetailsElement) parent.open = true;
+      parent = parent.parentElement;
     }
+    requestAnimationFrame(() => {
+      if (!sidebar.isConnected) return;
+      const parentRect = sidebar.getBoundingClientRect();
+      const linkRect = active.getBoundingClientRect();
+      if (
+        linkRect.top < parentRect.top ||
+        linkRect.bottom > parentRect.bottom
+      ) {
+        sidebar.scrollTop +=
+          linkRect.top - parentRect.top - parentRect.height / 3;
+      }
+    });
+  };
+  document.addEventListener("astro:page-load", revealCurrentPage);
+  revealCurrentPage();
+</script>
+
+<style>
+  .sidebar-section-title::-webkit-details-marker {
+    display: none;
+  }
+  .sidebar-section-title :global(.caret) {
+    flex: 0 0 auto;
+    color: var(--color-tertiary-foreground);
+  }
+  details[open] > .sidebar-section-title :global(.caret) {
+    transform: rotate(90deg);
+  }
+  .sidebar-section-links :global(ul) {
+    margin: 0;
   }
 </style>

@@ -25,6 +25,18 @@ The client shows the least the visitor's jurisdiction allows. A banner opens on 
 
 The package supports a ready-made banner and lower-level web components for custom interfaces. The Consent Manager API exposes current choices and change events to other application code.
 
+## Audit trail
+
+Consent records preserve the reported action, category choices, banner version,
+visitor identifier, client context, and timestamp. This lets a reviewer relate
+a choice to the version shown to that visitor.
+
+The JavaScript client reports the user agent and an anonymized IP address.
+Before storage, IPv4 addresses have their last octet zeroed and IPv6 addresses
+are masked to /48; the full IP address is not persisted. See [How consent is
+stored](/docs/product/cookie-banner/javascript-sdk#how-consent-is-stored) for
+client storage, visitor identifiers, and retry behavior.
+
 ## Privacy and legal responsibility
 
 Geolocation, presentations (opt-in, opt-out, and notice), Global Privacy Control handling, version history, and consent records help teams implement a consent program. They do not determine which law applies, classify every tracker automatically, or guarantee legal compliance. The site operator remains responsible for tracker inventory, category purpose, copy, retention, and legal review.

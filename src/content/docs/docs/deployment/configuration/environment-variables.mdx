@@ -85,16 +85,26 @@ The bootstrap process applies documented defaults, converts strings to the
 required types, and fails before writing the file when a required value is
 missing or a value cannot be parsed.
 
+<span id="oauth2-server" />
+
+### OAuth 2.0 server
+
+Set `PROBOD_OAUTH2_SERVER_SIGNING_KEY` to the persistent PEM RSA key generated
+with your required secrets. Token durations and the allowed client identifiers
+for CIMD are configured separately. See the [OAuth 2.0 server variable
+reference](/docs/deployment/configuration/environment-reference#oauth-20-server)
+for the supported settings and defaults.
+
 ## Compliance Portal TLS
 
 Compliance Portals listen separately from the console and API because they
 route requests by the visitor-facing domain. Choose the mode that matches the
 network path for those portal requests:
 
-| Variable value | TLS endpoint | Portal listener |
-| -------------- | ------------ | --------------- |
-| `PROBOD_TRUST_CENTER_TLS_MODE=direct` | Probo | `PROBOD_TRUST_CENTER_HTTP_ADDR` for HTTP and `PROBOD_TRUST_CENTER_HTTPS_ADDR` for HTTPS |
-| `PROBOD_TRUST_CENTER_TLS_MODE=external` | Trusted layer-7 proxy | `PROBOD_TRUST_CENTER_HTTP_ADDR` for forwarded HTTP requests |
+| Variable value                          | TLS endpoint          | Portal listener                                                                         |
+| --------------------------------------- | --------------------- | --------------------------------------------------------------------------------------- |
+| `PROBOD_TRUST_CENTER_TLS_MODE=direct`   | Probo                 | `PROBOD_TRUST_CENTER_HTTP_ADDR` for HTTP and `PROBOD_TRUST_CENTER_HTTPS_ADDR` for HTTPS |
+| `PROBOD_TRUST_CENTER_TLS_MODE=external` | Trusted layer-7 proxy | `PROBOD_TRUST_CENTER_HTTP_ADDR` for forwarded HTTP requests                             |
 
 `direct` is the default. It requires TCP passthrough so Probo receives TLS SNI
 and can select the certificate for the requested portal domain.
@@ -115,8 +125,8 @@ platform terminates TLS. The proxy must:
 <Aside type="danger" title="Forwarded headers are a trust boundary">
   In external mode, Probo uses the forwarded protocol and host to select a
   Compliance Portal and construct redirects. Do not enable this mode on a
-  listener that untrusted clients can reach without passing through a proxy
-  that replaces those headers.
+  listener that untrusted clients can reach without passing through a proxy that
+  replaces those headers.
 </Aside>
 
 `PROBOD_TRUST_CENTER_PROXY_PROTOCOL_TRUSTED_PROXIES` enables the PROXY protocol

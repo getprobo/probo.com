@@ -31,11 +31,13 @@ const breadcrumbSchema = {
 const docsSchema = {
   "@context": "https://schema.org",
   "@type": isDocsHome ? "WebPage" : "TechArticle",
+  "@id": `${pageUrl}#documentation`,
   ...(isDocsHome
     ? { name: "Probo Docs", alternateName: "Probo Documentation" }
     : { headline: entry.data.title }),
   ...(description && { description }),
   url: pageUrl,
+  mainEntityOfPage: pageUrl,
   inLanguage: "en",
   ...(lastUpdated && { dateModified: lastUpdated.toISOString() }),
   isPartOf: {
@@ -57,6 +59,7 @@ const docsSchema = {
     ],
   },
 };
+const docsSchemaJson = JSON.stringify(docsSchema).replace(/</g, "\\u003c");
 ---
 
 {
@@ -82,7 +85,7 @@ const docsSchema = {
   href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
   rel="stylesheet"
 />
-<script type="application/ld+json" set:html={JSON.stringify(docsSchema)} />
+<script type="application/ld+json" set:html={docsSchemaJson} />
 {
   breadcrumbs.length > 1 && (
     <script
@@ -104,5 +107,5 @@ const docsSchema = {
   import { registerCookieBanner } from "@probo/cookie-banner";
   registerCookieBanner();
 </script>
-<ClientRouter />
+<ClientRouter fallback="swap" />
 <PostHog />

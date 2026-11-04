@@ -19,7 +19,7 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
           <th scope="col">Definition</th>
         </tr>
         <tr class="glossary-table__filters">
-          <th scope="row">
+          <th scope="row" colspan="2">
             <label class="sr-only" for={id}>Filter glossary terms</label>
             <span class="glossary-table__search">
               <Icon name="magnifying-glass" size={16} />
@@ -32,7 +32,6 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
               />
             </span>
           </th>
-          <th></th>
         </tr>
       </thead>
       <tbody id={`${id}-body`}>
@@ -192,12 +191,12 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
     border-radius: 0.3125rem;
     background: var(--docs-surface-raised);
     color: var(--color-quaternary);
-    box-shadow: 0 1px 2px rgb(20 30 18 / 0.04);
+    box-shadow: none;
   }
 
   .glossary-table__search:focus-within {
-    border-color: var(--docs-accent);
-    outline: 2px solid color-mix(in srgb, var(--docs-accent) 25%, transparent);
+    border-color: var(--docs-focus);
+    outline: 2px solid var(--docs-focus);
     outline-offset: 1px;
   }
 
@@ -211,6 +210,10 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
     color: var(--color-primary);
     font: inherit;
     font-weight: 400;
+  }
+
+  .glossary-table .glossary-table__search input:focus-visible {
+    outline: none;
   }
 
   input::placeholder {
@@ -259,13 +262,14 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
   }
 
   tbody :global(a) {
-    color: var(--color-primary);
+    color: var(--docs-link);
+    text-decoration-line: underline;
     text-decoration-color: color-mix(
       in srgb,
-      var(--docs-accent) 75%,
+      var(--docs-link) 30%,
       transparent
     );
-    text-decoration-thickness: 2px;
+    text-decoration-thickness: 1px;
     text-underline-offset: 0.18em;
   }
 
@@ -295,6 +299,25 @@ const { id = "glossary-search", placeholder = "Filter glossary…" } =
   @media (max-width: 39.999rem) {
     .glossary-table__scroll {
       margin-inline: calc(var(--docs-page-padding-x) * -1);
+    }
+  }
+  @media (max-width: 39.999rem) {
+    table {
+      min-width: 0;
+      font-size: 0.875rem;
+    }
+    th,
+    :global(td) {
+      padding: 0.875rem 0.75rem;
+      overflow-wrap: anywhere;
+    }
+    th:first-child,
+    :global(td:first-child) {
+      width: 32%;
+    }
+    .glossary-table__filters input {
+      min-height: 2.75rem;
+      font-size: 1rem;
     }
   }
 </style>

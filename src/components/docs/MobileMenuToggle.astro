@@ -19,36 +19,47 @@ import Icon from "../Icon.astro";
 
 <script>
   import { customElementDefine } from "../../lib/dom";
+  import { animateDocsPanel, cancelDocsPanel } from "./docs-motion";
 
   class StarlightMenuButton extends HTMLElement {
     btn = this.querySelector("button")!;
     desktop = matchMedia("(min-width: 64rem)");
+    focusTimer: ReturnType<typeof setTimeout> | undefined;
+    sidebar: HTMLElement | null = null;
 
     connectedCallback() {
+      this.sidebar = document.getElementById("starlight__sidebar");
       this.btn.addEventListener("click", this.toggleExpanded);
       document.addEventListener("keydown", this.closeOnEscape);
+      document.addEventListener("click", this.closeOutside);
       document.addEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.addEventListener("change", this.closeForDesktop);
-      document
-        .getElementById("starlight__sidebar")
-        ?.addEventListener("click", this.closeAfterNavigation);
-      this.setExpanded(false);
+      window.addEventListener("resize", this.revealFocusedItem);
+      this.sidebar?.addEventListener("click", this.closeAfterNavigation);
+      this.setExpanded(false, false);
     }
 
     disconnectedCallback() {
       this.btn.removeEventListener("click", this.toggleExpanded);
       document.removeEventListener("keydown", this.closeOnEscape);
+      document.removeEventListener("click", this.closeOutside);
       document.removeEventListener("astro:before-swap", this.closeBeforeSwap);
       this.desktop.removeEventListener("change", this.closeForDesktop);
-      document
-        .getElementById("starlight__sidebar")
-        ?.removeEventListener("click", this.closeAfterNavigation);
-      this.setExpanded(false);
+      window.removeEventListener("resize", this.revealFocusedItem);
+      this.sidebar?.removeEventListener("click", this.closeAfterNavigation);
+      this.setExpanded(false, false);
     }
 
-    setExpanded(expanded: boolean) {
+    setExpanded(expanded: boolean, motion = true) {
       const isExpanded = expanded && !this.desktop.matches;
-      const sidebar = document.getElementById("starlight__sidebar");
+      const sidebar = this.sidebar;
+      const wasExpanded = this.btn.getAttribute("aria-expanded") === "true";
+      clearTimeout(this.focusTimer);
+      if (sidebar) {
+        if (motion && wasExpanded !== isExpanded && !this.desktop.matches)
+          void animateDocsPanel(sidebar, isExpanded, "drawer");
+        else if (!motion) cancelDocsPanel(sidebar);
+      }
 
       this.setAttribute("aria-expanded", String(isExpanded));
       this.btn.setAttribute("aria-expanded", String(isExpanded));
@@ -57,6 +68,12 @@ import Icon from "../Icon.astro";
         isExpanded ? "Close documentation menu" : "Open documentation menu",
       );
       document.body.toggleAttribute("data-mobile-menu-expanded", isExpanded);
+      if (
+        !isExpanded &&
+        !this.desktop.matches &&
+        sidebar?.contains(document.activeElement)
+      )
+        this.btn.focus({ preventScroll: true });
       sidebar?.toggleAttribute("inert", !this.desktop.matches && !isExpanded);
 
       document
@@ -68,13 +85,21 @@ import Icon from "../Icon.astro";
         });
 
       if (isExpanded) {
-        window.setTimeout(
-          () =>
-            sidebar
-              ?.querySelector<HTMLElement>("a[href], button, summary")
-              ?.focus(),
-          0,
-        );
+        this.focusTimer = window.setTimeout(() => {
+          const current = sidebar?.querySelector<HTMLElement>(
+            '[aria-current="page"]',
+          );
+          const first = Array.from(
+            sidebar?.querySelectorAll<HTMLElement>(
+              "a[href], button:not([disabled]), summary",
+            ) ?? [],
+          ).find(
+            (element) =>
+              element.getClientRects().length > 0 &&
+              !element.closest("[inert]"),
+          );
+          (current && !current.closest("[inert]") ? current : first)?.focus();
+        }, 0);
       }
     }
 
@@ -82,13 +107,54 @@ import Icon from "../Icon.astro";
       this.setExpanded(this.btn.getAttribute("aria-expanded") !== "true");
 
     closeOnEscape = (event: KeyboardEvent) => {
-      if (
-        event.key === "Escape" &&
-        this.btn.getAttribute("aria-expanded") === "true"
-      ) {
+      if (this.btn.getAttribute("aria-expanded") !== "true") return;
+      if (document.querySelector("dialog[open]")) return;
+      if (event.key === "Escape") {
         this.setExpanded(false);
         this.btn.focus();
+      } else if (
+        event.key === "Tab" &&
+        !document.querySelector("dialog[open]")
+      ) {
+        const sidebar = this.sidebar;
+        const focusable = [
+          this.btn,
+          ...Array.from(
+            sidebar?.querySelectorAll<HTMLElement>(
+              "a[href], button, summary",
+            ) ?? [],
+          ),
+        ].filter(
+          (element) =>
+            element.getClientRects().length > 0 &&
+            !element.closest("[inert]") &&
+            !element.matches('[disabled], [tabindex="-1"]'),
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!focusable.includes(document.activeElement as HTMLElement)) {
+          event.preventDefault();
+          first?.focus();
+        } else if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
       }
+    };
+
+    closeOutside = (event: MouseEvent) => {
+      if (this.btn.getAttribute("aria-expanded") !== "true") return;
+      if (document.querySelector("dialog[open]")) return;
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        !this.contains(target) &&
+        !document.getElementById("starlight__sidebar")?.contains(target)
+      )
+        this.setExpanded(false);
     };
 
     closeAfterNavigation = (event: Event) => {
@@ -97,8 +163,26 @@ import Icon from "../Icon.astro";
       }
     };
 
-    closeBeforeSwap = () => this.setExpanded(false);
-    closeForDesktop = () => this.setExpanded(false);
+    closeBeforeSwap = () => this.setExpanded(false, false);
+    closeForDesktop = () => this.setExpanded(false, false);
+    revealFocusedItem = () => {
+      if (
+        this.desktop.matches ||
+        this.btn.getAttribute("aria-expanded") !== "true"
+      )
+        return;
+      const list = this.sidebar?.querySelector<HTMLElement>(
+        ".docs-sidebar-scroll",
+      );
+      const focused = document.activeElement;
+      if (!list || !(focused instanceof HTMLElement) || !list.contains(focused))
+        return;
+      const bounds = list.getBoundingClientRect();
+      const item = focused.getBoundingClientRect();
+      if (item.top < bounds.top) list.scrollTop -= bounds.top - item.top;
+      else if (item.bottom > bounds.bottom)
+        list.scrollTop += item.bottom - bounds.bottom;
+    };
   }
 
   customElementDefine("starlight-menu-button", () => StarlightMenuButton);

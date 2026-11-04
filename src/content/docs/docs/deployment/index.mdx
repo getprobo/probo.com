@@ -1,11 +1,13 @@
 ---
-title: Overview
-description: Compares Probo Cloud and self-hosted deployment responsibilities for infrastructure, updates, backups, monitoring, and OAuth connector configuration.
+title: Deploy Probo
+description: Choose managed Probo Cloud or self-hosting, compare operational responsibilities, and find deployment, configuration, and security guides.
 ---
 
-import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+import { LinkCard } from "@astrojs/starlight/components";
 
-Probo is available as a managed cloud service or as a self-hosted application. Both options provide the same core product experience; the difference is who controls and operates the infrastructure.
+Use **Probo Cloud** when you want a managed service. Choose **self-hosting** when your team needs to control the infrastructure and can operate it. Both run the same core product; your choice changes who owns availability, updates, backups, and connector configuration.
+
+If you already have access to an instance, go to [Get started](/docs/product/getting-started). You do not need to deploy Probo to use it.
 
 ## Probo Cloud or self-hosted?
 
@@ -28,7 +30,7 @@ For a more detailed comparison, see [Choose a deployment](/docs/product/getting-
 
 ## Explore deployment options
 
-<CardGrid>
+<div className="docs-journey">
   <LinkCard
     title="Probo Cloud"
     description="Review regions, managed operations, security, and shared responsibilities"
@@ -39,22 +41,13 @@ For a more detailed comparison, see [Choose a deployment](/docs/product/getting-
     description="Understand operator responsibilities and supported deployment architectures"
     href="/docs/deployment/self-hosting"
   />
-  <LinkCard
-    title="Configuration"
-    description="Configure probod with YAML files and PROBOD_ environment variables"
-    href="/docs/deployment/configuration/overview"
-  />
-  <LinkCard
-    title="Infrastructure security"
-    description="Review encryption, tenant isolation, backups, and security boundaries"
-    href="/docs/deployment/infrastructure-security"
-  />
-  <LinkCard
-    title="Egress IP addresses"
-    description="Allowlist the fixed outbound addresses for each Cloud region"
-    href="/docs/deployment/ip-ranges"
-  />
-</CardGrid>
+</div>
+
+### Configure and operate
+
+- [Configuration](/docs/deployment/configuration/overview) — configure `probod` with YAML and `PROBOD_` environment variables.
+- [Infrastructure security](/docs/deployment/infrastructure-security) — understand encryption, tenant isolation, backups, and security boundaries.
+- [Egress IP addresses](/docs/deployment/ip-ranges) — allowlist the fixed outbound addresses for each Cloud region.
 
 ## Understand the responsibility boundary
 

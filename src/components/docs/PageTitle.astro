@@ -1,7 +1,10 @@
 ---
 import Icon from "../Icon.astro";
 import { Badge } from "@astrojs/starlight/components";
-import { getDocsBreadcrumbs } from "../../lib/docs-navigation";
+import {
+  getDocsBreadcrumbs,
+  normalizeDocsPath,
+} from "../../lib/docs-navigation";
 
 const { entry, sidebar } = Astro.locals.starlightRoute;
 const { title, description, badge } = entry.data;
@@ -12,34 +15,40 @@ const titleBadge =
     : typeof entry.data.sidebar?.badge === "string"
       ? { text: entry.data.sidebar.badge, variant: "default" as const }
       : undefined);
-const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
+const pathname = normalizeDocsPath(Astro.url.pathname);
 const markdownUrl = pathname ? `${pathname}.md` : "/index.md";
-const breadcrumbs = getDocsBreadcrumbs(Astro.url.pathname, sidebar, title);
+const breadcrumbs = getDocsBreadcrumbs(
+  Astro.url.pathname,
+  sidebar,
+  title,
+).filter((crumb) => crumb.href);
 ---
 
 <header class="docs-page-header">
-  <nav aria-label="Breadcrumb">
-    <ol class="docs-breadcrumbs">
-      {
-        breadcrumbs.map((crumb, index) => (
-          <li>
-            {index > 0 && (
-              <span class="docs-breadcrumbs__separator" aria-hidden="true">
-                /
-              </span>
-            )}
-            {crumb.href ? (
-              <a href={crumb.href}>{crumb.label}</a>
-            ) : (
-              <span aria-current="page">{crumb.label}</span>
-            )}
-          </li>
-        ))
-      }
-    </ol>
-  </nav>
+  {
+    breadcrumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" data-pagefind-ignore>
+        <ol class="docs-breadcrumbs">
+          {breadcrumbs.map((crumb, index) => (
+            <li>
+              {index > 0 && (
+                <span class="docs-breadcrumbs__separator" aria-hidden="true">
+                  /
+                </span>
+              )}
+              {crumb.href ? (
+                <a href={crumb.href}>{crumb.label}</a>
+              ) : (
+                <span aria-current="page">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
 
-  <h1 id="_top">
+  <h1 id="_top" data-pagefind-weight="10">
     {title}
     {
       titleBadge && (
@@ -52,22 +61,32 @@ const breadcrumbs = getDocsBreadcrumbs(Astro.url.pathname, sidebar, title);
       )
     }
   </h1>
-  {description && <p class="docs-page-description">{description}</p>}
+  {
+    description && (
+      <p class="docs-page-description" data-pagefind-weight="2">
+        {description}
+      </p>
+    )
+  }
 
-  <div class="docs-page-actions" aria-label="Page actions">
+  <div class="docs-page-actions" aria-label="Page actions" data-pagefind-ignore>
     <button
       type="button"
       class="docs-page-action"
       data-copy-markdown
       data-markdown-url={markdownUrl}
+      title="Copy this page as Markdown"
     >
       <Icon name="copy" size={18} />
-      <span data-copy-label aria-live="polite">Copy for LLM</span>
+      <span class="docs-copy-status">
+        <span data-copy-label aria-live="polite">Copy page</span>
+        <span class="docs-copy-placeholder" aria-hidden="true">Copy page</span>
+      </span>
     </button>
     <span class="docs-page-actions__divider" aria-hidden="true"></span>
     <a class="docs-page-action" href={markdownUrl} rel="nofollow">
       <Icon name="markdown-logo" size={18} />
-      View as Markdown
+      Markdown
     </a>
   </div>
 </header>
@@ -157,9 +176,22 @@ const breadcrumbs = getDocsBreadcrumbs(Astro.url.pathname, sidebar, title);
     color: var(--color-primary);
   }
 
+  .docs-page-action[data-copy-markdown] {
+    min-inline-size: 0;
+  }
+  .docs-copy-status {
+    display: grid;
+  }
+  .docs-copy-status > span {
+    grid-area: 1 / 1;
+  }
+  .docs-copy-placeholder {
+    visibility: hidden;
+  }
+
   .docs-page-action:focus-visible {
     border-radius: 0.2rem;
-    outline: 2px solid var(--docs-accent);
+    outline: 2px solid var(--docs-focus);
     outline-offset: 3px;
   }
 
@@ -176,44 +208,63 @@ const breadcrumbs = getDocsBreadcrumbs(Astro.url.pathname, sidebar, title);
       await navigator.clipboard.writeText(text);
       return;
     } catch {
+      const focused = document.activeElement;
       const textarea = document.createElement("textarea");
       textarea.value = text;
       textarea.setAttribute("readonly", "");
       textarea.style.position = "fixed";
       textarea.style.opacity = "0";
       document.body.append(textarea);
-      textarea.select();
-      const copied = document.execCommand("copy");
-      textarea.remove();
-      if (!copied) throw new Error("Clipboard write failed");
+      try {
+        textarea.select();
+        if (!document.execCommand("copy"))
+          throw new Error("Clipboard write failed");
+      } finally {
+        textarea.remove();
+        if (focused instanceof HTMLElement)
+          focused.focus({ preventScroll: true });
+      }
     }
   }
 
   if (!document.documentElement.dataset.docsCopyMarkdown) {
     document.documentElement.dataset.docsCopyMarkdown = "true";
+    const resetTimers = new WeakMap<HTMLButtonElement, number>();
     document.addEventListener("click", async (event) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
 
       const button = target.closest<HTMLButtonElement>("[data-copy-markdown]");
-      if (!button) return;
+      if (!button || button.disabled) return;
 
       const label = button.querySelector<HTMLElement>("[data-copy-label]");
       const url = button.dataset.markdownUrl;
       if (!label || !url) return;
 
+      clearTimeout(resetTimers.get(button));
+      button.disabled = true;
+      label.textContent = "Copying…";
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Markdown request failed`);
-        await copyText(await response.text());
+        const text = await response.text();
+        if (/^\s*<!doctype html/i.test(text))
+          throw new Error("Markdown unavailable");
+        await copyText(text);
         label.textContent = "Copied";
       } catch {
         label.textContent = "Copy failed";
+      } finally {
+        button.disabled = false;
       }
 
-      window.setTimeout(() => {
-        label.textContent = "Copy for LLM";
-      }, 1800);
+      resetTimers.set(
+        button,
+        window.setTimeout(() => {
+          label.textContent = "Copy page";
+          resetTimers.delete(button);
+        }, 1800),
+      );
     });
   }
 </script>
