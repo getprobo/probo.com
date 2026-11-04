@@ -36,9 +36,6 @@ Open `http://127.0.0.1:4330/docs`. The Cloudflare preview also serves Markdown r
 
 ```sh
 PROBO_REPO_PATH=/path/to/probo npm run docs:check-reference
-node tools/check-docs-preservation.mjs --base origin/v2 --dist dist
 ```
-
-The preservation checker reports source changes, missing routes, anchors, assets, internal links, Markdown exports, canonical metadata, structured data, and sitemap entries. Editorial changes are reported for review rather than silently accepted.
 
 Browser verification covers desktop and mobile navigation, the search dialog and results, themes, tab switching, section links, table scrolling, and copy feedback. It does not validate product operations inside an authenticated Probo organization.
