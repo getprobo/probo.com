@@ -133,6 +133,7 @@ const htmlRedirects = {
       ["frameworks", "framework"],
       ["organizations", "org"],
       ["risks", "risk"],
+      ["thirdparty", "third-party"],
       ["users", "user"],
       ["webhooks", "webhook"],
     ].map(([from, to]) => [
