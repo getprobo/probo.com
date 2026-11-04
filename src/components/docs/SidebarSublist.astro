@@ -2,13 +2,29 @@
 import { Badge } from "@astrojs/starlight/components";
 import SidebarRestorePoint from "@astrojs/starlight/components/SidebarRestorePoint.astro";
 import Icon from "../Icon.astro";
-import { getDocsSidebarIcon } from "../../lib/docs-navigation";
+import type { DocsSidebarItem } from "../../lib/docs-sidebar";
 
 type Entry = (typeof Astro.locals.starlightRoute.sidebar)[number];
 interface Props {
   sublist: Entry[];
+  items: DocsSidebarItem[];
 }
-const { sublist } = Astro.props;
+const { sublist, items } = Astro.props;
+const itemAt = (entry: Entry, index: number): DocsSidebarItem => {
+  const item = items[index];
+  if (item?.label !== entry.label) {
+    throw new Error(
+      `Sidebar entry "${entry.label}" does not match its configuration.`,
+    );
+  }
+  return item;
+};
+const iconAt = (entry: Entry, index: number) =>
+  itemAt(entry, index).icon ?? "article";
+const childItemsAt = (entry: Entry, index: number) => {
+  const item = itemAt(entry, index);
+  return "items" in item ? item.items : [];
+};
 const hasCurrent = (entries: Entry[]): boolean =>
   entries.some((entry) =>
     entry.type === "link" ? entry.isCurrent : hasCurrent(entry.entries),
@@ -17,7 +33,7 @@ const hasCurrent = (entries: Entry[]): boolean =>
 
 <ul>
   {
-    sublist.map((entry) => (
+    sublist.map((entry, index) => (
       <li>
         {entry.type === "link" ? (
           <a
@@ -26,11 +42,7 @@ const hasCurrent = (entries: Entry[]): boolean =>
             aria-current={entry.isCurrent ? "page" : undefined}
             class:list={["docs-sidebar-link", entry.attrs.class]}
           >
-            <Icon
-              name={getDocsSidebarIcon(entry.label)}
-              size={16}
-              class="docs-nav-icon"
-            />
+            <Icon name={iconAt(entry, index)} size={16} class="docs-nav-icon" />
             <span>{entry.label}</span>
             {entry.badge && (
               <Badge
@@ -45,7 +57,7 @@ const hasCurrent = (entries: Entry[]): boolean =>
             <summary>
               <span class="docs-sidebar-group-label">
                 <Icon
-                  name={getDocsSidebarIcon(entry.label)}
+                  name={iconAt(entry, index)}
                   size={16}
                   class="docs-nav-icon"
                 />
@@ -61,7 +73,10 @@ const hasCurrent = (entries: Entry[]): boolean =>
               <Icon name="caret-right" size={14} class="caret" />
             </summary>
             <SidebarRestorePoint />
-            <Astro.self sublist={entry.entries} />
+            <Astro.self
+              sublist={entry.entries}
+              items={childItemsAt(entry, index)}
+            />
           </details>
         )}
       </li>

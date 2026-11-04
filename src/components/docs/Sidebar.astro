@@ -6,7 +6,6 @@ import SectionNav from "./SectionNav.astro";
 import {
   getDocsSectionForPath,
   getSidebarGroupsForSection,
-  getDocsSidebarIcon,
 } from "../../lib/docs-navigation";
 
 const sectionId = getDocsSectionForPath(Astro.url.pathname);
@@ -27,14 +26,14 @@ const hasCurrent = (entries: Entry[]): boolean =>
 
 <div class="docs-sidebar-scroll">
   {
-    sidebarGroups.map(({ group, showHeading }) =>
+    sidebarGroups.map(({ group, definition, showHeading }) =>
       showHeading ? (
         <details class="sidebar-section" open={hasCurrent(group.entries)}>
           <summary class="sidebar-section-title">
             <span class="sidebar-section-label">
               <>
                 <Icon
-                  name={getDocsSidebarIcon(group.label)}
+                  name={definition.icon ?? "article"}
                   size={16}
                   class="docs-nav-icon"
                 />
@@ -44,12 +43,12 @@ const hasCurrent = (entries: Entry[]): boolean =>
             <Icon name="caret-right" size={14} class="caret" />
           </summary>
           <div class="sidebar-section-links">
-            <SidebarSublist sublist={group.entries} />
+            <SidebarSublist sublist={group.entries} items={definition.items} />
           </div>
         </details>
       ) : (
         <div class="sidebar-section sidebar-section--plain">
-          <SidebarSublist sublist={group.entries} />
+          <SidebarSublist sublist={group.entries} items={definition.items} />
         </div>
       ),
     )
