@@ -42,6 +42,7 @@
 /docs/developers/cli/commands/frameworks /docs/developers/cli/commands/framework 301
 /docs/developers/cli/commands/organizations /docs/developers/cli/commands/org 301
 /docs/developers/cli/commands/risks /docs/developers/cli/commands/risk 301
+/docs/developers/cli/commands/thirdparty /docs/developers/cli/commands/third-party 301
 /docs/developers/cli/commands/users /docs/developers/cli/commands/user 301
 /docs/developers/cli/commands/webhooks /docs/developers/cli/commands/webhook 301
 /docs/self-hosting /docs/deployment/self-hosting 301
