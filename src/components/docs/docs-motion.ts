@@ -432,6 +432,14 @@ export function initDocsMotion() {
   if (initialized) return;
   initialized = true;
   document.addEventListener("astro:page-load", setupPage);
+  document.addEventListener("astro:before-preparation", (event) => {
+    const link = (event as Event & { sourceElement?: Element }).sourceElement;
+    document
+      .querySelectorAll("[data-docs-pending]")
+      .forEach((element) => element.removeAttribute("data-docs-pending"));
+    if (link instanceof HTMLAnchorElement && link.closest(".docs-shell"))
+      link.dataset.docsPending = "";
+  });
   document.addEventListener("astro:before-swap", () => {
     disposePage?.();
     for (const [element] of panels) cancelDocsPanel(element);
