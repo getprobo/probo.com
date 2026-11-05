@@ -1,45 +1,6 @@
 ---
 import Icon from "../Icon.astro";
 
-const quickLinks = [
-  {
-    section: "Get started",
-    links: [
-      {
-        label: "Core concepts",
-        href: "/docs/product/getting-started/core-concepts",
-      },
-      {
-        label: "Choose a deployment",
-        href: "/docs/product/getting-started/choose-deployment",
-      },
-    ],
-  },
-  {
-    section: "Product",
-    links: [
-      { label: "Access Review", href: "/docs/product/access-review/overview" },
-      { label: "Compliance Portal", href: "/docs/product/compliance-portal" },
-      { label: "Risk management", href: "/docs/product/risk-management" },
-    ],
-  },
-  {
-    section: "Deployment",
-    links: [
-      { label: "Probo Cloud", href: "/docs/deployment/cloud" },
-      { label: "Self-hosting", href: "/docs/deployment/self-hosting" },
-    ],
-  },
-  {
-    section: "Developers",
-    links: [
-      { label: "API", href: "/docs/developers/api-overview" },
-      { label: "CLI", href: "/docs/developers/cli/overview" },
-      { label: "MCP", href: "/docs/developers/api/mcp/overview" },
-    ],
-  },
-];
-
 const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
 ---
 
@@ -77,31 +38,15 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
           >
         </button>
       </div>
-      <div class="docs-search-feedback">
+      <div class="docs-search-feedback" hidden>
         <p data-search-status role="status" aria-live="polite">
           Search for a feature, task, or error message.
         </p>
         <button type="button" data-search-retry hidden>Try again</button>
       </div>
       <div class="docs-search-empty" data-search-empty>
-        <div class="docs-search-empty-sections">
-          {
-            quickLinks.map(({ section, links }) => (
-              <section aria-label={section}>
-                <p class="docs-search-empty-heading">{section}</p>
-                <ul>
-                  {links.map(({ label, href }) => (
-                    <li>
-                      <a href={href}>{label}</a>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))
-          }
-        </div>
         <div>
-          <p class="docs-search-empty-heading">Try searching for</p>
+          <p class="docs-search-empty-heading">Suggested searches</p>
           <div class="docs-search-empty-chips">
             {
               exampleQueries.map((query) => (
@@ -230,14 +175,6 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
       void animateDocsPanel(this.dialog, true, "search");
       document.body.setAttribute("data-search-modal-open", "");
       this.input.focus();
-      if (!this.input.value.trim())
-        void this.loadEngine()
-          .then(() => {
-            if (this.isConnected && !this.input.value.trim())
-              this.status.textContent =
-                "Search for a feature, task, or error message.";
-          })
-          .catch(() => this.showError());
     };
 
     closeModal = () => {
@@ -312,7 +249,9 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
       )
         return;
       const links = Array.from(
-        this.results.querySelectorAll<HTMLAnchorElement>("a[href]"),
+        this.input.value.trim()
+          ? this.results.querySelectorAll<HTMLElement>("a[href]")
+          : this.empty.querySelectorAll<HTMLElement>("[data-search-query]"),
       );
       const active = document.activeElement;
       const index = links.findIndex((link) => link === active);
@@ -331,6 +270,7 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
       } else if (
         event.key === "Enter" &&
         active === this.input &&
+        this.input.value.trim() &&
         links.length
       ) {
         event.preventDefault();
@@ -373,6 +313,7 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
 
     search = async () => {
       const query = this.input.value.trim();
+      this.status.parentElement!.hidden = !query;
       const version = ++this.version;
       this.results.replaceChildren();
       this.more.hidden = true;
@@ -681,6 +622,9 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
     font-size: 0.8125rem;
     color: var(--color-muted-foreground);
   }
+  .docs-search-feedback[hidden] {
+    display: none;
+  }
   .docs-search-feedback p {
     flex: 1;
     min-width: 0;
@@ -700,9 +644,9 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
   }
   .docs-search-empty {
     display: grid;
-    gap: 1.25rem;
+    gap: 0.75rem;
     min-height: 0;
-    padding: 0.5rem 1rem 1.25rem;
+    padding: 1.25rem 1rem;
     overflow-y: auto;
     overscroll-behavior: contain;
     font-size: 0.8125rem;
@@ -710,29 +654,9 @@ const exampleQueries = ["SSO", "SCIM", "Cookie banner", "Device agent"];
   .docs-search-empty[hidden] {
     display: none;
   }
-  .docs-search-empty-sections {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
-  }
   .docs-search-empty-heading {
     margin: 0 0 0.375rem;
     font-weight: 600;
-  }
-  .docs-search-empty ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .docs-search-empty a {
-    display: block;
-    padding-block: 0.375rem;
-    color: var(--color-muted-foreground);
-    text-decoration: none;
-  }
-  .docs-search-empty a:hover {
-    color: var(--color-primary);
-    text-decoration: underline;
   }
   .docs-search-empty-chips {
     display: flex;
