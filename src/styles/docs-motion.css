@@ -5,37 +5,11 @@
   --docs-motion-feedback: 140ms;
 }
 
-/* Page navigation: chrome and sidebar stay put, only the reading area fades. */
-::view-transition-group(docs-chrome),
-::view-transition-group(docs-sidebar),
-::view-transition-group(docs-shell) {
-  animation-duration: 0s;
-}
-::view-transition-old(docs-chrome),
-::view-transition-old(docs-sidebar) {
-  animation: none;
-  opacity: 0;
-}
-::view-transition-new(docs-chrome),
-::view-transition-new(docs-sidebar) {
-  animation: none;
-}
-::view-transition-old(docs-shell) {
-  animation: 90ms var(--docs-motion-smooth) both docs-page-out;
-}
-::view-transition-new(docs-shell) {
-  animation: 180ms var(--docs-motion-smooth) 40ms both docs-page-in;
-}
-@keyframes docs-page-out {
-  to {
-    opacity: 0;
-  }
-}
-@keyframes docs-page-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+  mix-blend-mode: normal;
 }
 
 .docs-shell a[data-docs-pending] {
@@ -169,11 +143,6 @@ site-search dialog[data-docs-panel-state="closing"]::backdrop {
 @media (prefers-reduced-motion: reduce) {
   :root {
     --docs-motion-feedback: 80ms;
-  }
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
   }
   .docs-shell details > summary :is(.caret, .step-caret),
   .docs-shell .mcp-tool > summary::after,

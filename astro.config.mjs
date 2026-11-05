@@ -58,7 +58,7 @@ export default defineConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["lottie-web"],
+      include: ["lottie-web", "@probo/cookie-banner"],
       exclude: ["svelte-sonner"],
     },
     build: {

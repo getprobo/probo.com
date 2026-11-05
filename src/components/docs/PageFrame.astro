@@ -21,7 +21,7 @@ const isHome = normalizeDocsPath(Astro.url.pathname) === "/docs";
 const section = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
 ---
 
-<div class="docs-chrome" transition:name="docs-chrome">
+<div class="docs-chrome">
   <header class="docs-masthead">
     <div class="docs-brand">
       <MobileMenuToggle />
@@ -60,13 +60,12 @@ const section = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
 </div>
 
 <div
-  transition:name="docs-shell"
+  transition:animate="none"
   class:list={["docs-shell", { "docs-shell--home": isHome }]}
 >
   <div class="docs-main">
     <nav
       id="starlight__sidebar"
-      transition:name="docs-sidebar"
       class="sidebar"
       aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}
     >
