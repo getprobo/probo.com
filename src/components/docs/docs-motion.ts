@@ -414,7 +414,7 @@ function setupPage() {
   if (!root) return;
   const disposers = Array.from(
     root.querySelectorAll<HTMLDetailsElement>(
-      ".sidebar details, .accordion-step > details, .sl-markdown-content details, #starlight__mobile-toc",
+      ".accordion-step > details, .sl-markdown-content details, #starlight__mobile-toc",
     ),
   ).map(enhanceDisclosure);
   disposers.push(

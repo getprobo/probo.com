@@ -8,7 +8,8 @@ import {
   getSidebarGroupsForSection,
 } from "../../lib/docs-navigation";
 
-const sectionId = getDocsSectionForPath(Astro.url.pathname);
+const currentSection = getDocsSectionForPath(Astro.url.pathname);
+const sectionId = currentSection === "overview" ? "product" : currentSection;
 const hasCookieBanner = Boolean(
   import.meta.env.PUBLIC_COOKIE_BANNER_ID &&
   import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL,
@@ -24,11 +25,15 @@ const hasCurrent = (entries: Entry[]): boolean =>
   );
 ---
 
-<div class="docs-sidebar-scroll">
+<div class="docs-sidebar-scroll" data-docs-section={sectionId}>
   {
     sidebarGroups.map(({ group, definition, showHeading }) =>
       showHeading ? (
-        <details class="sidebar-section" open={hasCurrent(group.entries)}>
+        <details
+          class="sidebar-section"
+          data-sidebar-key={definition.id}
+          open={hasCurrent(group.entries)}
+        >
           <summary class="sidebar-section-title">
             <span class="sidebar-section-label">
               <>
@@ -43,12 +48,20 @@ const hasCurrent = (entries: Entry[]): boolean =>
             <Icon name="caret-right" size={14} class="caret" />
           </summary>
           <div class="sidebar-section-links">
-            <SidebarSublist sublist={group.entries} items={definition.items} />
+            <SidebarSublist
+              sublist={group.entries}
+              items={definition.items}
+              statePath={definition.id}
+            />
           </div>
         </details>
       ) : (
         <div class="sidebar-section sidebar-section--plain">
-          <SidebarSublist sublist={group.entries} items={definition.items} />
+          <SidebarSublist
+            sublist={group.entries}
+            items={definition.items}
+            statePath={definition.id}
+          />
         </div>
       ),
     )
@@ -67,28 +80,68 @@ const hasCurrent = (entries: Entry[]): boolean =>
 </div>
 
 <script>
+  import type { TransitionBeforeSwapEvent } from "astro:transitions/client";
+
+  const sidebarStates = new Map<
+    string,
+    { scroll: number; open: Map<string, boolean> }
+  >();
+  let restoredScroll: number | undefined;
+
   const revealCurrentPage = () => {
     const sidebar = document.querySelector<HTMLElement>(".docs-sidebar-scroll");
-    const active = sidebar?.querySelector<HTMLElement>('[aria-current="page"]');
-    if (!sidebar || !active) return;
+    if (!sidebar) return;
+    if (restoredScroll !== undefined) {
+      sidebar.scrollTop = restoredScroll;
+      restoredScroll = undefined;
+    }
+    const active = sidebar.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!active) return;
     let parent = active.parentElement;
     while (parent && parent !== sidebar) {
       if (parent instanceof HTMLDetailsElement) parent.open = true;
       parent = parent.parentElement;
     }
-    requestAnimationFrame(() => {
-      if (!sidebar.isConnected) return;
-      const parentRect = sidebar.getBoundingClientRect();
-      const linkRect = active.getBoundingClientRect();
-      if (
-        linkRect.top < parentRect.top ||
-        linkRect.bottom > parentRect.bottom
-      ) {
-        sidebar.scrollTop +=
-          linkRect.top - parentRect.top - parentRect.height / 3;
-      }
-    });
+    const parentRect = sidebar.getBoundingClientRect();
+    const linkRect = active.getBoundingClientRect();
+    if (linkRect.top < parentRect.top || linkRect.bottom > parentRect.bottom) {
+      sidebar.scrollTop +=
+        linkRect.top - parentRect.top - parentRect.height / 3;
+    }
   };
+
+  document.addEventListener("astro:before-swap", (event) => {
+    const sidebar = document.querySelector<HTMLElement>(".docs-sidebar-scroll");
+    const section = sidebar?.dataset.docsSection;
+    if (sidebar && section) {
+      sidebarStates.set(section, {
+        scroll: sidebar.scrollTop,
+        open: new Map(
+          Array.from(
+            sidebar.querySelectorAll<HTMLDetailsElement>(
+              "details[data-sidebar-key]",
+            ),
+            (details) => [details.dataset.sidebarKey!, details.open] as const,
+          ),
+        ),
+      });
+    }
+    const incoming = (event as TransitionBeforeSwapEvent).newDocument;
+    const nextSidebar = incoming.querySelector<HTMLElement>(
+      ".docs-sidebar-scroll",
+    );
+    const state = sidebarStates.get(nextSidebar?.dataset.docsSection ?? "");
+    restoredScroll = state?.scroll;
+    if (!nextSidebar) return;
+    for (const details of nextSidebar.querySelectorAll<HTMLDetailsElement>(
+      "details[data-sidebar-key]",
+    )) {
+      const open = state?.open.get(details.dataset.sidebarKey!);
+      if (open !== undefined) details.open = open;
+      if (details.querySelector('[aria-current="page"]')) details.open = true;
+    }
+  });
+  document.addEventListener("astro:after-swap", revealCurrentPage);
   document.addEventListener("astro:page-load", revealCurrentPage);
   revealCurrentPage();
 </script>
