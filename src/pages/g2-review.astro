@@ -1,0 +1,375 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const G2_REVIEW_URL = "https://www.g2.com/products/probo/reviews";
+
+const AI_PROMPT =
+  "I want to write an honest G2 review of Probo. Read https://www.probo.com/g2-review to see every question G2 asks and the tips for each one. Then interview me about my real experience with Probo, one question at a time, and draft my answers in my own words. Don't invent anything I haven't told you, and keep what I disliked in the review.";
+
+type Example = { label?: string; text: string };
+type Question = {
+  title: string;
+  required?: boolean;
+  advice: string[];
+  examples?: Example[];
+  note?: string;
+};
+type Section = {
+  id: string;
+  step: string;
+  title: string;
+  intro: string;
+  questions: Question[];
+};
+
+const sections: Section[] = [
+  {
+    id: "review",
+    step: "Page 1",
+    title: "Your review",
+    intro:
+      "This is the part people read. Use the examples as a starting point: replace everything in [brackets] with your own story, and feel free to rewrite the rest. G2 rejects reviews that look identical to others, so your own words matter.",
+    questions: [
+      {
+        title: "What problems is Probo solving and how is that benefiting you?",
+        required: true,
+        advice: [
+          "Why you needed compliance in the first place: a customer deal, a security questionnaire, investors, a regulation.",
+          "Which framework you went for: SOC 2, ISO 27001, GDPR, NIS2...",
+          "What it would have taken without Probo: hiring, consultants, engineering time.",
+          "The result: certification obtained, deal closed, time saved.",
+          "If you run compliance yourself on the Probo platform: how it fits your stack, and what your team automated with the MCP server, the CLI or your own workflows.",
+        ],
+        examples: [
+          {
+            label: "Example: managed service",
+            text: "We needed [SOC 2 Type II] because [a large customer required it before signing]. We had no one in-house to own compliance, and doing it ourselves would have meant [months of engineering time / hiring a consultant]. Probo took care of [policies, evidence collection and the audit preparation], and we got [certified in X months] while the team kept shipping. It also helped us [answer security questionnaires much faster].",
+          },
+          {
+            label: "Example: platform, compliance done in-house",
+            text: "We wanted to run [ISO 27001] ourselves without a heavy, closed GRC tool. Probo integrates with [our stack: e.g. Google Workspace, AWS, GitHub, Slack], and our security team drives everything through [the MCP server / the CLI]. We built our own workflows for [access reviews, onboarding and offboarding, evidence collection] tailored to how we work, and use AI to [draft policies, answer questionnaires, review vendors]. Compliance went from [a yearly fire drill] to [something our team actually owns].",
+          },
+        ],
+      },
+      {
+        title: "What do you like best about Probo?",
+        required: true,
+        advice: [
+          "Pick one or two things that really stood out, and say why.",
+          "Ideas: the team's support, speed to audit-ready, the platform, the open-source approach, the price, less work for your engineers, a feature you use (policies, access reviews, compliance portal, vendor management).",
+          "Platform ideas: it integrates with your stack, everything is doable through the MCP server or the CLI, you can build workflows tailored to your stack, and your security team gets the full power of AI on its compliance data.",
+          "G2 asks for at least 40 characters.",
+        ],
+        examples: [
+          {
+            label: "Example: managed service",
+            text: "What I like most is [the team]: [they did most of the heavy lifting and were always reachable on Slack]. I also appreciate [the platform / the open-source approach], because [we keep full visibility on our compliance program].",
+          },
+          {
+            label: "Example: platform, compliance done in-house",
+            text: "What I like most is that Probo [fits into our stack instead of forcing a new process]. Our security team does everything through [the MCP server or the CLI], built [its own workflows] on top of it, and uses AI to [move much faster on policies and evidence]. We stay in control of our compliance program.",
+          },
+        ],
+      },
+      {
+        title: "What do you dislike about Probo?",
+        required: true,
+        advice: [
+          "Be honest. Reviews with only praise look less credible to readers, and this feedback goes straight to our product team.",
+          "Something that frustrated you, a missing feature or integration, something unclear during onboarding. Small things count.",
+          "G2 asks for at least 40 characters.",
+        ],
+        examples: [
+          {
+            text: "[The platform is still young and some features are missing, for example X]. I would also like [more integrations with Y / clearer guidance during onboarding]. That said, the team [is quick to take feedback into account].",
+          },
+        ],
+      },
+      {
+        title: "Recommendations to others considering Probo",
+        advice: [
+          "Optional. What would you tell a founder or CTO starting their compliance journey?",
+          "Who is Probo a good fit for?",
+        ],
+        examples: [
+          {
+            label: "Example: managed service",
+            text: "If you are [a startup that needs SOC 2 or ISO 27001 to close deals] and don't want to hire a compliance person, [Probo is a great fit]. Start early, before the deal that needs it, and [involve your engineers from day one].",
+          },
+          {
+            label: "Example: platform, compliance done in-house",
+            text: "If you want to do compliance yourself but give your security team real tools, [Probo is the way to go]. Connect it to [your stack], use [the MCP server with your AI assistant or the CLI] for the day-to-day, and build workflows that fit [how your team already works].",
+          },
+        ],
+      },
+      {
+        title:
+          "What is your primary role when working with this service provider?",
+        advice: [
+          "Pick what fits best. Founders and CTOs usually choose Executive Sponsor.",
+        ],
+      },
+      {
+        title: "Title for your review",
+        required: true,
+        advice: ["One short sentence that sums up your experience."],
+        examples: [
+          { text: "[SOC 2] done in [X months] without slowing down our team" },
+          { text: "A compliance partner that [actually does the work]" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ratings",
+    step: "Page 2",
+    title: "Rating Probo as a service provider",
+    intro:
+      "This page is about working with the Probo team, not the software. Rate each item from 1 (least) to 7 (most), or choose N/A if it doesn't apply to you. Give the score that reflects your experience.",
+    questions: [
+      {
+        title: "What types of projects did Probo assist you with?",
+        advice: [
+          "Start typing and pick from the list: compliance, information security, SOC 2 or ISO 27001 audit, GDPR / privacy, risk management...",
+        ],
+      },
+      {
+        title: "What each rating means",
+        advice: [
+          "Good partner in doing business: your overall experience working with us.",
+          "Professionalism: how reliable and serious the team was.",
+          "Quality of Work: what we delivered (policies, evidence, audit preparation).",
+          "Expertise of Team: how well the team knew compliance and your framework.",
+          "Execution Ability: whether things got done on time and as planned.",
+          "Responsiveness: how fast we answered on Slack or by email.",
+          "Communication Skills: how clear our explanations, updates and next steps were.",
+        ],
+      },
+      {
+        title: "Is the product or service expensive?",
+        advice: ["7 means very expensive, 1 means not expensive at all."],
+        note: "Careful, this scale is reversed compared to the others. If you found Probo good value for money, the right answer is on the low side.",
+      },
+    ],
+  },
+  {
+    id: "engagement",
+    step: "Page 3",
+    title: "Your engagement with Probo",
+    intro: "Factual questions. Most customers answer them the same way.",
+    questions: [
+      {
+        title: "What is your level of experience with Probo?",
+        required: true,
+        advice: [
+          "If you have an active Probo contract, pick Ongoing client relationship.",
+        ],
+        examples: [{ text: "Ongoing client relationship" }],
+      },
+      {
+        title: "What software did you use Probo to implement?",
+        advice: [
+          "Type Probo and pick it from the list: our managed service runs on the Probo platform.",
+          "If the team also helped you set up other tools (identity provider, cloud, device management), you can add them too.",
+        ],
+        examples: [{ text: "Probo" }],
+      },
+      {
+        title: "What year was the engagement complete?",
+        advice: [
+          "The year or years you worked with us. If you are still a customer, pick the current year.",
+        ],
+      },
+      {
+        title: "What was the total length of the engagement?",
+        advice: [
+          "Ongoing if you are still a customer, otherwise the actual length.",
+        ],
+        examples: [{ text: "Ongoing" }],
+      },
+      {
+        title: "Timeframe, scope and budget (Yes / No / n/a)",
+        advice: [
+          "Correct timeframe: did you reach your goal (audit-ready, certification) by the date you expected?",
+          "Objectives met on scope: did we deliver what was agreed?",
+          "On budget: did the cost match what you signed, with no surprises?",
+        ],
+      },
+      {
+        title: "What is your total annual spend with Probo?",
+        advice: [
+          "Optional. G2 does not show the amount publicly, and you can leave it blank.",
+        ],
+      },
+    ],
+  },
+];
+---
+
+<Layout
+  title="Review Probo on G2"
+  description="A short guide to leaving a review of Probo on G2."
+  noIndex={true}
+  noFrameworks={true}
+>
+  <main>
+    <section class="container py-20 sm:py-28">
+      <div class="mx-auto max-w-2xl">
+        <img
+          src="/images/g2-logo.svg"
+          alt="G2"
+          width="64"
+          height="65"
+          class="mb-8 h-16 w-auto"
+        />
+        <h1 class="text-h2 sm:text-h1 mb-6 font-medium">Review Probo on G2</h1>
+        <p class="text-muted-foreground mb-4 text-lg">
+          Thanks for taking the time. A review takes about 5 minutes and helps
+          other teams find a compliance partner they can trust.
+        </p>
+        <p class="text-muted-foreground mb-8 text-lg">
+          Below is every question G2 asks, with tips and examples. Please write
+          in your own words and be honest, including about what we could do
+          better.
+        </p>
+        <div class="bg-active mb-8 rounded-2xl p-5">
+          <h2 class="text-h5 mb-2 font-medium">
+            Tip: let your AI assistant help
+          </h2>
+          <p class="text-foreground mb-3 text-base">
+            Paste the prompt below into Claude, ChatGPT or any assistant, then
+            tell it about your experience. It will draft each answer in your
+            words, ready to paste into G2.
+          </p>
+          <div class="bg-level-1 border-border-low rounded-xl border p-4">
+            <div class="mb-2 flex items-center justify-between gap-4">
+              <span
+                class="text-muted-foreground text-xs font-medium tracking-wide uppercase"
+                >Prompt</span
+              >
+              <button
+                type="button"
+                class="copy-btn border-border-mid hover:bg-highlight rounded-full border px-3 py-1 text-xs font-medium"
+                data-copy={AI_PROMPT}>Copy</button
+              >
+            </div>
+            <p class="text-foreground text-sm">{AI_PROMPT}</p>
+          </div>
+        </div>
+        <a
+          href={G2_REVIEW_URL}
+          target="_blank"
+          rel="noopener"
+          class="bg-primary text-primary-foreground shadow-btn inline-flex items-center rounded-full px-5 py-2.5 text-base font-medium"
+          >Open the G2 review form</a
+        >
+
+        <nav
+          class="border-border-solid mt-12 flex flex-wrap gap-2 border-t pt-6 text-sm"
+        >
+          {
+            sections.map((s) => (
+              <a
+                href={`#${s.id}`}
+                class="border-border-mid text-muted-foreground hover:text-foreground rounded-full border px-3 py-1"
+              >
+                {s.step}: {s.title}
+              </a>
+            ))
+          }
+        </nav>
+
+        {
+          sections.map((section) => (
+            <section id={section.id} class="mt-16 scroll-mt-24">
+              <p class="text-muted-foreground mb-2 text-sm font-medium">
+                {section.step}
+              </p>
+              <h2 class="text-h3 mb-4 font-medium">{section.title}</h2>
+              <p class="text-muted-foreground mb-8 text-lg">{section.intro}</p>
+
+              <div class="space-y-6">
+                {section.questions.map((q) => (
+                  <article class="border-border-solid bg-level-1 rounded-2xl border p-6">
+                    <h3 class="text-h5 mb-3 font-medium">
+                      {q.title}
+                      {q.required && (
+                        <span class="text-muted-foreground ml-1 text-sm font-normal">
+                          (required)
+                        </span>
+                      )}
+                    </h3>
+                    <ul class="text-tertiary-foreground list-disc space-y-1.5 pl-5 text-base">
+                      {q.advice.map((a) => (
+                        <li>{a}</li>
+                      ))}
+                    </ul>
+
+                    {q.note && (
+                      <p class="bg-active text-foreground mt-4 rounded-xl px-4 py-3 text-sm">
+                        {q.note}
+                      </p>
+                    )}
+
+                    {q.examples?.map((ex) => (
+                      <div class="bg-level-0 border-border-low mt-4 rounded-xl border p-4">
+                        <div class="mb-2 flex items-center justify-between gap-4">
+                          <span class="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                            {ex.label ?? "Example"}
+                          </span>
+                          <button
+                            type="button"
+                            class="copy-btn border-border-mid hover:bg-highlight rounded-full border px-3 py-1 text-xs font-medium"
+                            data-copy={ex.text}
+                          >
+                            Copy
+                          </button>
+                        </div>
+                        <p class="text-foreground text-base">{ex.text}</p>
+                      </div>
+                    ))}
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+
+        <div class="border-border-solid mt-16 border-t pt-10">
+          <h2 class="text-h4 mb-3 font-medium">Ready?</h2>
+          <p class="text-muted-foreground mb-6 text-lg">
+            Thank you, it really helps us. If anything in the form is unclear,
+            ask us on Slack.
+          </p>
+          <a
+            href={G2_REVIEW_URL}
+            target="_blank"
+            rel="noopener"
+            class="bg-primary text-primary-foreground shadow-btn inline-flex items-center rounded-full px-5 py-2.5 text-base font-medium"
+            >Open the G2 review form</a
+          >
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  function bindCopyButtons() {
+    document.querySelectorAll<HTMLButtonElement>(".copy-btn").forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy ?? "");
+          btn.textContent = "Copied";
+        } catch {
+          btn.textContent = "Select and copy";
+        }
+        setTimeout(() => (btn.textContent = "Copy"), 1500);
+      });
+    });
+  }
+  bindCopyButtons();
+  document.addEventListener("astro:page-load", bindCopyButtons);
+</script>
