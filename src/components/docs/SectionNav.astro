@@ -10,7 +10,9 @@ interface Props {
 }
 
 const { placement = "header" } = Astro.props;
-const activeSection = getDocsSectionForPath(Astro.url.pathname);
+const currentSection = getDocsSectionForPath(Astro.url.pathname);
+const activeSection =
+  currentSection === "overview" ? "product" : currentSection;
 const spaces = [
   {
     id: "product",
@@ -46,6 +48,7 @@ const sections = spaces;
       return (
         <a
           href={section.href}
+          data-astro-prefetch="hover"
           class:list={[
             "docs-section-nav__link",
             isActive ? "docs-section-nav__link--active" : "",

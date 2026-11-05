@@ -49,7 +49,9 @@ function svelteVirtualCssFallback() {
 export default defineConfig({
   site: "https://www.probo.com",
   compressHTML: true,
-  prefetch: false,
+  prefetch: {
+    prefetchAll: false,
+  },
   trailingSlash: "never",
   build: {
     format: "file",
