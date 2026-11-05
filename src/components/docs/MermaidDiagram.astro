@@ -8,12 +8,13 @@ interface Props {
 const { chart, caption, class: className } = Astro.props;
 ---
 
-<figure
-  class:list={["mermaid-diagram not-content", className]}
-  tabindex="0"
-  aria-label={caption || "Diagram. Scroll horizontally to explore."}
->
-  <pre class="mermaid">{chart}</pre>
+<figure class:list={["mermaid-diagram not-content", className]}>
+  <pre
+    class="mermaid"
+    tabindex="0"
+    role="region"
+    aria-label={caption ||
+      "Diagram. Scroll horizontally to explore."}>{chart}</pre>
   <figcaption>
     {caption && <span>{caption}</span>}<span class="diagram-scroll-hint"
       >Scroll horizontally to explore the diagram.</span
@@ -28,7 +29,7 @@ const { chart, caption, class: className } = Astro.props;
     border-radius: 0.5rem;
     background: var(--docs-surface-raised);
     box-shadow: 0 1px 2px rgb(20 30 18 / 0.03);
-    overflow-x: auto;
+    overflow: hidden;
   }
 
   .mermaid-diagram :global(pre.mermaid) {
@@ -39,12 +40,14 @@ const { chart, caption, class: className } = Astro.props;
     background: transparent;
     border: none;
     min-height: 12rem;
+    overflow-x: auto;
   }
 
   .mermaid-diagram :global(pre.mermaid svg) {
-    max-width: none;
+    max-width: 100%;
     flex: 0 0 auto;
     height: auto;
+    margin-inline: auto;
   }
 
   .mermaid-diagram :global(pre.mermaid-error) {
