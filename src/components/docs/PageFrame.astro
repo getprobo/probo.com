@@ -6,6 +6,7 @@ import MobileMenuToggle from "virtual:starlight/components/MobileMenuToggle";
 import Search from "virtual:starlight/components/Search";
 import Button from "../ui/Button.svelte";
 import ThemeToggle from "./ThemeToggle.astro";
+import Icon from "../Icon.astro";
 import {
   getDocsSection,
   getDocsSectionForPath,
@@ -44,6 +45,7 @@ const section = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
       <a
         class="docs-home-link"
         href="/docs"
+        data-astro-prefetch="hover"
         aria-label={`${section.label} — documentation home`}
       >
         {section.label}
@@ -69,7 +71,26 @@ const section = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
     >
       <slot name="sidebar" />
     </nav>
-    <div class="docs-content"><slot /></div>
+    <div
+      class:list={[
+        "docs-content",
+        { "docs-content--with-utilities": hasCookieBanner },
+      ]}
+    >
+      <slot />
+      {
+        hasCookieBanner && (
+          <footer class="docs-page-utilities" aria-label="Privacy settings">
+            <div class="cookie-settings-row">
+              <Icon name="cookie" size="1.2em" class="cookie-settings-icon" />
+              <probo-settings-link class="cookie-settings">
+                <span>Cookie settings</span>
+              </probo-settings-link>
+            </div>
+          </footer>
+        )
+      }
+    </div>
   </div>
 </div>
 
@@ -87,3 +108,81 @@ const section = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
   import { initDocsMotion } from "./docs-motion";
   initDocsMotion();
 </script>
+
+<style>
+  .docs-content--with-utilities {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh - var(--sl-docs-chrome-height));
+    padding-block-end: 0.75rem;
+  }
+  .docs-content--with-utilities > :global(.docs-body) {
+    width: 100%;
+  }
+  .docs-page-utilities {
+    display: flex;
+    justify-content: flex-end;
+    margin-block-start: auto;
+    margin-inline-end: calc(1.5rem - var(--docs-page-padding-x));
+    padding-block-start: 2rem;
+  }
+  .cookie-settings-row {
+    position: relative;
+    width: fit-content;
+    max-width: min(100%, 16rem);
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+  .cookie-settings-row :global(.cookie-settings-icon) {
+    position: absolute;
+    inset-block-start: calc(0.5625rem + 0.15em);
+    inset-inline-start: 0;
+    pointer-events: none;
+  }
+  .cookie-settings {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    min-height: 2.25rem;
+    padding-block: 0.5625rem;
+    padding-inline: 0.625rem;
+    padding-inline-start: calc(1.2em + 0.25rem);
+    flex-wrap: wrap;
+    font-size: inherit;
+    line-height: 1.5;
+    color: inherit;
+    text-align: start;
+  }
+  .cookie-settings :global(> span) {
+    flex-shrink: 0;
+    overflow-wrap: normal;
+  }
+  .cookie-settings :global([data-probo-gpc]) {
+    flex-basis: 100%;
+    max-width: 100%;
+    font-weight: 400 !important;
+    line-height: 1.45;
+    white-space: normal !important;
+  }
+  .cookie-settings-row:has(.cookie-settings:is(:hover, :focus-visible)) {
+    color: var(--color-primary);
+  }
+  .cookie-settings:focus-visible {
+    border-radius: 0.25rem;
+    outline: 2px solid var(--docs-focus);
+    outline-offset: 3px;
+  }
+  @media (max-width: 63.999rem) {
+    .docs-page-utilities {
+      margin-inline-end: calc(1.25rem - var(--docs-page-padding-x));
+    }
+    .cookie-settings {
+      min-height: 2.75rem;
+      padding-block: 0.8125rem;
+    }
+    .cookie-settings-row :global(.cookie-settings-icon) {
+      inset-block-start: calc(0.8125rem + 0.15em);
+    }
+  }
+</style>

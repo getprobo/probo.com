@@ -39,6 +39,7 @@ const hasCurrent = (entries: Entry[]): boolean =>
           <a
             {...entry.attrs}
             href={entry.href}
+            data-astro-prefetch="hover"
             aria-current={entry.isCurrent ? "page" : undefined}
             class:list={["docs-sidebar-link", entry.attrs.class]}
           >

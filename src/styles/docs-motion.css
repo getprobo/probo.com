@@ -52,12 +52,19 @@ site-search .docs-search-field {
 }
 
 .docs-website-link svg,
-.docs-shell .sl-link-card .icon {
+.docs-shell .sl-link-card .icon,
+.docs-shell .pagination-links svg {
   transition: transform 220ms var(--docs-motion-snappy);
 }
 .docs-website-link:is(:hover, :focus-visible) svg,
 .docs-shell .sl-link-card:is(:hover, :focus-within) .icon {
   transform: translateX(2px);
+}
+.docs-shell .pagination-links a[rel="next"]:hover:not(:focus-visible) svg {
+  transform: translateX(2px);
+}
+.docs-shell .pagination-links a[rel="prev"]:hover:not(:focus-visible) svg {
+  transform: translateX(-2px);
 }
 .docs-chrome :is(button, [role="button"]) > svg,
 .docs-shell :is(.docs-page-action, .copy button) > svg,
@@ -137,6 +144,7 @@ site-search dialog[data-docs-panel-state="closing"]::backdrop {
   .docs-shell .mcp-tool > summary::after,
   .docs-website-link svg,
   .docs-shell .sl-link-card .icon,
+  .docs-shell .pagination-links svg,
   .docs-chrome :is(button, [role="button"]) > svg,
   .docs-shell :is(.docs-page-action, .copy button) > svg,
   site-search button > svg,
@@ -154,6 +162,7 @@ site-search dialog[data-docs-panel-state="closing"]::backdrop {
   }
   .docs-website-link:is(:hover, :focus-visible) svg,
   .docs-shell .sl-link-card:is(:hover, :focus-within) .icon,
+  .docs-shell .pagination-links a[rel]:hover:not(:focus-visible) svg,
   .docs-chrome button:active > svg,
   .docs-shell .docs-page-action:active > svg,
   site-search button:active > svg {
