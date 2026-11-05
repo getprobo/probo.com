@@ -180,6 +180,9 @@ export default defineConfig({
         if (page.includes("/welcome")) {
           return false;
         }
+        if (page.includes("/g2-review")) {
+          return false;
+        }
         if (page.includes("/static")) {
           return false;
         }
