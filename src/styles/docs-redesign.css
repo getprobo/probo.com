@@ -213,9 +213,6 @@ body {
   color: var(--color-primary);
   font-weight: 600;
 }
-.docs-sidebar-footer .cookie-settings a {
-  font-size: 0.75rem;
-}
 .docs-content {
   min-width: 0;
   padding: 3rem var(--docs-page-padding-x) 4.5rem;
@@ -324,18 +321,6 @@ body {
 .docs-shell .sidebar summary .caret {
   order: 1;
 }
-.docs-shell--home .docs-sidebar-scroll {
-  display: none;
-}
-@media (min-width: 64rem) {
-  .docs-shell--home .docs-main {
-    display: block;
-  }
-  .docs-shell--home .sidebar {
-    display: none;
-  }
-}
-
 .docs-page-header {
   margin-block-end: 2.5rem;
   padding-block-end: 1.5rem;
@@ -394,7 +379,7 @@ body {
   font-size: 1.0625rem;
   line-height: 1.5;
 }
-.sl-markdown-content :is(ul, ol) {
+.sl-markdown-content :is(ul, ol):not(.accordion-steps) {
   padding-inline-start: 1.5rem;
 }
 .sl-markdown-content li + li {
@@ -689,6 +674,61 @@ body {
   > .expressive-code:first-child {
   margin-block-start: 0;
 }
+.sl-markdown-content
+  starlight-tabs:has(> [role="tabpanel"] > .expressive-code:only-child) {
+  > .tablist-wrapper {
+    margin: 0;
+    border: 1px solid #525252;
+    border-bottom: 0;
+    border-radius: 0.5rem 0.5rem 0 0;
+    background: #171717;
+
+    > [role="tablist"] {
+      width: 100%;
+      padding: 0.375rem;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .tab > [role="tab"] {
+      color: #d4d4d4;
+    }
+
+    .tab > [role="tab"][aria-selected="true"] {
+      background: #404040;
+      color: #fff;
+    }
+
+    .tab > [role="tab"]:hover {
+      color: #fff;
+    }
+
+    .tab > [role="tab"]:focus-visible {
+      outline-color: #fff;
+    }
+  }
+
+  > [role="tabpanel"] {
+    margin-block-start: 0;
+
+    > .expressive-code {
+      margin-block-start: 0;
+
+      .frame,
+      .frame > .header,
+      .frame pre {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+    }
+  }
+}
+
+.docs-shell .pagination-links a:hover {
+  border-color: var(--color-border-mid);
+  background: var(--color-subtle);
+}
+
 .expressive-code {
   --ec-brdRad: 0.5rem;
   --ec-brdCol: #525252;

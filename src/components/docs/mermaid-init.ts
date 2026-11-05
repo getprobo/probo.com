@@ -54,7 +54,8 @@ export async function renderMermaidDiagrams(root: ParentNode = document) {
         background.style.fill = config.themeVariables.primaryColor;
         diagram.prepend(background);
         diagram.style.width = `${width}px`;
-        diagram.style.maxWidth = "none";
+        diagram.style.maxWidth = "100%";
+        diagram.style.minWidth = `${Math.min(width, 640)}px`;
         diagram.style.height = "auto";
       }
       node.dataset.processed = "true";
@@ -76,10 +77,9 @@ function updateDiagramOverflow() {
   for (const figure of document.querySelectorAll<HTMLElement>(
     ".mermaid-diagram",
   )) {
-    const drawing = figure.querySelector("pre.mermaid svg");
+    const viewport = figure.querySelector<HTMLElement>("pre.mermaid");
     const overflowing = Boolean(
-      drawing &&
-      drawing.getBoundingClientRect().width + 32 > figure.clientWidth,
+      viewport && viewport.scrollWidth > viewport.clientWidth + 1,
     );
     figure.dataset.diagramOverflow = String(overflowing);
     const caption = figure.querySelector<HTMLElement>("figcaption");
