@@ -81,17 +81,13 @@
   color: var(--color-primary);
   background: var(--color-border-mid);
 }
-.docs-shell,
-.docs-chrome,
-site-search {
-  scrollbar-color: var(--color-border-mid) transparent;
-}
 .docs-shell input,
 site-search input {
   caret-color: var(--docs-focus);
 }
 
 html {
+  scrollbar-gutter: stable;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -190,7 +186,6 @@ body {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
   scrollbar-gutter: stable;
   padding: 1.5rem 1rem 2rem 1.25rem;
 }
@@ -219,7 +214,7 @@ body {
 }
 .docs-body {
   min-width: 0;
-  max-width: 66rem;
+  max-width: var(--docs-content-max-width);
   margin-inline: auto;
 }
 .docs-main-pane {
@@ -824,13 +819,19 @@ body {
   display: block;
 }
 
+@media (min-width: 64rem) {
+  .docs-content {
+    padding-inline-end: calc(
+      var(--docs-page-padding-x) + var(--docs-sidebar-width)
+    );
+  }
+}
 @media (min-width: 80rem) {
   .docs-body--with-toc {
     display: grid;
-    grid-template-columns: minmax(0, var(--docs-content-max-width)) var(
-        --docs-toc-width
-      );
-    column-gap: clamp(2.5rem, 4vw, 4.5rem);
+    /* The outline uses the space mirroring the left navigation, so the
+       article stays centered under search independently of the outline. */
+    grid-template-columns: minmax(0, 1fr) 0;
     align-items: start;
   }
   .docs-body--with-toc .docs-main-pane {
@@ -839,11 +840,12 @@ body {
   }
   .docs-toc-pane {
     display: block;
+    width: var(--docs-toc-width);
+    margin-inline-start: 2rem;
     position: sticky;
-    inset-block-start: calc(var(--sl-docs-chrome-height) + 2rem);
-    max-height: calc(100vh - var(--sl-docs-chrome-height) - 4rem);
+    inset-block-start: calc(var(--sl-docs-chrome-height) + 3rem);
+    max-height: calc(100vh - var(--sl-docs-chrome-height) - 5rem);
     overflow-y: auto;
-    scrollbar-width: thin;
     padding-block-start: 0.25rem;
   }
   .docs-toc-pane .right-sidebar__mobile {
@@ -1213,8 +1215,6 @@ html[data-theme][data-has-sidebar] {
   margin-block: 1.5rem;
   border: 1px solid var(--docs-rule);
   border-radius: 0.5rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border-mid) transparent;
 }
 .sl-markdown-content .docs-table-scroll > table {
   width: 100%;

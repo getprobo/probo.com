@@ -123,6 +123,9 @@ export default defineConfig({
         "./src/styles/docs-redesign.css",
         "./src/styles/docs-motion.css",
       ],
+      expressiveCode: {
+        useThemedScrollbars: false,
+      },
       pagination: false,
       editLink: {
         baseUrl: "https://github.com/getprobo/probo.com/edit/v2/",
