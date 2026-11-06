@@ -10,7 +10,11 @@ const frameworks = [
     title: "SOC 2",
     description:
       "Learn everything about SOC 2 compliance: requirements, costs, timeline, and Type 1 vs Type 2 differences. Your complete guide to achieving SOC 2 certification.",
-    features: ["Understanding SOC 2", "Requirements to get compliant", "Cost and timeline"],
+    features: [
+      "Understanding SOC 2",
+      "Requirements to get compliant",
+      "Cost and timeline",
+    ],
     href: "/hub/soc2",
     accentColor: "from-emerald-400 to-teal-500",
     badges: ["SOC2_TYPE1", "SOC2_TYPE2"],
@@ -21,7 +25,11 @@ const frameworks = [
     title: "ISO 27001",
     description:
       "Learn what ISO 27001 is, why it matters for your business, and how to achieve certification. Complete 2026 guide covering requirements, costs, and timelines.",
-    features: ["Understanding ISO 27001", "Requirements to get compliant", "Cost and timeline"],
+    features: [
+      "Understanding ISO 27001",
+      "Requirements to get compliant",
+      "Cost and timeline",
+    ],
     href: "/hub/iso27001",
     accentColor: "from-blue-400 to-indigo-500",
     badges: ["ISO27001"],
@@ -32,7 +40,11 @@ const frameworks = [
     title: "NIS2",
     description:
       "Everything you need to know about NIS2 compliance in 2026: requirements, costs, deadlines, and how to prepare your organization. Expert guide for tech teams.",
-    features: ["Understanding NIS2", "Requirements and Article 21", "Cost and timeline"],
+    features: [
+      "Understanding NIS2",
+      "Requirements and Article 21",
+      "Cost and timeline",
+    ],
     href: "/hub/nis2-compliance",
     accentColor: "from-purple-400 to-violet-500",
     badges: ["NIS2"],
@@ -81,7 +93,8 @@ const articles = [
   },
   {
     id: "vanta-alternatives-2026",
-    title: "Vanta Alternatives in 2026: 7 Platforms Compared Honestly (Including a Free One)",
+    title:
+      "Vanta Alternatives in 2026: 7 Platforms Compared Honestly (Including a Free One)",
     description:
       "Honest comparison of 7 Vanta alternatives for compliance automation. Probo is the only open-source, free-tier option with a dedicated compliance officer included.",
     href: "/hub/vanta-alternatives-2026",
@@ -228,375 +241,351 @@ const hubArticles = hubEntries
   .map(mapHubEntry);
 
 const allArticles = [...hubArticles, ...articles];
+
+const articleTags = [...new Set(allArticles.map((a) => a.tag))].sort(
+  (a, b) =>
+    allArticles.filter((x) => x.tag === b).length -
+    allArticles.filter((x) => x.tag === a).length,
+);
+
+const sections = [
+  { id: "guides", label: "Framework guides", count: frameworks.length },
+  { id: "tools", label: "Free tools", count: tools.length },
+  { id: "articles", label: "Articles", count: allArticles.length },
+  {
+    id: "tool-recommendations",
+    label: "Tool recommendations",
+    count: toolRecommendations.length,
+  },
+].filter((section) => section.count > 0);
+
+const listSections = [
+  {
+    id: "articles",
+    title: "Articles & comparisons",
+    subtitle:
+      "In-depth analysis and comparisons to help you make informed decisions.",
+    items: allArticles,
+    filters: articleTags,
+  },
+  {
+    id: "tool-recommendations",
+    title: "Tool recommendations",
+    subtitle:
+      "Practical buying guides for the tools startups actually evaluate.",
+    items: toolRecommendations,
+    filters: [] as string[],
+  },
+].filter((section) => section.items.length > 0);
 ---
 
 <Layout
   title="Compliance Hub: SOC 2, ISO 27001, NIS2 & GRC Guides"
   description="Your central resource for compliance knowledge: in-depth guides on SOC 2, ISO 27001, NIS2, and the tools that help you get certified faster."
 >
-  <main class="container my-10 sm:my-20">
-    <!-- Hero Section -->
-    <div class="text-center mb-10 sm:mb-16">
-      <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(147,201,38,0.12)] bg-white/60 backdrop-blur-[50px] text-xs text-muted-foreground mb-6 animate-slide-in"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        Resource Center
-      </div>
-      <h1
-        class="text-h2 sm:text-h1 mb-6 font-medium animate-slide-in animation-delay-100"
-      >
-        Hub
-      </h1>
+  <main class="container my-10 sm:my-16">
+    <!-- Hero -->
+    <header class="animate-slide-in mb-8 max-w-[720px] sm:mb-10">
       <p
-        class="text-muted-foreground text-lg sm:text-xl font-medium max-w-[600px] mx-auto animate-slide-in animation-delay-200"
+        class="text-muted-foreground mb-4 text-xs font-medium tracking-[0.12em] uppercase"
       >
-        Your central resource for compliance knowledge, guides, and tools.
+        Resource center
       </p>
-    </div>
+      <h1 class="text-h2 sm:text-h1 mb-4 font-medium tracking-[-1px]">
+        Compliance Hub
+      </h1>
+      <p class="text-muted-foreground text-lg font-medium sm:text-xl">
+        Guides, comparisons and free tools for SOC 2, ISO 27001, NIS2 and the
+        rest of your compliance stack.
+      </p>
+    </header>
 
-    <!-- Compliance Guides Section -->
-    <section class="animate-slide-in animation-delay-300">
-      <div class="mb-10">
-        <h2 class="text-h3 sm:text-[40px] sm:leading-[54px] font-medium mb-3 tracking-[-0.8px]">
-          Compliance Guides
+    <!-- Section nav -->
+    <nav
+      aria-label="Hub sections"
+      class="animate-slide-in animation-delay-100 mb-12 flex flex-wrap gap-2 sm:mb-16"
+    >
+      {
+        sections.map((section) => (
+          <a
+            href={`#${section.id}`}
+            class="border-border-low bg-level-1 text-foreground hover:border-border-mid inline-flex h-9 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors"
+          >
+            {section.label}
+            <span class="text-muted-foreground text-xs tabular-nums">
+              {section.count}
+            </span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <!-- Framework guides -->
+    <section
+      id="guides"
+      class="animate-slide-in animation-delay-200 scroll-mt-28"
+    >
+      <div class="mb-6 sm:mb-8">
+        <h2
+          class="text-h4 mb-2 font-medium tracking-[-0.8px] sm:text-[32px] sm:leading-[42px]"
+        >
+          Framework guides
         </h2>
-        <p class="text-muted-foreground text-lg">
-          Start your compliance journey with our comprehensive guides
+        <p class="text-muted-foreground">
+          Start your compliance journey with our comprehensive guides.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+      <div
+        class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
         {
           frameworks.map((framework) => (
-            <article
-              class="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-gray-300"
+            <a
+              href={framework.href}
+              class="group bg-level-1 border-border-low hover:border-border-mid relative flex flex-col overflow-hidden rounded-3xl border p-6 transition-colors sm:p-7"
             >
-              <!-- Gradient Background Accent -->
-              <div class={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${framework.accentColor} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
-              
-              <div class="relative p-6 sm:p-8">
-                <!-- Title -->
-                <h3 class="text-[28px] sm:text-[32px] leading-[1.15] font-bold text-gray-900 mb-4 tracking-[-0.5px]">
+              <div class="relative mb-6 flex items-center justify-between">
+                <h3 class="text-foreground text-[26px] leading-[1.15] font-semibold tracking-[-0.5px]">
                   {framework.title}
                 </h3>
-
-                <!-- Description -->
-                <p class="text-gray-600 mb-8 leading-relaxed">
-                  {framework.description}
-                </p>
-
-                <!-- Topics List -->
-                <ul class="space-y-3 mb-8">
-                  {framework.features.map((feature) => (
-                    <li class="flex items-start gap-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#10b981"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="shrink-0 mt-0.5"
-                      >
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                      </svg>
-                      <span class="text-gray-700">
-                        {feature}
-                      </span>
-                    </li>
+                <div class="flex -space-x-2">
+                  {framework.badges.map((badge) => (
+                    <div class="bg-level-1 border-border-low flex size-11 items-center justify-center overflow-hidden rounded-full border">
+                      <FrameworkBadge
+                        name={badge}
+                        class="size-7"
+                        client:visible
+                      />
+                    </div>
                   ))}
-                </ul>
+                </div>
+              </div>
 
-                <!-- Bottom Section -->
-                <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-                  <!-- CTA Button -->
-                  <a
-                    href={framework.href}
-                    class="group/btn inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-full font-medium transition-all hover:gap-3 shadow-lg hover:shadow-xl"
-                  >
-                    Access Complete Guide
+              <p class="text-muted-foreground relative mb-6 leading-relaxed">
+                {framework.description}
+              </p>
+
+              <ul class="relative mb-8 space-y-2">
+                {framework.features.map((feature) => (
+                  <li class="text-tertiary-foreground flex items-start gap-2.5 text-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
                       height="16"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
+                      stroke="#10b981"
+                      stroke-width="2.5"
                       stroke-linecap="round"
                       stroke-linejoin="round"
+                      class="mt-0.5 shrink-0"
                     >
-                      <path d="M5 12h14" />
-                      <path d="m12 5 7 7-7 7" />
+                      <polyline points="20 6 9 17 4 12" />
                     </svg>
-                  </a>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
 
-                  <!-- Badges -->
-                  <div class="flex gap-2">
-                    {framework.badges.map((badge) => (
-                      <div
-                        class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center border-2 border-gray-200 group-hover:border-gray-300 transition-colors overflow-hidden"
-                      >
-                        <FrameworkBadge name={badge} class="size-8" client:visible />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- Tools Section -->
-    <section class="mt-10 sm:mt-16 animate-slide-in animation-delay-325">
-      <div class="mb-10">
-        <h2 class="text-h3 sm:text-[40px] sm:leading-[54px] font-medium mb-3 tracking-[-0.8px]">
-          Tools
-        </h2>
-        <p class="text-muted-foreground text-lg">
-          Free tools to help you navigate your compliance journey
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6">
-        {
-          tools.map((tool) => (
-            <a
-              href={tool.href}
-              class="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-gray-300 block"
-            >
-              {/* Gradient Background Accent */}
-              <div class={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${tool.accentColor} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
-              
-              <div class="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-6">
-                <div class="flex-1">
-                  {/* Tag */}
-                  <span class="inline-block text-xs font-medium text-[#5d770d] bg-[#f0f7e4] px-3 py-1 rounded-full mb-4">
-                    {tool.tag}
-                  </span>
-                  
-                  {/* Title */}
-                  <h3 class="text-[24px] sm:text-[28px] leading-[1.15] font-bold text-gray-900 mb-3 tracking-[-0.5px] group-hover:text-[#5d770d] transition-colors">
-                    {tool.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p class="text-gray-600 leading-relaxed">
-                    {tool.description}
-                  </p>
-                </div>
-
-                {/* Arrow */}
-                <div class="shrink-0 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 group-hover:bg-[#D7EDBA] transition-colors">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="text-gray-600 group-hover:text-[#141e12] transition-colors"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
+              <span class="bg-primary group-hover:bg-primary/85 text-invert relative mt-auto inline-flex items-center gap-2 self-start rounded-full px-5 py-2.5 text-sm font-medium transition-all group-hover:gap-3">
+                Read the guide
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
             </a>
           ))
         }
       </div>
     </section>
 
-    <!-- Articles Section -->
-    <section class="mt-10 sm:mt-16 animate-slide-in animation-delay-350">
-      <div class="mb-10">
-        <h2 class="text-h3 sm:text-[40px] sm:leading-[54px] font-medium mb-3 tracking-[-0.8px]">
-          Articles & Comparisons
-        </h2>
-        <p class="text-muted-foreground text-lg">
-          In-depth analysis and comparisons to help you make informed decisions
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6">
-        {
-          allArticles.map((article) => (
-            <a
-              href={article.href}
-              class="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-gray-300 block"
-            >
-              {/* Gradient Background Accent */}
-              <div class={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${article.accentColor} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
-              
-              <div class="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-6">
-                <div class="flex-1">
-                  {/* Tag */}
-                  <span class="inline-block text-xs font-medium text-[#5d770d] bg-[#f0f7e4] px-3 py-1 rounded-full mb-4">
-                    {article.tag}
-                  </span>
-                  
-                  {/* Title */}
-                  <h3 class="text-[24px] sm:text-[28px] leading-[1.15] font-bold text-gray-900 mb-3 tracking-[-0.5px] group-hover:text-[#5d770d] transition-colors">
-                    {article.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p class="text-gray-600 leading-relaxed">
-                    {article.description}
-                  </p>
-                </div>
-
-                {/* Arrow */}
-                <div class="shrink-0 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 group-hover:bg-[#D7EDBA] transition-colors">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="text-gray-600 group-hover:text-[#141e12] transition-colors"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            </a>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- Tool Recommendations Section -->
-    <section class="mt-10 sm:mt-16 animate-slide-in animation-delay-375">
-      <div class="mb-10">
-        <h2 class="text-h3 sm:text-[40px] sm:leading-[54px] font-medium mb-3 tracking-[-0.8px]">
-          Tool Recommendations
-        </h2>
-        <p class="text-muted-foreground text-lg">
-          Practical buying guides for the tools startups actually evaluate
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6">
-        {
-          toolRecommendations.map((article) => (
-            <a
-              href={article.href}
-              class="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-gray-300 block"
-            >
-              {/* Gradient Background Accent */}
-              <div class={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${article.accentColor} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
-              
-              <div class="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-6">
-                <div class="flex-1">
-                  {/* Tag */}
-                  <span class="inline-block text-xs font-medium text-[#5d770d] bg-[#f0f7e4] px-3 py-1 rounded-full mb-4">
-                    {article.tag}
-                  </span>
-                  
-                  {/* Title */}
-                  <h3 class="text-[24px] sm:text-[28px] leading-[1.15] font-bold text-gray-900 mb-3 tracking-[-0.5px] group-hover:text-[#5d770d] transition-colors">
-                    {article.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p class="text-gray-600 leading-relaxed">
-                    {article.description}
-                  </p>
-                </div>
-
-                {/* Arrow */}
-                <div class="shrink-0 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 group-hover:bg-[#D7EDBA] transition-colors">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="text-gray-600 group-hover:text-[#141e12] transition-colors"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            </a>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- Coming Soon Section -->
-    <section class="mt-10 sm:mt-16 animate-slide-in animation-delay-400">
-      <div
-        class="bg-gradient-to-br from-[#e4f7c7] to-[#d0e8b3] rounded-3xl p-8 sm:p-12"
-      >
-        <div class="flex flex-col gap-6 items-center text-center">
-          <div
-            class="bg-[#141e12] rounded-2xl size-16 flex items-center justify-center"
+    <!-- Free tools -->
+    <section id="tools" class="mt-14 scroll-mt-28 sm:mt-20">
+      {
+        tools.map((tool) => (
+          <a
+            href={tool.href}
+            class="group text-invert relative block overflow-hidden rounded-3xl bg-[#141e12] p-6 sm:p-10"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#e4f7c7"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-              ></path>
-            </svg>
+            <div class="pointer-events-none absolute -right-10 -bottom-24 h-80 w-80 rounded-full bg-[#e6ff03] opacity-20 blur-3xl transition-opacity group-hover:opacity-30" />
+            <div class="relative flex flex-col gap-6 sm:flex-row sm:items-center">
+              <div class="max-w-[680px] flex-1">
+                <span class="mb-4 inline-block rounded-full bg-[#e6ff03] px-3 py-1 text-xs font-medium text-[#141e12]">
+                  {tool.tag}
+                </span>
+                <h2 class="text-invert mb-3 text-[24px] leading-[1.15] font-semibold tracking-[-0.5px] sm:text-[30px]">
+                  {tool.title}
+                </h2>
+                <p class="text-invert/70 leading-relaxed">{tool.description}</p>
+              </div>
+              <span class="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#e6ff03] px-5 py-2.5 text-sm font-medium text-[#141e12] transition-all group-hover:gap-3 sm:self-center">
+                Get my report
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </div>
+          </a>
+        ))
+      }
+    </section>
+
+    <!-- Article lists -->
+    {
+      listSections.map((section) => (
+        <section
+          id={section.id}
+          class="mt-14 scroll-mt-28 sm:mt-20"
+          data-hub-section
+        >
+          <div class="mb-6 flex flex-col gap-4 sm:mb-8 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 class="text-h4 mb-2 font-medium tracking-[-0.8px] sm:text-[32px] sm:leading-[42px]">
+                {section.title}
+              </h2>
+              <p class="text-muted-foreground">{section.subtitle}</p>
+            </div>
+            {section.filters.length > 1 && (
+              <div
+                class="flex flex-wrap gap-2"
+                role="group"
+                aria-label="Filter by type"
+              >
+                {["All", ...section.filters].map((filter, index) => (
+                  <button
+                    type="button"
+                    data-hub-filter={filter}
+                    aria-pressed={index === 0 ? "true" : "false"}
+                    class="border-border-low bg-level-1 text-tertiary-foreground hover:border-border-mid aria-pressed:bg-primary aria-pressed:border-primary aria-pressed:text-invert h-8 rounded-full border px-3 text-sm font-medium transition-colors"
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-          <div class="flex flex-col gap-3">
-            <h3
-              class="text-h4 sm:text-[32px] sm:leading-[42px] font-medium text-[#141e12] tracking-[-0.8px]"
-            >
-              More guides coming soon
-            </h3>
-            <p class="text-muted-foreground text-lg max-w-[600px]">
-                              We're constantly expanding our compliance knowledge center. Stay tuned for guides on GDPR, HIPAA, and more frameworks.
-            </p>
+
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {section.items.map((article) => (
+              <a
+                href={article.href}
+                data-hub-tag={article.tag}
+                class="group bg-level-1 border-border-low hover:border-border-mid relative flex flex-col overflow-hidden rounded-2xl border p-5 transition-colors sm:p-6"
+              >
+                <span class="relative mb-4 self-start rounded-full bg-[#f0f7e4] px-2.5 py-1 text-xs font-medium text-[#5d770d]">
+                  {article.tag}
+                </span>
+                <h3 class="text-foreground relative mb-2 text-lg leading-snug font-semibold tracking-[-0.2px] transition-colors group-hover:text-[#5d770d]">
+                  {article.title}
+                </h3>
+                <p class="text-muted-foreground relative mb-5 line-clamp-3 text-sm leading-relaxed">
+                  {article.description}
+                </p>
+                <span class="text-foreground relative mt-auto inline-flex items-center gap-1.5 text-sm font-medium transition-all group-hover:gap-2.5">
+                  Read
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </span>
+              </a>
+            ))}
           </div>
+        </section>
+      ))
+    }
+
+    <!-- Coming soon -->
+    <section class="mt-14 sm:mt-20">
+      <div
+        class="flex flex-col gap-4 rounded-3xl bg-gradient-to-br from-[#e4f7c7] to-[#d0e8b3] p-6 sm:flex-row sm:items-center sm:gap-6 sm:p-8"
+      >
+        <div
+          class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#141e12]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#e4f7c7"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="mb-1 text-lg font-semibold text-[#141e12] sm:text-xl">
+            More guides coming soon
+          </h2>
+          <p class="text-[#141e12]/70">
+            We're constantly expanding our compliance knowledge center. Stay
+            tuned for guides on GDPR, HIPAA, and more frameworks.
+          </p>
         </div>
       </div>
     </section>
   </main>
 </Layout>
 
+<script>
+  function initHubFilters() {
+    document
+      .querySelectorAll<HTMLElement>("[data-hub-section]")
+      .forEach((section) => {
+        const buttons =
+          section.querySelectorAll<HTMLButtonElement>("[data-hub-filter]");
+        const cards = section.querySelectorAll<HTMLElement>("[data-hub-tag]");
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const filter = button.dataset.hubFilter;
+            buttons.forEach((b) =>
+              b.setAttribute("aria-pressed", String(b === button)),
+            );
+            cards.forEach((card) => {
+              card.hidden = filter !== "All" && card.dataset.hubTag !== filter;
+            });
+          });
+        });
+      });
+  }
+  document.addEventListener("astro:page-load", initHubFilters);
+</script>
