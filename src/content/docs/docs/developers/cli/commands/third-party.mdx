@@ -16,7 +16,7 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | Command                                               | Description                                             | Usage                         | Source                                                                                                           |
 | ----------------------------------------------------- | ------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | [`prb third-party`](#prb-third-party)                 | Manage third parties.                                   | `prb third-party <command>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/thirdpartymgmt.go#L36)  |
-| [`prb third-party create`](#prb-third-party-create)   | Create a new third party.                               | `prb third-party create`      | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/create/create.go#L71)   |
+| [`prb third-party create`](#prb-third-party-create)   | Create a new third party.                               | `prb third-party create`      | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/create/create.go#L72)   |
 | [`prb third-party delete`](#prb-third-party-delete)   | Delete a third party.                                   | `prb third-party delete <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/delete/delete.go#L43)   |
 | [`prb third-party list`](#prb-third-party-list)       | List third parties in an organization.                  | `prb third-party list`        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/list/list.go#L72)       |
 | [`prb third-party publish`](#prb-third-party-publish) | Publish the third party register as a document version. | `prb third-party publish`     | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/publish/publish.go#L83) |
@@ -48,16 +48,17 @@ prb third-party create
 
 ### Flags
 
-| Flag                 | Type         | Default | Required | Description                                |
-| -------------------- | ------------ | ------- | -------- | ------------------------------------------ |
-| `--address`          | string       | `""`    | —        | Headquarter address                        |
-| `--administrator-id` | string array | `[]`    | —        | Administrator profile ID (can be repeated) |
-| `--category`         | string       | `""`    | —        | Third party category (required)            |
-| `--description`      | string       | `""`    | —        | Third party description                    |
-| `--legal-name`       | string       | `""`    | —        | Legal name                                 |
-| `--name`             | string       | `""`    | —        | Third party name (required)                |
-| `--org`              | string       | `""`    | —        | Organization ID                            |
-| `--website`          | string       | `""`    | —        | Website URL                                |
+| Flag                 | Type         | Default | Required | Description                                                                 |
+| -------------------- | ------------ | ------- | -------- | --------------------------------------------------------------------------- |
+| `--address`          | string       | `""`    | —        | Headquarter address                                                         |
+| `--administrator-id` | string array | `[]`    | —        | Administrator profile ID (can be repeated)                                  |
+| `--category`         | string       | `""`    | —        | Third party category (required)                                             |
+| `--description`      | string       | `""`    | —        | Third party description                                                     |
+| `--legal-name`       | string       | `""`    | —        | Legal name                                                                  |
+| `--name`             | string       | `""`    | —        | Third party name (required)                                                 |
+| `--org`              | string       | `""`    | —        | Organization ID                                                             |
+| `--parent-id`        | string       | `""`    | —        | Parent third party ID, to add this third party to the parent's supply chain |
+| `--website`          | string       | `""`    | —        | Website URL                                                                 |
 
 ### Examples
 
@@ -67,9 +68,12 @@ prb third-party create
 
 # Create a third party non-interactively
 prb third-party create --name "Acme Corp" --category CLOUD_PROVIDER
+
+# Add a sub-processor to a vendor's supply chain
+prb third-party create --name "Datadog" --category CLOUD_MONITORING --parent-id <vendor-id>
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/create/create.go#L71).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/thirdpartymgmt/create/create.go#L72).
 
 ## prb third-party delete
 
