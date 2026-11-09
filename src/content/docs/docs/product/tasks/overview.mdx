@@ -15,17 +15,17 @@ Owners and admins can create tasks. Viewers can read tasks, comments, and activi
 
 A new task needs a name. Everything else is optional:
 
-| Field            | Description                                                                                                |
-| ---------------- | ---------------------------------------------------------------------------------------------------------- |
-| Name             | Up to 1,000 bytes. Shown in the list and on the task page.                                                 |
-| Description      | Rich text, up to 5,000 characters of text.                                                                 |
-| State            | Where the work sits. Defaults to **To do**.                                                                |
-| Priority         | **Urgent**, **High**, **Medium**, or **Low**. Defaults to **Medium**.                                      |
-| Assignee         | An organization member.                                                                                    |
-| Internal control | The control this work implements. Set it on the task, or create the task from the control's **Tasks** tab. |
-| Deadline         | When the work is due.                                                                                      |
-| Time estimate    | Expected effort, as an ISO-8601 duration such as `PT2H` or `P1D`. The maximum is 1,000 hours.              |
-| Repeats          | How often the task repeats. Requires a deadline. See [Recurring tasks](#recurring-tasks).                  |
+| Field            | Description                                                                                                       |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Name             | Up to 1,000 bytes. Shown in the list and on the task page.                                                        |
+| Description      | Rich text, up to 5,000 characters of text. Type `@` to mention an organization member. See [Mentions](#mentions). |
+| State            | Where the work sits. Defaults to **To do**.                                                                       |
+| Priority         | **Urgent**, **High**, **Medium**, or **Low**. Defaults to **Medium**.                                             |
+| Assignee         | An organization member.                                                                                           |
+| Internal control | The control this work implements. Set it on the task, or create the task from the control's **Tasks** tab.        |
+| Deadline         | When the work is due.                                                                                             |
+| Time estimate    | Expected effort, as an ISO-8601 duration such as `PT2H` or `P1D`. The maximum is 1,000 hours.                     |
+| Repeats          | How often the task repeats. Requires a deadline. See [Recurring tasks](#recurring-tasks).                         |
 
 The list can be searched by name and filtered by state or assignee. Drag a task to change its order. Dropping it next to tasks of another priority updates its priority too.
 
@@ -63,6 +63,20 @@ Comments are rich text, up to 5,000 characters. The author can edit or delete th
 
 Activity records creates and updates for the name, description, state, priority, assignee, internal control, deadline, and time estimate. Each entry stores the previous value and the new value.
 
+### Mentions
+
+Type `@` in a task description or a comment, then pick an organization member from the list. Probo [notifies](/docs/product/notifications) each newly mentioned member.
+
+- The author of the edit or comment is not notified.
+- Members already mentioned in the earlier version of the description or comment are not notified again. Only mentions added by the edit count.
+- Deactivated members are not notified.
+
+### Notifications
+
+A mentioned member sees **You were mentioned in** followed by the task name in their notifications. A member gets **You were assigned** followed by the task name when someone else assigns them a task. Opening the task clears both.
+
+Each member chooses whether these also arrive by email: one email each, grouped reminders (the default), a weekly digest, or none. See [Notifications](/docs/product/notifications).
+
 ## Linear
 
 Linear sync keeps a Probo task and a Linear issue aligned: title, description, state, priority, deadline, assignee, and comments. A task has one Linear link.
@@ -93,15 +107,15 @@ Creating an issue in Linear on its own leaves Probo unchanged. Sync applies to i
 
 Once a task is linked, edits on either side update the other:
 
-| Field       | Behavior                                                                         |
-| ----------- | -------------------------------------------------------------------------------- |
-| Name        | The Linear issue title                                                           |
-| Description | Converted between the Probo editor and Linear markdown                           |
+| Field       | Behavior                                                                        |
+| ----------- | ------------------------------------------------------------------------------- |
+| Name        | The Linear issue title                                                          |
+| Description | Converted between the Probo editor and Linear markdown                          |
 | State       | Mapped to the team's workflow state types. See [State mapping](#state-mapping). |
 | Priority    | Mapped to Linear's priority scale. See [Priority mapping](#priority-mapping).   |
-| Deadline    | The Linear due date                                                              |
-| Assignee    | Matched by email. See [Assignees](#assignees).                                   |
-| Comments    | Created, edited, and deleted on both sides                                       |
+| Deadline    | The Linear due date                                                             |
+| Assignee    | Matched by email. See [Assignees](#assignees).                                  |
+| Comments    | Created, edited, and deleted on both sides                                      |
 
 Probo picks the first workflow state of the matching type in the team (the one with the lowest position). A description that contains content the task editor cannot store, such as an image inside a paragraph, is dropped on the way into Probo and the rest of the description is kept.
 

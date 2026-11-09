@@ -462,12 +462,19 @@ body {
 .sl-markdown-content pre {
   max-width: 100%;
 }
-.sl-markdown-content img {
+.sl-markdown-content img,
+.sl-markdown-content .docs-video {
   border-radius: 0.5rem;
   outline: 1px solid rgb(0 0 0 / 0.08);
   outline-offset: -1px;
 }
-:root[data-theme="dark"] .sl-markdown-content img {
+.sl-markdown-content .docs-video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+:root[data-theme="dark"] .sl-markdown-content img,
+:root[data-theme="dark"] .sl-markdown-content .docs-video {
   outline-color: rgb(255 255 255 / 0.1);
 }
 .sl-link-card,

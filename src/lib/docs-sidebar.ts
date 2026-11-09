@@ -212,6 +212,11 @@ export const docsSidebarGroups: DocsSidebarGroup[] = [
         slug: "docs/product/audit-log",
       },
       {
+        label: "Notifications",
+        icon: "bell",
+        slug: "docs/product/notifications",
+      },
+      {
         label: "SSO",
         icon: "key",
         collapsed: true,
