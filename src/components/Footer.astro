@@ -8,6 +8,32 @@ import OpenStatus from "../components/OpenStatus.svelte";
 import Newsletter from "./block/Newsletter.astro";
 import AskAi from "./AskAi.astro";
 import { Toaster } from "svelte-sonner";
+import { getCollection } from "astro:content";
+
+const comparisonOrder = [
+  "probo-vs-vanta",
+  "probo-vs-drata",
+  "probo-vs-oneleet",
+];
+const comparisonRank = (id: string) => {
+  const index = comparisonOrder.indexOf(id);
+  return index === -1 ? comparisonOrder.length : index;
+};
+const comparisonPages = (
+  await getCollection(
+    "hub",
+    ({ id, data }) => id.startsWith("probo-vs-") && !data.draft,
+  )
+)
+  .sort(
+    (a, b) =>
+      comparisonRank(a.id) - comparisonRank(b.id) ||
+      a.data.date.getTime() - b.data.date.getTime(),
+  )
+  .map(({ id, data }) => ({
+    label: data.highlight ?? data.title.split(":")[0],
+    href: `/hub/${id}`,
+  }));
 
 const hasCookieBanner = Boolean(
   import.meta.env.PUBLIC_COOKIE_BANNER_ID &&
@@ -25,12 +51,21 @@ const menus = [
       { label: "Home", href: "/" },
       { label: "Blog", href: "/blog" },
       { label: "Hub", href: "/hub" },
-      { label: "Stories", href: "/stories" },
-      { label: "Love from Customers ⭐", href: "/love-from-customer" },
+      { label: "Customer stories", href: "/stories" },
+      { label: "Love from customers", href: "/love-from-customer" },
       { label: "Changelog", href: "/changelog" },
-      { label: "Download", href: "/download" },
-      { label: "Docs", href: "/docs" },
+      { label: "Help Center", href: "/docs" },
       { label: "GitHub", href: "https://github.com/getprobo/probo" },
+    ],
+  },
+  {
+    label: "Compare",
+    items: [
+      ...comparisonPages,
+      {
+        label: "Probo vs fractional CISO",
+        href: "/hub/probo-vs-fractional-ciso",
+      },
     ],
   },
   {

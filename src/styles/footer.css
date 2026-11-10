@@ -90,7 +90,7 @@
 }
 .journal-footer-nav {
   display: grid;
-  grid-template-columns: 172fr repeat(4, 203fr);
+  grid-template-columns: 172fr repeat(5, 203fr);
   gap: 24px;
   border-top: 1px solid var(--color-border-low);
   padding-top: 64px;
@@ -175,7 +175,8 @@
     gap: 32px;
   }
   .journal-footer-nav {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 40px;
   }
   .journal-footer-brand {
     grid-column: 1 / -1;
