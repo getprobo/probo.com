@@ -16,12 +16,12 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | Command                                       | Description                                         | Usage                     | Source                                                                                                    |
 | --------------------------------------------- | --------------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------- |
 | [`prb finding`](#prb-finding)                 | Manage findings.                                    | `prb finding <command>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/finding.go#L35)         |
-| [`prb finding create`](#prb-finding-create)   | Create a new finding.                               | `prb finding create`      | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/create/create.go#L79)   |
+| [`prb finding create`](#prb-finding-create)   | Create a new finding.                               | `prb finding create`      | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/create/create.go#L82)   |
 | [`prb finding delete`](#prb-finding-delete)   | Delete a finding.                                   | `prb finding delete <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/delete/delete.go#L43)   |
-| [`prb finding list`](#prb-finding-list)       | List findings in an organization.                   | `prb finding list`        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L79)       |
+| [`prb finding list`](#prb-finding-list)       | List findings in an organization.                   | `prb finding list`        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L81)       |
 | [`prb finding publish`](#prb-finding-publish) | Publish the finding register as a document version. | `prb finding publish`     | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/publish/publish.go#L83) |
-| [`prb finding update`](#prb-finding-update)   | Update a finding.                                   | `prb finding update <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/update/update.go#L73)   |
-| [`prb finding view`](#prb-finding-view)       | View a finding.                                     | `prb finding view <id>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/view/view.go#L96)       |
+| [`prb finding update`](#prb-finding-update)   | Update a finding.                                   | `prb finding update <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/update/update.go#L76)   |
+| [`prb finding view`](#prb-finding-view)       | View a finding.                                     | `prb finding view <id>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/view/view.go#L98)       |
 
 ## prb finding
 
@@ -64,15 +64,16 @@ Accepts no positional arguments.
 | `--root-cause`          | string | `""`    | —        | Root cause                                                                                |
 | `--source`              | string | `""`    | —        | Finding source                                                                            |
 | `--status`              | string | `""`    | Required | Status: OPEN, IN_PROGRESS, CLOSED, RISK_ACCEPTED, MITIGATED, FALSE_POSITIVE (required)    |
+| `--title`               | string | `""`    | Required | Finding title (required)                                                                  |
 
 ### Examples
 
 ```bash
 # Create a finding
-prb finding create --org ORG_ID --kind MINOR_NONCONFORMITY --owner-id OWNER_ID --status OPEN --priority HIGH
+prb finding create --org ORG_ID --kind MINOR_NONCONFORMITY --title "Missing access review" --owner-id OWNER_ID --status OPEN --priority HIGH
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/create/create.go#L79).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/create/create.go#L82).
 
 ## prb finding delete
 
@@ -133,7 +134,7 @@ prb finding ls --org <organization-id> --kind MINOR_NONCONFORMITY --output json
 prb finding ls --org <organization-id> --audit <audit-id>
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L79).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L81).
 
 ## prb finding publish
 
@@ -192,8 +193,9 @@ Requires 1 positional argument.
 | `--root-cause`          | string | `""`    | —        | Root cause                                                                  |
 | `--source`              | string | `""`    | —        | Finding source                                                              |
 | `--status`              | string | `""`    | —        | Status: OPEN, IN_PROGRESS, CLOSED, RISK_ACCEPTED, MITIGATED, FALSE_POSITIVE |
+| `--title`               | string | `""`    | —        | Finding title                                                               |
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/update/update.go#L73).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/update/update.go#L76).
 
 ## prb finding view
 
@@ -214,4 +216,4 @@ Requires 1 positional argument.
 | `--json`         | boolean | `false` | —        | Output JSON (same as --output json)  |
 | `--output`, `-o` | string  | `""`    | —        | Output format: json, table (default) |
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/view/view.go#L96).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/view/view.go#L98).
