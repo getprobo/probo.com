@@ -30,6 +30,9 @@ const headlineParts =
   data.highlight && data.title.includes(data.highlight)
     ? data.title.split(data.highlight)
     : null;
+const trailingPunctuation = headlineParts?.[1]?.match(/^[:,.!?]/)?.[0] ?? "";
+const highlightText = `${data.highlight ?? ""}${trailingPunctuation}`;
+const headlineRest = headlineParts?.[1]?.slice(trailingPunctuation.length);
 
 const articleSchema = {
   "@context": "https://schema.org",
@@ -84,8 +87,8 @@ const articleSchema = {
             headlineParts ? (
               <Fragment>
                 {headlineParts[0]}
-                <span class="highlight-text">{data.highlight}</span>
-                {headlineParts[1]}
+                <span class="highlight-text">{highlightText}</span>
+                {headlineRest}
               </Fragment>
             ) : (
               data.title
