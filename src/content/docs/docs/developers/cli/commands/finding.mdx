@@ -18,7 +18,7 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | [`prb finding`](#prb-finding)                 | Manage findings.                                    | `prb finding <command>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/finding.go#L35)         |
 | [`prb finding create`](#prb-finding-create)   | Create a new finding.                               | `prb finding create`      | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/create/create.go#L82)   |
 | [`prb finding delete`](#prb-finding-delete)   | Delete a finding.                                   | `prb finding delete <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/delete/delete.go#L43)   |
-| [`prb finding list`](#prb-finding-list)       | List findings in an organization.                   | `prb finding list`        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L81)       |
+| [`prb finding list`](#prb-finding-list)       | List findings in an organization.                   | `prb finding list`        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L82)       |
 | [`prb finding publish`](#prb-finding-publish) | Publish the finding register as a document version. | `prb finding publish`     | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/publish/publish.go#L83) |
 | [`prb finding update`](#prb-finding-update)   | Update a finding.                                   | `prb finding update <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/update/update.go#L76)   |
 | [`prb finding view`](#prb-finding-view)       | View a finding.                                     | `prb finding view <id>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/view/view.go#L98)       |
@@ -120,6 +120,7 @@ Accepts no positional arguments.
 | `--order-direction` | string  | `"DESC"` | —        | Sort direction (ASC, DESC)                                                                 |
 | `--org`             | string  | `""`     | —        | Organization ID                                                                            |
 | `--output`, `-o`    | string  | `""`     | —        | Output format: json, table (default)                                                       |
+| `--query`, `-q`     | string  | `""`     | —        | Search findings by title or reference ID                                                   |
 
 ### Examples
 
@@ -132,9 +133,12 @@ prb finding ls --org <organization-id> --kind MINOR_NONCONFORMITY --output json
 
 # List findings linked to an audit
 prb finding ls --org <organization-id> --audit <audit-id>
+
+# Search by title or reference ID
+prb finding ls --org <organization-id> --query FND-001
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L81).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/finding/list/list.go#L82).
 
 ## prb finding publish
 
