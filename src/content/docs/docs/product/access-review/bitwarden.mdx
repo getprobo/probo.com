@@ -1,0 +1,71 @@
+---
+title: Bitwarden
+description: Connect Bitwarden Password Manager as an access source using the organization API key's client ID and secret, so Probo can list the members of your Bitwarden organization.
+---
+
+Probo reads your Bitwarden Password Manager organization's members through the Bitwarden Public API so you can review who has access. The connection uses the organization API key, which Bitwarden issues as an OAuth2 client ID and secret.
+
+:::caution
+Use the **organization API key** from the Admin Console. Its client ID starts with `organization.`. The **personal API key** from your account settings, whose client ID starts with `user.`, will **not** work, because the Public API accepts only organization keys.
+
+The organization API key grants full access to the organization through the Public API, including inviting and removing members and changing groups, collections and policies. Bitwarden offers no read-only key. Probo only reads from the Public API: the member list, and the policy list to check the connection. Store the key as you would an administrator credential.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- A Bitwarden **Teams** or **Enterprise** organization. The Public API is not available on Free or Families organizations
+- The **Owner** role in the organization, which is needed to view its API key
+- The cloud your organization is on: **us** if you sign in at `vault.bitwarden.com`, **eu** if you sign in at `vault.bitwarden.eu`. Self-hosted Bitwarden servers are not supported
+
+## Collected Fields
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+| Probo field | Bitwarden field                                          | Notes                                                                                                                                                                                                |
+| ----------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `name`                                                   | Empty for an invited member until they accept the invitation                                                                                                                                         |
+| Email       | `email`                                                  |                                                                                                                                                                                                      |
+| Role        | `type`                                                   | One of Owner, Admin, User or Custom                                                                                                                                                                  |
+| Admin       | `type`, `permissions`                                    | Flagged for Owner and Admin. A Custom member is flagged when it holds any custom permission other than creating new collections, since each of those opens a part of the Admin Console               |
+| Status      | `status`                                                 | A confirmed member is listed as active. An invited, staged or revoked member, and one who accepted but has not been confirmed, is listed as inactive                                                 |
+| MFA         | `twoFactorEnabled`                                       | Whether the member's Bitwarden account has two-step login turned on. Unknown for a member who has not accepted the invitation yet, because Bitwarden links a member to an account only on acceptance |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                                                      |
+| External ID | `id`                                                     | The member ID, which stays the same from invitation to confirmation                                                                                                                                  |
+| Created at  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                                                                                                                      |
+
+Invited and revoked members stay in the roster and are listed as inactive, so a campaign can catch an invitation left open or a revoked member who should be removed.
+
+MFA shows each member's own Bitwarden two-step login. It does not count organization-wide Duo, or MFA that your identity provider enforces for members who sign in with SSO.
+
+The Public API does not list the users of a provider that manages your organization through the Bitwarden Provider Portal. Review those users in the Provider Portal.
+
+## Step 1: Get the Organization API Key
+
+<Steps>
+
+1. Sign in to the Bitwarden web app as an owner of the organization and open the **Admin Console**.
+2. Go to **Settings** > **Organization info** and scroll to the **API Key** section.
+3. Click **View API key** and confirm your master password.
+4. Copy the **client_id** and the **client_secret**.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Bitwarden** and open it.
+3. Enter a **Name** for the connection (e.g. `main`), paste the client_id into **Client ID** and the client_secret into **Client secret**, enter `us` or `eu` in **Region (us or eu)**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Bitwarden**, and click **Add**.
+
+</Steps>
+
+Probo pulls the organization's members into your campaigns. It names the source **Bitwarden** because the Public API does not return the organization's name.
+
+## Troubleshooting
+
+- **Could not connect.** Probo shows this when the client ID is not `organization.` followed by the organization's ID, copied whole, or when the region is not `us` or `eu`. A personal API key, whose client ID starts with `user.`, is refused here.
+- **The connector shows Disconnected.** This usually means Bitwarden refused the client ID and secret. Confirm that both were copied whole, that the key has not been rotated since, that the organization is on a Teams or Enterprise plan, and that the region matches the address you sign in at. Each Bitwarden cloud has its own identity service, so one cloud refuses a key issued by the other.
+- **The API key was rotated.** **Rotate API key** on the **Organization info** page invalidates the previous secret. Probo cannot take a new secret in place, so delete the source in **Access Review** > **Sources**, disconnect the connector in **Settings** > **Connectors**, and connect again with the new key. Rotate between campaigns: once the source is deleted, a campaign that has not fetched it successfully can no longer be closed, only cancelled.
