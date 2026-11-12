@@ -1,11 +1,11 @@
 ---
 title: FreeBSD
-description: Install and enroll Device Agent on FreeBSD servers from the command line using install.sh or the CLI, and verify or uninstall the deployment.
+description: Install Device Agent on FreeBSD servers, run it as an rc.d service managed with service(8), and see how each posture check is evaluated on FreeBSD (geli, pf, ntpd, login.conf).
 ---
 
-Install and enroll Device Agent on FreeBSD from the command line. This path is for servers and other headless hosts where there is no tray or browser enrollment.
+Install and enroll Device Agent on FreeBSD hosts from the command line. FreeBSD has no tray app or browser enrollment: the agent is a single binary in `/usr/local/bin` that runs under `daemon(8)` from an `rc.d` script, and you manage it with `service(8)` like any other FreeBSD daemon.
 
-Download the latest release from the [Download page](/download) or from [GitHub Releases](https://github.com/getprobo/probo/releases) under the `probo-agent/v*` tag.
+Release archives are published for FreeBSD on `amd64` and `arm64` (`probo-agent_Freebsd_x86_64.tar.gz` and `probo-agent_Freebsd_arm64.tar.gz`). Download them from the [Download page](/download) or from [GitHub Releases](https://github.com/getprobo/probo/releases) under the `probo-agent/v*` tag.
 
 ## Before you begin
 
@@ -17,37 +17,45 @@ You need:
   - United States: `https://us.probo.com`
   - European Union: `https://eu.probo.com`
   - Self-hosted: your instance base URL (no path)
-- Root or sudo on the host
+- A root shell, or `sudo` / `doas` configured for your user
+
+`install.sh` needs `curl`, which is not part of the FreeBSD base system. Install it from packages first:
+
+```sh
+pkg install -y curl
+```
+
+`tar`, `install` and the `sha256` checksum tool used by the installer ship with the base system.
 
 ## Install with `install.sh`
 
-Each release includes an `install.sh` that downloads the matching archive, verifies its checksum, installs to `/usr/local/bin`, and enrolls the device.
+Each release includes an `install.sh` that detects FreeBSD and the CPU architecture, downloads the matching archive, verifies its SHA-256 checksum against the value embedded at release time, installs the binary to `/usr/local/bin/probo-agent`, and enrolls the device.
 
-Interactive:
+Interactive, from a root shell (the script prompts for the region and the token):
 
-```bash
-curl -fsSL "https://github.com/getprobo/probo/releases/download/probo-agent/vX.Y.Z/install.sh" | sudo sh
+```sh
+curl -fsSL "https://github.com/getprobo/probo/releases/download/probo-agent/vX.Y.Z/install.sh" | sh
 ```
 
-Unattended / MDM:
+Unattended, for configuration management such as Ansible or a jail template. Use `sudo` or `doas` if you are not root:
 
-```bash
-curl -fsSL "https://github.com/getprobo/probo/releases/download/probo-agent/vX.Y.Z/install.sh" | sudo \
-  PROBO_SERVER_URL=https://us.probo.com \
+```sh
+curl -fsSL "https://github.com/getprobo/probo/releases/download/probo-agent/vX.Y.Z/install.sh" | \
+  doas env PROBO_SERVER_URL=https://eu.probo.com \
   PROBO_ENROLLMENT_TOKEN='YOUR_TOKEN' sh
 ```
 
 Or pass flags:
 
-```bash
-curl -fsSL "https://github.com/getprobo/probo/releases/download/probo-agent/vX.Y.Z/install.sh" | sudo sh -s -- \
-  --server https://us.probo.com \
+```sh
+curl -fsSL "https://github.com/getprobo/probo/releases/download/probo-agent/vX.Y.Z/install.sh" | sh -s -- \
+  --server https://eu.probo.com \
   --enrollment-token 'YOUR_TOKEN'
 ```
 
-Replace `vX.Y.Z` with the release version from the [Download page](/download).
+Replace `vX.Y.Z` with the release version from the [Download page](/download). Never put the enrollment token in the curl URL.
 
-### Useful environment variables
+### Installer environment variables
 
 | Variable                 | Description                                                         |
 | ------------------------ | ------------------------------------------------------------------- |
@@ -56,43 +64,75 @@ Replace `vX.Y.Z` with the release version from the [Download page](/download).
 | `PROBO_NO_AUTO_UPDATE`   | Set to `true` to disable automatic upgrades                         |
 | `PROBO_AGENT_STATE_DIR`  | Override the agent state directory (default `/var/lib/probo-agent`) |
 
-Never put the enrollment token in the curl URL.
+## Manual install from the archive
 
-## Manual CLI install
+If you mirror releases internally or prefer to install by hand:
 
-If you already have the binary on disk:
+```sh
+fetch https://github.com/getprobo/probo/releases/download/probo-agent/vX.Y.Z/probo-agent_Freebsd_x86_64.tar.gz
+tar -xzf probo-agent_Freebsd_x86_64.tar.gz
+install -m 0755 probo-agent_Freebsd_x86_64/probo-agent /usr/local/bin/probo-agent
 
-```bash
-sudo probo-agent install \
-  --server https://us.probo.com \
+probo-agent install \
+  --server https://eu.probo.com \
   --enrollment-token YOUR_TOKEN
 ```
 
-Useful flags:
+`fetch(1)` is part of the base system, so this path does not need `curl`. Run the commands as root.
 
-| Flag                 | Description                                             |
-| -------------------- | ------------------------------------------------------- |
-| `--server`           | Probo server base URL (required)                        |
-| `--enrollment-token` | One-shot enrollment token (or `PROBO_ENROLLMENT_TOKEN`) |
-| `--skip-service`     | Register the device but do not install the OS service   |
-| `--no-auto-update`   | Disable automatic upgrades                              |
-| `-d`, `--dir`        | Override the agent config/keystore directory            |
+| Flag                 | Description                                              |
+| -------------------- | -------------------------------------------------------- |
+| `--server`           | Probo server base URL (required)                         |
+| `--enrollment-token` | One-shot enrollment token (or `PROBO_ENROLLMENT_TOKEN`)  |
+| `--skip-service`     | Register the device but do not install the `rc.d` script |
+| `--no-auto-update`   | Disable automatic upgrades                               |
+| `-d`, `--dir`        | Override the agent config/keystore directory             |
 
-The agent runs as a managed `rc.d` service. Default state directory: `/var/lib/probo-agent`.
+## The `rc.d` service
+
+`probo-agent install` writes an `rc.d` script to `/usr/local/etc/rc.d/probo_agent`, then runs `service probo_agent enable` (which sets `probo_agent_enable="YES"` in `/etc/rc.conf`) and `service probo_agent start`. The script starts the agent through `daemon(8)` with `-r`, so the agent is restarted if it exits, and writes its PID to `/var/run/probo_agent.pid`. It requires `NETWORKING`, so the agent starts after the network is up at boot.
+
+Manage it like any other FreeBSD service:
+
+```sh
+service probo_agent status
+service probo_agent restart
+service probo_agent stop
+```
+
+Agent state (configuration and device key) lives in `/var/lib/probo-agent` unless you set `--dir` or `PROBO_AGENT_STATE_DIR`.
+
+## How posture checks work on FreeBSD
+
+The agent runs the same [check set](/docs/product/device-agent/overview#posture-checks) on every platform, using FreeBSD tools:
+
+| Check                | How it is evaluated on FreeBSD                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `DISK_ENCRYPTION`    | Passes when `geli status` lists an `ACTIVE` provider                                                         |
+| `FIREWALL_ENABLED`   | Passes when `pfctl -si` reports `Status: Enabled` (pf)                                                       |
+| `TIME_SYNC`          | Passes when `service ntpd status` reports `ntpd` running                                                     |
+| `OS_VERSION`         | Reports the release from `uname -r`                                                                          |
+| `PASSWORD_POLICY`    | Passes when `/etc/login.conf` sets `minpasswordlen` or `passwordtime`                                        |
+| `REMOTE_LOGIN`       | Fails when `sshd` is running, passes otherwise                                                               |
+| `MALWARE_PROTECTION` | Not applicable unless ClamAV is installed; then passes when `service clamav_clamd status` reports it running |
+| `SCREEN_LOCK`        | Not applicable on headless hosts (passes if `xscreensaver` is installed)                                     |
+| `AUTO_UPDATE`        | Not applicable: FreeBSD updates are operator-driven with `freebsd-update`                                    |
+
+Most servers keep `sshd` running on purpose, so expect `REMOTE_LOGIN` to fail on them. Document it as an accepted exception rather than turning SSH off. Hardware identity comes from `kenv smbios.system.uuid` and `kenv smbios.system.serial`.
 
 ## Verify installation
 
-```bash
+```sh
 probo-agent status
 probo-agent collect
 ```
 
-`status` prints the server URL, device ID, heartbeat/posture/update intervals, and whether auto-update is enabled. `collect` runs the posture checks once locally.
+`status` prints the server URL, device ID, heartbeat/posture/update intervals, and whether auto-update is enabled. `collect` runs the posture checks once locally and prints the results without sending them, which is the quickest way to see how the table above applies to a given host.
 
 ## Uninstall
 
-```bash
+```sh
 probo-agent uninstall
 ```
 
-Uninstall stops the service, unenrolls the device, and deletes local agent state.
+Run it as root. Uninstall stops and disables the `probo_agent` service, removes `/usr/local/etc/rc.d/probo_agent`, unenrolls the device and deletes local agent state. Remove the binary afterwards with `rm /usr/local/bin/probo-agent`.
