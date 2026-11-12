@@ -348,6 +348,14 @@ export const n8nResourceItems = [
     slug: "docs/developers/api/n8n/resources/document",
   },
   {
+    label: "Document Comment",
+    slug: "docs/developers/api/n8n/resources/document-comment",
+  },
+  {
+    label: "Document Suggestion",
+    slug: "docs/developers/api/n8n/resources/document-suggestion",
+  },
+  {
     label: "DPIA",
     slug: "docs/developers/api/n8n/resources/dpia",
   },
