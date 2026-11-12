@@ -27,6 +27,8 @@ A new task needs a name. Everything else is optional:
 | Time estimate    | Expected effort, as an ISO-8601 duration such as `PT2H` or `P1D`. The maximum is 1,000 hours.                     |
 | Repeats          | How often the task repeats. Requires a deadline. See [Recurring tasks](#recurring-tasks).                         |
 
+A task can also be linked to one or more [findings](/docs/product/audits-and-findings#findings), for example when it fixes an audit nonconformity. On the task page, the **Findings** card lets you search for a finding and link or unlink it. You need permission to create or delete the task's finding links to change them.
+
 The list can be searched by name and filtered by state or assignee. Drag a task to change its order. Dropping it next to tasks of another priority updates its priority too.
 
 ## States
@@ -118,6 +120,8 @@ Once a task is linked, edits on either side update the other:
 | Comments    | Created, edited, and deleted on both sides                                      |
 
 Probo picks the first workflow state of the matching type in the team (the one with the lowest position). A description that contains content the task editor cannot store, such as an image inside a paragraph, is dropped on the way into Probo and the rest of the description is kept.
+
+Files attached to the Linear issue description are downloaded into the task description. This happens when you link an issue and whenever its description changes in Linear. Tasks linked before this was supported pick up their files on the next description update.
 
 Time estimate, recurrence, internal control, and rank stay in Probo.
 

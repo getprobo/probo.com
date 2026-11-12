@@ -5,7 +5,7 @@ description: Learn what Device Agent does, from enrolling devices and running as
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
 
-Device Agent (`probo-agent`) is a lightweight device posture agent. It runs as a managed OS service, enrolls a device against your Probo organization, and periodically reports security posture checks over the [Device Agent API](/docs/developers/api/agent/overview) (`/api/agent/v1`).
+Device Agent (`probo-agent`) is a lightweight device posture agent. It runs as a managed OS service, enrolls a device against one or more Probo organizations, and periodically reports security posture checks over the [Device Agent API](/docs/developers/api/agent/overview) (`/api/agent/v1`).
 
 ## What it does
 
@@ -34,6 +34,8 @@ See [Install](/docs/product/device-agent/install) to pick a platform, or go stra
 2. Install the agent — on desktops, prefer the package installer then enroll from [us.probo.com/enroll](https://us.probo.com/enroll) or [eu.probo.com/enroll](https://eu.probo.com/enroll); on servers, pass the server URL and token on the command line.
 3. The agent exchanges the one-shot token for a device API key, configures heartbeat/posture intervals, and starts the OS service.
 4. Posture results appear on the device in the Probo console.
+
+One machine can be enrolled in more than one organization, for example a contractor laptop used for two customers. Repeat the enrollment with a token from each organization: the agent keeps one enrollment per organization and reports posture to each of them. Enrolling the same machine twice in the same organization is rejected, because the hardware UUID is already registered there, and the new pending device is revoked.
 
 ## Posture checks
 

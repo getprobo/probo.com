@@ -24,7 +24,9 @@ Interactive clients can use supported OAuth authorization flows instead. SSO ses
 
 ## Request shape
 
-Send GraphQL documents as authenticated `POST` requests with a JSON body containing `query` and, when needed, `variables`. Use variables for IDs and user input instead of interpolating values into a query string. Named operations are preferred; anonymous shorthand can be rejected by some clients.
+Send GraphQL documents as authenticated `POST` requests with a JSON body containing `query` and, when needed, `variables`. Use variables for IDs and user input instead of interpolating values into a query string.
+
+Send one named operation per request, such as `query Viewer { ... }`. Probo traces and logs show the name written on the operation when the request omits `operationName`, so anonymous operations appear as `unnamed`. If a document contains several operations, set `operationName` to the one to run. The `prb` CLI and the n8n node name their own operations and send `operationName` only when the document holds exactly one named operation.
 
 ```json
 {
@@ -92,8 +94,8 @@ curl https://eu.probo.com/api/console/v1/graphql \
 With the CLI:
 
 ```bash
-prb api 'query { organizations { nodes { id name } } }'
-prb api 'query($id: ID!) { organization(id: $id) { name } }' -f id=org_01EXAMPLE
+prb api 'query ListOrganizations { organizations { nodes { id name } } }'
+prb api 'query Organization($id: ID!) { organization(id: $id) { name } }' -f id=org_01EXAMPLE
 ```
 
 See [`prb api`](/docs/developers/cli/commands/api) and [CLI configuration](/docs/developers/cli/configuration#raw-graphql-queries) for flags and stdin usage.

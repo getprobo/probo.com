@@ -15,9 +15,15 @@ Define the audit independently from a framework. An audit may review all or part
 
 ## Findings
 
-Findings describe issues or observations identified during an audit or another review. Supported kinds include major nonconformity, minor nonconformity, observation, and exception. A finding can be linked to more than one audit when the same underlying issue affects multiple reviews.
+Findings describe issues or observations identified during an audit or another review. Supported kinds include major nonconformity, minor nonconformity, observation, and exception.
 
-Use a finding for the reviewed issue and tasks or internal controls for remediation work. This preserves the original conclusion while allowing owners, due dates, and implementation evidence to change as work progresses.
+Every finding has a required title, shown in the findings list, on the finding page, and in the published findings document. Findings created before titles existed were given one from the first 200 characters of their description, or from their reference ID when the description was empty.
+
+Open **Findings** to see the list. Filter it by kind, status, priority, owner, or audit. Create a finding from the **New finding** page. The finding page shows the title inline, its properties, and its linked tasks and audits.
+
+A finding can be linked to more than one audit when the same underlying issue affects multiple reviews.
+
+Use a finding for the reviewed issue and [tasks](/docs/product/tasks/overview) for remediation work. Link each remediation task to the finding, from the finding page or from the task's **Findings** card. This preserves the original conclusion while allowing owners, due dates, and implementation evidence to change as work progresses. Links between findings and tasks are also available on GraphQL, MCP, and n8n.
 
 ## Reports and evidence
 
