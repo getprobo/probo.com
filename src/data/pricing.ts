@@ -103,121 +103,6 @@ export const comparison: { name: string; rows: ComparisonRow[] }[] = [
     ],
   },
   {
-    name: "Compliance work done for you",
-    rows: [
-      {
-        label: "Scoping and onboarding call",
-        detail:
-          "Review your requirements and gather context with your compliance officer.",
-        values: [false, false, true],
-      },
-      {
-        label: "Company risk assessment",
-        detail: "Your compliance officer assesses your company's risks.",
-        values: [false, false, true],
-      },
-      {
-        label: "Gap analysis",
-        detail:
-          "Identify what is missing between your current practices and the frameworks in scope.",
-        values: [false, false, true],
-      },
-      {
-        label: "Compliance roadmap for the year",
-        detail: "Turn the gap analysis into a plan for the year.",
-        values: [false, false, true],
-      },
-      {
-        label: "Technical setup guidance",
-        detail:
-          "Your compliance officer explains what to do on your side and how to do it. Your team implements technical changes.",
-        values: [false, false, true],
-      },
-      {
-        label: "Policies written, updated and reviewed",
-        detail: "Your compliance officer writes and maintains your policies.",
-        values: [false, false, true],
-      },
-      {
-        label: "Asset, data and processing registries built",
-        detail:
-          "Your compliance officer builds your asset, data and processing activity registries.",
-        values: [false, false, true],
-      },
-      {
-        label: "Third parties listed",
-        detail: "Your compliance officer records the third parties in scope.",
-        values: [false, false, true],
-      },
-      {
-        label: "Third parties assessed",
-        detail: "Your compliance officer assesses your third parties.",
-        values: [false, false, true],
-      },
-      {
-        label: "Audit managed end to end",
-        detail:
-          "Includes a complete internal audit and coordination with your external auditor on your behalf.",
-        values: [false, false, true],
-      },
-      {
-        label: "Policy renewals and signature campaigns",
-        detail: "Keep policies current and send them out for signature.",
-        values: [false, false, true],
-      },
-      {
-        label: "Employee onboarding and offboarding follow-up",
-        detail:
-          "Send policies to new hires and follow up on access when employees leave.",
-        values: [false, false, true],
-      },
-      {
-        label: "Periodic access reviews conducted",
-        detail:
-          "Your compliance officer runs recurring reviews of who has access.",
-        values: [false, false, true],
-      },
-      {
-        label: "Security awareness training provided and tracked",
-        values: [false, false, true],
-      },
-      {
-        label: "Compliance Portal set up and kept current",
-        detail:
-          "Your compliance officer sets up the portal and keeps its information current.",
-        values: [false, false, true],
-      },
-      {
-        label: "Security questionnaires answered",
-        detail: "AI drafts each answer and your compliance officer reviews it.",
-        values: [false, false, true],
-      },
-      {
-        label: "Migration from Vanta, Drata or another tool",
-        detail:
-          "Migration is included in Done for you and takes about one week.",
-        values: [false, false, true],
-      },
-      {
-        label: "Customer due diligence calls",
-        detail:
-          "Your compliance officer can join your customers' due diligence calls as a paid extra.",
-        values: [false, false, "Paid extra"],
-      },
-      {
-        label: "Audit fee",
-        detail:
-          "Choose an audit invoiced through Probo or pay your own auditor directly. Probo coordinates with the auditor either way.",
-        values: [false, false, "Direct or via Probo"],
-      },
-      {
-        label: "On-site audit",
-        detail: "An on-site audit is billed as a paid extra when required.",
-        values: [false, false, "Paid extra"],
-      },
-    ],
-  },
-  {
     name: "Compliance platform",
     rows: [
       {
@@ -371,6 +256,121 @@ export const comparison: { name: string; rows: ComparisonRow[] }[] = [
     ],
   },
   {
+    name: "Compliance work done for you",
+    rows: [
+      {
+        label: "Scoping and onboarding call",
+        detail:
+          "Review your requirements and gather context with your compliance officer.",
+        values: [false, false, true],
+      },
+      {
+        label: "Company risk assessment",
+        detail: "Your compliance officer assesses your company's risks.",
+        values: [false, false, true],
+      },
+      {
+        label: "Gap analysis",
+        detail:
+          "Identify what is missing between your current practices and the frameworks in scope.",
+        values: [false, false, true],
+      },
+      {
+        label: "Compliance roadmap for the year",
+        detail: "Turn the gap analysis into a plan for the year.",
+        values: [false, false, true],
+      },
+      {
+        label: "Technical setup guidance",
+        detail:
+          "Your compliance officer explains what to do on your side and how to do it. Your team implements technical changes.",
+        values: [false, false, true],
+      },
+      {
+        label: "Policies written, updated and reviewed",
+        detail: "Your compliance officer writes and maintains your policies.",
+        values: [false, false, true],
+      },
+      {
+        label: "Asset, data and processing registries built",
+        detail:
+          "Your compliance officer builds your asset, data and processing activity registries.",
+        values: [false, false, true],
+      },
+      {
+        label: "Third parties listed",
+        detail: "Your compliance officer records the third parties in scope.",
+        values: [false, false, true],
+      },
+      {
+        label: "Third parties assessed",
+        detail: "Your compliance officer assesses your third parties.",
+        values: [false, false, true],
+      },
+      {
+        label: "Audit managed end to end",
+        detail:
+          "Includes a complete internal audit and coordination with your external auditor on your behalf.",
+        values: [false, false, true],
+      },
+      {
+        label: "Policy renewals and signature campaigns",
+        detail: "Keep policies current and send them out for signature.",
+        values: [false, false, true],
+      },
+      {
+        label: "Employee onboarding and offboarding follow-up",
+        detail:
+          "Send policies to new hires and follow up on access when employees leave.",
+        values: [false, false, true],
+      },
+      {
+        label: "Periodic access reviews conducted",
+        detail:
+          "Your compliance officer runs recurring reviews of who has access.",
+        values: [false, false, true],
+      },
+      {
+        label: "Security awareness training provided and tracked",
+        values: [false, false, true],
+      },
+      {
+        label: "Compliance Portal set up and kept current",
+        detail:
+          "Your compliance officer sets up the portal and keeps its information current.",
+        values: [false, false, true],
+      },
+      {
+        label: "Security questionnaires answered",
+        detail: "AI drafts each answer and your compliance officer reviews it.",
+        values: [false, false, true],
+      },
+      {
+        label: "Migration from Vanta, Drata or another tool",
+        detail:
+          "Migration is included in Done for you and takes about one week.",
+        values: [false, false, true],
+      },
+      {
+        label: "Customer due diligence calls",
+        detail:
+          "Your compliance officer can join your customers' due diligence calls as a paid extra.",
+        values: [false, false, "Paid extra"],
+      },
+      {
+        label: "Audit fee",
+        detail:
+          "Choose an audit invoiced through Probo or pay your own auditor directly. Probo coordinates with the auditor either way.",
+        values: [false, false, "Direct or via Probo"],
+      },
+      {
+        label: "On-site audit",
+        detail: "An on-site audit is billed as a paid extra when required.",
+        values: [false, false, "Paid extra"],
+      },
+    ],
+  },
+  {
     name: "Document management",
     rows: [
       {
@@ -441,6 +441,14 @@ export const comparison: { name: string; rows: ComparisonRow[] }[] = [
         label: "Vendor inventory and risk assessments",
         detail: "Vendors, subprocessors, contracts and assessments.",
         values: [true, true, true],
+      },
+      {
+        label: "Vendor library with pre-filled information",
+        values: [false, "Included", "Included"],
+        cellDetails: {
+          Included:
+            "Add vendors from Probo's library with their details already filled in.",
+        },
       },
       {
         label: "Automated risk scoring agent",
@@ -753,6 +761,58 @@ export const comparison: { name: string; rows: ComparisonRow[] }[] = [
     ],
   },
   {
+    name: "Identity Access Management",
+    rows: [
+      {
+        label: "Email and password login",
+        values: [true, true, true],
+      },
+      {
+        label: "OIDC login (Google and Microsoft sign-in)",
+        values: ["You configure", true, true],
+        cellDetails: {
+          "You configure":
+            "Create an OIDC app in Google Workspace or Microsoft Entra ID pointing to your instance, then add its details in Probo.",
+        },
+      },
+      {
+        label: "SAML login (Okta and others)",
+        values: ["You configure", true, true],
+        cellDetails: {
+          "You configure":
+            "Create a SAML app in your identity provider pointing to your instance, then add its details in Probo.",
+        },
+      },
+      {
+        label: "SCIM provisioning (Okta and others)",
+        values: [true, true, true],
+      },
+      {
+        label: "Bridge provisioning (Google Workspace, Microsoft Entra ID)",
+        values: ["You configure", true, true],
+        cellDetails: {
+          "You configure":
+            "Create your own Google or Microsoft app so Probo can sync users from your directory to your instance.",
+        },
+      },
+      {
+        label: "Personal access tokens with permissions",
+        values: [true, true, true],
+      },
+      {
+        label: "OAuth",
+        values: ["You configure", true, true],
+        cellDetails: {
+          "You configure": "Configure your own OAuth clients on your instance.",
+        },
+      },
+      {
+        label: "Role management",
+        values: [true, true, true],
+      },
+    ],
+  },
+  {
     name: "Integrations",
     rows: [
       {
@@ -779,35 +839,11 @@ export const comparison: { name: string; rows: ComparisonRow[] }[] = [
         ossSetupContinuation: true,
       },
       {
-        label: "Identity providers: Google Workspace, Microsoft, Okta...",
-        detail:
-          "Connect your identity provider to your self-hosted instance yourself.",
+        label: "Identity providers, SSO, SCIM provisioning",
         values: ["You configure", true, true],
         cellDetails: {
           "You configure":
-            "Connect your identity provider to your self-hosted instance yourself.",
-        },
-        ossSetupContinuation: true,
-      },
-      {
-        label: "SSO",
-        detail:
-          "Connect an identity provider for single sign-on and user provisioning. Create a SAML or OIDC app in your identity provider pointing to your instance, then add its details in Probo.",
-        values: ["You configure", true, true],
-        cellDetails: {
-          "You configure":
-            "Create a SAML or OIDC app in your identity provider pointing to your instance, then add its details in Probo.",
-        },
-        ossSetupContinuation: true,
-      },
-      {
-        label: "SCIM provisioning",
-        detail:
-          "Create your own OAuth app with your identity provider so Probo can sync users to your instance.",
-        values: ["You configure", true, true],
-        cellDetails: {
-          "You configure":
-            "Create your own OAuth app with your identity provider so Probo can sync users to your instance.",
+            "Connect your identity provider to your instance yourself: a SAML or OIDC app for SSO, and an OAuth app for SCIM.",
         },
         ossSetupContinuation: true,
       },
@@ -965,6 +1001,29 @@ export const comparison: { name: string; rows: ComparisonRow[] }[] = [
     name: "Access and developer tools",
     rows: [
       {
+        label: "Full GraphQL API: do everything by API, MCP or CLI",
+        detail: "Access the platform through the GraphQL API.",
+        values: [true, true, true],
+      },
+      {
+        label: "Probo MCP",
+        detail:
+          "Connect an MCP client to Probo and work within your existing permissions.",
+        values: ["You configure", true, true],
+        cellDetails: {
+          "You configure":
+            "Configure your MCP client to connect to your self-hosted Probo instance.",
+        },
+      },
+      {
+        label: "N8N official nodes",
+        values: ["You configure", true, true],
+        cellDetails: {
+          "You configure":
+            "Set up the Probo nodes in n8n and connect them to your instance.",
+        },
+      },
+      {
         label: "Users, roles and permissions",
         detail: "Manage who can access Probo and what they can do.",
         values: ["You configure", true, true],
@@ -983,21 +1042,6 @@ export const comparison: { name: string; rows: ComparisonRow[] }[] = [
         label: "Audit logs",
         detail: "Review the record of activity in Probo.",
         values: [true, true, true],
-      },
-      {
-        label: "Full GraphQL API: do everything by API, MCP or CLI",
-        detail: "Access the platform through the GraphQL API.",
-        values: [true, true, true],
-      },
-      {
-        label: "Probo MCP",
-        detail:
-          "Connect an MCP client to Probo and work within your existing permissions.",
-        values: ["You configure", true, true],
-        cellDetails: {
-          "You configure":
-            "Configure your MCP client to connect to your self-hosted Probo instance.",
-        },
       },
     ],
   },

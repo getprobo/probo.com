@@ -639,11 +639,13 @@ const faqSchema = {
                                   {row.label.slice(
                                     row.label.lastIndexOf(" ") + 1,
                                   )}
-                                  <Icon
-                                    name="info"
-                                    size={14}
-                                    class="feature-info"
-                                  />
+                                  <span class="feature-info-hit">
+                                    <Icon
+                                      name="info"
+                                      size={14}
+                                      class="feature-info"
+                                    />
+                                  </span>
                                 </span>
                               </button>
                               <span
@@ -1267,7 +1269,7 @@ const faqSchema = {
     margin-block: -12px;
     color: inherit;
     text-align: left;
-    cursor: help;
+    cursor: default;
   }
   .feature-detail-ending {
     display: inline-flex;
@@ -1278,6 +1280,13 @@ const faqSchema = {
   .feature-detail-trigger :global(.feature-info) {
     flex: none;
     color: var(--color-muted-foreground);
+  }
+  .feature-info-hit {
+    display: inline-grid;
+    place-items: center;
+    padding: 8px;
+    margin: -8px;
+    cursor: help;
   }
   .comparison-icon-trigger {
     display: grid;

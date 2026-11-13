@@ -270,7 +270,11 @@ const initPricing = () => {
     revealObserver.observe(target);
   });
 
-  type Tooltip = { button: HTMLButtonElement; content: HTMLElement };
+  type Tooltip = {
+    button: HTMLButtonElement;
+    content: HTMLElement;
+    anchor: HTMLElement;
+  };
   const siteHeader = document.querySelector("header.page-header");
   let active: Tooltip | undefined;
   let pinned = false;
@@ -294,16 +298,12 @@ const initPricing = () => {
     active = tooltip;
     content.toggleAttribute("data-motion", fromPointer);
     content.showPopover();
-    const anchor = button.getBoundingClientRect();
+    const anchor = tooltip.anchor.getBoundingClientRect();
     const width = content.offsetWidth;
     const height = content.offsetHeight;
     const gutter = 12;
     const gap = 8;
     const viewportWidth = document.documentElement.clientWidth;
-    const right = anchor.right + gap;
-    const placeRight =
-      button.classList.contains("feature-detail-trigger") &&
-      right + width <= viewportWidth - gutter;
     const centered = Math.max(
       gutter,
       Math.min(
@@ -319,18 +319,11 @@ const initPricing = () => {
     const above = anchor.top - height - gap;
     const below = anchor.bottom + gap;
     const placeAbove = above >= minTop || below > maxTop;
-    const top = placeRight
-      ? anchor.top + (anchor.height - height) / 2
-      : placeAbove
-        ? above
-        : below;
-    content.style.left = `${placeRight ? right : centered}px`;
+    const top = placeAbove ? above : below;
+    content.style.left = `${centered}px`;
     content.style.top = `${Math.max(minTop, Math.min(top, maxTop))}px`;
-    content.style.setProperty("--tooltip-enter-x", placeRight ? "-4px" : "0px");
-    content.style.setProperty(
-      "--tooltip-enter-y",
-      placeRight ? "0px" : placeAbove ? "4px" : "-4px",
-    );
+    content.style.setProperty("--tooltip-enter-x", "0px");
+    content.style.setProperty("--tooltip-enter-y", placeAbove ? "4px" : "-4px");
     button.setAttribute("aria-expanded", "true");
   };
 
@@ -353,18 +346,22 @@ const initPricing = () => {
         button.getAttribute("aria-controls") || "",
       );
       if (!content) return;
-      const tooltip = { button, content };
+      const hoverTarget =
+        button.querySelector<HTMLElement>(".feature-info-hit") ?? button;
+      const tooltip = { button, content, anchor: hoverTarget };
 
-      button.addEventListener(
+      hoverTarget.addEventListener(
         "pointerenter",
         (event) => {
           if (event.pointerType === "mouse") open(tooltip, true);
         },
         { signal },
       );
-      button.addEventListener("pointerleave", () => scheduleClose(tooltip), {
-        signal,
-      });
+      hoverTarget.addEventListener(
+        "pointerleave",
+        () => scheduleClose(tooltip),
+        { signal },
+      );
       button.addEventListener(
         "focus",
         () => {
