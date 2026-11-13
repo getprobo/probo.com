@@ -8,7 +8,7 @@
   outline-offset: 4px;
 }
 .journal-container {
-  width: min(100% - 40px, 1080px);
+  width: min(100% - 40px, 1240px);
   margin-inline: auto;
 }
 .journal-index {
@@ -885,9 +885,9 @@
 @media (min-width: 1120px) {
   .journal-code-wide,
   .journal-prose figure:has(n8n-demo) {
-    width: 1080px;
+    width: min(calc(100vw - 40px), 1240px);
     max-width: none;
-    margin-left: -200px;
+    margin-left: calc((680px - min(calc(100vw - 40px), 1240px)) / 2);
     position: relative;
     z-index: 1;
   }

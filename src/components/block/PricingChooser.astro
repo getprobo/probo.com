@@ -1,0 +1,390 @@
+---
+import Icon from "../Icon.astro";
+import Button from "../ui/Button.svelte";
+import { plans } from "../../data/pricing";
+
+const icons = {
+  "open-source": "code",
+  cloud: "cloud",
+  "done-for-you": "handshake",
+} as const;
+
+const prompts = {
+  "open-source": "We want to self-host Probo.",
+  cloud: "We run compliance and need hosting.",
+  "done-for-you": "We need someone to run compliance.",
+} as const;
+---
+
+<section
+  id="pricing-chooser"
+  class="pricing-chooser container"
+  aria-labelledby="pricing-final-heading"
+  data-pricing-chooser
+  data-pricing-reveal="chooser"
+>
+  <header>
+    <h2 id="pricing-final-heading" class="pricing-section-title">
+      How will you run compliance?
+    </h2>
+    <p>Choose what your team takes on. See the plan that fits.</p>
+  </header>
+  <div class="chooser-options">
+    {
+      plans.map((plan) => (
+        <details class="chooser-option" data-chooser-plan={plan.id}>
+          <summary>
+            <Icon name="caret-right" size={18} class="chooser-chevron" />
+            <span class="chooser-prompt">{prompts[plan.id]}</span>
+          </summary>
+          <article
+            class="chooser-card"
+            aria-labelledby={`chooser-title-${plan.id}`}
+          >
+            <div class="chooser-identity">
+              <Icon name={icons[plan.id]} size={32} />
+              <h3 id={`chooser-title-${plan.id}`}>{plan.name}</h3>
+              <p>{plan.tagline}</p>
+            </div>
+            <div class="chooser-actions">
+              <Button
+                href={plan.href}
+                size="lg"
+                variant={plan.id === "open-source" ? "secondary" : "primary"}
+                class="chooser-primary"
+              >
+                {plan.id === "open-source" && (
+                  <Icon name="github-logo" size={19} />
+                )}
+                {plan.cta}
+                {plan.id !== "open-source" && (
+                  <Icon name="arrow-right" size={19} class="chooser-arrow" />
+                )}
+              </Button>
+              <a
+                href={`#plan-${plan.id}`}
+                data-astro-reload
+                class="chooser-compare"
+              >
+                Compare all plans <Icon name="arrow-right" size={16} />
+              </a>
+            </div>
+            <div class="chooser-features">
+              <p>{plan.includesLabel}</p>
+              <ul>
+                {plan.features.map((feature) => (
+                  <li>
+                    <Icon name="check" size={16} />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        </details>
+      ))
+    }
+    <div class="chooser-option chooser-contact">
+      <Icon name="chats-circle" size={18} />
+      <span class="chooser-prompt">We’re not sure yet.</span>
+      <Button
+        href="/contact"
+        size="lg"
+        class="chooser-primary chooser-contact-action"
+      >
+        Talk to us <Icon name="arrow-right" size={19} class="chooser-arrow" />
+      </Button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const initPricingChooser = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-pricing-chooser]")
+      .forEach((guide) => {
+        if (guide.dataset.ready) return;
+        guide.dataset.ready = "true";
+        const syncCard = (option: HTMLDetailsElement) => {
+          const card = option.querySelector<HTMLElement>("article");
+          if (card) card.inert = !option.open;
+        };
+        guide.querySelectorAll<HTMLDetailsElement>("details").forEach(syncCard);
+        const observer = new MutationObserver((changes) => {
+          changes.forEach(({ target }) =>
+            syncCard(target as HTMLDetailsElement),
+          );
+        });
+        observer.observe(guide, {
+          attributes: true,
+          attributeFilter: ["open"],
+          subtree: true,
+        });
+        document.addEventListener(
+          "astro:before-swap",
+          () => observer.disconnect(),
+          {
+            once: true,
+          },
+        );
+        guide.addEventListener("pointerdown", (event) => {
+          if ((event.target as Element).closest("summary"))
+            guide.setAttribute("data-pointer-motion", "");
+        });
+        guide.addEventListener("keydown", () => {
+          guide.removeAttribute("data-pointer-motion");
+        });
+      });
+  };
+  initPricingChooser();
+  document.addEventListener("astro:page-load", initPricingChooser);
+</script>
+
+<style>
+  .pricing-chooser {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.8fr) minmax(0, 2fr);
+    align-items: start;
+    gap: 80px;
+    padding-bottom: 80px;
+    scroll-margin-top: 100px;
+  }
+  h2 {
+    max-width: 300px;
+    scroll-margin-top: 100px;
+    text-wrap: balance;
+  }
+  header p {
+    max-width: 280px;
+    margin-top: 20px;
+    color: var(--color-muted-foreground);
+    font-size: 16px;
+    line-height: 24px;
+    text-wrap: pretty;
+  }
+  .chooser-options {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+  .chooser-option {
+    border: 1px solid var(--color-border-solid);
+    border-radius: 16px;
+    background: var(--color-level-0);
+    overflow: clip;
+  }
+  summary,
+  .chooser-contact {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    min-height: 96px;
+    padding: 24px 28px;
+    list-style: none;
+  }
+  summary {
+    cursor: pointer;
+  }
+  .chooser-contact {
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  details:not([open]) summary:hover {
+    background: var(--color-subtle);
+  }
+  summary:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: -5px;
+    border-radius: 15px;
+  }
+  .chooser-prompt {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 26px;
+    letter-spacing: -0.25px;
+  }
+  .chooser-chevron {
+    flex: none;
+    transform-origin: center;
+  }
+  details[open] :global(.chooser-chevron) {
+    transform: rotate(90deg);
+  }
+  .chooser-card {
+    padding: 8px 36px 36px;
+  }
+  .chooser-identity {
+    display: grid;
+    gap: 16px;
+  }
+  h3 {
+    font-size: var(--text-h4);
+    line-height: var(--text-h4--line-height);
+    font-weight: 600;
+    letter-spacing: var(--text-h4--letter-spacing);
+  }
+  .chooser-identity p {
+    color: var(--color-muted-foreground);
+    font-size: 16px;
+    line-height: 24px;
+    text-wrap: pretty;
+  }
+  .chooser-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    margin-top: 32px;
+  }
+  .chooser-options :global(.chooser-primary) {
+    min-width: 172px;
+    box-shadow: none;
+  }
+  .chooser-options :global(.chooser-contact-action) {
+    width: max-content;
+    min-width: 0;
+    color: var(--color-primary-foreground);
+  }
+  .chooser-compare {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-foreground);
+  }
+  .chooser-compare {
+    text-underline-offset: 4px;
+  }
+  .chooser-compare:hover {
+    text-decoration: underline;
+  }
+  .chooser-actions :global(a:focus-visible) {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 4px;
+  }
+  .chooser-features {
+    margin-top: 32px;
+  }
+  .chooser-features > p {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+  ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 28px;
+    margin-top: 24px;
+  }
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  li :global(svg) {
+    flex: none;
+    margin-top: 2px;
+  }
+  @supports (interpolate-size: allow-keywords) {
+    details::details-content {
+      interpolate-size: allow-keywords;
+      block-size: 0;
+      overflow: clip;
+    }
+    details[open]::details-content {
+      block-size: auto;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      [data-pointer-motion] details::details-content {
+        opacity: 0;
+        transition:
+          block-size 320ms var(--pricing-motion-smooth),
+          opacity 120ms ease-out,
+          content-visibility 320ms allow-discrete;
+      }
+      [data-pointer-motion] details[open]::details-content {
+        opacity: 1;
+        transition:
+          block-size 320ms var(--pricing-motion-smooth),
+          opacity 180ms ease-out 40ms,
+          content-visibility 320ms allow-discrete;
+      }
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-pointer-motion] :global(.chooser-chevron) {
+      transition: transform 220ms var(--pricing-motion-snappy);
+    }
+    .chooser-options :global(.chooser-primary) {
+      transition:
+        background-color 160ms ease-out,
+        scale 220ms var(--pricing-motion-snappy);
+    }
+    .chooser-options :global(.chooser-primary:active) {
+      scale: 0.975;
+    }
+    .chooser-options :global(.chooser-arrow) {
+      transition: translate 220ms var(--pricing-motion-snappy);
+    }
+    .chooser-options :global(.chooser-primary:hover .chooser-arrow) {
+      translate: 3px;
+    }
+  }
+  @media (max-width: 1023px) {
+    .pricing-chooser {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    h2,
+    header p {
+      max-width: 540px;
+    }
+    header p {
+      margin-top: 16px;
+    }
+  }
+  @media (max-width: 767px) {
+    .pricing-chooser {
+      gap: 24px;
+      padding-bottom: 40px;
+    }
+    summary,
+    .chooser-contact {
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 6px 12px;
+      min-height: 100px;
+      padding: 20px;
+    }
+    .chooser-prompt {
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: -0.15px;
+    }
+    .chooser-contact :global(.chooser-contact-action) {
+      grid-column: 2;
+      margin-top: 10px;
+    }
+    .chooser-card {
+      padding: 8px 24px 28px;
+    }
+    .chooser-actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .chooser-compare {
+      justify-content: center;
+    }
+    ul {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+  }
+</style>

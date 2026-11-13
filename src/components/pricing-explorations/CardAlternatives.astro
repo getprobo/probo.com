@@ -1,0 +1,86 @@
+---
+import Icon from "../Icon.astro";
+import { plans } from "../../data/pricing";
+interface Props {
+  current: (typeof plans)[number]["id"];
+}
+const { current } = Astro.props;
+---
+
+<nav
+  class="card-alternatives"
+  aria-label="Try another Probo plan"
+  data-direct-reselect
+>
+  <p>Try another plan</p>
+  <div>
+    {
+      plans
+        .filter((plan) => plan.id !== current)
+        .map((plan) => (
+          <a href={`#plan-${plan.id}`} data-choose-plan data-astro-reload>
+            <>
+              <span>{plan.name}</span>
+              <Icon name="arrow-right" size={13} />
+            </>
+          </a>
+        ))
+    }
+  </div>
+</nav>
+
+<style>
+  .card-alternatives {
+    display: none;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #d9ded3;
+  }
+  :global(
+      :is(
+          [data-pricing-exploration="024"],
+          [data-pricing-exploration="025"],
+          [data-pricing-exploration="026"],
+          [data-pricing-exploration="027"]
+        )
+        .plan-card[data-recommended]
+    )
+    .card-alternatives {
+    display: block;
+  }
+  p {
+    color: #60685c;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .card-alternatives > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 4px;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-height: 44px;
+    color: #141e12;
+    font-size: 13px;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  a :global(svg) {
+    flex: none;
+  }
+  a:hover {
+    color: #465930;
+    text-decoration-thickness: 2px;
+  }
+  a:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+</style>

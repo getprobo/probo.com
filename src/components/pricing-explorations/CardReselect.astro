@@ -1,0 +1,378 @@
+---
+import Icon from "../Icon.astro";
+import { plans } from "../../data/pricing";
+
+interface Props {
+  current: (typeof plans)[number]["id"];
+  placement?: "footer" | "header" | "action" | "action-menu";
+}
+const { current, placement = "footer" } = Astro.props;
+const inHeader = placement === "header";
+const atActionMenu = placement === "action-menu";
+const atAction = placement === "action" || atActionMenu;
+---
+
+<div
+  class:list={[
+    "card-reselect",
+    inHeader && "card-reselect--header",
+    atAction && "card-reselect--action",
+    atActionMenu && "card-reselect--action-menu",
+  ]}
+>
+  <details
+    data-reselect-details
+    data-header-reselect={inHeader ? "" : undefined}
+    data-action-reselect={atAction ? "" : undefined}
+    data-floating-reselect={atActionMenu ? "" : undefined}
+  >
+    <summary
+      >{
+        atAction
+          ? "Change answer"
+          : inHeader
+            ? "Other plans"
+            : "Try another plan"
+      }<Icon
+        name={inHeader || atAction ? "caret-down" : "plus"}
+        size={inHeader || atAction ? 14 : 18}
+      /></summary
+    >
+    <nav
+      aria-label={atAction
+        ? "Choose a different need"
+        : "Choose another Probo plan"}
+    >
+      {
+        plans
+          .filter((plan) => plan.id !== current)
+          .map((plan) => (
+            <a href={`#plan-${plan.id}`} data-choose-plan data-astro-reload>
+              <>
+                {atAction ? (
+                  <>
+                    <span class="reselect-need">{plan.finderPrompt}</span>
+                    <span class="reselect-name">{plan.name}</span>
+                    <Icon name="arrow-right" size={18} />
+                  </>
+                ) : (
+                  <>
+                    <span class="reselect-name">{plan.name}</span>
+                    <Icon name="arrow-right" size={18} />
+                    <span class="reselect-need">{plan.finderPrompt}</span>
+                  </>
+                )}
+              </>
+            </a>
+          ))
+      }
+    </nav>
+  </details>
+</div>
+
+<style>
+  .card-reselect {
+    --reselect-inline: 24px;
+    --reselect-bottom: 32px;
+    display: none;
+  }
+  :global([data-pricing-exploration="021"] .plan-card[data-recommended])
+    .card-reselect {
+    display: block;
+    margin: 28px calc(-1 * var(--reselect-inline))
+      calc(-1 * var(--reselect-bottom));
+    overflow: clip;
+    border-top: 1px solid #fffffb33;
+    border-radius: 0 0 16px 16px;
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 54px;
+    padding: 16px var(--reselect-inline);
+    cursor: pointer;
+    list-style: none;
+    color: #fffffb;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary :global(svg) {
+    flex: none;
+    color: #e6ff03;
+  }
+  summary:hover {
+    background: #263322;
+  }
+  summary:focus-visible {
+    outline: 2px solid #e6ff03;
+    outline-offset: -6px;
+    border-radius: 4px;
+  }
+  details[open] summary :global(svg) {
+    rotate: 45deg;
+  }
+  nav {
+    background: #e6ff03;
+    color: #141e12;
+  }
+  nav a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18px;
+    gap: 6px 16px;
+    padding: 16px var(--reselect-inline);
+    text-underline-offset: 4px;
+  }
+  nav a + a {
+    border-top: 1px solid #141e1226;
+  }
+  nav a:hover {
+    background: #d6ee03;
+  }
+  nav a:hover .reselect-name {
+    text-decoration: underline;
+  }
+  nav a:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: -5px;
+  }
+  nav :global(svg) {
+    align-self: center;
+  }
+  .reselect-name {
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+  .reselect-need {
+    grid-column: 1 / -1;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #39462c;
+  }
+  :global(
+      :is([data-pricing-exploration="022"], [data-pricing-exploration="023"])
+        .plan-card[data-recommended]
+    )
+    .card-reselect--header {
+    position: absolute;
+    top: -6px;
+    right: 0;
+    z-index: 6;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+  }
+  .card-reselect--header details {
+    position: relative;
+  }
+  .card-reselect--header summary {
+    justify-content: center;
+    min-height: 44px;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid #141e1240;
+    border-radius: 8px;
+    color: #141e12;
+    font-size: 13px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  .card-reselect--header summary :global(svg) {
+    color: currentColor;
+  }
+  .card-reselect--header summary:hover,
+  .card-reselect--header details[open] summary {
+    background: #141e12;
+    color: #e6ff03;
+  }
+  .card-reselect--header summary:focus-visible {
+    outline-color: #141e12;
+    outline-offset: -4px;
+    border-radius: 8px;
+  }
+  .card-reselect--header details[open] summary:focus-visible,
+  .card-reselect--header summary:hover:focus-visible {
+    outline-color: #e6ff03;
+  }
+  .card-reselect--header details[open] summary :global(svg) {
+    rotate: 180deg;
+  }
+  .card-reselect--header nav {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: clamp(220px, 24vw, 280px);
+    max-height: min(340px, var(--header-menu-room, calc(100dvh - 200px)));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 12px;
+    background: #fffffb;
+    color: #141e12;
+    box-shadow: 0 10px 28px #141e122b;
+    scrollbar-color: #39462c #f1f3eb;
+    scrollbar-width: thin;
+  }
+  .card-reselect--header details[data-menu-side="above"] nav {
+    top: auto;
+    bottom: calc(100% + 8px);
+  }
+  .card-reselect--header nav a {
+    padding: 16px 20px;
+  }
+  .card-reselect--header nav a:hover {
+    background: #f5ffd1;
+  }
+  :global(
+      :is([data-pricing-exploration="034"], [data-pricing-exploration="035"])
+        .plan-card[data-recommended]
+    )
+    .card-reselect--action {
+    display: block;
+    margin-top: 12px;
+  }
+  .card-reselect--action summary {
+    min-height: 44px;
+    padding: 0;
+    color: #141e12;
+    font-size: 14px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .card-reselect--action summary :global(svg) {
+    color: currentColor;
+  }
+  .card-reselect--action summary:hover {
+    background: #e6ff0333;
+  }
+  .card-reselect--action summary:focus-visible {
+    outline-color: #141e12;
+    outline-offset: 4px;
+  }
+  .card-reselect--action details[open] summary :global(svg) {
+    rotate: 180deg;
+  }
+  .card-reselect--action nav {
+    margin-top: 8px;
+    padding-bottom: 4px;
+    border-block: 1px solid #141e1226;
+    background: transparent;
+  }
+  .card-reselect--action nav a {
+    grid-template-columns: minmax(0, 1fr) 18px;
+    gap: 6px 14px;
+    padding: 12px 8px;
+  }
+  .card-reselect--action nav a:hover {
+    background: #e6ff0333;
+  }
+  .card-reselect--action nav a:focus-visible {
+    outline-offset: -2px;
+  }
+  .card-reselect--action .reselect-need {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #141e12;
+  }
+  .card-reselect--action .reselect-name {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: #39462c;
+  }
+  .card-reselect--action nav a :global(svg) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  @supports (interpolate-size: allow-keywords) {
+    .card-reselect--action:not(.card-reselect--action-menu)
+      details::details-content {
+      interpolate-size: allow-keywords;
+      contain: layout;
+      overflow: clip;
+      block-size: 0;
+    }
+    .card-reselect--action:not(.card-reselect--action-menu)
+      details[open]::details-content {
+      block-size: auto;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .card-reselect--action:not(.card-reselect--action-menu)
+        details[data-action-pointer]::details-content {
+        transition:
+          block-size 320ms cubic-bezier(0.16, 1, 0.3, 1),
+          content-visibility 320ms allow-discrete;
+      }
+    }
+  }
+  .card-reselect--action-menu details {
+    position: relative;
+  }
+  .card-reselect--action-menu nav {
+    --reselect-menu-offset: -4px;
+    position: absolute;
+    z-index: 8;
+    top: calc(100% + 8px);
+    right: 0;
+    display: block;
+    width: min(280px, calc(100% + 16px));
+    max-width: calc(100vw - 24px);
+    max-height: min(340px, var(--header-menu-room, calc(100dvh - 200px)));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin: 0;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 12px;
+    background: #fffffb;
+    box-shadow: 0 10px 28px #141e122b;
+    scrollbar-color: #39462c #f1f3eb;
+    scrollbar-width: thin;
+    transform-origin: top right;
+  }
+  .card-reselect--action-menu details:not([open]) nav {
+    display: none;
+  }
+  .card-reselect--action-menu details[data-menu-side="above"] nav {
+    --reselect-menu-offset: 4px;
+    top: auto;
+    bottom: calc(100% + 8px);
+    transform-origin: bottom right;
+  }
+  .card-reselect--action-menu nav a:hover {
+    background: #f5ffd1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card-reselect--action-menu details[open][data-action-pointer] nav {
+      transition:
+        opacity 180ms ease-out,
+        transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @starting-style {
+      .card-reselect--action-menu details[open][data-action-pointer] nav {
+        opacity: 0.75;
+        transform: translateY(var(--reselect-menu-offset)) scale(0.98);
+      }
+    }
+  }
+  @media (min-width: 1024px) {
+    .card-reselect {
+      --reselect-inline: 32px;
+      --reselect-bottom: 40px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .card-reselect {
+      --reselect-inline: 40px;
+    }
+  }
+</style>

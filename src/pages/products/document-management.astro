@@ -1,4 +1,5 @@
 ---
+import Faq from "../../components/block/Faq.astro";
 import "@phosphor-icons/web/regular";
 import { Image } from "astro:assets";
 import { findDocumentManagementAsset as findAsset } from "../../lib/document-management-assets";
@@ -813,47 +814,7 @@ const serviceSchema = {
       >
         Questions, answered
       </h2>
-      <div class="faq-accordion mx-auto max-w-[768px]" data-faq-accordion>
-        {
-          faqs.map((faq, index) => (
-            <div
-              class="faq-item"
-              data-faq-item
-              data-trust-reveal
-              style={`--trust-reveal-delay: ${index * 60}ms`}
-            >
-              <h3>
-                <button
-                  class="faq-trigger"
-                  type="button"
-                  id={`document-management-faq-trigger-${index}`}
-                  aria-expanded="false"
-                  aria-controls={`document-management-faq-panel-${index}`}
-                  data-faq-trigger
-                >
-                  <span>{faq.question}</span>
-                  <span class="faq-icon" aria-hidden="true">
-                    <i class="ph ph-plus faq-icon-plus" />
-                    <i class="ph ph-minus faq-icon-minus" />
-                  </span>
-                </button>
-              </h3>
-              <div
-                class="faq-panel"
-                id={`document-management-faq-panel-${index}`}
-                role="region"
-                aria-labelledby={`document-management-faq-trigger-${index}`}
-                aria-hidden="true"
-                data-faq-panel
-              >
-                <div class="faq-panel-inner">
-                  <p set:html={faq.answerHtml} />
-                </div>
-              </div>
-            </div>
-          ))
-        }
-      </div>
+      <Faq faqs={faqs} id="document-management" reveal />
     </section>
     <ProductDiscovery />
   </main>
@@ -939,85 +900,8 @@ const serviceSchema = {
     });
   };
 
-  const initDocumentManagementFaq = () => {
-    const page = document.querySelector<HTMLElement>(
-      "[data-document-management-page]",
-    );
-    if (!page) return;
-    const faqAccordions = Array.from(
-      page.querySelectorAll<HTMLElement>("[data-faq-accordion]"),
-    );
-
-    faqAccordions.forEach((faqAccordion) => {
-      if (faqAccordion.dataset.faqReady === "true") {
-        return;
-      }
-
-      faqAccordion.dataset.faqReady = "true";
-
-      const faqItems = Array.from(
-        faqAccordion.querySelectorAll<HTMLElement>("[data-faq-item]"),
-      );
-
-      const setFaqItemState = (item: HTMLElement, shouldOpen: boolean) => {
-        const trigger =
-          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
-        const panel = item.querySelector<HTMLElement>("[data-faq-panel]");
-
-        if (!trigger || !panel) {
-          return;
-        }
-
-        item.classList.toggle("is-open", shouldOpen);
-        trigger.setAttribute("aria-expanded", String(shouldOpen));
-        panel.setAttribute("aria-hidden", String(!shouldOpen));
-      };
-
-      faqItems.forEach((item, index) => {
-        const trigger =
-          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
-
-        if (!trigger) {
-          return;
-        }
-
-        trigger.addEventListener("click", () => {
-          const shouldOpen = !item.classList.contains("is-open");
-
-          faqItems.forEach((faqItem) => {
-            setFaqItemState(faqItem, faqItem === item && shouldOpen);
-          });
-        });
-
-        trigger.addEventListener("keydown", (event) => {
-          const lastIndex = faqItems.length - 1;
-          const nextIndex =
-            event.key === "ArrowDown"
-              ? Math.min(index + 1, lastIndex)
-              : event.key === "ArrowUp"
-                ? Math.max(index - 1, 0)
-                : event.key === "Home"
-                  ? 0
-                  : event.key === "End"
-                    ? lastIndex
-                    : index;
-
-          if (nextIndex === index) {
-            return;
-          }
-
-          event.preventDefault();
-          faqItems[nextIndex]
-            ?.querySelector<HTMLButtonElement>("[data-faq-trigger]")
-            ?.focus();
-        });
-      });
-    });
-  };
-
   const initDocumentManagementPage = () => {
     initDocumentManagementAnimations();
-    initDocumentManagementFaq();
   };
 
   document.addEventListener("astro:page-load", initDocumentManagementPage);
@@ -1057,10 +941,6 @@ const serviceSchema = {
   .automation-card:focus-visible {
     outline: 2px solid #141e12;
     outline-offset: 4px;
-  }
-  .faq-panel :global(a) {
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 
   .access-review-browser img {
@@ -1248,7 +1128,7 @@ const serviceSchema = {
   .trusted-showcase {
     display: grid;
     width: 100%;
-    max-width: 1080px;
+    max-width: 1240px;
     gap: 24px;
     margin-right: auto;
     margin-left: auto;
@@ -1455,114 +1335,6 @@ const serviceSchema = {
     .trusted-quote {
       font-size: 24px;
       line-height: 32px;
-    }
-  }
-
-  .faq-item {
-    border-bottom: 1px solid var(--color-border-low);
-  }
-
-  .faq-item:last-child {
-    border-bottom: 0;
-  }
-
-  .faq-item h3 {
-    margin: 0;
-  }
-
-  .faq-trigger {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    gap: 24px;
-    padding: 16px 0;
-    color: #141e12;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 500;
-    text-align: left;
-    cursor: pointer;
-    transition: padding 220ms ease;
-  }
-
-  .faq-trigger:focus-visible {
-    outline: 2px solid #141e12;
-    outline-offset: 4px;
-  }
-
-  .faq-trigger span:first-child {
-    flex: 1;
-  }
-
-  .faq-icon {
-    position: relative;
-    display: inline-flex;
-    width: 16px;
-    height: 16px;
-    flex: none;
-    align-items: center;
-    justify-content: center;
-    color: currentColor;
-  }
-
-  .faq-icon i {
-    position: absolute;
-    font-size: 16px;
-    line-height: 1;
-    transition:
-      opacity 220ms ease,
-      transform 220ms ease;
-  }
-
-  .faq-icon-minus {
-    opacity: 0;
-    transform: rotate(-90deg) scale(0.9);
-  }
-
-  .faq-item.is-open .faq-trigger {
-    padding-bottom: 8px;
-  }
-
-  .faq-item.is-open .faq-icon-plus {
-    opacity: 0;
-    transform: rotate(90deg) scale(0.9);
-  }
-
-  .faq-item.is-open .faq-icon-minus {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-  }
-
-  .faq-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 320ms ease;
-  }
-
-  .faq-panel-inner {
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .faq-panel p {
-    box-sizing: border-box;
-    width: 100%;
-    margin: 0;
-    padding: 0 40px 16px 0;
-    color: #6b716a;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .faq-item.is-open .faq-panel {
-    grid-template-rows: 1fr;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .faq-panel,
-    .faq-icon i,
-    .faq-trigger {
-      transition: none;
     }
   }
 </style>

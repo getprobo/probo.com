@@ -1,0 +1,294 @@
+---
+import Icon from "../Icon.astro";
+
+interface Props {
+  faqs: { question: string; answer: string; answerHtml?: string }[];
+  id: string;
+  reveal?: boolean;
+  smoothMotion?: boolean;
+}
+const { faqs, id, reveal = false, smoothMotion = true } = Astro.props;
+---
+
+<div
+  class="faq-accordion"
+  data-faq-accordion
+  data-faq-motion={smoothMotion ? "smooth" : undefined}
+>
+  {
+    faqs.map((faq, index) => (
+      <div
+        class="faq-item is-open"
+        data-faq-item
+        data-trust-reveal={reveal || undefined}
+        style={reveal ? `--trust-reveal-delay: ${index * 60}ms` : undefined}
+      >
+        <h3>
+          <button
+            class="faq-trigger"
+            type="button"
+            id={`${id}-faq-trigger-${index}`}
+            aria-expanded="true"
+            aria-controls={`${id}-faq-panel-${index}`}
+            data-faq-trigger
+          >
+            <span>{faq.question}</span>
+            <span class="faq-icon" aria-hidden="true">
+              <Icon name="plus" size={16} class="faq-icon-plus" />
+              <Icon name="minus" size={16} class="faq-icon-minus" />
+            </span>
+          </button>
+        </h3>
+        <div
+          class="faq-panel"
+          id={`${id}-faq-panel-${index}`}
+          role="region"
+          aria-labelledby={`${id}-faq-trigger-${index}`}
+          data-faq-panel
+        >
+          <div class="faq-panel-inner">
+            {faq.answerHtml ? (
+              <p set:html={faq.answerHtml} />
+            ) : (
+              <p>{faq.answer}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  const initFaq = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-faq-accordion]")
+      .forEach((accordion) => {
+        if (accordion.dataset.faqReady) return;
+        accordion.addEventListener("pointerdown", () => {
+          accordion.setAttribute("data-faq-pointer", "");
+        });
+        accordion.addEventListener("keydown", () => {
+          accordion.removeAttribute("data-faq-pointer");
+        });
+        const items = Array.from(
+          accordion.querySelectorAll<HTMLElement>("[data-faq-item]"),
+        );
+        const setOpen = (item: HTMLElement, open: boolean) => {
+          item.classList.toggle("is-open", open);
+          item
+            .querySelector("[data-faq-trigger]")
+            ?.setAttribute("aria-expanded", String(open));
+          const panel = item.querySelector<HTMLElement>("[data-faq-panel]");
+          if (panel) {
+            panel.setAttribute("aria-hidden", String(!open));
+            panel.inert = !open;
+          }
+        };
+        items.forEach((item, index) => {
+          const trigger =
+            item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+          if (!trigger) return;
+          setOpen(item, false);
+          trigger.addEventListener("click", () => {
+            const open = !item.classList.contains("is-open");
+            items.forEach((candidate) =>
+              setOpen(candidate, candidate === item && open),
+            );
+          });
+          trigger.addEventListener("keydown", (event) => {
+            const last = items.length - 1;
+            const next =
+              event.key === "ArrowDown"
+                ? Math.min(index + 1, last)
+                : event.key === "ArrowUp"
+                  ? Math.max(index - 1, 0)
+                  : event.key === "Home"
+                    ? 0
+                    : event.key === "End"
+                      ? last
+                      : index;
+            if (next === index) return;
+            event.preventDefault();
+            items[next]
+              ?.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+              ?.focus();
+          });
+        });
+        accordion.dataset.faqReady = "true";
+      });
+  };
+  document.addEventListener("astro:page-load", initFaq);
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", initFaq, { once: true });
+  else initFaq();
+</script>
+
+<style>
+  .faq-accordion {
+    width: 100%;
+  }
+  .faq-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+  .faq-panel :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--color-border-low);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 0;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+  }
+
+  .faq-trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: padding 220ms ease;
+  }
+
+  .faq-trigger:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 4px;
+  }
+
+  .faq-trigger span:first-child {
+    flex: 1;
+  }
+
+  .faq-icon {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+
+  .faq-icon :global(svg) {
+    position: absolute;
+    font-size: 16px;
+    line-height: 1;
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease;
+  }
+
+  :global(.faq-icon-minus) {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-trigger {
+    padding-bottom: 8px;
+  }
+
+  .faq-item.is-open :global(.faq-icon-plus) {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  .faq-item.is-open :global(.faq-icon-minus) {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  [data-faq-ready="true"] .faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms ease;
+  }
+
+  .faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-panel p {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0 40px 16px 0;
+    color: #6b716a;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  [data-faq-ready="true"] .faq-item.is-open .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  [data-faq-motion="smooth"] .faq-panel,
+  [data-faq-motion="smooth"] .faq-icon :global(svg),
+  [data-faq-motion="smooth"] .faq-trigger {
+    transition: none;
+  }
+  [data-faq-motion="smooth"] .faq-item.is-open .faq-trigger {
+    padding-bottom: 16px;
+  }
+  [data-faq-motion="smooth"] .faq-panel-inner {
+    opacity: 0;
+  }
+  [data-faq-motion="smooth"] .faq-item.is-open .faq-panel-inner {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-faq-motion="smooth"][data-faq-pointer] .faq-panel {
+      transition: grid-template-rows 300ms cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    [data-faq-motion="smooth"][data-faq-pointer] .faq-panel-inner {
+      transition: opacity 160ms ease-out;
+    }
+    [data-faq-motion="smooth"][data-faq-pointer] .faq-icon :global(svg) {
+      transition:
+        opacity 140ms ease-out,
+        transform 220ms cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-faq-ready="true"] .faq-panel,
+    .faq-icon :global(svg),
+    .faq-trigger {
+      transition: none;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-trust-reveal].is-awaiting-reveal {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+    [data-trust-reveal].is-visible {
+      animation: faq-reveal 850ms var(--spring-smooth) var(--trust-reveal-delay)
+        both;
+    }
+  }
+  @keyframes faq-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+</style>
