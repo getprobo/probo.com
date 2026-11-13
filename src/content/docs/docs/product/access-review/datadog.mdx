@@ -1,0 +1,66 @@
+---
+title: Datadog
+description: Connect Datadog as an access review source using a service access token and your Datadog site so Probo can list your organization's users and roles.
+---
+
+Probo reads your Datadog organization's users through the Datadog API so you can review who has access.
+
+:::caution
+Use a **service access token** (`ddsat_…`) created on a Datadog service account, with the `user_access_read` scope. An **application key** does not work, because Datadog accepts one only alongside an API key and Probo sends a single token. A personal access token (`ddpat_…`) also connects, but it expires within a year and stops working when its owner leaves the organization.
+:::
+
+## Prerequisites
+
+- Probo organization administrator access
+- A Datadog role with the **Service Account Write** permission, such as the **Datadog Admin Role**, to create the service account and its token
+- Your organization's **Datadog site**, which the connection form asks for alongside the token. The address you sign in at tells you which one it is: `app.datadoghq.com` is US1, `us3.datadoghq.com` is US3, `us5.datadoghq.com` is US5, `app.datadoghq.eu` is EU1, `ap1.datadoghq.com` is AP1, `ap2.datadoghq.com` is AP2, `uk1.datadoghq.com` is UK1, `app.ddog-gov.com` is US1-FED, and `us2.ddog-gov.com` is US2-FED. With a custom domain, Datadog's **My Preferences** page shows the site at the top
+
+## Collected Fields
+
+import { Steps, Badge } from "@astrojs/starlight/components";
+
+| Probo field | Datadog field                                            | Notes                                                                                            |
+| ----------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Name        | `name`                                                   |                                                                                                  |
+| Email       | `email`                                                  |                                                                                                  |
+| Role        | `relationships.roles`                                    | Each role's name, read from `included`, such as `Datadog Admin Role`                             |
+| Admin       | `relationships.roles`                                    | Flagged as administrator when a role name contains `admin`, in any letter case                   |
+| Status      | `disabled`                                               | A disabled user is listed as inactive                                                            |
+| MFA         | `mfa_enabled`                                            | Datadog's own MFA. A user who signs in only through SSO, and a service account, show as disabled |
+| Last login  | <Badge text="Not supported" class="badge-unsupported" /> |                                                                                                  |
+| External ID | `id`                                                     | The Datadog user ID; stable identifier used to track the account across reviews                  |
+| Created at  | `created_at`                                             | When the user was created in Datadog                                                             |
+
+Datadog lists disabled and unverified users along with active ones, so they appear in your campaign too. Only a disabled user is listed as inactive, so an unverified user counts as active. Service accounts, including the one that owns Probo's token, are listed and marked as such.
+
+## Step 1: Create a Service Access Token
+
+<Steps>
+
+1. In Datadog, go to **Organization Settings** > **Service Accounts** and click **New Service Account**.
+2. Enter a name (e.g. `Probo Access Review`) and an email address, assign the **Datadog Read Only Role**, and click **Create Service Account**.
+3. Open the service account. Under **Access Tokens**, click **New Token**.
+4. Name the token and choose an **Expiration Date**. Choosing **Never** keeps the connection from lapsing. With a date, you replace the token in Probo when it expires.
+5. Click **Select Scopes**, select `user_access_read` only, and click **Save**.
+6. Copy the token (`ddsat_…`) and store it securely. Datadog shows it only once.
+
+</Steps>
+
+## Step 2: Connect in Probo
+
+<Steps>
+
+1. In Probo, go to **Settings** > **Connectors** and click **Add more** to open the **Marketplace**.
+2. Find **Datadog** and open it. If Probo asks how to connect, choose **API key**.
+3. Enter a **Name** for the connection (e.g. `main`), paste the token into **API key**, choose your organization's site in **Datadog site**, and click **Connect**.
+4. Go to **Access Review** > **Sources**, click **Add sources**, tick **Datadog**, and click **Add**.
+
+</Steps>
+
+Probo names the source after your Datadog site, such as `US1`, and pulls its users into your campaigns.
+
+## Troubleshooting
+
+- **Token refused when you click Connect.** Probo accepts only a token that starts with `ddsat_` or `ddpat_`. An API key or an application key is refused before Probo contacts Datadog.
+- **The connector shows Disconnected.** Datadog rejected the token. A new token can take a few seconds to start working, so if you just created it, wait a moment and reload the page. Otherwise, first check that the **Datadog site** matches the address you sign in at: a token works only on its own site, and Datadog answers any other site as if the token were invalid. The site cannot be changed on an existing connector, so delete its source, if you added one, in **Access Review** > **Sources**, disconnect the connector in **Settings** > **Connectors**, and connect again with the right site. If the site is right, the token expired or was revoked: create a new one, then click **Update API key** (the key icon) on the Datadog connector in **Settings** > **Connectors**, paste the new token, and click **Save API key**. The connector keeps its name and its source.
+- **The connector shows Not authorized.** Datadog accepted the token but refused to list users. If you just created the token, wait a moment and reload the page first. Then check that the token has the `user_access_read` scope. If it does not, edit its scopes in Datadog or create a new token.

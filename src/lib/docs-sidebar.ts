@@ -38,6 +38,7 @@ const accessReviewConnectorItems = [
   { label: "Cloudflare", slug: "docs/product/access-review/cloudflare" },
   { label: "Crisp", slug: "docs/product/access-review/crisp" },
   { label: "Cursor", slug: "docs/product/access-review/cursor" },
+  { label: "Datadog", slug: "docs/product/access-review/datadog" },
   { label: "Daytona", slug: "docs/product/access-review/daytona" },
   { label: "Deepgram", slug: "docs/product/access-review/deepgram" },
   { label: "Dotfile", slug: "docs/product/access-review/dotfile" },
