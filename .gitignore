@@ -34,3 +34,8 @@ pnpm-debug.log*
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Local review evidence and working notes
+/work/
+/.impeccable/review/
+/.impeccable/hook.cache.json

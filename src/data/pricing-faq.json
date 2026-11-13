@@ -1,0 +1,38 @@
+[
+  {
+    "question": "What’s included in Open Source?",
+    "answer": "All platform features except the third-party vetting agent, which is Cloud-only. You host the software and configure email, integrations, Device Agent, CLI and MCP yourself. Probo Cloud adds managed hosting, maintenance, support and ready-to-use integrations. Done for you adds a dedicated officer who runs your program."
+  },
+  {
+    "question": "How much does Done for you cost?",
+    "answer": "It depends on your company size and the frameworks you need (for example SOC 2 alone, or SOC 2 plus ISO 27001). We share a fixed annual price after a short scoping call."
+  },
+  {
+    "question": "Is the audit fee included?",
+    "answer": "You choose. We can include the audit in your Probo invoice with an auditor we work with, or you can go with your own audit firm and pay them directly. Either way, we manage the audit and coordinate with the auditor on your behalf. If your audit requires an on-site visit, it is billed as an extra."
+  },
+  {
+    "question": "Can you help with customer security reviews?",
+    "answer": "Yes. Your compliance officer drafts security questionnaires with AI and reviews every answer. Joining a live due diligence call is available as an extra."
+  },
+  {
+    "question": "Can I self-host and still get a compliance officer?",
+    "answer": "No. Done for you runs on Probo Cloud. You can export your data at any time and move to a self-hosted installation if you stop the service."
+  },
+  {
+    "question": "Do you do penetration tests?",
+    "answer": "No. We help you identify when a penetration test is needed and introduce you to specialists."
+  },
+  {
+    "question": "Can I switch plans later?",
+    "answer": "Yes. You can move between Open Source, Probo Cloud and Done for you as your team’s needs change."
+  },
+  {
+    "question": "Which auditors do you work with?",
+    "answer": "Any serious, accredited audit firm. If you already have one, we work with them after a reference check."
+  },
+  {
+    "question": "I'm using Vanta or Drata. How long does a switch take?",
+    "answer": "About one week. Migration is part of Done for you."
+  }
+]

@@ -7,7 +7,7 @@ import Button from "./ui/Button.svelte";
 import MobileMenu from "./MobileMenu.astro";
 import GithubStars from "./GithubStars.astro";
 import Icon from "./Icon.astro";
-import { directMenuItems, menuGroups } from "../content/menu";
+import { directMenuItems, menuGroups, pricingMenuItem } from "../content/menu";
 type Props = {
   hideBurger?: boolean;
   docsChrome?: boolean;
@@ -21,7 +21,7 @@ const { hideBurger = false, docsChrome = false } = Astro.props;
     "page-header text-primary transition-all",
     docsChrome
       ? "bg-transparent"
-      : "data-[scrolled=true]:border-border-low data-[scrolled=true]:bg-secondary/80 sticky top-0 z-50 border-b border-transparent bg-transparent data-[scrolled=true]:backdrop-blur-md",
+      : "data-[scrolled=true]:border-border-low data-[scrolled=true]:bg-level-0/80 sticky top-0 z-50 border-b border-transparent bg-transparent data-[scrolled=true]:backdrop-blur-md",
   ]}
 >
   <div
@@ -53,6 +53,14 @@ const { hideBurger = false, docsChrome = false } = Astro.props;
       transition:name="header-nav"
     >
       <HeaderMenu groups={menuGroups} />
+      <Button
+        variant="navigation"
+        size="navigation"
+        href={pricingMenuItem.href}
+        class="mr-4"
+      >
+        {pricingMenuItem.label}
+      </Button>
       <Button
         variant="secondary"
         href={directMenuItems[0].href}

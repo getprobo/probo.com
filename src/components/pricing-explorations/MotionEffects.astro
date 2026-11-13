@@ -1,0 +1,700 @@
+<script>
+  const initMotionStudies = () => {
+    const stages = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-motion-stage]"),
+    );
+    if (!stages.length || stages.every((stage) => stage.dataset.motionReady))
+      return;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    const events = new AbortController();
+    let paused = false;
+    const visible = new Set<HTMLElement>();
+    const update = () => {
+      stages.forEach((stage) =>
+        stage.toggleAttribute(
+          "data-motion-playing",
+          visible.has(stage) && !paused && !document.hidden && !reduced.matches,
+        ),
+      );
+      document
+        .querySelectorAll<HTMLButtonElement>("[data-motion-pause]")
+        .forEach((button) => {
+          button.disabled = reduced.matches;
+          button.setAttribute("aria-pressed", String(paused));
+          button.textContent = paused ? "Reprendre" : "Mettre en pause";
+        });
+      document
+        .querySelectorAll<HTMLButtonElement>(
+          "[data-motion-replay], [data-motion-replay-all]",
+        )
+        .forEach((button) => (button.disabled = reduced.matches));
+      document
+        .querySelectorAll<HTMLElement>("[data-motion-preference]")
+        .forEach((label) => {
+          label.textContent = reduced.matches
+            ? "Mouvement réduit activé : les essais restent au repos."
+            : "Une impulsion, puis une longue pause. Les essais s’arrêtent hors écran.";
+        });
+    };
+    const replay = (targets: HTMLElement[], part = "all") => {
+      paused = false;
+      targets.forEach((stage) => {
+        stage.dataset.motionPart = ["badge", "halo"].includes(part)
+          ? part
+          : "all";
+        stage.getAnimations({ subtree: true }).forEach((animation) => {
+          if (
+            animation instanceof CSSAnimation &&
+            animation.animationName.startsWith("pricing-study-")
+          )
+            animation.currentTime = 0;
+        });
+      });
+      update();
+    };
+    const watched = new Map<Element, HTMLElement>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const stage = watched.get(entry.target);
+          if (!stage) return;
+          if (entry.isIntersecting) visible.add(stage);
+          else visible.delete(stage);
+        });
+        update();
+      },
+      { threshold: 0.1 },
+    );
+    stages.forEach((stage) => {
+      stage.dataset.motionReady = "true";
+      const target = stage.querySelector("[data-motion-watch]") || stage;
+      watched.set(target, stage);
+      observer.observe(target);
+    });
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-motion-replay]")
+      .forEach((button) => {
+        button.addEventListener(
+          "click",
+          () => {
+            const target = stages.find(
+              (stage) => stage.id === button.dataset.motionReplay,
+            );
+            if (target) replay([target], button.dataset.motionReplayPart);
+          },
+          { signal: events.signal },
+        );
+      });
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-motion-replay-all]")
+      .forEach((button) =>
+        button.addEventListener(
+          "click",
+          () => replay(stages, button.dataset.motionReplayPart),
+          {
+            signal: events.signal,
+          },
+        ),
+      );
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-motion-pause]")
+      .forEach((button) =>
+        button.addEventListener(
+          "click",
+          () => {
+            paused = !paused;
+            update();
+          },
+          { signal: events.signal },
+        ),
+      );
+    reduced.addEventListener("change", update, { signal: events.signal });
+    document.addEventListener("visibilitychange", update, {
+      signal: events.signal,
+    });
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        observer.disconnect();
+        events.abort();
+      },
+      { once: true },
+    );
+    update();
+  };
+  initMotionStudies();
+  document.addEventListener("astro:page-load", initMotionStudies);
+</script>
+
+<style is:global>
+  [data-motion-stage] {
+    --study-play: paused;
+  }
+  [data-motion-stage][data-motion-playing] {
+    --study-play: running;
+  }
+  [data-motion-stage] .motion-badge {
+    isolation: isolate;
+  }
+  [data-motion-stage] .motion-badge::before,
+  [data-motion-stage] .motion-badge::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -6px -12px;
+    border: 2px solid #e6ff03;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    --pulse-peak: 0.4;
+  }
+  [data-motion-stage] .motion-badge::after {
+    border: 0;
+    background: #e6ff03;
+    filter: blur(7px);
+    --pulse-peak: 0.3;
+  }
+  [data-motion-kind="fill"] .motion-badge::before,
+  [data-motion-kind="ring"] .motion-badge::after {
+    display: none;
+  }
+  [data-motion-kind="echo"] .motion-badge::after {
+    background: transparent;
+    border: 1px solid #e6ff03;
+    filter: blur(3px);
+  }
+  [data-motion-variant="07"] .motion-badge::after {
+    inset: -10px -18px;
+    filter: blur(10px);
+    --pulse-peak: 0.24;
+  }
+  [data-motion-variant="10"] .motion-badge::before {
+    --pulse-peak: 0.25;
+  }
+  [data-motion-variant="10"] .motion-badge::after {
+    --pulse-peak: 0.18;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-motion-stage] .motion-badge::before,
+    [data-motion-stage] .motion-badge::after {
+      animation: var(--study-badge)
+        var(--study-badge-period, var(--study-period))
+        cubic-bezier(0.19, 1, 0.22, 1) infinite;
+      animation-play-state: var(--study-play);
+    }
+    [data-motion-kind="echo"] .motion-badge::after {
+      animation-delay: 180ms;
+    }
+    [data-motion-stage] .motion-halo {
+      animation: var(--study-halo) var(--study-period)
+        cubic-bezier(0.19, 1, 0.22, 1) infinite;
+      animation-play-state: var(--study-play);
+      transform-origin: center bottom;
+    }
+  }
+  @keyframes pricing-study-breathe {
+    0%,
+    18%,
+    100% {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    4% {
+      opacity: var(--pulse-peak);
+      transform: scale(1.06);
+    }
+    12% {
+      opacity: 0;
+      transform: scale(1.18);
+    }
+  }
+  @keyframes pricing-study-wave {
+    0%,
+    18%,
+    100% {
+      opacity: 0;
+      transform: scale(0.94, 0.9);
+    }
+    2% {
+      opacity: var(--pulse-peak);
+      transform: scale(1);
+    }
+    13% {
+      opacity: 0;
+      transform: scale(1.3, 1.5);
+    }
+  }
+  @keyframes pricing-study-double {
+    0%,
+    18%,
+    100% {
+      opacity: 0;
+      transform: scale(1);
+    }
+    3% {
+      opacity: var(--pulse-peak);
+      transform: scale(1.08);
+    }
+    6% {
+      opacity: 0;
+      transform: scale(1.12);
+    }
+    9% {
+      opacity: calc(var(--pulse-peak) * 0.65);
+      transform: scale(1.05);
+    }
+    15% {
+      opacity: 0;
+      transform: scale(1.15);
+    }
+  }
+  @keyframes pricing-study-sweep {
+    0%,
+    18%,
+    100% {
+      opacity: 0;
+      transform: translateX(-12px) scale(0.9, 0.7);
+    }
+    4% {
+      opacity: var(--pulse-peak);
+      transform: translateX(-4px) scale(1.04, 0.9);
+    }
+    13% {
+      opacity: 0;
+      transform: translateX(12px) scale(1.12, 0.8);
+    }
+  }
+  @keyframes pricing-study-tilt {
+    0%,
+    20%,
+    100% {
+      opacity: 0;
+      transform: rotate(-5deg) scale(0.98);
+    }
+    4% {
+      opacity: var(--pulse-peak);
+      transform: rotate(-3deg) scale(1.04);
+    }
+    14% {
+      opacity: 0;
+      transform: rotate(4deg) scale(1.14);
+    }
+  }
+  @keyframes pricing-study-diffuse {
+    0%,
+    20%,
+    100% {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    5% {
+      opacity: var(--pulse-peak);
+      transform: scale(1.08);
+    }
+    17% {
+      opacity: 0;
+      transform: scale(1.4, 1.3);
+    }
+  }
+  @keyframes pricing-study-settle {
+    0%,
+    20%,
+    100% {
+      opacity: 0;
+      transform: scale(1.24, 1.4);
+    }
+    3% {
+      opacity: calc(var(--pulse-peak) * 0.6);
+      transform: scale(1.18, 1.25);
+    }
+    10% {
+      opacity: var(--pulse-peak);
+      transform: scale(1.02);
+    }
+    17% {
+      opacity: 0;
+      transform: scale(1);
+    }
+  }
+  @keyframes pricing-study-quiet {
+    0%,
+    15%,
+    100% {
+      opacity: 0;
+      transform: scale(1);
+    }
+    4% {
+      opacity: var(--pulse-peak);
+      transform: scale(1.04);
+    }
+    12% {
+      opacity: 0;
+      transform: scale(1.1);
+    }
+  }
+  @keyframes pricing-study-halo-breathe {
+    0%,
+    20%,
+    100% {
+      transform: scale(1);
+    }
+    7% {
+      transform: scale(1.018, 1.012);
+    }
+  }
+  @keyframes pricing-study-halo-expand {
+    0%,
+    22%,
+    100% {
+      transform: scale(1);
+    }
+    10% {
+      transform: scale(1.032, 1.02);
+    }
+  }
+  @keyframes pricing-study-halo-double {
+    0%,
+    7%,
+    18%,
+    100% {
+      transform: translateY(0);
+    }
+    3% {
+      transform: translateY(-5px);
+    }
+    10% {
+      transform: translateY(-3px);
+    }
+  }
+  @keyframes pricing-study-halo-drift {
+    0%,
+    22%,
+    100% {
+      transform: translateX(0);
+    }
+    7% {
+      transform: translateX(-7px);
+    }
+    15% {
+      transform: translateX(4px);
+    }
+  }
+  @keyframes pricing-study-halo-sweep {
+    0%,
+    25%,
+    100% {
+      transform: translateX(0);
+    }
+    5% {
+      transform: translateX(-10px);
+    }
+    15% {
+      transform: translateX(10px);
+    }
+  }
+  @keyframes pricing-study-halo-tilt {
+    0%,
+    24%,
+    100% {
+      transform: rotate(0);
+    }
+    7% {
+      transform: rotate(-0.6deg);
+    }
+    15% {
+      transform: rotate(0.4deg);
+    }
+  }
+  @keyframes pricing-study-halo-soften {
+    0%,
+    22%,
+    100% {
+      opacity: 1;
+    }
+    8% {
+      opacity: 0.82;
+    }
+  }
+  @keyframes pricing-study-halo-rise {
+    0%,
+    24%,
+    100% {
+      transform: translateY(0);
+    }
+    9% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes pricing-study-halo-reply {
+    0%,
+    9%,
+    28%,
+    100% {
+      transform: scale(1);
+    }
+    17% {
+      transform: scale(1.024, 1.015);
+    }
+  }
+  @keyframes pricing-study-halo-quiet {
+    0%,
+    18%,
+    100% {
+      transform: scale(1);
+    }
+    7% {
+      transform: scale(1.009, 1.006);
+    }
+  }
+</style>
+
+<style is:global>
+  [data-motion-kind="mask"] .motion-badge {
+    overflow: clip;
+  }
+  [data-motion-kind="mask"] .motion-badge::before,
+  [data-motion-kind="mask"] .motion-badge::after {
+    display: block;
+    inset: auto;
+    left: 50%;
+    top: 50%;
+    width: 180%;
+    height: 480%;
+    border: 0;
+    background: #e6ff03;
+    filter: blur(0.7px);
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
+    transform-origin: center;
+  }
+  [data-motion-kind="mask"] .motion-badge::after {
+    background: var(--color-level-0);
+  }
+  [data-motion-variant="12"] .motion-badge::before {
+    left: 20%;
+  }
+  [data-motion-variant="12"] .motion-badge::after {
+    left: 80%;
+  }
+  [data-motion-variant="16"] .motion-badge::before {
+    top: 100%;
+  }
+  [data-motion-variant="16"] .motion-badge::after {
+    top: 0;
+  }
+  :is([data-motion-variant="14"], [data-motion-variant="production"])
+    .motion-badge::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      #e6ff03 30%,
+      #e6ff03 70%,
+      transparent 100%
+    );
+    transform: translate(-190%, -50%) scale(0.85);
+    filter: none;
+  }
+  :is([data-motion-variant="14"], [data-motion-variant="production"])
+    .motion-badge::after {
+    display: none;
+  }
+  [data-motion-stage][data-motion-part="badge"] .motion-halo,
+  [data-motion-stage][data-motion-part="halo"] .motion-badge::before,
+  [data-motion-stage][data-motion-part="halo"] .motion-badge::after {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-motion-variant="production"] .motion-badge::before {
+      animation-delay: 520ms;
+      animation-timing-function: linear;
+    }
+    [data-motion-kind="mask"] .motion-badge::after {
+      animation-name: var(--study-mask);
+    }
+  }
+  @keyframes pricing-study-production-wave {
+    0% {
+      transform: translate(-190%, -50%) scale(0.85);
+    }
+    4%,
+    8% {
+      transform: translate(-50%, -50%) scale(0.85);
+    }
+    12%,
+    100% {
+      transform: translate(90%, -50%) scale(0.85);
+    }
+  }
+  @keyframes pricing-study-mask-center {
+    0%,
+    2%,
+    25%,
+    100% {
+      transform: translate(-50%, -50%) scale(0);
+    }
+    9%,
+    24% {
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+  }
+  @keyframes pricing-study-mask-center-erase {
+    0%,
+    12%,
+    29%,
+    100% {
+      transform: translate(-50%, -50%) scale(0);
+    }
+    21%,
+    28% {
+      transform: translate(-50%, -50%) scale(1.25);
+    }
+  }
+  @keyframes pricing-study-mask-double {
+    0%,
+    1%,
+    12%,
+    14%,
+    28%,
+    100% {
+      transform: translate(-50%, -50%) scale(0);
+    }
+    5%,
+    11%,
+    19%,
+    27% {
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+  }
+  @keyframes pricing-study-mask-double-erase {
+    0%,
+    6%,
+    15%,
+    21%,
+    31%,
+    100% {
+      transform: translate(-50%, -50%) scale(0);
+    }
+    11%,
+    14%,
+    27%,
+    30% {
+      transform: translate(-50%, -50%) scale(1.25);
+    }
+  }
+  @keyframes pricing-study-mask-wave {
+    0%,
+    2% {
+      transform: translate(-190%, -50%) scale(0.85);
+    }
+    13% {
+      transform: translate(-50%, -50%) scale(0.85);
+    }
+    25%,
+    100% {
+      transform: translate(100%, -50%) scale(0.85);
+    }
+  }
+  @keyframes pricing-study-mask-ripple {
+    0%,
+    2%,
+    23%,
+    100% {
+      transform: translate(-50%, -50%) scale(0);
+    }
+    11%,
+    22% {
+      transform: translate(-50%, -50%) scale(1.25);
+    }
+  }
+  @keyframes pricing-study-mask-ripple-erase {
+    0%,
+    4%,
+    27%,
+    100% {
+      transform: translate(-50%, -50%) scale(0);
+    }
+    18%,
+    26% {
+      transform: translate(-50%, -50%) scale(1.3);
+    }
+  }
+  @keyframes pricing-study-halo-orb-rise {
+    0%,
+    3%,
+    34%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    14% {
+      transform: translateY(-58px) scale(1.045);
+    }
+  }
+  @keyframes pricing-study-halo-orb-travel {
+    0%,
+    2%,
+    38%,
+    100% {
+      transform: translateX(0);
+    }
+    11% {
+      transform: translateX(-58px);
+    }
+    25% {
+      transform: translateX(58px);
+    }
+  }
+  @keyframes pricing-study-halo-orb-breathe {
+    0%,
+    2%,
+    39%,
+    100% {
+      transform: scale(1);
+    }
+    13% {
+      transform: scale(1.14, 1.1);
+    }
+    27% {
+      transform: scale(0.94, 0.96);
+    }
+  }
+  @keyframes pricing-study-halo-orb-sweep {
+    0%,
+    2%,
+    38%,
+    100% {
+      transform: rotate(0) translateX(0);
+    }
+    12% {
+      transform: rotate(-3deg) translateX(-36px);
+    }
+    26% {
+      transform: rotate(3deg) translateX(36px);
+    }
+  }
+  @keyframes pricing-study-halo-orb-wave {
+    0%,
+    2%,
+    36%,
+    100% {
+      transform: translateY(0) scaleY(1);
+    }
+    13% {
+      transform: translateY(-44px) scaleY(1.09);
+    }
+    24% {
+      transform: translateY(12px) scaleY(0.98);
+    }
+  }
+  @keyframes pricing-study-halo-orb-reply {
+    0%,
+    13%,
+    42%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    25% {
+      transform: translateY(-64px) scale(1.09, 1.06);
+    }
+  }
+</style>

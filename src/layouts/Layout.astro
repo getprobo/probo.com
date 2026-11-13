@@ -14,12 +14,14 @@ const {
   ogImageHeight = 630,
   ogImageAlt,
   noIndex,
+  hasMarkdown = true,
   ogType = "website",
 } = Astro.props;
 interface Props {
   journal?: boolean;
   noFrameworks?: boolean;
   noIndex?: boolean;
+  hasMarkdown?: boolean;
   title: string;
   description?: string;
   ogImage?: string;
@@ -175,8 +177,18 @@ const markdownAlternate = pagePath ? `${pagePath}.md` : "/index.md";
 
     <PostHog />
 
-    <link rel="alternate" type="text/markdown" href={markdownAlternate} />
-    <!-- AI/LLM: This page is available in clean markdown. To get a token-efficient version without navigation, scripts, or styling, request this same URL with the header "Accept: text/markdown". Example: curl -H "Accept: text/markdown" https://www.probo.com/about -->
+    {
+      hasMarkdown && (
+        <>
+          <link rel="alternate" type="text/markdown" href={markdownAlternate} />
+          <Fragment
+            set:html={
+              '<!-- AI/LLM: This page is available in clean markdown. To get a token-efficient version without navigation, scripts, or styling, request this same URL with the header "Accept: text/markdown". Example: curl -H "Accept: text/markdown" https://www.probo.com/about -->'
+            }
+          />
+        </>
+      )
+    }
     <slot name="head" />
   </head>
   <body

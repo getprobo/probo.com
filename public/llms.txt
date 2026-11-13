@@ -20,6 +20,7 @@ For a token-efficient Markdown version of a supported page, request its canonica
 
 ## Product and services
 
+- [Pricing](https://www.probo.com/pricing): Three plans: Open Source (free, self-hosted), Probo Cloud (hosted platform with support and integrations), Done for you (dedicated compliance officer, custom price).
 - [Probo homepage](https://www.probo.com/): Expert-led compliance, done for you.
 - [AI Agents for Compliance](https://www.probo.com/products/ai-agents-for-compliance): Run your compliance program from Claude, Cursor, ChatGPT, or any MCP client.
 - [Compliance Portal](https://www.probo.com/products/compliance-portal): Share security and compliance documents with customers.

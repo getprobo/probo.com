@@ -1,5 +1,9 @@
 ---
-import { directMenuItems, menuGroups } from "../content/menu.ts";
+import {
+  directMenuItems,
+  menuGroups,
+  pricingMenuItem,
+} from "../content/menu.ts";
 import Icon from "./Icon.astro";
 import MenuIcon from "./MenuIcon.astro";
 
@@ -14,6 +18,18 @@ const { id } = Astro.props;
   {id}
   class="bg-secondary group fixed inset-x-0 top-14 bottom-0 z-50 m-0 h-auto max-h-none w-full max-w-none overflow-y-auto border-0 px-5 pt-6 pb-28 transition-all transition-discrete duration-300 not-open:opacity-0 starting:opacity-0"
 >
+  <a
+    href={pricingMenuItem.href}
+    class="mb-7 flex items-center gap-4 border-b pb-5"
+  >
+    <span class="flex min-w-0 flex-1 flex-col gap-0.5">
+      <span class="text-lg font-medium">{pricingMenuItem.label}</span>
+      <span class="text-muted-foreground text-sm"
+        >{pricingMenuItem.description}</span
+      >
+    </span>
+    <Icon name="caret-right" size={20} class="text-muted-foreground" />
+  </a>
   {
     menuGroups.map((group) => (
       <section class="mb-7">

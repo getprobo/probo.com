@@ -10,6 +10,62 @@ import {
 } from "node:fs";
 import { join, dirname, relative, basename } from "node:path";
 import { fileURLToPath } from "node:url";
+import { comparison, plans } from "../src/data/pricing";
+import pricingFaqs from "../src/data/pricing-faq.json";
+
+function pricingToMarkdown(): string {
+  const cell = (text: string) =>
+    text.replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
+  const planSections = plans.map((plan) =>
+    [
+      `### ${plan.name}`,
+      plan.tagline,
+      plan.includesLabel,
+      plan.features.map((feature) => `- ${feature}`).join("\n"),
+      `[${plan.cta}](${new URL(plan.href, "https://www.probo.com").href})`,
+    ].join("\n\n"),
+  );
+  const tables = comparison.map((group) =>
+    [
+      `### ${group.name}`,
+      [
+        `| Feature | ${plans.map((plan) => plan.name).join(" | ")} |`,
+        "| --- | --- | --- | --- |",
+        ...group.rows.map((row) => {
+          const values = row.values.map((value) => {
+            if (typeof value === "boolean")
+              return value ? "Included" : "Not included";
+            const detail = row.cellDetails?.[value];
+            const status =
+              value === "You configure"
+                ? "Included with your own setup"
+                : value;
+            return cell(detail ? `${status}. ${detail}` : status);
+          });
+          const feature = row.detail
+            ? `${cell(row.label)} — ${cell(row.detail)}`
+            : cell(row.label);
+          return `| ${feature} | ${values.join(" | ")} |`;
+        }),
+      ].join("\n"),
+    ].join("\n\n"),
+  );
+  return [
+    "# Probo pricing",
+    "[Pricing](https://www.probo.com/pricing)",
+    "## Probo pricing summary",
+    ...plans.map((plan) => `- **${plan.name}.** ${plan.summary}`),
+    "## Plans",
+    ...planSections,
+    "## Compare plans",
+    ...tables,
+    "## Questions, answered",
+    ...pricingFaqs.map((faq) => `### ${faq.question}\n\n${faq.answer}`),
+    "## Find the right plan",
+    "Tell us your deadline and frameworks. [Talk to us](https://www.probo.com/contact).",
+    "",
+  ].join("\n\n");
+}
 
 function frontmatterValue(content: string, field: string): string {
   const frontmatter = content.match(/^---\s*\n([\s\S]*?)\n---/);
@@ -444,6 +500,9 @@ export function generateMarkdown(): AstroIntegration {
           const relPath = relative(distDir, file);
           if (
             relPath === "404.html" ||
+            /^(pricing-explorations|pricing-motion)(\/|\.html$)/.test(
+              relPath,
+            ) ||
             relPath.endsWith("/404.html") ||
             relPath.startsWith("md/")
           ) {
@@ -455,7 +514,10 @@ export function generateMarkdown(): AstroIntegration {
             continue;
           }
 
-          const md = htmlToMarkdown(readFileSync(file, "utf-8"));
+          const md =
+            relPath === "pricing.html"
+              ? pricingToMarkdown()
+              : htmlToMarkdown(readFileSync(file, "utf-8"));
           mkdirSync(dirname(outPath), { recursive: true });
           writeFileSync(outPath, md);
         }

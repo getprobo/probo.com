@@ -165,6 +165,9 @@ export default defineConfig({
         if (
           path === "/md" ||
           path.startsWith("/md/") ||
+          ["pricing-explorations", "pricing-motion"].includes(
+            sitemapSection(page),
+          ) ||
           path.endsWith(".md") ||
           sitemapExcludedPaths.has(path)
         ) {

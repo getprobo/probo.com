@@ -1,0 +1,98 @@
+---
+import {
+  pricingMotionStudies,
+  type PricingMotionStudy,
+} from "../../data/pricing-motion";
+import MotionEffects from "./MotionEffects.astro";
+interface Props {
+  study: PricingMotionStudy;
+}
+const { study } = Astro.props;
+---
+
+<nav class="motion-controls container" aria-label="Essais de mouvement Pricing">
+  <a href="/pricing-motion" data-astro-reload>Tous les essais</a>
+  <label
+    >Essai
+    <select aria-label="Choisir un essai" data-motion-select>
+      {
+        pricingMotionStudies.map((item) => (
+          <option value={item.id} selected={item.id === study.id}>
+            {item.id} · {item.name}
+          </option>
+        ))
+      }
+    </select>
+  </label>
+  <button type="button" data-motion-replay-all>Ensemble</button>
+  <button type="button" data-motion-replay-all data-motion-replay-part="badge"
+    >Badge</button
+  >
+  <button type="button" data-motion-replay-all data-motion-replay-part="halo"
+    >Orbe</button
+  >
+  <button type="button" data-motion-pause aria-pressed="false"
+    >Mettre en pause</button
+  >
+  <p data-motion-preference>Une impulsion, puis une longue pause.</p>
+</nav>
+<MotionEffects />
+<script>
+  const initMotionSelect = () => {
+    document
+      .querySelectorAll<HTMLSelectElement>("[data-motion-select]")
+      .forEach((select) => {
+        if (select.dataset.ready) return;
+        select.dataset.ready = "true";
+        select.addEventListener("change", () => {
+          location.href = "/pricing-motion/" + select.value + "#plans";
+        });
+      });
+  };
+  initMotionSelect();
+  document.addEventListener("astro:page-load", initMotionSelect);
+</script>
+<style>
+  .motion-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px 24px;
+    flex-wrap: wrap;
+    padding-block: 24px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--color-border-solid);
+  }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  select {
+    max-width: 220px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border-mid);
+    border-radius: 8px;
+    background: var(--color-level-0);
+  }
+  button {
+    min-height: 44px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  p {
+    width: 100%;
+    color: var(--color-muted-foreground);
+    font-size: 13px;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 4px;
+  }
+</style>

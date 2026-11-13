@@ -15,10 +15,6 @@
   } = $props();
   let slider: HTMLDivElement | null = null;
   const createOptions = () => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
     return {
       type: "loop",
       gap: props.gap ?? 16,
@@ -26,10 +22,13 @@
       autoWidth: true,
       pagination: false,
       mediaQuery: "min",
+      reducedMotion: {
+        autoScroll: false,
+      },
       autoScroll: {
-        autoStart: !prefersReducedMotion,
+        autoStart: true,
         pauseOnFocus: true,
-        speed: prefersReducedMotion ? 0 : 0.7,
+        speed: 0.7,
         pauseOnHover: true,
       },
     } as const;

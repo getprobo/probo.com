@@ -1,0 +1,1533 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Button from "../components/ui/Button.svelte";
+import Icon, { type IconName } from "../components/Icon.astro";
+import Faq from "../components/block/Faq.astro";
+import Logos from "../components/block/Logos.astro";
+import PricingChooser from "../components/block/PricingChooser.astro";
+import { comparison, githubUrl, plans } from "../data/pricing";
+import faqs from "../data/pricing-faq.json";
+import CardReselect from "../components/pricing-explorations/CardReselect.astro";
+import CardAlternatives from "../components/pricing-explorations/CardAlternatives.astro";
+import MotionControls from "../components/pricing-explorations/MotionControls.astro";
+import MotionEffects from "../components/pricing-explorations/MotionEffects.astro";
+import {
+  pricingMotionStyle,
+  productionPricingMotion,
+  type PricingMotionStudy,
+} from "../data/pricing-motion";
+
+interface Props {
+  exploration?: { id: string; name: string };
+  motionStudy?: PricingMotionStudy;
+}
+
+const { exploration, motionStudy } = Astro.props;
+const activeMotion =
+  motionStudy ?? (!exploration ? productionPricingMotion : undefined);
+const productionMotion = activeMotion?.id === "production";
+
+const planIcons = {
+  "open-source": "code",
+  cloud: "cloud",
+  "done-for-you": "handshake",
+} as const;
+
+const comparisonIcons: Partial<Record<string, IconName>> = {
+  Included: "check-circle-fill",
+  "Your team": "wrench",
+  "Your infrastructure": "wrench",
+  You: "wrench",
+  "You configure": "wrench",
+  Probo: "check-circle-fill",
+  "Hosted by Probo": "check-circle-fill",
+  "One-click setup": "check-circle-fill",
+  "Ready to use": "check-circle-fill",
+  "Hosted endpoint": "check-circle-fill",
+};
+
+const badgeClass =
+  "border-border-low bg-level-0 text-tertiary-foreground w-max rounded-lg border px-2 py-0.5 text-sm font-medium whitespace-nowrap";
+const planBadgeClass = `${badgeClass} absolute -top-px left-1/2 z-10 -translate-x-1/2 -translate-y-1/2`;
+
+const description =
+  "Compare Probo plans: self-host the open-source platform for free, choose managed hosting, or work with a dedicated compliance officer.";
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "Probo compliance platform",
+  description,
+  url: "https://www.probo.com/pricing",
+  brand: { "@type": "Brand", name: "Probo" },
+  offers: plans.map((plan) => ({
+    "@type": "Offer",
+    name: plan.name,
+    url:
+      plan.id === "open-source" ? githubUrl : "https://www.probo.com/contact",
+    description: plan.summary,
+    ...(plan.id === "open-source" ? { price: 0 } : {}),
+  })),
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
+};
+---
+
+<Layout
+  title={exploration
+    ? `Pricing · ${exploration.name}`
+    : motionStudy
+      ? `Pricing · ${motionStudy.name}`
+      : "Pricing"}
+  description={description}
+  noIndex={Boolean(exploration || motionStudy)}
+  hasMarkdown={!exploration && !motionStudy}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <main
+    id={motionStudy ? "motion-context" : undefined}
+    class="pricing-page"
+    data-pricing-page
+    data-pricing-entrance={productionMotion || undefined}
+    data-pricing-exploration={exploration?.id}
+    data-motion-stage={activeMotion ? "" : undefined}
+    data-motion-variant={activeMotion?.id}
+    data-motion-kind={activeMotion?.kind}
+    style={activeMotion ? pricingMotionStyle(activeMotion) : undefined}
+  >
+    {motionStudy && <MotionControls study={motionStudy} />}
+    <slot name="exploration-stage" />
+    <section
+      class="pricing-hero container py-16 text-center"
+      aria-labelledby="pricing-heading"
+    >
+      <p
+        class:list={[
+          badgeClass,
+          "mx-auto mb-6",
+          !productionMotion && "motion-safe:animate-perspective-in",
+        ]}
+        data-pricing-intro={productionMotion ? "label" : undefined}
+        style={productionMotion ? undefined : "animation-delay: 100ms"}
+      >
+        Pricing
+      </p>
+      <h1
+        id="pricing-heading"
+        class:list={[
+          "mx-auto mb-6 max-w-[562px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]",
+          !productionMotion && "motion-safe:animate-perspective-in",
+        ]}
+        data-pricing-intro={productionMotion ? "title" : undefined}
+        style={productionMotion ? undefined : "animation-delay: 150ms"}
+      >
+        Choose your Probo plan.
+      </h1>
+      <p
+        class:list={[
+          "text-muted-foreground mx-auto max-w-[468px] text-base",
+          !productionMotion && "motion-safe:animate-perspective-in",
+        ]}
+        data-pricing-intro={productionMotion ? "description" : undefined}
+        style={productionMotion ? undefined : "animation-delay: 350ms"}
+      >
+        Self-host Probo, use our cloud, or let a dedicated compliance officer
+        run your program.
+      </p>
+    </section>
+
+    <section id="plans" class="container" aria-label="Probo plans">
+      <slot name="plans-before" />
+      <div
+        class="plan-grid border-border-solid bg-level-0 mx-auto grid max-w-[520px] rounded-3xl border lg:max-w-none lg:grid-cols-3"
+        data-pricing-intro={productionMotion ? "plans" : undefined}
+      >
+        {
+          plans.map((plan) => (
+            <article
+              id={`plan-${plan.id}`}
+              class:list={[
+                "plan-card border-border-solid relative isolate grid min-w-0 px-6 py-8 lg:px-8 lg:py-10 xl:px-10",
+                plan.id === "open-source" && "text-muted-foreground",
+              ]}
+              aria-labelledby={`plan-title-${plan.id}`}
+              tabindex="-1"
+              data-pricing-reveal={
+                motionStudy || productionMotion ? undefined : "plan"
+              }
+              data-motion-watch={
+                activeMotion && plan.id === "done-for-you" ? "" : undefined
+              }
+              data-recommendation-reason={
+                exploration?.id === "014"
+                  ? plan.finderPrompt.replace(/^We /, "You ")
+                  : undefined
+              }
+            >
+              {exploration?.id === "007" && (
+                <svg class="recommendation-trace" aria-hidden="true">
+                  <rect
+                    x="1"
+                    y="1"
+                    width="100%"
+                    height="100%"
+                    rx="16"
+                    pathLength="1"
+                  />
+                </svg>
+              )}
+              {exploration?.id === "011" && (
+                <svg
+                  class="recommendation-seal"
+                  viewBox="0 0 48 48"
+                  aria-hidden="true"
+                >
+                  <circle cx="24" cy="24" r="24" fill="#e6ff03" />
+                  <path d="M14 24 L21 31 L34 17" pathLength="1" />
+                </svg>
+              )}
+              {plan.id === "done-for-you" && (
+                <>
+                  <div
+                    class="plan-artwork rounded-b-3xl lg:rounded-bl-none"
+                    aria-hidden="true"
+                  >
+                    <div class="plan-halo-motion motion-halo">
+                      <img src="/pricing/managed-halo.svg" alt="" />
+                    </div>
+                  </div>
+                  <span
+                    class:list={[planBadgeClass, "plan-popular motion-badge"]}
+                  >
+                    Most popular
+                  </span>
+                </>
+              )}
+              <span
+                class:list={[planBadgeClass, "plan-recommended"]}
+                role="note"
+                aria-label={
+                  exploration?.id === "028" || exploration?.id === "031"
+                    ? `Recommended: ${plan.name}`
+                    : exploration?.id === "029"
+                      ? `Recommended for you. ${plan.finderPrompt.replace(/^We /, "You ")}`
+                      : "Recommended for you"
+                }
+                data-choice-reason={
+                  exploration?.id === "029"
+                    ? plan.finderPrompt.replace(/^We /, "You ")
+                    : undefined
+                }
+              >
+                {["031", "034", "035", "036"].includes(
+                  exploration?.id ?? "",
+                ) && <Icon name="check-bold" size={18} />}
+              </span>
+              <div class="flex flex-col gap-3.5">
+                {(exploration?.id === "022" || exploration?.id === "023") && (
+                  <CardReselect current={plan.id} placement="header" />
+                )}
+                {exploration?.id === "037" ? (
+                  <div class="plan-reason-head">
+                    <span class="plan-reason-icon">
+                      <Icon name={planIcons[plan.id]} size={32} />
+                    </span>
+                  </div>
+                ) : (
+                  <Icon name={planIcons[plan.id]} size={32} />
+                )}
+                <h2 id={`plan-title-${plan.id}`} class="text-h4 font-semibold">
+                  {plan.name}
+                </h2>
+                <p class="text-muted-foreground text-base text-pretty">
+                  {plan.tagline}
+                </p>
+                {exploration?.id === "019" && (
+                  <aside
+                    class="plan-fit-reason"
+                    role="note"
+                    aria-label="Why this plan fits"
+                  >
+                    <Icon name="check" size={18} />
+                    <p>{plan.finderPrompt.replace(/^We /, "You ")}</p>
+                  </aside>
+                )}
+              </div>
+              <Button
+                href={plan.href}
+                size="lg"
+                variant={plan.id === "open-source" ? "secondary" : "primary"}
+                class:list={[
+                  "plan-cta mt-8 w-full",
+                  plan.id === "done-for-you" && "plan-cta--managed",
+                ]}
+              >
+                {plan.id === "open-source" && (
+                  <Icon name="github-logo" size={19} />
+                )}
+                {plan.cta}
+                {plan.id !== "open-source" && (
+                  <Icon
+                    name="arrow-right"
+                    size={19}
+                    class="pricing-cta-arrow"
+                  />
+                )}
+              </Button>
+              {exploration?.id === "040" && (
+                <>
+                  <span class="plan-explicit-fit" role="note">
+                    <Icon name="check-bold" size={18} />
+                    Recommended for you
+                  </span>
+                  <button
+                    class="plan-paired-change"
+                    type="button"
+                    data-open-answer
+                    aria-haspopup="dialog"
+                    aria-controls="answer-choices"
+                    aria-label="Change answer"
+                  >
+                    Change
+                  </button>
+                </>
+              )}
+              {exploration?.id === "039" && (
+                <div class="plan-answer-track">
+                  <div
+                    class="plan-sticky-answer"
+                    role="group"
+                    aria-label="Recommended for you"
+                  >
+                    <span class="sticky-answer-reason">
+                      <Icon name="check-bold" size={16} />
+                      <span>{plan.finderPrompt.replace(/^We /, "You ")}</span>
+                    </span>
+                    <button
+                      type="button"
+                      data-open-answer
+                      aria-haspopup="dialog"
+                      aria-controls="answer-choices"
+                      aria-label="Change answer"
+                    >
+                      Change
+                    </button>
+                  </div>
+                </div>
+              )}
+              {exploration?.id === "038" && (
+                <div
+                  class="plan-answer-tab"
+                  role="group"
+                  aria-label="Recommended for you"
+                >
+                  <span class="answer-tab-reason">
+                    <Icon name="check-bold" size={16} />
+                    <span>{plan.finderPrompt.replace(/^We /, "You ")}</span>
+                  </span>
+                  <button
+                    type="button"
+                    data-open-answer
+                    aria-haspopup="dialog"
+                    aria-controls="answer-choices"
+                    aria-label="Change answer"
+                  >
+                    Change
+                  </button>
+                </div>
+              )}
+              {exploration?.id === "037" && (
+                <a
+                  class="plan-reason-return"
+                  href="#pricing-chooser"
+                  data-change-answer
+                  data-astro-reload
+                  title="Change answer"
+                  aria-label={`Change answer. ${plan.finderPrompt}`}
+                >
+                  <span>{plan.finderPrompt.replace(/^We /, "You ")}</span>
+                  <Icon name="arrow-right" size={16} />
+                </a>
+              )}
+              {exploration?.id === "034" && (
+                <CardReselect current={plan.id} placement="action" />
+              )}
+              {exploration?.id === "035" && (
+                <CardReselect current={plan.id} placement="action-menu" />
+              )}
+              {exploration?.id === "036" && (
+                <button
+                  class="plan-answer-dialog"
+                  type="button"
+                  data-open-answer
+                  aria-haspopup="dialog"
+                  aria-controls="answer-choices"
+                >
+                  Change answer <Icon name="arrow-right" size={16} />
+                </button>
+              )}
+              {exploration?.id === "033" && (
+                <a
+                  class="plan-change-answer"
+                  href="#pricing-chooser"
+                  data-change-answer
+                  data-astro-reload
+                >
+                  Change answer <Icon name="caret-down" size={16} />
+                </a>
+              )}
+              {exploration?.id === "030" && (
+                <aside
+                  class="plan-action-reason"
+                  role="note"
+                  aria-label="Your choice"
+                >
+                  <p>{plan.finderPrompt.replace(/^We /, "You ")}</p>
+                </aside>
+              )}
+              {exploration?.id === "024" && (
+                <CardAlternatives current={plan.id} />
+              )}
+              {["025", "026", "027"].includes(exploration?.id ?? "") && (
+                <a
+                  class="plan-focus-link"
+                  href={`#plan-${plan.id}`}
+                  data-choose-plan
+                  data-astro-reload
+                  aria-controls={`plan-includes-${plan.id} plan-features-${plan.id}`}
+                  aria-label={`View all features in ${plan.name}`}
+                >
+                  View full plan <Icon name="arrow-right" size={17} />
+                </a>
+              )}
+              {(exploration?.id === "026" || exploration?.id === "027") && (
+                <button
+                  type="button"
+                  class="plan-comparison-toggle"
+                  data-focus-toggle
+                >
+                  <span class="when-focused">Compare all plans</span>
+                  <span class="when-comparing">Focus on this plan</span>
+                  <Icon name="arrow-right" size={17} />
+                </button>
+              )}
+              {exploration?.id === "026" || exploration?.id === "027" ? (
+                <div class="plan-details">
+                  <p
+                    id={`plan-includes-${plan.id}`}
+                    class="text-lg font-medium"
+                  >
+                    {plan.includesLabel}
+                  </p>
+                  <ul
+                    id={`plan-features-${plan.id}`}
+                    class="mt-4 grid content-start gap-3 text-base"
+                  >
+                    {plan.features.map((feature) => (
+                      <li class="flex items-start gap-2.5">
+                        <Icon name="check" size={18} class="mt-px shrink-0" />
+                        <span class="text-pretty">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <>
+                  <p
+                    id={
+                      exploration?.id === "025"
+                        ? `plan-includes-${plan.id}`
+                        : undefined
+                    }
+                    class="mt-8 text-lg font-medium"
+                  >
+                    {plan.includesLabel}
+                  </p>
+                  <ul
+                    id={
+                      exploration?.id === "025"
+                        ? `plan-features-${plan.id}`
+                        : undefined
+                    }
+                    class="mt-4 grid content-start gap-3 text-base"
+                  >
+                    {plan.features.map((feature) => (
+                      <li class="flex items-start gap-2.5">
+                        <Icon name="check" size={18} class="mt-px shrink-0" />
+                        <span class="text-pretty">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {["025", "026", "027"].includes(exploration?.id ?? "") && (
+                <CardAlternatives current={plan.id} />
+              )}
+              {exploration?.id === "021" && <CardReselect current={plan.id} />}
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <div
+      class="pricing-proof"
+      aria-label="Teams using Probo"
+      data-pricing-reveal={productionMotion ? undefined : ""}
+      data-pricing-intro={productionMotion ? "logos" : undefined}
+    >
+      <p>Trusted by leading teams</p>
+      <Logos constrained />
+    </div>
+
+    <section
+      id="compare-plans"
+      class="pricing-comparison container"
+      aria-labelledby="comparison-heading"
+      data-pricing-reveal
+    >
+      <p class="comparison-scroll-hint">
+        <Icon name="arrow-right" size={16} /> Scroll to compare all three plans
+      </p>
+      <div class="comparison-shell">
+        <div class="comparison-sticky">
+          <div
+            class="comparison-scroll comparison-head-scroll"
+            data-comparison-head
+          >
+            <table class="comparison-table comparison-head" role="presentation">
+              <colgroup
+                ><col class="feature-column" /><col /><col /><col /></colgroup
+              >
+              <thead>
+                <tr>
+                  <th class="comparison-heading-cell">
+                    <h2 id="comparison-heading" class="pricing-section-title">
+                      Compare<br />plans
+                    </h2>
+                    <div
+                      class="comparison-navigation"
+                      aria-label="Compare plans"
+                    >
+                      <button
+                        type="button"
+                        data-comparison-previous
+                        aria-label="Previous plan"
+                        disabled
+                      >
+                        <Icon name="caret-right" size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        data-comparison-next
+                        aria-label="Next plan"
+                      >
+                        <Icon name="caret-right" size={18} />
+                      </button>
+                    </div>
+                  </th>
+                  {
+                    plans.map((plan) => (
+                      <th class="comparison-plan">
+                        <span
+                          class:list={[
+                            "comparison-plan-name",
+                            plan.id === "open-source" &&
+                              "text-muted-foreground",
+                          ]}
+                        >
+                          <Icon name={planIcons[plan.id]} size={20} />
+                          {plan.name}
+                        </span>
+                        <Button
+                          href={plan.href}
+                          variant={
+                            plan.id === "open-source" ? "secondary" : "primary"
+                          }
+                          class:list={[
+                            "plan-cta comparison-cta gap-1.5 px-2 whitespace-nowrap",
+                            plan.id === "done-for-you" && "plan-cta--managed",
+                          ]}
+                        >
+                          {plan.id === "open-source" && (
+                            <Icon name="github-logo" size={16} />
+                          )}
+                          {plan.cta}
+                          {plan.id !== "open-source" && (
+                            <Icon
+                              name="arrow-right"
+                              size={16}
+                              class="pricing-cta-arrow"
+                            />
+                          )}
+                        </Button>
+                      </th>
+                    ))
+                  }
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+        <div
+          class="comparison-scroll comparison-body-scroll"
+          data-comparison-body
+          role="region"
+          aria-label="Plan comparison, scroll horizontally to see every plan"
+          tabindex="0"
+        >
+          <div
+            class="comparison-row-highlight"
+            data-comparison-highlight
+            aria-hidden="true"
+          >
+          </div>
+          <table class="comparison-table" aria-label="Probo plan comparison">
+            <colgroup
+              ><col class="feature-column" /><col /><col /><col /></colgroup
+            >
+            <thead class="comparison-accessible-head"
+              ><tr
+                ><th scope="col"><span class="sr-only">Feature</span></th>{
+                  plans.map((plan) => (
+                    <th scope="col">
+                      <span class="sr-only">{plan.name}</span>
+                    </th>
+                  ))
+                }</tr
+              ></thead
+            >
+            {
+              comparison.map((group, groupIndex) => (
+                <>
+                  <tbody class="comparison-group-heading">
+                    <tr>
+                      <th colspan="4" scope="colgroup">
+                        <h3>{group.name}</h3>
+                      </th>
+                    </tr>
+                  </tbody>
+                  <tbody
+                    id={`comparison-group-${groupIndex}`}
+                    class="comparison-data"
+                  >
+                    {group.rows.map((row, rowIndex) => (
+                      <tr>
+                        <th scope="row" class="comparison-feature">
+                          {row.detail ? (
+                            <>
+                              <button
+                                class="feature-detail-trigger"
+                                type="button"
+                                data-pricing-tooltip
+                                aria-expanded="false"
+                                aria-controls={`feature-detail-${groupIndex}-${rowIndex}`}
+                                aria-describedby={`feature-detail-${groupIndex}-${rowIndex}`}
+                              >
+                                {row.label.slice(
+                                  0,
+                                  row.label.lastIndexOf(" ") + 1,
+                                )}
+                                <span class="feature-detail-ending">
+                                  {row.label.slice(
+                                    row.label.lastIndexOf(" ") + 1,
+                                  )}
+                                  <span class="feature-info-hit">
+                                    <Icon
+                                      name="info"
+                                      size={14}
+                                      class="feature-info"
+                                    />
+                                  </span>
+                                </span>
+                              </button>
+                              <span
+                                class="feature-detail"
+                                id={`feature-detail-${groupIndex}-${rowIndex}`}
+                                role="tooltip"
+                                popover="manual"
+                              >
+                                {row.detail}
+                              </span>
+                            </>
+                          ) : (
+                            row.label
+                          )}
+                        </th>
+                        {row.values.map((value, columnIndex) => {
+                          const icon =
+                            typeof value === "string"
+                              ? comparisonIcons[value]
+                              : undefined;
+                          const iconDetail =
+                            typeof value === "string"
+                              ? row.cellDetails?.[value]
+                              : undefined;
+                          const detailId = `cell-detail-${groupIndex}-${rowIndex}-${columnIndex}`;
+                          return (
+                            <td>
+                              {columnIndex === 0 && row.ossSetupContinuation ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    class="comparison-icon-trigger comparison-setup-continuation"
+                                    data-pricing-tooltip
+                                    aria-label={`Included with your own setup. ${iconDetail}`}
+                                    aria-expanded="false"
+                                    aria-controls={detailId}
+                                  >
+                                    <Icon name="wrench" size={22} />
+                                  </button>
+                                  <span
+                                    class="feature-detail feature-detail--compact"
+                                    id={detailId}
+                                    role="tooltip"
+                                    popover="manual"
+                                  >
+                                    Included with your own setup. {iconDetail}
+                                  </span>
+                                </>
+                              ) : typeof value === "boolean" ? (
+                                <span
+                                  class:list={[
+                                    "comparison-status",
+                                    !value && "comparison-status--excluded",
+                                  ]}
+                                >
+                                  <Icon
+                                    name={
+                                      value
+                                        ? "check-circle-fill"
+                                        : "x-circle-fill"
+                                    }
+                                    size={22}
+                                  />
+                                  <span class="sr-only">
+                                    {value ? "Included" : "Not included"}
+                                  </span>
+                                </span>
+                              ) : icon && iconDetail ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    class:list={[
+                                      "comparison-icon-trigger",
+                                      icon === "wrench" &&
+                                        "comparison-icon-trigger--self-hosted",
+                                      icon === "check-circle-fill" &&
+                                        "comparison-icon-trigger--included",
+                                    ]}
+                                    data-pricing-tooltip
+                                    aria-label={`${icon === "wrench" ? "Included with your own setup." : "Included."} ${iconDetail}`}
+                                    aria-expanded="false"
+                                    aria-controls={detailId}
+                                  >
+                                    <Icon name={icon} size={22} />
+                                  </button>
+                                  <span
+                                    class="feature-detail feature-detail--compact"
+                                    id={detailId}
+                                    role="tooltip"
+                                    popover="manual"
+                                  >
+                                    {iconDetail}
+                                  </span>
+                                </>
+                              ) : (
+                                <span
+                                  class:list={[
+                                    "comparison-value",
+                                    value === "Paid extra" &&
+                                      "comparison-extra",
+                                  ]}
+                                >
+                                  {value}
+                                </span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </>
+              ))
+            }
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="pricing-faq container"
+      aria-labelledby="faq-heading"
+      data-pricing-reveal
+    >
+      <h2 id="faq-heading" class="pricing-section-title">
+        Questions, answered
+      </h2>
+      <Faq faqs={faqs} id="pricing" />
+    </section>
+
+    <slot name="exploration-guide">
+      <PricingChooser />
+    </slot>
+  </main>
+  {productionMotion && <MotionEffects />}
+</Layout>
+
+<script>
+  import "../scripts/pricing";
+</script>
+
+<style>
+  :global(html:has([data-pricing-page])) {
+    overflow-x: clip;
+  }
+  .pricing-page {
+    --pricing-lime: #e6ff03;
+    --pricing-included: oklch(59.6% 0.145 163.225);
+    --pricing-row-hover: color-mix(
+      in srgb,
+      var(--color-subtle) 75%,
+      var(--color-level-0)
+    );
+    --pricing-header-height: 64px;
+    --pricing-feature-width: clamp(176px, 30vw, 360px);
+    --pricing-motion-smooth: cubic-bezier(0.19, 1, 0.22, 1);
+    --pricing-motion-snappy: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    color: var(--color-foreground);
+  }
+  @media (min-width: 1280px) {
+    .pricing-comparison {
+      --pricing-feature-width: 420px;
+    }
+  }
+  .pricing-page ::selection {
+    background: var(--pricing-lime);
+    color: var(--color-foreground);
+  }
+  .pricing-page :global(a:focus-visible),
+  .pricing-page :global(button:focus-visible),
+  .comparison-body-scroll:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 4px;
+  }
+  #plans,
+  #compare-plans {
+    scroll-margin-top: 96px;
+  }
+  .plan-card {
+    scroll-margin-top: calc(var(--pricing-header-height) + 28px);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(
+      html:has([data-pricing-entrance]:not([data-pricing-entrance-finished]))
+        header.page-header
+        > div
+    ) {
+      --pricing-intro-distance: 6px;
+      animation: pricing-intro-in 380ms cubic-bezier(0.19, 1, 0.22, 1) backwards;
+    }
+    [data-pricing-entrance]:not([data-pricing-entrance-finished])
+      [data-pricing-intro="label"] {
+      --pricing-intro-distance: 0px;
+      animation: pricing-intro-in 360ms var(--pricing-motion-smooth) 50ms
+        backwards;
+    }
+    [data-pricing-entrance]:not([data-pricing-entrance-finished])
+      [data-pricing-intro="title"] {
+      --pricing-intro-distance: 18px;
+      animation: pricing-intro-in 650ms var(--pricing-motion-smooth) 90ms
+        backwards;
+    }
+    [data-pricing-entrance]:not([data-pricing-entrance-finished])
+      [data-pricing-intro="description"] {
+      --pricing-intro-distance: 10px;
+      animation: pricing-intro-in 550ms var(--pricing-motion-smooth) 180ms
+        backwards;
+    }
+    [data-pricing-entrance]:not([data-pricing-entrance-finished])
+      [data-pricing-intro="plans"] {
+      --pricing-intro-distance: 28px;
+      animation: pricing-intro-in 760ms var(--pricing-motion-smooth) 280ms
+        backwards;
+    }
+    [data-pricing-entrance]:not([data-pricing-entrance-finished])
+      [data-pricing-intro="logos"] {
+      --pricing-intro-distance: 8px;
+      animation: pricing-intro-in 560ms var(--pricing-motion-smooth) 440ms
+        backwards;
+    }
+    :global(html[data-pricing-guide-scroll]) {
+      scroll-behavior: smooth;
+    }
+    .plan-card[data-pricing-arrival] {
+      animation: pricing-plan-arrival 420ms var(--pricing-motion-smooth);
+    }
+  }
+  @keyframes pricing-intro-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--pricing-intro-distance, 0px));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes pricing-plan-arrival {
+    from {
+      box-shadow: inset 0 0 0 6px
+        color-mix(in srgb, var(--color-success) 35%, transparent);
+    }
+    to {
+      box-shadow: inset 0 0 0 0 transparent;
+    }
+  }
+  .plan-card:target {
+    outline: 2px solid var(--color-success);
+    outline-offset: -2px;
+    border-radius: 12px;
+  }
+  .plan-recommended,
+  .plan-card:target .plan-popular {
+    display: none;
+  }
+  .plan-card:target .plan-recommended {
+    display: block;
+  }
+  .plan-recommended::before {
+    content: attr(aria-label);
+  }
+  .plan-card + .plan-card {
+    border-top-width: 1px;
+  }
+  .plan-artwork {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    overflow: clip;
+    pointer-events: none;
+  }
+  .plan-artwork img {
+    position: absolute;
+    bottom: -149px;
+    left: 50%;
+    max-width: none;
+    translate: -50%;
+  }
+  .plan-halo-motion {
+    position: absolute;
+    inset: 0;
+  }
+  .plan-card :global(.plan-cta) {
+    scroll-margin-top: calc(var(--pricing-header-height) + 24px);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pricing-page :global(.plan-cta) {
+      transition:
+        background-color 160ms ease-out,
+        scale 220ms var(--pricing-motion-snappy);
+    }
+    .pricing-page :global(.plan-cta:active) {
+      scale: 0.975;
+    }
+    .pricing-page :global(.plan-cta .pricing-cta-arrow) {
+      transition: translate 220ms var(--pricing-motion-snappy);
+    }
+    .pricing-page
+      :global(.plan-cta:is(:hover, :focus-visible) .pricing-cta-arrow) {
+      translate: 3px;
+    }
+    .plan-card.is-awaiting-reveal:not(:focus-within, :target)
+      > :not(.plan-artwork),
+    .plan-card.is-awaiting-reveal .plan-artwork img {
+      opacity: 0;
+    }
+    .plan-card.is-plan-revealed > :not(.plan-artwork) {
+      animation: slideIn 850ms var(--spring-smooth) var(--plan-enter-delay, 0ms)
+        backwards;
+    }
+    .plan-card.is-plan-revealed .plan-artwork img {
+      animation: pricing-halo-in 3.2s var(--pricing-motion-smooth) backwards;
+      animation-delay: calc(var(--plan-enter-delay, 0ms) + 300ms);
+    }
+  }
+  @keyframes pricing-halo-in {
+    0% {
+      opacity: 0;
+      translate: calc(-50% - 12px) 96px;
+    }
+    26% {
+      opacity: 1;
+      translate: -50% 0;
+    }
+    65% {
+      translate: calc(-50% + 12px) -10px;
+    }
+    100% {
+      translate: -50% 0;
+    }
+  }
+  .pricing-page :global(.plan-cta--managed) {
+    background-color: var(--pricing-lime);
+    color: var(--color-foreground);
+  }
+  .pricing-page :global(.plan-cta--managed:hover) {
+    background-color: color-mix(in srgb, var(--pricing-lime) 80%, transparent);
+  }
+  @media (min-width: 1024px) {
+    .plan-card {
+      grid-row: span 4;
+      grid-template-rows: subgrid;
+    }
+    .plan-card + .plan-card {
+      border-top-width: 0;
+      border-inline-start-width: 1px;
+    }
+    .plan-card:nth-child(2) {
+      --plan-enter-delay: 85ms;
+    }
+    .plan-card:nth-child(3) {
+      --plan-enter-delay: 170ms;
+    }
+  }
+  .pricing-proof {
+    padding-top: 72px;
+    padding-bottom: 104px;
+  }
+  .pricing-proof :global(.splide) {
+    height: 64px;
+  }
+  .pricing-proof > p {
+    margin-bottom: 16px;
+    text-align: center;
+    color: var(--color-muted-foreground);
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .comparison-scroll-hint {
+    display: none;
+  }
+  .comparison-navigation {
+    display: none;
+  }
+  .comparison-sticky {
+    position: sticky;
+    top: var(--pricing-header-height);
+    z-index: 20;
+    background: var(--color-level-0);
+  }
+  .comparison-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-color: #b5bab3 var(--color-level-0);
+    scrollbar-width: thin;
+  }
+  .comparison-head-scroll {
+    scrollbar-width: none;
+    scroll-padding-inline-start: calc(var(--pricing-feature-width) + 8px);
+  }
+  .comparison-head-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .comparison-body-scroll {
+    position: relative;
+    isolation: isolate;
+    container-type: inline-size;
+  }
+  .comparison-row-highlight {
+    display: none;
+  }
+  .comparison-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    line-height: 21px;
+  }
+  .feature-column {
+    width: var(--pricing-feature-width);
+  }
+  .comparison-heading-cell {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    padding: 20px 24px 24px 20px;
+    vertical-align: middle;
+    text-align: left;
+    background: var(--color-level-0);
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+  }
+  .comparison-plan {
+    padding: 20px 20px 24px;
+    text-align: center;
+    vertical-align: middle;
+    background: var(--color-level-0);
+  }
+  .comparison-plan-name {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    min-height: 26px;
+    max-width: 180px;
+    margin: 0 auto 12px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 26px;
+    letter-spacing: -0.2px;
+  }
+  .comparison-plan-name :global(svg) {
+    flex: none;
+  }
+  .comparison-plan :global(.comparison-cta) {
+    display: flex;
+    min-height: 36px;
+    width: 100%;
+    max-width: 176px;
+    margin-inline: auto;
+    font-size: 13px;
+  }
+  @media (pointer: coarse) {
+    .comparison-plan :global(.comparison-cta) {
+      min-height: 44px;
+    }
+  }
+  .comparison-accessible-head th {
+    position: relative;
+    height: 0;
+    padding: 0;
+    border: 0;
+    line-height: 0;
+  }
+  .comparison-group-heading th {
+    padding: 40px 0 0;
+    text-align: left;
+  }
+  .comparison-group-heading:first-of-type th {
+    padding-top: 12px;
+  }
+  .comparison-group-heading h3 {
+    position: sticky;
+    left: 0;
+    max-width: 100cqi;
+    padding: 14px 20px;
+    border-radius: 8px;
+    background: #f6f9f5;
+    color: var(--color-foreground);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+  }
+  .comparison-feature {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    padding: 16px 24px 16px 20px;
+    background: var(--color-level-0);
+    font-weight: 400;
+    text-align: left;
+    text-wrap: pretty;
+  }
+  :is(.comparison-heading-cell, .comparison-feature)::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: 1px;
+    background: var(--color-border-mid);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .is-comparison-scrolled
+    :is(.comparison-heading-cell, .comparison-feature)::after {
+    opacity: 1;
+  }
+  .comparison-table td {
+    padding: 16px 20px;
+    text-align: center;
+    color: var(--color-tertiary-foreground);
+    font-size: 14px;
+    line-height: 21px;
+    vertical-align: middle;
+  }
+  .comparison-data tr > :is(th, td) {
+    background: var(--comparison-row-background, var(--color-level-0));
+    border-bottom: 1px solid
+      var(--comparison-row-border, var(--color-border-low));
+  }
+  .comparison-data tr:last-child > :is(th, td) {
+    border-bottom: 0;
+  }
+  .comparison-data tr > :first-child {
+    border-start-start-radius: var(--comparison-row-radius, 0);
+    border-end-start-radius: var(--comparison-row-radius, 0);
+  }
+  .comparison-data tr > :last-child {
+    border-start-end-radius: var(--comparison-row-radius, 0);
+    border-end-end-radius: var(--comparison-row-radius, 0);
+  }
+  .comparison-data tr:focus-within {
+    --comparison-row-background: var(--pricing-row-hover);
+    --comparison-row-radius: 8px;
+    --comparison-row-border: transparent;
+  }
+  .comparison-data tr:has(+ tr:focus-within) {
+    --comparison-row-border: transparent;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .comparison-body-scroll:not([data-moving-highlight])
+      .comparison-data
+      tr:hover {
+      --comparison-row-background: var(--pricing-row-hover);
+      --comparison-row-radius: 8px;
+    }
+    .comparison-data tr:hover {
+      --comparison-row-border: transparent;
+    }
+    .comparison-data tr:has(+ tr:hover) {
+      --comparison-row-border: transparent;
+    }
+  }
+  .comparison-body-scroll[data-moving-highlight] .comparison-data tr {
+    --comparison-row-background: transparent;
+  }
+  .comparison-body-scroll[data-moving-highlight]
+    .comparison-data
+    tr:focus-within:not(:hover) {
+    --comparison-row-background: var(--pricing-row-hover);
+  }
+  .comparison-body-scroll[data-moving-highlight] .comparison-row-highlight {
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 auto;
+    display: block;
+    border-radius: 8px;
+    background: var(--pricing-row-hover);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .comparison-body-scroll[data-moving-highlight]
+    .comparison-row-highlight[data-visible] {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .comparison-row-highlight {
+      transition: opacity 120ms ease-out;
+    }
+    .comparison-row-highlight[data-sliding] {
+      transition:
+        opacity 120ms ease-out,
+        translate 240ms var(--pricing-motion-smooth),
+        height 240ms var(--pricing-motion-smooth);
+    }
+  }
+  .comparison-status {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    color: var(--pricing-included);
+  }
+  .comparison-status--excluded {
+    color: var(--color-muted-foreground);
+  }
+  .comparison-value {
+    display: inline-block;
+    max-width: 18ch;
+    color: var(--color-foreground);
+    text-wrap: balance;
+  }
+  .comparison-extra {
+    padding: 3px 9px;
+    border: 1px solid var(--color-border-mid);
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 500;
+  }
+  .feature-detail-trigger {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: 44px;
+    padding-block: 12px;
+    margin-block: -12px;
+    color: inherit;
+    text-align: left;
+    cursor: default;
+  }
+  .feature-detail-ending {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .feature-detail-trigger :global(.feature-info) {
+    flex: none;
+    color: var(--color-muted-foreground);
+  }
+  .feature-info-hit {
+    display: inline-grid;
+    place-items: center;
+    padding: 8px;
+    margin: -8px;
+    cursor: help;
+  }
+  .comparison-icon-trigger {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    margin: -12px auto;
+    place-items: center;
+    border-radius: 8px;
+    color: var(--color-foreground);
+    cursor: help;
+  }
+  .comparison-icon-trigger.comparison-setup-continuation {
+    color: var(--color-muted-foreground);
+  }
+  .comparison-icon-trigger--included {
+    color: var(--pricing-included);
+  }
+  .comparison-setup-continuation :global(svg) {
+    opacity: 0.45;
+  }
+  .comparison-icon-trigger--self-hosted {
+    color: color-mix(
+      in srgb,
+      var(--color-muted-foreground) 82%,
+      var(--color-level-0)
+    );
+  }
+  .feature-detail {
+    width: max-content;
+    max-width: min(340px, calc(100vw - 32px));
+    margin: 0;
+    inset: auto;
+    padding: 14px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--color-foreground);
+    color: var(--color-primary-foreground);
+    box-shadow: 0 8px 24px #141e1226;
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    text-align: left;
+    text-wrap: pretty;
+  }
+  .feature-detail--compact {
+    text-align: center;
+    max-width: min(280px, calc(100vw - 32px));
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pricing-page
+      :global(
+        [data-pricing-reveal="chooser"].is-awaiting-reveal:not(
+            :focus-within,
+            :target
+          )
+      ) {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    .feature-detail[data-motion]:popover-open {
+      animation: pricing-tooltip-in 160ms var(--pricing-motion-smooth) both;
+    }
+    [data-pricing-reveal] {
+      animation-fill-mode: backwards;
+    }
+    [data-pricing-reveal]:not(
+        [data-pricing-reveal="plan"]
+      ).is-awaiting-reveal:not(:focus-within) {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+  }
+  @keyframes pricing-tooltip-in {
+    from {
+      opacity: 0;
+      translate: var(--tooltip-enter-x, 0px) var(--tooltip-enter-y, 4px);
+    }
+  }
+  .pricing-faq {
+    padding-top: 128px;
+    padding-bottom: 112px;
+  }
+  .pricing-page :global(.pricing-section-title) {
+    font-size: 30px;
+    line-height: 36px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    text-wrap: balance;
+  }
+  .pricing-faq h2 {
+    margin-bottom: 32px;
+    text-align: left;
+    color: var(--color-foreground);
+  }
+  @media (max-width: 1023px) {
+    .pricing-page {
+      --pricing-header-height: 60px;
+    }
+  }
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .pricing-page {
+      --pricing-header-height: 68px;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 859px) {
+    .comparison-plan {
+      padding-inline: 16px;
+    }
+  }
+  @media (max-width: 767px) {
+    [data-enhanced="true"] .comparison-navigation {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .comparison-navigation button {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--color-border-mid);
+      border-radius: 50%;
+      color: var(--color-foreground);
+      cursor: pointer;
+    }
+    .comparison-navigation button:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+    .comparison-navigation button:not(:disabled):is(:hover, :active) {
+      background: var(--pricing-row-hover);
+    }
+    [data-comparison-previous] :global(svg) {
+      transform: rotate(180deg);
+    }
+    .pricing-page {
+      --pricing-feature-width: clamp(124px, calc(100vw - 220px), 240px);
+      --pricing-plan-width: calc(100vw - 55px - var(--pricing-feature-width));
+    }
+    .pricing-proof {
+      padding-top: 56px;
+      padding-bottom: 72px;
+    }
+    .comparison-scroll-hint {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      color: var(--color-muted-foreground);
+      font-size: 12px;
+      line-height: 18px;
+    }
+    .comparison-table {
+      min-width: calc(
+        var(--pricing-feature-width) + 3 * var(--pricing-plan-width)
+      );
+    }
+    .comparison-plan {
+      padding: 16px 12px 20px;
+    }
+    .comparison-heading-cell {
+      padding: 16px 12px 20px;
+      font-size: 16px;
+      line-height: 22px;
+      letter-spacing: -0.2px;
+    }
+    .comparison-plan-name {
+      flex-direction: column;
+      gap: 4px;
+      font-size: 15px;
+      line-height: 22px;
+    }
+    .comparison-plan :global(.comparison-cta) {
+      min-height: 44px;
+    }
+    .comparison-feature {
+      padding: 16px 12px;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .comparison-table td {
+      padding: 16px 12px;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .comparison-group-heading h3 {
+      padding: 14px 12px;
+      font-size: 15px;
+      line-height: 22px;
+    }
+    .pricing-faq {
+      padding-top: 80px;
+      padding-bottom: 72px;
+    }
+    .pricing-faq h2 {
+      margin-bottom: 24px;
+    }
+    .pricing-page:not([data-enhanced="true"]) .comparison-sticky {
+      position: static;
+    }
+    .pricing-page:not([data-enhanced="true"]) #comparison-heading {
+      scroll-margin-top: calc(var(--pricing-header-height) + 28px);
+    }
+    .pricing-page:not([data-enhanced="true"]) .comparison-head {
+      min-width: 0;
+    }
+    .pricing-page:not([data-enhanced="true"]) .comparison-head colgroup,
+    .pricing-page:not([data-enhanced="true"]) .comparison-plan {
+      display: none;
+    }
+    .pricing-page:not([data-enhanced="true"]) .comparison-accessible-head th {
+      height: auto;
+      padding: 16px 12px;
+      background: var(--color-level-0);
+      font-weight: 500;
+      line-height: 20px;
+      text-align: center;
+    }
+    .pricing-page:not([data-enhanced="true"])
+      .comparison-accessible-head
+      th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      text-align: left;
+    }
+    .pricing-page:not([data-enhanced="true"])
+      .comparison-accessible-head
+      .sr-only {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      clip-path: none;
+      white-space: normal;
+    }
+  }
+</style>

@@ -236,6 +236,12 @@ export const menuGroups: MenuGroup[] = [
   },
 ];
 
+export const pricingMenuItem = {
+  label: "Pricing",
+  description: "Find the right way to run compliance",
+  href: "/pricing",
+};
+
 export const directMenuItems: MenuItem[] = [
   {
     label: "GitHub",
