@@ -858,7 +858,7 @@ function categoryForTool(name) {
     ["Access reviews", /AccessReview|AccessEntr|Connector/],
     [
       "Internal controls, tasks, and evidence",
-      /InternalControl|Task|Evidence|Linear/,
+      /InternalControl|Task|Evidence|Linear|Asana/,
     ],
     ["AI systems", /AiSystem/],
     ["Risk assessments", /RiskAssessment/],
