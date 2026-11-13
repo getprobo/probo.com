@@ -1,9 +1,9 @@
 ---
 title: Audit log
-description: Review immutable records of create, update, and delete actions in your Probo organization, including who acted and which resource changed.
+description: Review immutable records of every action in your Probo organization, reads included, with who acted and which resource they touched.
 ---
 
-The audit log is a chronological record of write actions in your organization. Use it to investigate who changed people, roles, compliance records, and settings — and when those changes happened.
+The audit log is a chronological record of the actions taken in your organization, from reading a document to changing a role. Use it to investigate who viewed or changed people, roles, compliance records, and settings, and when.
 
 Open **Settings** → **Audit Log**. Entries are immutable: Probo does not modify or delete them after they are written.
 
@@ -13,10 +13,10 @@ Open **Settings** → **Audit Log**. Entries are immutable: Probo does not modif
 | ----- | ------- |
 | **Date** | When the action was recorded |
 | **Actor** | Who performed it — a user, an API key, or the system — plus the actor identifier |
-| **Action** | The operation, typically as `resource:verb` (for example create, update, or delete) |
-| **Resource** | The type and identifier of the record that changed |
+| **Action** | The operation, typically as `resource:verb` (for example get, list, create, update, or delete) |
+| **Resource** | The type and identifier of the record the action applied to |
 
-Actions cover organization records such as memberships, invitations, documents, risks, third parties, and authentication configuration. The log records write operations; it is not a full session or login history.
+Actions cover organization records such as memberships, invitations, documents, risks, third parties, and authentication configuration. Probo writes one entry for every action it authorizes, reads included. If a single page or request reads the same document or profile several times, each read gets its own entry, so expect many more entries than changes. The log is not a full session or login history.
 
 ## Who can view and export
 

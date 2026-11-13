@@ -15,9 +15,21 @@ Use the least privilege that still lets someone do their job.
 | ---- | ------------- | ---------------- |
 | **Owner** | A small set of trusted leads who must never lose access to the organization | Everything, including organization settings, SSO/SCIM setup, and removing people |
 | **Admin** | Compliance, security, or IT teammates who run the program day to day | Manage the compliance program and most people; cannot delete the organization, remove members, change SSO/SCIM setup, or grant Owner |
-| **Viewer** | Stakeholders who need visibility without editing the program | Read the program; sign and approve documents when asked |
-| **Auditor** | Internal or external auditors reviewing evidence | Read the records needed for audit; no day-to-day program administration |
+| **Viewer** | Stakeholders who need visibility without editing the program | Read the program; comment on and suggest changes to documents; sign and approve documents when asked |
+| **Auditor** | Internal or external auditors reviewing evidence | Read the records needed for audit; comment on and suggest changes to documents; no day-to-day program administration |
 | **Employee** | Staff who only need to complete assigned work | See assigned employee documents, sign, and approve when asked |
+
+### Document review permissions
+
+[Document review](/docs/product/document-management#review-with-comments-and-suggestions) has its own permissions, separate from editing a document:
+
+| Action | Owner, Admin | Viewer, Auditor | Employee |
+| ------ | ------------ | --------------- | -------- |
+| Comment and reply | Yes | Yes | No |
+| Edit or delete your own comments | Yes | Yes | No |
+| Resolve or reopen threads | Yes | Yes | No |
+| Suggest changes | Yes | Yes | No |
+| Accept or reject suggestions | Yes | No | No |
 
 The person who creates the organization becomes an **Owner**. Keep at least two owners so settings and access remain recoverable if one person leaves.
 

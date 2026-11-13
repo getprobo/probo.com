@@ -20,6 +20,19 @@ Edit work in a draft version. Publishing creates the version intended for use or
 
 To share selected documents outside your workspace, configure their portal visibility separately. See [Publishing content in the Compliance Portal](/docs/product/compliance-portal/publishing-content).
 
+## Review with comments and suggestions
+
+Members can review a draft in place, from the **Description** tab of the document:
+
+- **Comments:** select a passage, click **Comment**, and write a note. Comments support rich text and member mentions. Anyone who can comment can reply, **Resolve** a thread, or **Reopen** it later. Only the author of a comment can edit or delete it.
+- **Suggestions:** switch on **Suggesting** to record your edits as redlines (insertions, deletions, and removed line breaks) instead of changing the text. A reviewer with the right permission accepts or rejects each suggestion in place.
+
+Review cards sit in the margin next to the passage they refer to and stay in sync across open tabs. Viewers and auditors can comment and suggest without being able to edit the document. Only owners and admins can accept or reject suggestions; see [Roles and permissions](/docs/product/roles-and-permissions).
+
+You cannot publish a document, or restore an earlier version, while a suggestion is still open. Accept or reject every suggestion first.
+
+Comments and suggestions are also available through the GraphQL API and the [MCP server](/docs/developers/api/mcp/tools/catalog/documents-and-approvals).
+
 ## Approval quorums
 
 An approval quorum defines who must decide before a document can proceed. Decisions are recorded against a specific version so later revisions do not rewrite the history of an earlier approval.
