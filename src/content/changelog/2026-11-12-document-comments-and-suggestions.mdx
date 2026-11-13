@@ -1,0 +1,15 @@
+---
+title: "Comments and suggestions on documents"
+description: "Review a policy right where it's written. Comment on a passage, mention teammates, and propose edits as redlines that reviewers accept or reject in place."
+date: 2026-11-12
+images: ["/changelog/2026-11-12-document-comments-and-suggestions-1.png"]
+tags: ["Documents"]
+---
+
+Documents now have a [review mode](/docs/product/document-management#review-with-comments-and-suggestions). Select a passage, leave a comment, mention a teammate. Replies stay in the same thread, and you resolve it once the point is settled. Resolved threads can be reopened.
+
+Switch to suggesting mode to propose changes instead of making them. Inserts, deletions and removed line breaks show up as redlines, and a reviewer accepts or rejects each one from the card in the margin. Cards stay in sync if the document is open in several tabs.
+
+Viewers and auditors can comment without being able to edit. Each action has its own permission, so you decide who can comment, resolve threads, suggest, or accept and reject suggestions. A document can't be published or restored while a suggestion is still open.
+
+Comments and suggestions are also on the API, MCP, `prb` and the n8n node. One heads up for API users: the discard-draft action is gone, along with the `deleteDocumentDraft` mutation and MCP tool, and the MCP `updateDocument` tool no longer takes `content`.

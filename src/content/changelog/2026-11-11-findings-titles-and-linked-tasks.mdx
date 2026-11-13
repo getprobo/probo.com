@@ -1,0 +1,15 @@
+---
+title: "Findings get titles and linked tasks"
+description: "Every finding now has a title, the findings list and details pages were rebuilt, and you can link a finding to the tasks that fix it."
+date: 2026-11-11
+images: ["/changelog/2026-11-11-findings-titles-and-linked-tasks-1.png"]
+tags: ["Governance"]
+---
+
+[Findings](/docs/product/audits-and-findings) now have a title. Existing findings got one automatically, taken from the start of their description.
+
+The findings list, details and create pages were rebuilt. The list filters by kind, status, priority, owner and audit. The details page shows the title inline, the main properties as chips, and the tasks and audits linked to the finding.
+
+You can now link tasks to a finding, so the remediation work sits next to the issue it fixes. It works from both sides: the finding shows its tasks, and a task has a findings card to search for a finding and link it.
+
+Titles and task links are available on the API, MCP, `prb` and the n8n node. Creating a finding there now requires a title.
