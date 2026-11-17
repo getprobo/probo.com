@@ -1,0 +1,12 @@
+---
+title: "Connect Datadog with an access token"
+description: "The Datadog access review connector now takes a service access token or a personal access token plus your Datadog site, with UK1 and US2-FED added to the site list."
+date: 2026-11-13
+images: ["/changelog/2026-11-13-datadog-token-setup-1.svg"]
+imagesLayout: "logos"
+tags: ["Integrations"]
+---
+
+The [Datadog connector](/docs/product/access-review/datadog) now connects with a service access token or a personal access token, along with the site your organization is on. UK1 and US2-FED are now in the site list.
+
+A service access token is the better pick: it belongs to a service account, so it keeps working when someone leaves. Application keys are refused, since Datadog only accepts one next to an API key.

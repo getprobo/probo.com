@@ -1,0 +1,10 @@
+---
+title: "Cookie banners share detections across a domain"
+description: "Cookie banners on the same registrable domain, like www and app, are now grouped, so one banner can reuse a stronger cookie source that a sibling banner already detected."
+date: 2026-11-13
+tags: ["Cookie Banner"]
+---
+
+If you run banners on `www.example.com` and `app.example.com`, they now belong to one group. When one banner sees a cookie from a stronger source, its siblings reuse that source instead of keeping a weaker guess.
+
+The tracker list shows which sibling banner a source came from, with an icon that opens that banner's trackers. Existing banners were grouped automatically. More on the [cookie banner](/docs/product/cookie-banner/overview).

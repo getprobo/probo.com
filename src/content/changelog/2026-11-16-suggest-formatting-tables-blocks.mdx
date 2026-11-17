@@ -1,0 +1,15 @@
+---
+title: "Suggest formatting, tables and block changes"
+description: "Suggesting mode now tracks table rows and columns, character styles, and block changes like headings and lists. Margin cards say what each change does, and the document stays editable while a suggestion is open."
+date: 2026-11-16
+images: ["/changelog/2026-11-16-suggest-formatting-tables-blocks-1.png"]
+tags: ["Documents"]
+---
+
+[Suggesting mode](/docs/product/document-management#review-with-comments-and-suggestions) used to cover plain text only. Reviewers can now propose a new row, a removed column or a whole table, change bold, italic, underline, strikethrough, code and links, and turn a paragraph into a heading, a list, a quote or a code block. Images, files, mentions and list nesting are tracked too.
+
+Formatting works like Google Docs. Readers keep seeing the old style until the suggestion is accepted, and rejecting it restores that style. Row suggestions are refused on tables with merged cells.
+
+Margin cards now describe the change, such as `Add row: with text "…"` or `Format: bold`, instead of showing a character diff. The document also stays editable while a suggestion is open: an edit elsewhere goes through, an edit on the suggested text is refused. Publishing still waits until every suggestion is resolved.
+
+Agents get the same thing. `changeDocumentText`, `changeDocumentFormat`, `changeDocumentTable` and `changeDocumentBlock` apply a change or suggest it, so they no longer send raw editor content. Also on GraphQL, `prb document change` and the n8n node.

@@ -1,0 +1,14 @@
+---
+title: "Sync Probo tasks with Asana"
+description: "Probo tasks now sync both ways with Asana, next to the existing Linear sync. Publish or link tasks, and map an Asana project's sections and priority field."
+date: 2026-11-13
+images: ["/changelog/2026-11-13-asana-task-sync-1.svg"]
+imagesLayout: "logos"
+tags: ["Integrations"]
+---
+
+[Asana](/docs/product/tasks/overview#asana) now sits next to Linear as a task sync. Publish a Probo task as a new Asana task, or link it to one that already exists.
+
+Name, description, deadline, assignee, comments, files and mentions sync both ways. Without a project mapping, state follows completion only. Save a mapping for an Asana project and Probo also moves the task between sections and writes the priority field you pick.
+
+It works from the console, GraphQL and MCP. The [CLI](/docs/developers/cli/commands/task) gets `prb task publish-asana`, `prb task link-asana` and commands to search teams, projects and tasks and to set up the mapping, and `prb task create --asana-project` publishes a new task straight to a project. The [n8n node](/docs/developers/api/n8n/resources/task) has matching Task operations.
