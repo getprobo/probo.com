@@ -1,5 +1,6 @@
 ---
 import { clsx } from "clsx";
+import { getCollection } from "astro:content";
 import LogosScroll from "../LogosScroll.svelte";
 
 type Props = {
@@ -7,12 +8,28 @@ type Props = {
   class?: string;
 };
 
-const companies = [
+type Company = {
+  image: string;
+  width: number;
+  height: number;
+  alt: string;
+  href: string;
+  class: string;
+  /** Id of the customer story in the stories collection, when there is one. */
+  story?: string;
+};
+
+const storyIds = new Set(
+  (await getCollection("stories")).map((story) => story.id),
+);
+
+const allCompanies: Company[] = [
   {
     image: "ahrefs.svg",
     width: 74,
     height: 19,
     alt: "Ahrefs",
+    story: "ahrefs-iso",
     href: "https://ahrefs.com",
     class: "h-5 w-auto sm:h-6",
   },
@@ -21,6 +38,7 @@ const companies = [
     width: 246,
     height: 74,
     alt: "Lucis",
+    story: "lucis-iso",
     href: "https://www.lucis.life",
     class: "h-6 w-auto sm:h-7",
   },
@@ -85,6 +103,7 @@ const companies = [
     width: 603,
     height: 161,
     alt: "Vybe",
+    story: "vybe-soc2",
     href: "https://www.vybe.build/",
     class: "h-6 w-auto sm:h-7",
   },
@@ -93,6 +112,7 @@ const companies = [
     width: 939,
     height: 270,
     alt: "Blaxel",
+    story: "blaxel-soc2",
     href: "https://blaxel.ai/",
     class: "h-6 w-auto sm:h-7",
   },
@@ -133,6 +153,7 @@ const companies = [
     width: 160,
     height: 36,
     alt: "Bluejay",
+    story: "bluejay-soc2",
     href: "https://getbluejay.ai/",
     class: "h-6 w-auto sm:h-7",
   },
@@ -153,6 +174,16 @@ const companies = [
     class: "h-6 w-auto sm:h-7",
   },
 ];
+
+// A logo opens its customer story when one is published, the company site otherwise.
+const companies = allCompanies.map((company) => {
+  const hasStory = Boolean(company.story && storyIds.has(company.story));
+  return {
+    ...company,
+    hasStory,
+    link: hasStory ? `/stories/${company.story}` : company.href,
+  };
+});
 ---
 
 <section
@@ -162,16 +193,20 @@ const companies = [
     Astro.props.constrained && "sm:max-w-270 mx-auto",
   )}
 >
-  <LogosScroll class="flex h-16 w-max items-center sm:h-30" client:visible>
+  <LogosScroll class="flex h-20 w-max items-center sm:h-30" client:visible>
     {
       companies.map((company) => (
-        <div class="mx-4 flex w-30 flex-none items-center justify-center sm:mx-15 sm:w-50">
+        <div class="relative mx-4 flex w-30 flex-none items-center justify-center py-5 sm:mx-15 sm:w-50 sm:py-8">
           <a
-            href={company.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex size-full items-center justify-center"
-            aria-label={company.alt}
+            href={company.link}
+            target={company.hasStory ? undefined : "_blank"}
+            rel={company.hasStory ? undefined : "noopener noreferrer"}
+            class="group relative flex size-full items-center justify-center"
+            aria-label={
+              company.hasStory
+                ? `Read the ${company.alt} customer story`
+                : company.alt
+            }
           >
             <img
               src={`/clients/${company.image}`}
@@ -182,6 +217,11 @@ const companies = [
               decoding="async"
               class={company.class}
             />
+            {company.hasStory && (
+              <span class="story-tag text-muted-foreground group-hover:text-primary group-hover:border-border-mid absolute top-full left-1/2 mt-1 -translate-x-1/2 rounded-full border px-2 text-[10px] leading-4 font-medium whitespace-nowrap transition-colors sm:mt-2.5 sm:py-0.5 sm:text-xs">
+                Read story →
+              </span>
+            )}
           </a>
         </div>
       ))
