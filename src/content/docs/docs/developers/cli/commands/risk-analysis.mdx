@@ -22,7 +22,7 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | [`prb risk-analysis boundary list`](#prb-risk-analysis-boundary-list)                   | List boundaries in a risk analysis diagram.        | `prb risk-analysis boundary list`              | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/boundary/list/list.go#L77)                   |
 | [`prb risk-analysis boundary update`](#prb-risk-analysis-boundary-update)               | Update a risk analysis boundary.                   | `prb risk-analysis boundary update <id>`       | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/boundary/update/update.go#L65)               |
 | [`prb risk-analysis boundary view`](#prb-risk-analysis-boundary-view)                   | View a risk analysis boundary.                     | `prb risk-analysis boundary view <id>`         | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/boundary/view/view.go#L64)                   |
-| [`prb risk-analysis create`](#prb-risk-analysis-create)                                 | Create a new risk analysis.                        | `prb risk-analysis create`                     | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/create/create.go#L90)                        |
+| [`prb risk-analysis create`](#prb-risk-analysis-create)                                 | Create a new risk analysis.                        | `prb risk-analysis create`                     | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/create/create.go#L97)                        |
 | [`prb risk-analysis delete`](#prb-risk-analysis-delete)                                 | Delete a risk analysis.                            | `prb risk-analysis delete <id>`                | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/delete/delete.go#L43)                        |
 | [`prb risk-analysis diagram`](#prb-risk-analysis-diagram)                               | Manage risk analysis diagrams.                     | `prb risk-analysis diagram <command>`          | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/diagram/diagram.go#L35)                      |
 | [`prb risk-analysis diagram create`](#prb-risk-analysis-diagram-create)                 | Create a new risk analysis diagram.                | `prb risk-analysis diagram create`             | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/diagram/create/create.go#L69)                |
@@ -31,8 +31,8 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | [`prb risk-analysis diagram mermaid`](#prb-risk-analysis-diagram-mermaid)               | Get the Mermaid chart for a risk analysis diagram. | `prb risk-analysis diagram mermaid <id>`       | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/diagram/mermaid/mermaid.go#L57)              |
 | [`prb risk-analysis diagram update`](#prb-risk-analysis-diagram-update)                 | Update a risk analysis diagram.                    | `prb risk-analysis diagram update <id>`        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/diagram/update/update.go#L59)                |
 | [`prb risk-analysis diagram view`](#prb-risk-analysis-diagram-view)                     | View a risk analysis diagram.                      | `prb risk-analysis diagram view <id>`          | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/diagram/view/view.go#L62)                    |
-| [`prb risk-analysis fork`](#prb-risk-analysis-fork)                                     | Fork a risk analysis.                              | `prb risk-analysis fork <id>`                  | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/fork/fork.go#L88)                            |
-| [`prb risk-analysis list`](#prb-risk-analysis-list)                                     | List risk analyses in an organization.             | `prb risk-analysis list`                       | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/list/list.go#L92)                            |
+| [`prb risk-analysis fork`](#prb-risk-analysis-fork)                                     | Fork a risk analysis.                              | `prb risk-analysis fork <id>`                  | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/fork/fork.go#L92)                            |
+| [`prb risk-analysis list`](#prb-risk-analysis-list)                                     | List risk analyses in an organization.             | `prb risk-analysis list`                       | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/list/list.go#L100)                           |
 | [`prb risk-analysis node`](#prb-risk-analysis-node)                                     | Manage risk analysis nodes.                        | `prb risk-analysis node <command>`             | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/node/node.go#L34)                            |
 | [`prb risk-analysis node create`](#prb-risk-analysis-node-create)                       | Create a new risk analysis node.                   | `prb risk-analysis node create`                | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/node/create/create.go#L73)                   |
 | [`prb risk-analysis node delete`](#prb-risk-analysis-node-delete)                       | Delete a risk analysis node.                       | `prb risk-analysis node delete <id>`           | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/node/delete/delete.go#L43)                   |
@@ -62,8 +62,8 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | [`prb risk-analysis threat list`](#prb-risk-analysis-threat-list)                       | List threats in a risk analysis diagram.           | `prb risk-analysis threat list`                | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/threat/list/list.go#L79)                     |
 | [`prb risk-analysis threat update`](#prb-risk-analysis-threat-update)                   | Update a risk analysis threat.                     | `prb risk-analysis threat update <id>`         | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/threat/update/update.go#L67)                 |
 | [`prb risk-analysis threat view`](#prb-risk-analysis-threat-view)                       | View a risk analysis threat.                       | `prb risk-analysis threat view <id>`           | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/threat/view/view.go#L66)                     |
-| [`prb risk-analysis update`](#prb-risk-analysis-update)                                 | Update a risk analysis.                            | `prb risk-analysis update <id>`                | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/update/update.go#L82)                        |
-| [`prb risk-analysis view`](#prb-risk-analysis-view)                                     | View a risk analysis.                              | `prb risk-analysis view <id>`                  | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/view/view.go#L94)                            |
+| [`prb risk-analysis update`](#prb-risk-analysis-update)                                 | Update a risk analysis.                            | `prb risk-analysis update <id>`                | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/update/update.go#L88)                        |
+| [`prb risk-analysis view`](#prb-risk-analysis-view)                                     | View a risk analysis.                              | `prb risk-analysis view <id>`                  | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/view/view.go#L103)                           |
 
 ## prb risk-analysis
 
@@ -233,15 +233,16 @@ prb risk-analysis create
 
 ### Flags
 
-| Flag             | Type    | Default | Required | Description                                                                                                  |
-| ---------------- | ------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------ |
-| `--description`  | string  | `""`    | —        | Risk analysis description as markdown or ProseMirror JSON. Images and links to /api/files/v1/\{id\} are kept |
-| `--matrix-cols`  | integer | `5`     | —        | Matrix cols (3, 4, or 5; default 5, must match --matrix-rows)                                                |
-| `--matrix-rows`  | integer | `5`     | —        | Matrix rows (3, 4, or 5; default 5)                                                                          |
-| `--name`         | string  | `""`    | —        | Risk analysis name (required)                                                                                |
-| `--org`          | string  | `""`    | —        | Organization ID                                                                                              |
-| `--period-end`   | string  | `""`    | —        | Period end date (e.g. 2026-12-31)                                                                            |
-| `--period-start` | string  | `""`    | —        | Period start date (e.g. 2026-01-01)                                                                          |
+| Flag             | Type    | Default | Required | Description                                                                                                                      |
+| ---------------- | ------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `--description`  | string  | `""`    | —        | Risk analysis description as markdown or ProseMirror JSON. Images and links to /api/files/v1/\{id\} are kept                     |
+| `--matrix-cols`  | integer | `5`     | —        | Matrix cols (3, 4, or 5; default 5, must match --matrix-rows)                                                                    |
+| `--matrix-rows`  | integer | `5`     | —        | Matrix rows (3, 4, or 5; default 5)                                                                                              |
+| `--name`         | string  | `""`    | —        | Risk analysis name (required)                                                                                                    |
+| `--org`          | string  | `""`    | —        | Organization ID                                                                                                                  |
+| `--period-end`   | string  | `""`    | —        | Period end date (e.g. 2026-12-31)                                                                                                |
+| `--period-start` | string  | `""`    | —        | Period start date (e.g. 2026-01-01)                                                                                              |
+| `--score-levels` | string  | `""`    | —        | Score levels as LEVEL=minimum, for example LOW=1,MEDIUM=5,HIGH=10,CRITICAL=15. Defaults to the current bands for the matrix size |
 
 ### Examples
 
@@ -253,7 +254,7 @@ prb risk-analysis create
 prb risk-analysis create --name "Annual Risk Analysis" --matrix-rows 5 --matrix-cols 5 --period-start 2026-01-01 --period-end 2026-12-31
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/create/create.go#L90).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/create/create.go#L97).
 
 ## prb risk-analysis delete
 
@@ -475,7 +476,7 @@ prb risk-analysis fork <id>
 prb risk-analysis fork <id> --name "Annual Risk Analysis" --period-start 2026-01-01T00:00:00Z --period-end 2026-12-31T00:00:00Z
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/fork/fork.go#L88).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/fork/fork.go#L92).
 
 ## prb risk-analysis list
 
@@ -511,7 +512,7 @@ prb risk-analysis list
 prb risk-analysis ls --order-by NAME --output json
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/list/list.go#L92).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/list/list.go#L100).
 
 ## prb risk-analysis node
 
@@ -1207,8 +1208,9 @@ Requires 1 positional argument.
 | `--name`         | string | `""`    | —        | Risk analysis name                                                                                           |
 | `--period-end`   | string | `""`    | —        | Period end date (e.g. 2026-12-31)                                                                            |
 | `--period-start` | string | `""`    | —        | Period start date (e.g. 2026-01-01)                                                                          |
+| `--score-levels` | string | `""`    | —        | Score levels as LEVEL=minimum, for example LOW=1,MEDIUM=6,HIGH=13                                            |
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/update/update.go#L82).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/update/update.go#L88).
 
 ## prb risk-analysis view
 
@@ -1230,4 +1232,4 @@ Requires 1 positional argument.
 | `--json`         | boolean | `false` | —        | Output JSON (same as --output json)                                        |
 | `--output`, `-o` | string  | `""`    | —        | Output format: json, table (default)                                       |
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/view/view.go#L94).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/risk-analysis/view/view.go#L103).
