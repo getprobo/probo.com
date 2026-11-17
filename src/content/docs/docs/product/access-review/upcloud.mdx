@@ -3,6 +3,8 @@ title: UpCloud
 description: Connect UpCloud as an access review source using a main-account API token to review every account and subaccount on your UpCloud contract.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your UpCloud contract's main account and its subaccounts through the UpCloud API so you can review who has access.
 
 :::caution
@@ -34,7 +36,7 @@ The UpCloud Control Panel shows a 2FA status column under **People**, but the pu
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating an API token in the UpCloud Control Panel](/docs/access-review/upcloud-create-api-key.webp)
+<DocImage src="/docs/access-review/upcloud-create-api-key.webp" alt="Creating an API token in the UpCloud Control Panel" width={529} />
 
 <Steps>
 

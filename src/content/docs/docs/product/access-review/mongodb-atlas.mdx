@@ -3,6 +3,8 @@ title: MongoDB Atlas
 description: Connect MongoDB Atlas as an access source using an organization service account's client ID and secret, so Probo can list the members, service accounts and API keys that hold organization roles.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your MongoDB Atlas organization through the Atlas Administration API so you can review who has access. The roster covers the organization's human members, its service accounts and its programmatic API keys. The last two are non-human principals that hold organization roles of their own, up to and including Organization Owner.
 
 :::caution
@@ -43,7 +45,7 @@ Probo never asks for an organization ID. An Atlas service account belongs to exa
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating a service account in the MongoDB Atlas console](/docs/access-review/mongodb-atlas-create-service-account.webp)
+<DocImage src="/docs/access-review/mongodb-atlas-create-service-account.webp" alt="Creating a service account in the MongoDB Atlas console" width={465} />
 
 <Steps>
 

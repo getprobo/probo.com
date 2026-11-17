@@ -3,6 +3,8 @@ title: OpenRouter
 description: Connect OpenRouter as an access review source using an organization Management API key so Probo can list your organization's members.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your OpenRouter organization's members through the organization members API so you can review who has access.
 
 :::caution
@@ -33,7 +35,7 @@ Use an organization **Management API key** (`sk-or-v1-…`) created at `openrout
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating a Management API key in OpenRouter settings](/docs/access-review/openrouter-create-api-key.webp)
+<DocImage src="/docs/access-review/openrouter-create-api-key.webp" alt="Creating a Management API key in OpenRouter settings" width={475} />
 
 <Steps>
 

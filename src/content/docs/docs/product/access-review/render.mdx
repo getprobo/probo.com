@@ -3,6 +3,8 @@ title: Render
 description: Connect Render as an access review source using an account API key and workspace ID so Probo can list the members of that workspace.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Render workspace's members through the Render API so you can review who has access.
 
 :::caution
@@ -37,7 +39,7 @@ Render returns every member of the workspace, active and inactive, in one respon
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Create API Key dialog in Render account settings](/docs/access-review/render-create-api-key.webp)
+<DocImage src="/docs/access-review/render-create-api-key.webp" alt="The Create API Key dialog in Render account settings" width={570} />
 
 <Steps>
 

@@ -3,6 +3,8 @@ title: Daytona
 description: Connect Daytona as an access source using an API key created in the organization you want to review, so Probo can list its members and the assignments they hold.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads the members of your Daytona organization through the Daytona API so you can review who has access.
 
 :::caution
@@ -36,7 +38,7 @@ Daytona returns the whole member list in one response. It contains accepted memb
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Daytona Create API Key dialog with the key named Probo Access Review and Restricted permissions selected](/docs/access-review/daytona-create-api-key.webp)
+<DocImage src="/docs/access-review/daytona-create-api-key.webp" alt="Daytona Create API Key dialog with the key named Probo Access Review and Restricted permissions selected" width={450} />
 
 <Steps>
 

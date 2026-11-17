@@ -3,6 +3,8 @@ title: Railway
 description: Connect Railway as an access review source using an account API token so Probo can list the members of every workspace your account belongs to.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads the members of your Railway workspaces through the Railway GraphQL API so you can review who has access.
 
 :::caution
@@ -32,7 +34,7 @@ Use an **account token**, created at **Account Settings** > **Tokens** with the 
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating an account token in Railway](/docs/access-review/railway-create-api-key.webp)
+<DocImage src="/docs/access-review/railway-create-api-key.webp" alt="Creating an account token in Railway" />
 
 <Steps>
 

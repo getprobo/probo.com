@@ -3,6 +3,8 @@ title: Better Stack
 description: Connect Better Stack as an access review source using a Global API token and team name so Probo can list that team's members and roles.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads the members of one Better Stack team through the Uptime API so you can review who has access.
 
 :::caution
@@ -35,7 +37,7 @@ Probo also lists members who have been invited but have not yet accepted, and ma
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating a read-only Global API token in the Better Stack API tokens settings](/docs/access-review/better-stack-create-api-key.webp)
+<DocImage src="/docs/access-review/better-stack-create-api-key.webp" alt="Creating a read-only Global API token in the Better Stack API tokens settings" width={608} />
 
 <Steps>
 

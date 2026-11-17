@@ -3,6 +3,8 @@ title: Notifications
 description: How Probo notifies members about signature requests, approval requests, task assignments, and task mentions, in the notifications panel and by email.
 ---
 
+import DocImage from "../../../../components/docs/DocImage.astro";
+
 Probo notifies a member when something needs their attention: a document to sign, a document to approve, a task assigned to them, or a mention in a task. Each notification shows in the notifications panel, and can also arrive by email.
 
 ## What triggers a notification
@@ -20,27 +22,27 @@ Probo does not notify you about your own actions: assigning a task to yourself o
 
 - **Console:** open the menu at the bottom of the sidebar and choose **Notifications**. A badge on the bell icon shows how many notifications are unread.
 
-<img
+<DocImage
   src="/docs/notifications/console-notifications.webp"
-  alt="The bottom of the console sidebar, with the Notifications item and its unread count highlighted above the member's name"
-  width="220"
-  height="104"
+  alt="The bottom of the console sidebar, with the Notifications item and its unread count highlighted above the member's name and avatar"
+  width={220}
 />
 
 - **Employee portal:** select the bell next to your name, at the top right.
 
-<img
+<DocImage
   src="/docs/notifications/employee-portal-bell.webp"
   alt="The employee portal header, with the notification bell and its unread count highlighted next to the member's name"
-  width="256"
-  height="54"
+  width={256}
 />
 
 Both list the notifications for the current organization, newest first.
 
 <video
   class="docs-video"
-  autoplay
+  controls
+  width="1280"
+  height="822"
   muted
   loop
   playsinline
@@ -57,11 +59,10 @@ Selecting a notification opens the item:
 - Signature and approval requests open the document's **Signatures** or **Approvals** page in the employee portal, or the document in the console when the organization has no employee portal.
 - Task notifications open the task in the employee portal, or in the console when the organization has no employee portal.
 
-<img
+<DocImage
   src="/docs/notifications/notification-panel.webp"
   alt="The Notifications panel header, with (1) the mark all as read icon and (2) the notification settings icon highlighted"
-  width="410"
-  height="257"
+  width={410}
 />
 
 The panel header has two icons:
@@ -75,7 +76,11 @@ A cleared notification gets no further emails.
 
 Each member decides how every notification type reaches them by email. Select the gear in the notifications panel, or open **Notification settings** in the employee portal. The settings under **Email** apply to the current organization only.
 
-![Notification settings in the employee portal, with a delivery choice for document signature requests, document approval requests, task assignments, and task mentions](/docs/notifications/notification-settings.webp)
+<DocImage src="/docs/notifications/notification-settings.webp" alt="Notification settings in the employee portal, with a delivery choice for document signature requests, document approval requests, task assignments, and task mentions" />
+
+<div class="docs-mobile-media-detail">
+  <DocImage src="/docs/notifications/notification-frequency-detail.webp" alt="The Weekly delivery option for document signature requests" width={240} caption="Document signature requests: example delivery setting." />
+</div>
 
 | Option    | Behavior                                                                                                                              |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
@@ -86,7 +91,9 @@ Each member decides how every notification type reaches them by email. Select th
 
 <video
   class="docs-video"
-  autoplay
+  controls
+  width="1280"
+  height="822"
   muted
   loop
   playsinline

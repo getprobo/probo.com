@@ -3,6 +3,8 @@ title: Elastic Cloud
 description: Connect Elastic Cloud as an access source using an Elastic Cloud API key with the Organization owner role, so Probo can list the members and API keys that hold roles in your organization.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Elastic Cloud organization through the Elastic Cloud API so you can review who has access. The roster covers the organization's members and its API keys. An API key is a non-human principal with roles of its own, up to and including Organization owner.
 
 :::caution
@@ -41,7 +43,7 @@ Probo reports no multi-factor state for an Elastic Cloud account. Elastic requir
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Assign roles step of the Create API key form in Elastic Cloud, with Organization owner turned on and API Access set to Cloud API](/docs/access-review/elastic-cloud-create-api-key.webp)
+<DocImage src="/docs/access-review/elastic-cloud-create-api-key.webp" alt="The Assign roles step of the Create API key form in Elastic Cloud, with Organization owner turned on and API Access set to Cloud API" />
 
 <Steps>
 

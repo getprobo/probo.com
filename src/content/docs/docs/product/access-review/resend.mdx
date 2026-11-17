@@ -3,6 +3,8 @@ title: Resend
 description: Connect Resend as an access review source using a Full access API key so Probo can review the account's programmatic API-key credentials.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Resend account's API keys through the Resend API so you can review which programmatic credentials have access. It does not collect the people on your Resend team, because the Resend API does not expose them.
 
 :::caution
@@ -37,7 +39,7 @@ The Full access key used to connect Probo is part of the same API-key inventory 
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating a Full access API key in the Resend dashboard](/docs/access-review/resend-create-api-key.webp)
+<DocImage src="/docs/access-review/resend-create-api-key.webp" alt="Creating a Full access API key in the Resend dashboard" width={508} />
 
 <Steps>
 

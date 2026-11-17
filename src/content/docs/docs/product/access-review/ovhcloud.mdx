@@ -3,6 +3,8 @@ title: OVHcloud
 description: Connect OVHcloud as an access review source using OAuth or a service account so Probo can list the identities that can reach your OVHcloud account.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads the identities that can reach your OVHcloud account through the OVHcloud API so you can review who has access. Connecting with **OAuth** is the recommended method and requires no credential management. A service account is also available, and it is the one to choose if you want to revoke Probo's access yourself.
 
 :::caution
@@ -44,7 +46,7 @@ OVHcloud also has no read-only OAuth scope, and exposes no per-user MFA enrolmen
 
 ### Option A: Connect with OVHcloud (recommended)
 
-![OVHcloud authorization screen showing the Probo client name, the account handle, the Manage your account permission, and the Authorize button](/docs/access-review/ovhcloud-consent.webp)
+<DocImage src="/docs/access-review/ovhcloud-consent.webp" alt="OVHcloud authorization screen showing the Probo client name, the account handle, the Manage your account permission, and the Authorize button" width={537} />
 
 <Steps>
 

@@ -3,6 +3,8 @@ title: Supabase
 description: Connect Supabase as an access review source using a personal access token so Probo can list the members of your Supabase organization.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Supabase organization's members through the Supabase Management API so you can review who has access.
 
 :::caution
@@ -33,7 +35,7 @@ Use a Supabase **personal access token** (`sbp_…`) created on your account's *
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Generate token dialog in Supabase with Organization resource access selected](/docs/access-review/supabase-create-api-key.webp)
+<DocImage src="/docs/access-review/supabase-create-api-key.webp" alt="The Generate token dialog in Supabase with Organization resource access selected" />
 
 <Steps>
 

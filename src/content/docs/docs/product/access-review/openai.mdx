@@ -3,6 +3,8 @@ title: OpenAI
 description: Connect OpenAI as an access review source using an organization Admin API key so Probo can list every member of your OpenAI organization.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your OpenAI organization's members through the Admin API so you can review who has access.
 
 :::caution
@@ -32,7 +34,7 @@ Use an **Admin API key** (`sk-admin-…`) created in the OpenAI API platform. A 
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating an Admin key in the OpenAI API platform](/docs/access-review/openai-create-api-key.webp)
+<DocImage src="/docs/access-review/openai-create-api-key.webp" alt="Creating an Admin key in the OpenAI API platform" width={444} />
 
 <Steps>
 

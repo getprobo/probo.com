@@ -3,6 +3,8 @@ title: Qovery
 description: Connect Qovery as an access review source using an organization API token with the Admin role so Probo can list your organization's members.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Qovery organization's members through the Qovery API so you can review who has access.
 
 :::caution
@@ -35,7 +37,7 @@ Probo skips any member Qovery returns without an email address.
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Create new API token dialog in Qovery organization settings](/docs/access-review/qovery-create-api-key.webp)
+<DocImage src="/docs/access-review/qovery-create-api-key.webp" alt="The Create new API token dialog in Qovery organization settings" width={482} />
 
 <Steps>
 
