@@ -214,6 +214,11 @@ export const docsSidebarGroups: DocsSidebarGroup[] = [
         slug: "docs/product/audit-log",
       },
       {
+        label: "Employee portal",
+        icon: "users-three",
+        slug: "docs/product/employee-portal",
+      },
+      {
         label: "Notifications",
         icon: "bell",
         slug: "docs/product/notifications",

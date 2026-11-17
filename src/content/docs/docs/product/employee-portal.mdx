@@ -1,0 +1,87 @@
+---
+title: Employee portal
+description: The employee portal gives staff one place to sign and approve documents, read shared policies, work on assigned tasks, register devices, and manage their notifications, without access to the compliance console.
+---
+
+import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+
+The employee portal is the part of Probo built for the people who follow your compliance program rather than run it. Staff sign policies, approve documents, read what you share with them, work on their tasks, and register their devices there. They never need access to the compliance console.
+
+The portal lives at `/employee-portal/` on your Probo host, for example `https://eu.probo.com/employee-portal/` or `https://us.probo.com/employee-portal/`. Notification emails and links from Probo open the right page directly.
+
+## Who uses it
+
+Members with the **Owner**, **Admin**, **Viewer**, or **Employee** role can open the organization's employee portal. Members with the **Employee** role use it as their only view of Probo. Owners, admins, and viewers use it too when they have something to sign, approve, or work on, and see a **Probo Console** link at the bottom of each page to go back to the console. See [Roles and permissions](/docs/product/roles-and-permissions).
+
+A person who belongs to several organizations lands on **Your organizations** first and picks the one to open.
+
+## Home
+
+The home page summarizes what is waiting for the member: documents to sign or approve, shared documents, assigned tasks, devices when device enrollment is on, and the Slack link for Probot. A notification bell at the top right lists new requests and mentions. See [Notifications](/docs/product/notifications).
+
+## Signatures
+
+**Signatures** lists every document waiting for the member's signature, then the documents they have already signed.
+
+1. Select **Start signing**, or **Sign** next to one document.
+2. Read the document, then select **Review and sign**.
+3. Continue with **Go to next document** until the list is empty, or **Finish signing**.
+
+Each signature is recorded against the document version the member signed. A newly published version can ask for a new signature. See [Document management](/docs/product/document-management#electronic-signatures).
+
+## Approvals
+
+**Approvals** works the same way for documents that need the member's decision. Open a document, read it, then **Review and approve** or **Reject**. Reviewed documents stay listed with their outcome. When an approval is voided, the document shows that the approval is no longer required.
+
+## Documents
+
+**Documents** shows the published documents the organization shares with employees, such as an acceptable use policy or an onboarding guide, under **Shared with you**. Members can read them at any time, without a signature request.
+
+## My tasks
+
+**My tasks** lists the tasks assigned to the member. On a task, an assigned employee can:
+
+- Edit the description, and attach files to it by drag and drop or by pasting.
+- Update its state and other properties.
+- Comment, with files attached the same way, and mention other members.
+
+Task comments and mentions follow the same rules as in the console. See [Tasks](/docs/product/tasks/overview#comments-and-activity).
+
+## Devices
+
+When device enrollment is on, **Devices** lists the member's registered computers with their platform, connection status, and last activity. **Register new device** walks through what the agent collects, the download, and the enrollment in Probo Agent. **Add manually** gives a one-time enrollment token for an install that cannot use the guided flow. See [Device agent](/docs/product/device-agent/overview).
+
+## Slack
+
+Members can link their Slack account so Probot can help them in Slack. Run `/probot login` in Slack to get a private confirmation link, then confirm with **Link Slack account** in the portal. The **Slack** page shows the linked account and can **Unlink** it.
+
+## Notification settings
+
+**Notification settings** sets, for this organization only, how each notification type reaches the member by email: **Each**, **Reminders**, **Weekly**, or **None**. See [Notifications](/docs/product/notifications#email-notifications).
+
+## Set up the portal
+
+Owners and admins configure the portal from **Employee Portal** in the console:
+
+| Setting      | Effect                                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| Branding     | A logo and a dark-mode logo shown in the portal. JPEG, PNG, SVG, or WebP, up to 5 MB.                     |
+| Device agent | Lets employees enroll devices from the portal.                                                            |
+| Documents    | Choose which published documents employees can read. **Stop sharing** removes a document from the portal. |
+
+Signature and approval requests are not set up here: request them from the document itself. A document doesn't need to be shared for an employee to sign or approve it.
+
+## Automation
+
+<CardGrid>
+  <LinkCard
+    title="MCP employee portal"
+    description="Manage portal settings and shared documents from an AI assistant"
+    href="/docs/developers/api/mcp/tools/catalog/employee-portal"
+  />
+  <LinkCard
+    title="Roles and permissions"
+    description="See what the Employee role can do"
+    href="/docs/product/roles-and-permissions"
+  />
+</CardGrid>

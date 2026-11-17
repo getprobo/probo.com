@@ -1,6 +1,6 @@
 ---
 title: Tasks
-description: Track compliance work in Probo with task states, priorities, assignees, comments, recurring deadlines, optional links to internal controls, and Linear sync.
+description: Track compliance work in Probo with task states, priorities, assignees, comments, recurring deadlines, optional links to internal controls, and Linear or Asana sync.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
@@ -63,6 +63,8 @@ The task page has a comment thread and an activity log.
 
 Comments are rich text, up to 5,000 characters. The author can edit or delete their own comment. Owners and admins can delete any comment.
 
+Employees also see the tasks assigned to them under **My tasks** in the employee portal. There they can comment, edit the task description, and attach files to the task or to their comments, by drag and drop or by pasting.
+
 Activity records creates and updates for the name, description, state, priority, assignee, internal control, deadline, and time estimate. Each entry stores the previous value and the new value.
 
 ### Mentions
@@ -81,7 +83,7 @@ Each member chooses whether these also arrive by email: one email each, grouped 
 
 ## Linear
 
-Linear sync keeps a Probo task and a Linear issue aligned: title, description, state, priority, deadline, assignee, and comments. A task has one Linear link.
+Linear sync keeps a Probo task and a Linear issue aligned: title, description, state, priority, deadline, assignee, and comments. A task links to one Linear issue or one [Asana](#asana) task, not both.
 
 Task sync uses the **Linear Sync** connection in **Tasks** settings. The Linear source under [Access Reviews](/docs/product/access-review/overview) reads workspace members for access reviews.
 
@@ -208,6 +210,79 @@ connectors:
 
 Access reviews use a `LINEAR` connector. Task sync uses `LINEAR_SYNC`. See [Environment variables](/docs/deployment/configuration/environment-reference) and [Config file](/docs/deployment/configuration/config-file).
 
+## Asana
+
+Asana sync keeps a Probo task and an Asana task aligned: name, description, deadline, assignee, comments, files, and mentions. State and priority follow the [project mapping](#project-mapping). A task links to one Asana task or one [Linear](#linear) issue, not both.
+
+### Connect Asana
+
+1. Open **Tasks** in the organization.
+2. Open **Settings**.
+3. Under **Task integrations**, choose **Connect** next to **Asana**, and approve the Asana consent screen.
+
+After Asana is connected, each task shows an Asana field. The create-task dialog can also publish or link as part of creating the task.
+
+The same settings screen has two optional settings:
+
+| Setting          | Effect                                                                                                           |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Default project  | New tasks are published to this project unless you pick another. Leave it empty to keep new tasks in Probo only. |
+| Import new tasks | When active, each new task created in the default project becomes a Probo task. Requires a default project.      |
+
+### Publish or link
+
+**Create** publishes the Probo task as a new Asana task in the project you pick, and starts syncing.
+
+**Link** attaches the task to an Asana task that already exists in that project. Linking copies the Asana task onto the Probo task: name, description, deadline, assignee, and state (plus priority when the project has a priority mapping).
+
+A task that is already linked, to Asana or to Linear, must be unlinked before it can be published or linked again.
+
+### What stays in sync
+
+| Field       | Behavior                                                                             |
+| ----------- | ------------------------------------------------------------------------------------ |
+| Name        | The Asana task name                                                                  |
+| Description | Converted between the Probo editor and Asana rich text, including files and mentions |
+| Deadline    | The Asana due date                                                                   |
+| Assignee    | Matched by email. See [Asana assignees](#asana-assignees).                           |
+| Comments    | Created, edited, and deleted on both sides                                           |
+| State       | Completion, or the project's sections. See [Project mapping](#project-mapping).      |
+| Priority    | Only with a priority field in the project mapping                                    |
+
+Mentions of organization members are carried across as mentions of the matching Asana user, and the other way round. Newly mentioned members are [notified](#mentions) in Probo.
+
+Time estimate, recurrence, internal control, and rank stay in Probo.
+
+### Project mapping
+
+Without a mapping for the project, only completion drives state:
+
+- Completing the Asana task sets the Probo task to **Done**, unless it is already **Done**, **Canceled**, or **Duplicate**.
+- Reopening the Asana task sets a finished Probo task back to **To do**.
+- Moving a Probo task to **Done**, **Canceled**, or **Duplicate** completes the Asana task. Other states leave it open.
+
+To also sync sections and priority, open **Tasks** settings, choose a project under **State and priority mapping**, and save a mapping:
+
+- Pick an Asana section for each Probo state, or **Don't move section**. A Probo state change then moves the Asana task to that section, and moving the Asana task into a mapped section sets the matching Probo state.
+- Pick the project's priority field, or **Don't sync priority**, and an option for each Probo priority. Probo then writes the selected option, and an option change in Asana updates the Probo priority.
+
+Priority mapping needs custom fields, which require a paid Asana plan. Without them, state can still follow sections. **Delete mapping** returns the project to completion-only state sync.
+
+<span id="asana-assignees" />
+
+### Assignees
+
+Probo matches people by email, as with Linear.
+
+- An assignee set in Asana is applied when that email belongs to a member of the organization. Clearing the assignee in Asana clears it in Probo.
+- An assignee set in Probo is applied in Asana when the member's primary email, or one of their additional emails, belongs to a user in the Asana workspace.
+
+### Stop syncing
+
+**Unlink** on the task removes the connection. The Probo task and the Asana task both remain, including their comments.
+
+Deleting the Asana task, or removing it from the linked project, also removes the connection and leaves the Probo task in place.
+
 ## Automation
 
 <CardGrid>
@@ -218,7 +293,7 @@ Access reviews use a `LINEAR` connector. Task sync uses `LINEAR_SYNC`. See [Envi
   />
   <LinkCard
     title="MCP tools"
-    description="Manage tasks from an AI assistant"
+    description="Manage tasks, and publish or link them to Linear and Asana, from an AI assistant"
     href="/docs/developers/api/mcp/tools/catalog/internal-controls-tasks-and-evidence"
   />
   <LinkCard

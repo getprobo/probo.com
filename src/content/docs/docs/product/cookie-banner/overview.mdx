@@ -17,6 +17,10 @@ Probo provides a cookie-consent service and the `@probo/cookie-banner` client pa
 
 Draft changes do not alter the configuration already shown to visitors. Publish a new version after reviewing categories, translations, resources, and defaults.
 
+Banners whose origins share a registrable domain, such as `www.example.com` and `app.example.com`, are grouped. When a scan finds that a cookie is written by a sibling banner in the group, Probo can promote that banner as the tracker's source instead of treating each origin on its own. The tracker shows the sibling banner beside its source badge, and the icon there opens that banner's tracker list.
+
+The published version also drives the generated cookie policy's vendor list. It includes the vendors of trackers that sit in a consent category in that snapshot. Later draft category changes do not alter the list until you publish a new version.
+
 ## Browser behavior
 
 The JavaScript client fetches published configuration from `/api/cookie-banner/v1`, resolves language, regulation, and layout (presentation), reads existing consent, and renders the selected UI. It can block configured scripts, iframes, images, and other resources until their category is allowed.

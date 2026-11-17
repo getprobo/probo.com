@@ -80,7 +80,18 @@ Set **Impact** and **Likelihood** for both **Inherent risk** and **Residual risk
 | Inherent: before the proposed controls      | 4 — Probable | 4 — Significant | 16    |
 | Residual: target after the controls operate | 2 — Remote   | 4 — Significant | 8     |
 
-Probo calculates each score as likelihood × impact. In this example, stronger authentication reduces the chance of compromise, while a successful breach could still have a significant impact. Explain that reasoning in the analysis description or the risk's note.
+Probo calculates each score as likelihood × impact and labels it by its share of the matrix's maximum score (25 on a 5×5 matrix, 16 on 4×4, 9 on 3×3):
+
+| Label    | Share of the maximum | 5×5 scores |
+| -------- | -------------------- | ---------- |
+| Low      | Below 20%            | 1–4        |
+| Medium   | 20% to below 40%     | 5–9        |
+| High     | 40% to below 60%     | 10–14      |
+| Critical | 60% and above        | 15–25      |
+
+Because the bands are ratios, a score means the same level on any matrix size. Here the inherent score of 16 is **Critical** and the residual score of 8 is **Medium**.
+
+In this example, stronger authentication reduces the chance of compromise, while a successful breach could still have a significant impact. Explain that reasoning in the analysis description or the risk's note.
 
 Select **Create treatment plan**. Residual scores are a treatment target; entering a lower number does not establish that the controls work. If you choose **Accept**, residual likelihood and impact must equal the inherent values, and the plan cannot have linked internal controls.
 

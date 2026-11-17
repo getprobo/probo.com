@@ -25,13 +25,26 @@ To share selected documents outside your workspace, configure their portal visib
 Members can review a draft in place, from the **Description** tab of the document:
 
 - **Comments:** select a passage, click **Comment**, and write a note. Comments support rich text and member mentions. Anyone who can comment can reply, **Resolve** a thread, or **Reopen** it later. Only the author of a comment can edit or delete it.
-- **Suggestions:** switch on **Suggesting** to record your edits as redlines (insertions, deletions, and removed line breaks) instead of changing the text. A reviewer with the right permission accepts or rejects each suggestion in place.
+- **Suggestions:** switch on **Suggesting** to record your edits as redlines instead of changing the document. A reviewer with the right permission accepts or rejects each suggestion in place.
+
+Suggesting mode tracks these changes:
+
+| Change           | What is tracked                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Text             | Insertions, deletions, and removed line breaks                                                                    |
+| Character styles | Bold, italic, underline, strikethrough, code, and links. Readers see the previous formatting until it is accepted |
+| Blocks           | Headings, lists and list nesting, quotes, code blocks, dividers, images, files, and mentions                      |
+| Tables           | Inserting or deleting a row, a column, or a whole table                                                           |
+
+Accepting a suggestion keeps the new text, style, or block. Rejecting it restores what was there before, including the previous formatting. Each margin card describes the change in words, such as `Add: "…"`, `Delete: "…"`, `Format: bold`, or `Add row: with text "…"`.
+
+Row suggestions are refused on tables with merged cells. Any other table structure edit made while suggesting is dropped with a message, rather than saved without a redline.
 
 Review cards sit in the margin next to the passage they refer to and stay in sync across open tabs. Viewers and auditors can comment and suggest without being able to edit the document. Only owners and admins can accept or reject suggestions; see [Roles and permissions](/docs/product/roles-and-permissions).
 
-You cannot publish a document, or restore an earlier version, while a suggestion is still open. Accept or reject every suggestion first.
+The document stays editable while suggestions are open. A direct edit outside a suggestion is applied; an edit that lands on an open suggestion is refused. You cannot publish the document, or restore an earlier version, until every suggestion is accepted or rejected.
 
-Comments and suggestions are also available through the GraphQL API and the [MCP server](/docs/developers/api/mcp/tools/catalog/documents-and-approvals).
+Comments and suggestions are also available through the GraphQL API, the [MCP server](/docs/developers/api/mcp/tools/catalog/documents-and-approvals), and the [n8n node](/docs/developers/api/n8n/resources/document-suggestion). An automation can start a suggestion from a quoted passage and its replacement, then add text, format, or table redlines to it. The `changeDocumentText`, `changeDocumentFormat`, `changeDocumentTable`, and `changeDocumentBlock` tools either apply a change directly (`APPLY`) or record it on an open suggestion (`SUGGEST`), without sending editor JSON.
 
 ## Approval quorums
 
