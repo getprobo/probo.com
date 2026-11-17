@@ -1,20 +1,38 @@
 ---
-import type { MenuGroup } from "../content/menu";
+import type { MenuGroup, MenuLink } from "../content/menu";
 import Icon from "./Icon.astro";
 import MenuIcon from "./MenuIcon.astro";
 import Button from "./ui/Button.svelte";
 
 interface Props {
-  groups: MenuGroup[];
+  entries: (MenuGroup | MenuLink)[];
 }
 
-const { groups } = Astro.props;
+const { entries } = Astro.props;
+const isGroup = (entry: MenuGroup | MenuLink): entry is MenuGroup =>
+  "items" in entry;
+// Triggers and panels are matched by their position among the dropdown groups.
+const groups = entries.filter(isGroup);
 const menuId = "desktop-navigation-menu";
 ---
 
 <header-menu class="relative flex h-8 items-center gap-2.25">
   {
-    groups.map((group, index) => {
+    entries.map((entry) => {
+      if (!isGroup(entry)) {
+        return (
+          <Button
+            variant="navigation"
+            size="navigation"
+            href={entry.href}
+            data-menu-direct
+          >
+            {entry.label}
+          </Button>
+        );
+      }
+      const group = entry;
+      const index = groups.indexOf(group);
       const triggerId = `${menuId}-trigger-${index}`;
 
       return (
@@ -186,6 +204,7 @@ const menuId = "desktop-navigation-menu";
     triggers: HTMLButtonElement[] = [];
     panels: HTMLElement[] = [];
     links: HTMLAnchorElement[] = [];
+    directLinks: HTMLAnchorElement[] = [];
     viewport: HTMLElement | null = null;
     corridor: HTMLElement | null = null;
     activeIndex = -1;
@@ -215,6 +234,12 @@ const menuId = "desktop-navigation-menu";
         trigger.addEventListener("click", this.onTriggerClick);
       });
       this.links.forEach((link) => link.addEventListener("click", this.close));
+      this.directLinks = Array.from(
+        this.querySelectorAll<HTMLAnchorElement>("[data-menu-direct]"),
+      );
+      this.directLinks.forEach((link) =>
+        link.addEventListener("pointerenter", this.close),
+      );
       this.addEventListener("pointerenter", this.cancelClose);
       this.addEventListener("pointerleave", this.scheduleClose);
       this.addEventListener("focusout", this.onFocusOut);
@@ -231,6 +256,9 @@ const menuId = "desktop-navigation-menu";
       });
       this.links.forEach((link) =>
         link.removeEventListener("click", this.close),
+      );
+      this.directLinks.forEach((link) =>
+        link.removeEventListener("pointerenter", this.close),
       );
       this.removeEventListener("pointerenter", this.cancelClose);
       this.removeEventListener("pointerleave", this.scheduleClose);

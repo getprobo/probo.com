@@ -7,7 +7,11 @@ import Button from "./ui/Button.svelte";
 import MobileMenu from "./MobileMenu.astro";
 import GithubStars from "./GithubStars.astro";
 import Icon from "./Icon.astro";
-import { directMenuItems, menuGroups, pricingMenuItem } from "../content/menu";
+import {
+  directMenuItems,
+  headerMenuEntries,
+  pricingMenuItem,
+} from "../content/menu";
 type Props = {
   hideBurger?: boolean;
   docsChrome?: boolean;
@@ -52,7 +56,7 @@ const { hideBurger = false, docsChrome = false } = Astro.props;
       class="hidden items-center gap-2.25 lg:flex"
       transition:name="header-nav"
     >
-      <HeaderMenu groups={menuGroups} />
+      <HeaderMenu entries={headerMenuEntries} />
       <Button
         variant="navigation"
         size="navigation"

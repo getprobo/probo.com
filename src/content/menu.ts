@@ -136,18 +136,6 @@ export const menuGroups: MenuGroup[] = [
         href: "/love-from-customer",
         icon: "heart",
       },
-      {
-        label: "Changelog",
-        description: "Latest product updates",
-        href: "/changelog",
-        icon: "clock-counter-clockwise",
-      },
-      {
-        label: "Download",
-        description: "Get the Device Agent",
-        href: "/download",
-        icon: "code",
-      },
     ],
     feature: {
       eyebrow: "Featured story",
@@ -156,43 +144,6 @@ export const menuGroups: MenuGroup[] = [
       asset: "/navigation/ahrefs.webp",
       alt: "Ahrefs team collaborating in their office",
       variant: "story",
-    },
-  },
-  {
-    label: "Company",
-    items: [
-      {
-        label: "About",
-        description: "The people and vision powering Probo",
-        href: "/about",
-        icon: "users-three",
-      },
-      {
-        label: "Careers",
-        description: "Join the team building Probo",
-        href: "/careers",
-        icon: "briefcase",
-      },
-      {
-        label: "Brand assets",
-        description: "Official logos and visual resources",
-        href: "/brand",
-        icon: "paint-brush",
-      },
-      {
-        label: "Security",
-        description: "Review our security and compliance posture",
-        href: "https://compliance.probo.com",
-        icon: "shield-check",
-      },
-    ],
-    feature: {
-      eyebrow: "The Complete Guide",
-      title: "What is SOC 2?",
-      href: "/hub/soc2",
-      asset: "/navigation/frameworks.svg",
-      alt: "ISO 27001, SOC 2 Type II, and HIPAA framework cards",
-      variant: "guide",
     },
   },
   {
@@ -234,6 +185,26 @@ export const menuGroups: MenuGroup[] = [
       variant: "product",
     },
   },
+];
+
+/** Header link without a dropdown. */
+export type MenuLink = Pick<
+  MenuItem,
+  "label" | "description" | "href" | "icon"
+>;
+
+export const storiesMenuLink: MenuLink = {
+  label: "Stories",
+  description: "How teams get compliant with Probo",
+  href: "/stories",
+  icon: "quotes",
+};
+
+/** Desktop header order: dropdown groups with the Stories link before Docs. */
+export const headerMenuEntries: (MenuGroup | MenuLink)[] = [
+  ...menuGroups.filter((group) => group.label !== "Docs"),
+  storiesMenuLink,
+  ...menuGroups.filter((group) => group.label === "Docs"),
 ];
 
 export const pricingMenuItem = {
