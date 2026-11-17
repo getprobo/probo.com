@@ -707,6 +707,19 @@ function goStringExpression(expression, source, dynamicDescriptions) {
   if (expression === undefined) return undefined;
   if (dynamicDescriptions.has(expression))
     return dynamicDescriptions.get(expression);
+  const joined = expression.match(
+    /^("(?:[^"\\]|\\.)*"|`[^`]*`)\s*\+\s*strings\.Join\((\w+),\s*("(?:[^"\\]|\\.)*")\)$/,
+  );
+  if (joined) {
+    const slice = source.match(
+      new RegExp(`\\bvar\\s+${joined[2]}\\s*=\\s*\\[\\]string\\{([^}]*)\\}`),
+    );
+    if (!slice) return undefined;
+    const items = [...slice[1].matchAll(/"(?:[^"\\]|\\.)*"/g)].map((item) =>
+      goString(item[0]),
+    );
+    return goString(joined[1]) + items.join(goString(joined[3]));
+  }
   const concatenation = expression.match(
     /^([\w.]+(?:\(\))?)\s*\+\s*("(?:[^"\\]|\\.)*"|`[^`]*`)$/,
   );
