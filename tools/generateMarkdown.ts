@@ -163,6 +163,13 @@ function mdxToMarkdown(content: string): string {
   // Remove <CardGrid> / </CardGrid> wrappers
   md = md.replace(/<\/?CardGrid>/g, "");
 
+  md = md.replace(/<DocImage\s+([^>]*?)\/\s*>/g, (_, attrs: string) => {
+    const src = attrs.match(/\bsrc="([^"]+)"/)?.[1];
+    const alt = attrs.match(/\balt="([^"]*)"/)?.[1] ?? "";
+    const caption = attrs.match(/\bcaption="([^"]+)"/)?.[1];
+    return src ? `![${alt}](${src})${caption ? `\n\n${caption}` : ""}` : "";
+  });
+
   // Remove any remaining JSX/HTML-like component tags (self-closing and open/close)
   md = md.replace(/<\/?[A-Z][a-zA-Z]*[^>]*\/?>/g, "");
   md = md.replace(/\{\/\*[\s\S]*?\*\/\}/g, "");

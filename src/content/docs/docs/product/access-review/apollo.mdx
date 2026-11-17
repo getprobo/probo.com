@@ -3,6 +3,8 @@ title: Apollo.io
 description: Connect Apollo.io as an access review source using a master API key so Probo can list your account's team members and permission profiles.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Apollo.io account's team members through the Apollo REST API so you can review who has access. Probo reviews Apollo teammates (account seats), not prospect or contact records.
 
 :::caution
@@ -33,7 +35,7 @@ Use a **master API key** created in Apollo under **Settings** > **Integrations**
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating a master API key in Apollo settings](/docs/access-review/apollo-create-api-key.webp)
+<DocImage src="/docs/access-review/apollo-create-api-key.webp" alt="Creating a master API key in Apollo settings" width={571} />
 
 <Steps>
 

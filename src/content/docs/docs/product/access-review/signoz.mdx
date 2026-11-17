@@ -3,6 +3,8 @@ title: SigNoz
 description: Connect SigNoz as an access review source using a service account API key with the SigNoz-Admin role so Probo can list your organization's members and service accounts.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your SigNoz organization through the SigNoz API so you can review who has access. The roster covers the organization's members and its service accounts. Every SigNoz API key belongs to a service account and acts with that account's roles, up to and including SigNoz-Admin.
 
 :::caution
@@ -39,7 +41,7 @@ A deleted service account also stays in the campaign, marked inactive. SigNoz re
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Overview tab of a SigNoz service account, with signoz-admin selected in the Roles dropdown](/docs/access-review/signoz-service-account-role.webp)
+<DocImage src="/docs/access-review/signoz-service-account-role.webp" alt="The Overview tab of a SigNoz service account, with signoz-admin selected in the Roles dropdown" width={574} />
 
 <Steps>
 

@@ -3,6 +3,8 @@ title: Langfuse
 description: Connect Langfuse as an access review source using an organization-scoped API key pair so Probo can list your organization's members.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Langfuse organization's members through the organization-scoped public API so you can review who has access.
 
 :::caution
@@ -36,7 +38,7 @@ The memberships endpoint returns one record per organization member, with no fil
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating an organization-scoped API key in Langfuse organization settings](/docs/access-review/langfuse-create-api-key.webp)
+<DocImage src="/docs/access-review/langfuse-create-api-key.webp" alt="Creating an organization-scoped API key in Langfuse organization settings" width={512} />
 
 <Steps>
 

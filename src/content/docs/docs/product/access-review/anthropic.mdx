@@ -3,6 +3,8 @@ title: Anthropic
 description: Connect Anthropic as an access review source using a Claude Console Admin API key so Probo can list your organization's members and roles.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Anthropic organization's members through the Admin API so you can review who has access.
 
 :::caution
@@ -32,7 +34,7 @@ Use a **Claude Console** Admin API key (`sk-ant-admin01-…`) created at `platfo
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Creating an Admin API key in the Claude Console](/docs/access-review/anthropic-create-api-key.webp)
+<DocImage src="/docs/access-review/anthropic-create-api-key.webp" alt="Creating an Admin API key in the Claude Console" width={511} />
 
 <Steps>
 

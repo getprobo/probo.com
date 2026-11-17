@@ -3,6 +3,8 @@ title: Front
 description: Connect Front as an access review source using OAuth or an API token so Probo can list your Front company's teammates and their admin status.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Front company's teammates through the Front Core API so you can review who has access. Connecting with **OAuth** is the recommended method and avoids creating and copying a token. A company API token is also available if you would rather not authorize an OAuth connection.
 
 :::caution
@@ -50,7 +52,7 @@ If Front lists an automation as a teammate (a `type` of `rule`, `macro`, `integr
 
 ### Option B: API Token
 
-![Front API token resource permissions with Read ticked on the Teammates row](/docs/access-review/front-create-api-key.webp)
+<DocImage src="/docs/access-review/front-create-api-key.webp" alt="Front API token resource permissions with Read ticked on the Teammates row" />
 
 <Steps>
 

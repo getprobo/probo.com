@@ -3,6 +3,8 @@ title: Nuki
 description: Connect Nuki as an access review source using a Nuki Web API token so Probo can list the account users and device authorizations of your Nuki Web account.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo uses the Nuki Web API to read the users of your Nuki Web account together with the device authorizations attached to them, so you can review who has access. Authorizations that belong to no account user, such as keypad codes, fobs and bridges, appear as service accounts without an email address. An account user Nuki records as a company is listed as a service account too, but keeps its name and email. Nuki exposes no administrator flag on an account user, so Probo marks no Nuki account as an administrator.
 
 :::caution
@@ -34,7 +36,7 @@ Use a **Nuki Web API token** generated in Nuki Web under the **API** menu, one t
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Generate new API token dialog in Nuki Web, with the View and manage account, View devices, and View and manage authorizations rights selected](/docs/access-review/nuki-create-api-key.webp)
+<DocImage src="/docs/access-review/nuki-create-api-key.webp" alt="The Generate new API token dialog in Nuki Web, with the View and manage account, View devices, and View and manage authorizations rights selected" width={568} />
 
 <Steps>
 

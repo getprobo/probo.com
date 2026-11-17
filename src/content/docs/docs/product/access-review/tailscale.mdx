@@ -3,6 +3,8 @@ title: Tailscale
 description: Connect Tailscale as an access review source using an API access token so Probo can list every user of your tailnet and their assigned role.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Tailscale tailnet's users through the Tailscale API so you can review who has access.
 
 :::caution
@@ -35,7 +37,7 @@ Tailscale delegates sign-in to the identity provider or passkey each user authen
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![The Generate API access token dialog in the Tailscale admin console](/docs/access-review/tailscale-create-api-key.webp)
+<DocImage src="/docs/access-review/tailscale-create-api-key.webp" alt="The Generate API access token dialog in the Tailscale admin console" width={509} />
 
 <Steps>
 

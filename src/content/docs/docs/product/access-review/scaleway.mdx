@@ -3,6 +3,8 @@ title: Scaleway
 description: Connect Scaleway as an access review source using an IAM secret key and Organization ID to review who has IAMReadOnly access to your account.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Scaleway Organization's IAM users through the Scaleway IAM API so you can review who has access.
 
 :::caution
@@ -33,7 +35,7 @@ A Scaleway API key has an **access key** (`SCW…`) and a **secret key** (a UUID
 
 import { Steps, Badge } from "@astrojs/starlight/components";
 
-![Generating an API key in the Scaleway console](/docs/access-review/scaleway-create-api-key.webp)
+<DocImage src="/docs/access-review/scaleway-create-api-key.webp" alt="Generating an API key in the Scaleway console" width={462} />
 
 <Steps>
 

@@ -3,6 +3,8 @@ title: Attio
 description: Connect Attio as an access review source using OAuth or an access token so Probo can list your Attio workspace members and their access levels.
 ---
 
+import DocImage from "../../../../../components/docs/DocImage.astro";
+
 Probo reads your Attio workspace members through the Attio API so you can review who has access. Connecting with **OAuth** is the recommended method and requires no token management. An access token is also available if you would rather not authorize an OAuth connection.
 
 :::caution
@@ -50,7 +52,7 @@ Probo does not include unaccepted invitations. Attio exposes pending invitations
 
 ### Option B: Access Token
 
-![Attio new access token dialog with User Management set to Read](/docs/access-review/attio-create-api-key.webp)
+<DocImage src="/docs/access-review/attio-create-api-key.webp" alt="Attio new access token dialog with User Management set to Read" width={588} />
 
 <Steps>
 

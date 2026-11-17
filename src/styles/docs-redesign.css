@@ -1299,3 +1299,12 @@ html[data-theme][data-has-sidebar] {
     forced-color-adjust: none;
   }
 }
+
+.docs-mobile-media-detail {
+  display: none;
+}
+@media (max-width: 39.999rem) {
+  .docs-mobile-media-detail {
+    display: block;
+  }
+}
