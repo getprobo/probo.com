@@ -85,16 +85,23 @@
       )}
     >
       {#key framework.badge}
-        <div
-          class="absolute inset-0 m-auto size-25 space-y-3 transition-all duration-1000 mix-blend-multiply"
+        <svelte:element
+          this={framework.href ? "a" : "div"}
+          href={framework.href}
+          class={clsx(
+            "absolute inset-0 m-auto block size-25 space-y-3 transition-all duration-1000 mix-blend-multiply",
+            framework.href && "framework-link",
+          )}
           transition:scale={{ duration: 750 }}
         >
           <FrameworkBadge
             name={framework.badge}
             class="block size-16 mx-auto"
           />
-          <div class="whitespace-nowrap text-xxs">{framework.label}</div>
-        </div>
+          <div class="framework-label whitespace-nowrap text-xxs">
+            {framework.label}
+          </div>
+        </svelte:element>
       {/key}
     </div>
   {/each}
@@ -116,6 +123,11 @@
 <svelte:window bind:innerWidth />
 
 <style>
+  .framework-link:hover .framework-label,
+  .framework-link:focus-visible .framework-label {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
   .vertical-rule {
     top: -20px;
     bottom: -20px;
