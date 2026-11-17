@@ -4,15 +4,18 @@ type Framework = {
   badgeDark?: string;
   /** Guide page for the framework. Badges link to it when set. */
   href?: string;
+  /** Kept as a label for stories, but not shown in the badge grid. */
+  hideFromGrid?: boolean;
 };
 
 export const frameworks: Framework[] = [
-  { label: "SOC 2", badge: "SOC2_TYPE2", href: "/hub/soc2" },
   {
-    label: "SOC 2 Type 1",
-    badge: "SOC2_TYPE1",
-    href: "/hub/soc2-type1-vs-type2",
+    label: "SOC 2",
+    badge: "SOC2_TYPE2",
+    href: "/hub/soc2",
+    hideFromGrid: true,
   },
+  { label: "SOC 2 Type 1", badge: "SOC2_TYPE1", href: "/hub/soc2" },
   { label: "SOC 2 Type 2", badge: "SOC2_TYPE2", href: "/hub/soc2" },
   { label: "SOC 3", badge: "SOC3" },
   {

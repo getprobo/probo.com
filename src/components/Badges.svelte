@@ -21,15 +21,16 @@
     class: string;
     border?: boolean;
   } = $props();
+  const gridFrameworks = frameworks.filter((f) => !f.hideFromGrid);
   let timer: ReturnType<typeof setTimeout> | null = null;
   let innerWidth = $state(windowWidth());
   let isMobile = $derived(innerWidth < 640);
   let intersection = useIntersectionObserver({ threshold: 0 });
-  let visibleFrameworks = $state(frameworks.slice(0, count));
+  let visibleFrameworks = $state(gridFrameworks.slice(0, count));
 
   // Reset the visibleFrameworks list when count changes, otherwise the list will be updated by the tick
   $effect(() => {
-    visibleFrameworks = frameworks.slice(
+    visibleFrameworks = gridFrameworks.slice(
       0,
       isMobile && countMobile ? countMobile : count,
     );
@@ -37,7 +38,7 @@
 
   const tick = () => {
     // Pick one random available framework
-    const availableFrameworks = frameworks.filter(
+    const availableFrameworks = gridFrameworks.filter(
       (framework) =>
         !visibleFrameworks.map((f) => f.badge).includes(framework.badge),
     );
