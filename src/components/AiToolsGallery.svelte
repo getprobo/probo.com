@@ -622,7 +622,7 @@
     max-width: 360px;
     min-height: 86px;
     margin: 8px auto 0;
-    color: #6b716a;
+    color: #626861;
     font-size: 16px;
     line-height: 24px;
   }

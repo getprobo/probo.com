@@ -43,6 +43,23 @@
     background-color: var(--color-border-low);
   }
 
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  blockquote {
+    text-wrap: pretty;
+  }
+
+  ::placeholder {
+    color: var(--color-muted-foreground);
+  }
+
   .embla {
     overflow: hidden;
   }
