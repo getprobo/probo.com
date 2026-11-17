@@ -43,7 +43,10 @@ const hasCookieBanner = Boolean(
 const menus = [
   {
     label: "Products",
-    items: menuGroups.find((group) => group.label === "Products")!.items,
+    items: [
+      ...menuGroups.find((group) => group.label === "Products")!.items,
+      { label: "All products", href: "/products" },
+    ],
   },
   {
     label: "Resources",
@@ -51,11 +54,11 @@ const menus = [
       { label: "Home", href: "/" },
       { label: "Pricing", href: "/pricing" },
       { label: "Blog", href: "/blog" },
-      { label: "Hub", href: "/hub" },
+      { label: "Compliance Hub", href: "/hub" },
       { label: "Customer stories", href: "/stories" },
       { label: "Love from customers", href: "/love-from-customer" },
       { label: "Changelog", href: "/changelog" },
-      { label: "Help Center", href: "/docs" },
+      { label: "Docs", href: "/docs" },
       { label: "GitHub", href: "https://github.com/getprobo/probo" },
     ],
   },
@@ -74,7 +77,7 @@ const menus = [
     items: [
       { label: "About", href: "/about" },
       { label: "Careers", href: "/careers" },
-      { label: "Brand", href: "/brand" },
+      { label: "Brand assets", href: "/brand" },
       { label: "LinkedIn", href: "https://www.linkedin.com/company/getprobo" },
     ],
   },

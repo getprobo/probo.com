@@ -16,6 +16,7 @@ const {
   noIndex,
   hasMarkdown = true,
   ogType = "website",
+  titleSuffix = true,
 } = Astro.props;
 interface Props {
   journal?: boolean;
@@ -29,15 +30,19 @@ interface Props {
   ogImageHeight?: number;
   ogImageAlt?: string;
   ogType?: "website" | "article";
+  /** Set to false when the title already carries the brand name. */
+  titleSuffix?: boolean;
 }
 const hasCookieBanner = Boolean(
   import.meta.env.PUBLIC_COOKIE_BANNER_ID &&
   import.meta.env.PUBLIC_COOKIE_BANNER_API_BASE_URL,
 );
 const fontsUrl = `https://fonts.googleapis.com/css2?family=Geist:wght@100..900${Astro.props.journal ? "&family=Geist+Mono:wght@400;500" : ""}&family=Inter:wght@500&display=swap`;
-const seoTitle = title
-  ? `${title} | Probo`
-  : "Open-Source Compliance Platform | Probo";
+const seoTitle = !title
+  ? "Open-Source Compliance Platform | Probo"
+  : titleSuffix
+    ? `${title} | Probo`
+    : title;
 const canonical = getCanonicalUrl(Astro.url);
 const pagePath = Astro.url.pathname.replace(/\.html$/, "").replace(/\/+$/, "");
 const markdownAlternate = pagePath ? `${pagePath}.md` : "/index.md";

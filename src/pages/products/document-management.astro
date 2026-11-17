@@ -4,6 +4,7 @@ import "@phosphor-icons/web/regular";
 import { Image } from "astro:assets";
 import { findDocumentManagementAsset as findAsset } from "../../lib/document-management-assets";
 import Layout from "../../layouts/Layout.astro";
+import BreadcrumbSchema from "../../components/schema/BreadcrumbSchema.astro";
 import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
 import Button from "../../components/ui/Button.svelte";
 import LogosScroll from "../../components/LogosScroll.svelte";
@@ -350,6 +351,12 @@ const serviceSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <BreadcrumbSchema
+    items={[
+      { label: "Products", href: "/products" },
+      { label: "Document Management" },
+    ]}
+  />
   <main class="-mt-16 overflow-hidden pt-16" data-document-management-page>
     <div class="product-hero relative isolate">
       <div

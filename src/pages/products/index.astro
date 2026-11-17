@@ -1,0 +1,73 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import MenuIcon from "../../components/MenuIcon.astro";
+import BreadcrumbSchema from "../../components/schema/BreadcrumbSchema.astro";
+import { menuGroups } from "../../content/menu";
+
+// The product list follows the header menu, so a product added there shows up
+// here too. Entries that point at the homepage are left out.
+const products = menuGroups
+  .find((group) => group.label === "Products")!
+  .items.filter((item) => item.href !== "/");
+
+const listSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Probo products",
+  itemListElement: products.map((product, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: product.label,
+    url: new URL(product.href, Astro.site).toString(),
+  })),
+};
+---
+
+<Layout
+  title="Products"
+  description="Every Probo product in one place: compliance portal, document management, employee portal, access review, AI agents, cookie banner, device agent and the open-source platform."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
+  <BreadcrumbSchema items={[{ label: "Products" }]} />
+  <main class="my-12 sm:my-20">
+    <header class="container max-w-3xl">
+      <p
+        class="text-muted-foreground animate-perspective-in text-sm font-medium"
+      >
+        Products
+      </p>
+      <h1
+        class="text-h3 sm:text-h1 animate-perspective-in animation-delay-100 mt-3 font-medium text-balance"
+      >
+        Everything you need to run compliance
+      </h1>
+      <p
+        class="text-muted-foreground animate-perspective-in animation-delay-200 mt-5 max-w-xl text-lg"
+      >
+        One platform for your policies, your team, your vendors and your
+        auditors. Use it with a Probo compliance officer or on your own.
+      </p>
+    </header>
+
+    <section
+      class="animate-slide-in animation-delay-250 container mt-12 grid grid-cols-1 gap-4 sm:mt-16 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
+    >
+      {
+        products.map((product) => (
+          <a
+            href={product.href}
+            class="border-border-low hover:border-border-mid flex flex-col gap-4 rounded-lg border p-6 transition-colors"
+          >
+            <span class="grid size-10 place-items-center rounded-[10px] border">
+              <MenuIcon name={product.icon} />
+            </span>
+            <span>
+              <h2 class="font-medium">{product.label}</h2>
+              <p class="text-muted-foreground mt-1">{product.description}</p>
+            </span>
+          </a>
+        ))
+      }
+    </section>
+  </main>
+</Layout>

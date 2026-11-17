@@ -3,6 +3,7 @@ import Faq from "../../components/block/Faq.astro";
 import "@phosphor-icons/web/regular";
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
+import BreadcrumbSchema from "../../components/schema/BreadcrumbSchema.astro";
 import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
 import Button from "../../components/ui/Button.svelte";
 import LogosScroll from "../../components/LogosScroll.svelte";
@@ -265,6 +266,9 @@ const serviceSchema = {
 <Layout title={pageTitle} description={pageDescription}>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <BreadcrumbSchema
+    items={[{ label: "Products", href: "/products" }, { label: "AI Agents" }]}
+  />
   <main class="-mt-16 overflow-hidden pt-16">
     <div class="product-hero relative isolate">
       <div

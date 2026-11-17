@@ -1,0 +1,31 @@
+---
+// JSON-LD only breadcrumb trail, for pages that do not show visible breadcrumbs.
+export interface BreadcrumbSchemaItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbSchemaItem[];
+}
+
+const breadcrumbs: BreadcrumbSchemaItem[] = [
+  { label: "Home", href: "/" },
+  ...Astro.props.items,
+];
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbs.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.label,
+    ...(item.href && {
+      item: new URL(item.href, Astro.site).toString(),
+    }),
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

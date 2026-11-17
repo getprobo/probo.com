@@ -1,0 +1,1415 @@
+---
+import "@phosphor-icons/web/regular";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import BreadcrumbSchema from "../../components/schema/BreadcrumbSchema.astro";
+import ProductDiscovery from "../../components/block/ProductDiscovery.astro";
+import Button from "../../components/ui/Button.svelte";
+import LogosScroll from "../../components/LogosScroll.svelte";
+import LottiePlayer from "../../components/LottiePlayer.svelte";
+import PaulSinai from "../../assets/testimonial/paul-sinai.jpg";
+import BlaxelFounders from "../../assets/stories/blaxel-header.jpg";
+
+const pageTitle = "Compliance Officer Service";
+const pageDescription =
+  "A dedicated compliance officer runs your compliance program for you, from the risk analysis to the audit and all year after, whatever the framework: SOC 2, ISO 27001, HIPAA, GDPR and more.";
+
+const overviewFeatures = [
+  {
+    icon: "ph-user-focus",
+    title: "A dedicated compliance officer",
+    description:
+      "A real person who knows your company, reachable on Slack and on calls. Not an AI bot, and not a ticket queue.",
+  },
+  {
+    icon: "ph-compass",
+    title: "A program tailored to your company",
+    description:
+      "Built from a risk analysis of your company and your stack, not from a template handed to every customer.",
+  },
+  {
+    icon: "ph-seal-check",
+    title: "A legitimate auditor",
+    description:
+      "We recommend an audit firm that fits your company, or work with yours after checking that it is legitimate.",
+  },
+  {
+    icon: "ph-robot",
+    title: "Built for your AI agents",
+    description:
+      "Your own agent can do your side of the work and update Probo through GraphQL, MCP and the CLI.",
+  },
+  {
+    icon: "ph-calendar-check",
+    title: "Run all year, not just until the audit",
+    description:
+      "Access reviews, offboarding checks, policy renewals and new-hire controls are handled for you.",
+  },
+];
+
+type ReviewStep = {
+  title: string;
+  lottie: string;
+  foreground?: {
+    src: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  reverse?: boolean;
+  alt: string;
+  bullets: string[];
+};
+
+const reviewSteps: ReviewStep[] = [
+  {
+    title: "We write your program, for your company",
+    lottie: "/lottie/access-review/1.json",
+    foreground: {
+      src: "/employee-portal/workflow-signatures-approvals-ui.svg",
+      x: 32,
+      y: 83,
+      width: 476,
+      height: 581,
+    },
+    alt: "A policy written for the company, ready for the team to sign",
+    bullets: [
+      "One onboarding call to understand your team, your stack and your customers.",
+      "A full risk analysis, then a gap analysis and a roadmap for your framework.",
+      "Policies, risk assessment, asset and third-party registers, written for you.",
+      "We tell you exactly what to do or change on your side, nothing more.",
+    ],
+  },
+  {
+    title: "We run the recurring work",
+    lottie: "/lottie/access-review/3.json",
+    foreground: {
+      src: "/access-review/workflow-review-decisions-ui.svg",
+      x: 73,
+      y: 65,
+      width: 439,
+      height: 607,
+    },
+    reverse: true,
+    alt: "An access review with decisions recorded for each account",
+    bullets: [
+      "Quarterly access reviews, and an access review at every offboarding.",
+      "Policy renewals and signatures, new-hire and offboarding controls verification, third-party reviews.",
+      "A quarterly security meeting with your compliance officer to check controls and processes, and keep your compliance documentation up to date over the year.",
+      "Each finding is validated with you before anything changes.",
+    ],
+  },
+  {
+    title: "Your AI agents do your side",
+    lottie: "/lottie/access-review/1.json",
+    foreground: {
+      src: "/compliance-service/workflow-agent-tasks-ui.svg",
+      x: 96,
+      y: 55,
+      width: 451,
+      height: 554,
+    },
+    alt: "An AI assistant checking the open Probo tasks assigned to the user, resolving them and adding evidence",
+    bullets: [
+      "Every gap becomes a task in Probo, with a ping in Slack.",
+      "Your own agent can make the change, capture the evidence and update the task through MCP.",
+      "Your compliance officer reviews what was done. Agents act with the permissions of the person who connected them.",
+    ],
+  },
+  {
+    title: "We take you through the audit",
+    lottie: "/lottie/access-review/4.json",
+    foreground: {
+      src: "/compliance-service/workflow-audit-slack-ui.svg",
+      x: 44,
+      y: 56,
+      width: 440,
+      height: 572,
+    },
+    reverse: true,
+    alt: "A shared Slack channel where Probot asks the customer to sign the auditor's engagement letter and the compliance officer shares the agenda for the audit walkthrough",
+    bullets: [
+      "We tell you when you are ready and book the audit with you.",
+      "During the audit intro, your officer sits with you as your internal compliance officer.",
+      "We handle all the back and forth with the auditor during the period, and review the report.",
+      "You pay the auditor at cost. Probo takes no margin on the audit.",
+    ],
+  },
+];
+
+const publishCards = [
+  {
+    illustration: "/employee-portal/capability-documents",
+    title: "Policies written for you",
+    description:
+      "Your policies describe how your company really works, and are renewed on schedule.",
+  },
+  {
+    illustration: "/employee-portal/capability-signatures",
+    title: "Signatures collected",
+    description:
+      "Your team signs in the employee portal. We follow up so you don't have to.",
+  },
+  {
+    illustration: "/access-review/capability-decisions",
+    title: "Access reviews",
+    description:
+      "Run every quarter and at every offboarding, with findings validated with you in Slack.",
+  },
+  {
+    illustration: "/employee-portal/capability-devices",
+    title: "Devices checked",
+    description:
+      "Employees enroll their device in the portal. We alert you on Slack.",
+  },
+  {
+    illustration: "/compliance-service/capability-slack-question.svg",
+    title: "Slack, not tickets",
+    description:
+      "Ping us on Slack or book a call for any question or prospect request.",
+  },
+  {
+    illustration: "/access-review/capability-statistics-export",
+    title: "Evidence ready for the auditor",
+    description:
+      "Your officer knows what the auditor will ask for and collects it before they do.",
+  },
+  {
+    illustration: "/compliance-service/capability-security-questionnaire.svg",
+    title: "Security questionnaires answered",
+    description: "We answer your customers' security questionnaires for you.",
+  },
+  {
+    illustration: "/compliance-service/capability-third-parties.svg",
+    title: "Third parties reviewed",
+    description:
+      "We review your vendors and keep their assessments up to date.",
+  },
+  {
+    illustration: "/compliance-service/capability-security-training.svg",
+    title: "Security training provided",
+    description: "We provide security awareness training for your team.",
+  },
+];
+
+const trustedLogos = [
+  {
+    src: "/clients/trace_for_good.svg",
+    alt: "Trace for Good",
+    class: "trusted-logo--trace",
+    width: 1023,
+    height: 154,
+  },
+  {
+    src: "/clients/jimo.svg",
+    alt: "Jimo",
+    class: "trusted-logo--jimo",
+    width: 72,
+    height: 36,
+  },
+  {
+    src: "/clients/lucis.svg",
+    alt: "Lucis",
+    class: "trusted-logo--lucis",
+    width: 246,
+    height: 74,
+  },
+  {
+    src: "/clients/filz.svg",
+    alt: "Filiz",
+    class: "trusted-logo--filiz",
+    width: 598,
+    height: 240,
+  },
+  {
+    src: "/clients/ahrefs.svg",
+    alt: "Ahrefs",
+    class: "trusted-logo--ahrefs",
+    width: 74,
+    height: 19,
+  },
+];
+
+const faqs = [
+  {
+    question: "What is compliance as a service?",
+    answer:
+      "Compliance as a service means an outside team runs your compliance program for you: risk analysis, policies, evidence, recurring controls and the audit. With Probo, a dedicated compliance officer does this on Probo's cloud platform, all year.",
+  },
+  {
+    question: "How much does it cost?",
+    answer:
+      "Probo starts at $10,000 for the year, platform and compliance officer service included; the price depends on the size of your team. The audit is paid to the auditor at cost, and Probo takes no margin on it.",
+  },
+  {
+    question: "Which frameworks do you cover?",
+    answer:
+      "Whatever the framework: SOC 2 Type 1 and 2, ISO 27001, HIPAA, GDPR, ISO 27701, ISO 42001, CCPA, FERPA, CASA, NIS2, DORA, and others if you need them.",
+  },
+  {
+    question: "How much of our time does it take?",
+    answer:
+      "Around 5 to 10 hours in total for a small team: a few calls, and implementing the gaps your compliance officer identifies. Your own AI agent can do part of that work.",
+  },
+  {
+    question: "How long until we are audit ready?",
+    answer:
+      "It depends on your setup. A small team with a standard stack can be audit ready in 2 to 4 weeks, because experts do the work and follow up with you.",
+  },
+  {
+    question: "Do we need to find an auditor?",
+    answer:
+      "No. Probo recommends legitimate audit firms based on your company. If you already have an auditor, Probo works with them after an assessment that checks the firm is legitimate.",
+  },
+  {
+    question: "What if we want to run compliance ourselves?",
+    answer:
+      "You can use the Probo platform alone: free and open source if you self-host it, or hosted on Probo Cloud.",
+  },
+  {
+    question: "What happens after the audit?",
+    answer:
+      "Your compliance officer keeps running the program: access reviews, offboarding checks, policy renewals, new-hire controls, security meetings and your customers' security questionnaires.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Probo Compliance Officer Service",
+  description: pageDescription,
+  url: "https://www.probo.com/products/compliance-as-a-service",
+  provider: {
+    "@type": "Organization",
+    name: "Probo",
+    url: "https://www.probo.com",
+  },
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <BreadcrumbSchema
+    items={[
+      { label: "Products", href: "/products" },
+      { label: "Compliance Officer Service" },
+    ]}
+  />
+  <main class="-mt-16 overflow-hidden pt-16">
+    <div class="product-hero relative isolate">
+      <div
+        aria-hidden="true"
+        class="trust-hero-orb pointer-events-none absolute top-[-1314px] left-1/2 z-0 size-[2265px] rounded-full border-[350px] border-[#E6FF03] blur-[96px]"
+      >
+      </div>
+
+      <section class="relative z-10 container py-16 text-center sm:py-24">
+        <h1
+          class="motion-safe:animate-perspective-in mx-auto mb-6 max-w-[680px] text-[2.75rem] leading-none font-semibold tracking-[-1.4px] text-balance sm:text-5xl sm:tracking-[-1.6px]"
+          style="animation-delay: 150ms"
+        >
+          Compliance done for you, by a dedicated compliance officer.
+        </h1>
+        <p
+          class="text-muted-foreground motion-safe:animate-perspective-in mx-auto mb-8 max-w-[520px] text-base"
+          style="animation-delay: 350ms"
+        >
+          {pageDescription}
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button
+            href="/contact"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 400ms"
+          >
+            Book a call
+          </Button>
+          <Button
+            href="/stories"
+            variant="secondary"
+            size="lg"
+            class="motion-safe:animate-perspective-in"
+            style="animation-delay: 450ms">Read customer stories</Button
+          >
+        </div>
+      </section>
+
+      <section class="relative z-10 container pb-0">
+        <div class="access-review-browser">
+          <img
+            src="/compliance-service/hero-compliance-service.svg"
+            alt="A shared Slack channel where a Probo compliance officer shares ready policies, an access review, an answer to a customer question and the booked audit date"
+            width="1146"
+            height="786"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            class="motion-safe:animate-slide-in"
+            style="animation-delay: 600ms"
+          />
+        </div>
+      </section>
+    </div>
+
+    <section class="container pt-16 pb-0 text-center sm:pt-32">
+      <h2
+        class="mx-auto max-w-[552px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance text-[#141e12]"
+        data-trust-reveal
+      >
+        A compliance service that does the work for you.
+      </h2>
+      <p
+        class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+        data-trust-reveal
+        style="--trust-reveal-delay: 100ms"
+      >
+        You don't buy a tool and figure it out. A compliance officer runs your
+        program on Probo's cloud platform, and your team stays on product.
+      </p>
+
+      <div class="overview-feature-grid mt-12">
+        {
+          overviewFeatures.map((feature, index) => (
+            <div
+              class="overview-feature"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <i
+                class:list={["ph overview-feature-icon", feature.icon]}
+                aria-hidden="true"
+              />
+              <div class="overview-feature-copy">
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section id="how-it-works" class="pt-16 pb-0 sm:pt-32">
+      <div class="container mb-12 text-center sm:mb-16">
+        <h2
+          class="mx-auto max-w-[600px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          How it works
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          From the first call to the audit, then all year after: here is what
+          your compliance officer does, and what is left for you.
+        </p>
+      </div>
+
+      <div class="space-y-8 sm:space-y-12">
+        {
+          reviewSteps.map((feature, index) => (
+            <div
+              class:list={[
+                "container grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-16",
+              ]}
+              data-trust-reveal={index === 0 ? undefined : true}
+              style={`--trust-reveal-delay: ${index * 80}ms`}
+            >
+              <div
+                class:list={[
+                  "bg-subtle relative isolate mx-auto aspect-[508/664] w-full max-w-[508px] overflow-hidden rounded-2xl",
+                  feature.reverse && "lg:order-2",
+                ]}
+                data-review-visual
+                data-review-asset-visual
+                style={`--review-asset-x: ${feature.reverse ? "104px" : "-96px"}; --review-asset-y: ${index === 0 || feature.reverse ? "0px" : "64px"}; --review-asset-scale: ${index === 0 ? 1 : 0.98}; --review-asset-duration: ${feature.reverse ? "820ms" : "860ms"};`}
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 z-0"
+                  aria-hidden={feature.foreground ? true : undefined}
+                >
+                  <LottiePlayer
+                    client:visible
+                    src={feature.lottie}
+                    label={`${feature.title} animation`}
+                    class="size-full origin-center scale-[1.12] transform-gpu"
+                  />
+                </div>
+                {feature.foreground ? (
+                  <div
+                    class="review-asset pointer-events-none absolute inset-0 z-10"
+                    role="img"
+                    aria-label={feature.alt}
+                  >
+                    <img
+                      src={feature.foreground.src}
+                      alt=""
+                      width={feature.foreground.width}
+                      height={feature.foreground.height}
+                      loading="lazy"
+                      decoding="async"
+                      class="absolute block h-auto max-w-none"
+                      style={`left: ${(feature.foreground.x / 508) * 100}%; top: ${(feature.foreground.y / 664) * 100}%; width: ${(feature.foreground.width / 508) * 100}%;`}
+                    />
+                  </div>
+                ) : null}
+              </div>
+
+              <div
+                class:list={[
+                  "mx-auto w-full max-w-[508px] min-w-0",
+                  feature.reverse ? "lg:order-1 lg:pr-16" : "lg:pl-16",
+                ]}
+                data-trust-reveal={index === 0 ? true : undefined}
+              >
+                <h3 class="mb-6 text-[24px] leading-8 font-semibold tracking-[-0.6px]">
+                  {feature.title}
+                </h3>
+                <ul class="text-muted-foreground space-y-3 text-[16px] leading-6">
+                  {feature.bullets.map((bullet) => (
+                    <li class="flex gap-2">
+                      <i
+                        class="ph ph-check inline-flex size-6 shrink-0 items-center justify-center text-[24px] leading-none text-current"
+                        aria-hidden="true"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="mb-16 text-center">
+        <h2
+          class="mx-auto max-w-[560px] text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-balance"
+          data-trust-reveal
+        >
+          What your compliance officer handles
+        </h2>
+        <p
+          class="text-muted-foreground mx-auto mt-2 max-w-[520px] text-[16px] leading-6"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          The recurring work that auditors sample and teams forget, done for you
+          all year.
+        </p>
+      </div>
+
+      <div class="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          publishCards.map((card, index) => (
+            <article
+              class="mx-auto flex w-full max-w-[508px] flex-col gap-6"
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 70}ms`}
+            >
+              <div
+                class="aspect-square w-full overflow-hidden"
+                data-review-asset-visual
+              >
+                <img
+                  src={
+                    card.illustration.endsWith(".svg")
+                      ? card.illustration
+                      : `${card.illustration}.webp`
+                  }
+                  srcset={
+                    card.illustration.endsWith(".svg")
+                      ? undefined
+                      : `${card.illustration}.webp 344w, ${card.illustration}-2x.webp 688w, ${card.illustration}-3x.webp 1032w`
+                  }
+                  sizes="(min-width: 1120px) 344px, (min-width: 1024px) calc((100vw - 88px) / 3), (min-width: 640px) calc((100vw - 64px) / 2), (min-width: 548px) 508px, calc(100vw - 40px)"
+                  alt=""
+                  aria-hidden="true"
+                  width="344"
+                  height="344"
+                  loading="lazy"
+                  decoding="async"
+                  class="review-asset block aspect-square h-auto w-full"
+                />
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="text-[20px] leading-7 font-semibold tracking-[-0.4px]">
+                  {card.title}
+                </h3>
+                <p class="text-muted-foreground text-[16px] leading-6">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container pt-16 pb-0 sm:pt-32">
+      <div class="pb-12 text-center sm:pb-16">
+        <h2
+          class="text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+          data-trust-reveal
+        >
+          Trusted by 130+ companies
+        </h2>
+        <p
+          class="mx-auto mt-2 max-w-[504px] text-[16px] leading-6 text-[#6b716a]"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          Founders and CTOs hand their compliance to Probo so their team can
+          stay on product.
+        </p>
+      </div>
+
+      <div class="trusted-showcase">
+        <div
+          class="trusted-photo-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 100ms"
+        >
+          <Image
+            src={BlaxelFounders}
+            alt="Paul Sinai and the Blaxel team"
+            width={528}
+            height={528}
+            densities={[1, 2]}
+            class="trusted-photo"
+            loading="lazy"
+          />
+        </div>
+
+        <div
+          class="trusted-quote-card"
+          data-trust-reveal
+          style="--trust-reveal-delay: 180ms"
+        >
+          <span class="trusted-quote-halo" aria-hidden="true"></span>
+          <div class="trusted-quote-content">
+            <blockquote class="trusted-quote">
+              &ldquo;Probo handled our SOC 2 and compliance, so we could focus
+              on building.&rdquo;
+            </blockquote>
+
+            <div class="trusted-author">
+              <div class="trusted-author-copy">
+                <div class="trusted-author-name">Paul Sinai</div>
+                <div class="trusted-author-role">
+                  CEO &amp; Co-founder of Blaxel
+                </div>
+              </div>
+              <Image
+                src={PaulSinai}
+                alt="Paul Sinai"
+                width={48}
+                height={48}
+                densities={[1, 2]}
+                class="trusted-avatar"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <div class="trusted-logo-block">
+            <p>Trusted by teams who would rather build product</p>
+            <div class="trusted-logo-rail" aria-label="Trusted companies">
+              <LogosScroll class="trusted-logo-ticker" client:load>
+                {
+                  trustedLogos.map((logo) => (
+                    <span class:list={["trusted-logo-item", logo.class]}>
+                      <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={logo.width}
+                        height={logo.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  ))
+                }
+              </LogosScroll>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container pt-16 sm:pt-32">
+      <h2
+        class="mb-6 text-center text-[1.875rem] leading-9 font-semibold tracking-[-1px] text-[#141e12]"
+        data-trust-reveal
+      >
+        Questions, answered
+      </h2>
+      <div class="faq-accordion mx-auto max-w-[768px]" data-faq-accordion>
+        {
+          faqs.map((faq, index) => (
+            <div
+              class="faq-item"
+              data-faq-item
+              data-trust-reveal
+              style={`--trust-reveal-delay: ${index * 60}ms`}
+            >
+              <h3>
+                <button
+                  class="faq-trigger"
+                  type="button"
+                  id={`compliance-service-faq-trigger-${index}`}
+                  aria-expanded="false"
+                  aria-controls={`compliance-service-faq-panel-${index}`}
+                  data-faq-trigger
+                >
+                  <span>{faq.question}</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <i class="ph ph-plus faq-icon-plus" />
+                    <i class="ph ph-minus faq-icon-minus" />
+                  </span>
+                </button>
+              </h3>
+              <div
+                class="faq-panel"
+                id={`compliance-service-faq-panel-${index}`}
+                role="region"
+                aria-labelledby={`compliance-service-faq-trigger-${index}`}
+                aria-hidden="true"
+                data-faq-panel
+              >
+                <div class="faq-panel-inner">
+                  <p>{faq.answer}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+    <ProductDiscovery />
+  </main>
+</Layout>
+
+<script>
+  const initEmployeePortalAnimations = () => {
+    const assetVisuals = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-review-asset-visual]"),
+    );
+    const revealTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-trust-reveal]"),
+    );
+
+    if (assetVisuals.length === 0 && revealTargets.length === 0) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      assetVisuals.forEach((visual) => {
+        visual.classList.add("is-visible");
+      });
+      revealTargets.forEach((target) => {
+        target.classList.add("is-visible");
+      });
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    const assetObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          assetObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.35 },
+    );
+
+    revealTargets.forEach((target) => {
+      if (target.dataset.revealReady === "true") {
+        return;
+      }
+
+      target.dataset.revealReady = "true";
+      target.classList.add("is-awaiting-reveal");
+      revealObserver.observe(target);
+    });
+
+    assetVisuals.forEach((visual) => {
+      if (visual.dataset.motionReady === "true") {
+        return;
+      }
+
+      visual.dataset.motionReady = "true";
+      visual.classList.add("is-awaiting-animation");
+      assetObserver.observe(visual);
+    });
+  };
+
+  const initEmployeePortalFaq = () => {
+    const faqAccordions = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-faq-accordion]"),
+    );
+
+    faqAccordions.forEach((faqAccordion) => {
+      if (faqAccordion.dataset.faqReady === "true") {
+        return;
+      }
+
+      faqAccordion.dataset.faqReady = "true";
+
+      const faqItems = Array.from(
+        faqAccordion.querySelectorAll<HTMLElement>("[data-faq-item]"),
+      );
+
+      const setFaqItemState = (item: HTMLElement, shouldOpen: boolean) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+        const panel = item.querySelector<HTMLElement>("[data-faq-panel]");
+
+        if (!trigger || !panel) {
+          return;
+        }
+
+        item.classList.toggle("is-open", shouldOpen);
+        trigger.setAttribute("aria-expanded", String(shouldOpen));
+        panel.setAttribute("aria-hidden", String(!shouldOpen));
+      };
+
+      faqItems.forEach((item, index) => {
+        const trigger =
+          item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+
+        if (!trigger) {
+          return;
+        }
+
+        trigger.addEventListener("click", () => {
+          const shouldOpen = !item.classList.contains("is-open");
+
+          faqItems.forEach((faqItem) => {
+            setFaqItemState(faqItem, faqItem === item && shouldOpen);
+          });
+        });
+
+        trigger.addEventListener("keydown", (event) => {
+          const lastIndex = faqItems.length - 1;
+          const nextIndex =
+            event.key === "ArrowDown"
+              ? Math.min(index + 1, lastIndex)
+              : event.key === "ArrowUp"
+                ? Math.max(index - 1, 0)
+                : event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? lastIndex
+                    : index;
+
+          if (nextIndex === index) {
+            return;
+          }
+
+          event.preventDefault();
+          faqItems[nextIndex]
+            ?.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+            ?.focus();
+        });
+      });
+    });
+  };
+
+  const initEmployeePortalPage = () => {
+    initEmployeePortalAnimations();
+    initEmployeePortalFaq();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initEmployeePortalPage, {
+      once: true,
+    });
+  } else {
+    initEmployeePortalPage();
+  }
+</script>
+
+<style>
+  .access-review-browser {
+    position: relative;
+    aspect-ratio: 1146 / 786;
+  }
+
+  .access-review-browser img {
+    width: 100%;
+    height: auto;
+  }
+
+  .trust-hero-orb {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    transform-origin: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .trust-hero-orb {
+      animation: trust-hero-orb-scale-in cubic-bezier(0.785, 0.135, 0.15, 0.86)
+        3s both;
+      animation-delay: -1200ms;
+    }
+  }
+
+  @keyframes trust-hero-orb-scale-in {
+    from {
+      transform: translateX(-50%) scale(0);
+    }
+
+    to {
+      transform: translateX(-50%) scale(1);
+    }
+  }
+
+  [data-trust-reveal],
+  :global([data-product-discovery] [data-trust-reveal]) {
+    --trust-reveal-delay: 0ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-trust-reveal].is-awaiting-reveal,
+    :global([data-product-discovery] [data-trust-reveal].is-awaiting-reveal) {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    [data-trust-reveal].is-visible,
+    :global([data-product-discovery] [data-trust-reveal].is-visible) {
+      animation: trust-reveal-slide-in var(--spring-smooth) 850ms
+        var(--trust-reveal-delay) both;
+    }
+  }
+
+  @keyframes trust-reveal-slide-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 50px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  [data-review-asset-visual] {
+    --review-asset-x: 0px;
+    --review-asset-y: 42px;
+    --review-asset-duration: 760ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-review-asset-visual].is-awaiting-animation .review-asset {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    [data-review-asset-visual].is-visible .review-asset {
+      animation: review-asset-enter var(--review-asset-duration)
+        cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+    }
+  }
+
+  @keyframes review-asset-enter {
+    0% {
+      opacity: 0;
+      transform: translate3d(var(--review-asset-x), var(--review-asset-y), 0)
+        scale(var(--review-asset-scale, 0.98));
+    }
+
+    42% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  .overview-feature-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 48px;
+  }
+
+  .overview-feature {
+    display: flex;
+    width: min(100%, 328px);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .overview-feature-icon {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    color: #343330;
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .overview-feature-copy {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .overview-feature-copy h3,
+  .overview-feature-copy p {
+    width: 100%;
+  }
+
+  .overview-feature-copy h3 {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .overview-feature-copy p {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .overview-feature-copy a {
+    color: #343330;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 640px) {
+    .overview-feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 48px;
+      row-gap: 56px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .overview-feature-grid {
+      position: relative;
+      display: block;
+      width: 100%;
+      max-width: 1080px;
+      height: 346px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature {
+      position: absolute;
+      width: 328px;
+    }
+
+    .overview-feature:nth-child(1) {
+      top: 0;
+      left: 0;
+    }
+
+    .overview-feature:nth-child(1) .overview-feature-copy h3 {
+      max-width: 276px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .overview-feature:nth-child(2) {
+      top: 0;
+      left: 376px;
+    }
+
+    .overview-feature:nth-child(3) {
+      top: 0;
+      left: 752px;
+    }
+
+    .overview-feature:nth-child(4) {
+      top: 201px;
+      left: 188px;
+    }
+
+    .overview-feature:nth-child(5) {
+      top: 201px;
+      left: 564px;
+    }
+  }
+
+  .trusted-showcase {
+    display: grid;
+    width: 100%;
+    max-width: 1080px;
+    gap: 24px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .trusted-photo-card,
+  .trusted-quote-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f6f9f5;
+  }
+
+  .trusted-photo-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  .trusted-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+
+  .trusted-quote-card {
+    display: flex;
+    min-height: 420px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 72px 20px 32px;
+    text-align: center;
+  }
+
+  .trusted-quote-halo {
+    position: absolute;
+    top: -423px;
+    left: 50%;
+    z-index: 0;
+    width: 1010px;
+    height: 1010px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .trusted-quote-halo::before {
+    position: absolute;
+    inset: -17%;
+    content: "";
+    background: url("/trust-center/quote-ellipse.svg") center / 100% 100%
+      no-repeat;
+    transform: rotate(180deg) scaleY(-1);
+  }
+
+  .trusted-quote-content,
+  .trusted-logo-block {
+    position: relative;
+    z-index: 1;
+  }
+
+  .trusted-quote-content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-quote {
+    margin: 0;
+    color: #141e12;
+    font-size: 22px;
+    line-height: 30px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    text-align: center;
+    text-wrap: balance;
+    word-break: break-word;
+  }
+
+  .trusted-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .trusted-author-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .trusted-author-name {
+    color: #141e12;
+    font-weight: 500;
+  }
+
+  .trusted-author-role {
+    color: #6b716a;
+    font-weight: 400;
+  }
+
+  .trusted-avatar {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .trusted-logo-block {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .trusted-logo-block p {
+    color: #6b716a;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .trusted-logo-rail {
+    width: 792px;
+    max-width: calc(100vw - 48px);
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker) {
+    height: 24px;
+    overflow: hidden;
+  }
+
+  :global(.trusted-logo-ticker .splide__track),
+  :global(.trusted-logo-ticker .splide__list) {
+    height: 24px;
+  }
+
+  :global(.trusted-logo-ticker .splide__slide) {
+    display: flex;
+    height: 24px;
+    align-items: center;
+  }
+
+  .trusted-logo-item {
+    display: flex;
+    height: 24px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    opacity: 0.6;
+  }
+
+  .trusted-logo-item img {
+    display: block;
+    width: 100%;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .trusted-logo--trace {
+    width: 190.5px;
+  }
+
+  .trusted-logo--jimo {
+    width: 78px;
+  }
+
+  .trusted-logo--lucis {
+    width: 109.5px;
+  }
+
+  .trusted-logo--filiz {
+    width: 115.5px;
+  }
+
+  .trusted-logo--ahrefs {
+    width: 123px;
+  }
+
+  @media (min-width: 1024px) {
+    .trusted-showcase {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .trusted-quote-card {
+      min-height: auto;
+      aspect-ratio: 1 / 1;
+      padding: 96px 32px 32px;
+    }
+
+    .trusted-quote {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border-low);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 0;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+  }
+
+  .faq-trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    color: #141e12;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: padding 220ms ease;
+  }
+
+  .faq-trigger:focus-visible {
+    outline: 2px solid #141e12;
+    outline-offset: 4px;
+  }
+
+  .faq-trigger span:first-child {
+    flex: 1;
+  }
+
+  .faq-icon {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+
+  .faq-icon i {
+    position: absolute;
+    font-size: 16px;
+    line-height: 1;
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease;
+  }
+
+  .faq-icon-minus {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-trigger {
+    padding-bottom: 8px;
+  }
+
+  .faq-item.is-open .faq-icon-plus {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  .faq-item.is-open .faq-icon-minus {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms ease;
+  }
+
+  .faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-panel p {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0 40px 16px 0;
+    color: #6b716a;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .faq-item.is-open .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-panel,
+    .faq-icon i,
+    .faq-trigger {
+      transition: none;
+    }
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import BreadcrumbSchema from "../../components/schema/BreadcrumbSchema.astro";
 import Prose from "../../components/Prose.astro";
 import Image from "astro/components/Image.astro";
 import { dynamicImages } from "../../lib/images.ts";
@@ -62,6 +63,12 @@ const articleSchema = {
   ogImage={item.data.ogImage}
 >
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <BreadcrumbSchema
+    items={[
+      { label: "Customer stories", href: "/stories" },
+      { label: data.title },
+    ]}
+  />
   <header class="relative flex h-115 flex-col justify-end sm:h-163">
     <Image
       src={image}

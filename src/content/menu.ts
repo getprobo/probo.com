@@ -48,7 +48,7 @@ export const menuGroups: MenuGroup[] = [
       {
         label: "Compliance Officer Service",
         description: "Expert-led compliance, end to end",
-        href: "/",
+        href: "/products/compliance-as-a-service",
         icon: "handshake",
       },
       {
@@ -113,7 +113,7 @@ export const menuGroups: MenuGroup[] = [
     label: "Resources",
     items: [
       {
-        label: "Probo stories",
+        label: "Customer stories",
         description: "How teams get compliant with Probo",
         href: "/stories",
         icon: "quotes",
@@ -125,13 +125,13 @@ export const menuGroups: MenuGroup[] = [
         icon: "article",
       },
       {
-        label: "Guides & tools",
+        label: "Compliance Hub",
         description: "Practical compliance guides and free tools",
         href: "/hub",
         icon: "compass",
       },
       {
-        label: "Love from Customers",
+        label: "Love from customers",
         description: "What customers say about working with Probo",
         href: "/love-from-customer",
         icon: "heart",
@@ -150,7 +150,7 @@ export const menuGroups: MenuGroup[] = [
       },
     ],
     feature: {
-      eyebrow: "Customer stories",
+      eyebrow: "Featured story",
       title: "How Ahrefs became ISO 27001 certified in 3 months",
       href: "/stories/ahrefs-iso",
       asset: "/navigation/ahrefs.webp",
