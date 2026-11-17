@@ -21,7 +21,7 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | [`prb tracker-pattern list`](#prb-tracker-pattern-list)     | List tracker patterns in a category.            | `prb tracker-pattern list`        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/tracker-pattern/list/list.go#L79)       |
 | [`prb tracker-pattern move`](#prb-tracker-pattern-move)     | Move a tracker pattern to a different category. | `prb tracker-pattern move <id>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/tracker-pattern/move/move.go#L64)       |
 | [`prb tracker-pattern update`](#prb-tracker-pattern-update) | Update a tracker pattern.                       | `prb tracker-pattern update <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/tracker-pattern/update/update.go#L62)   |
-| [`prb tracker-pattern view`](#prb-tracker-pattern-view)     | View a tracker pattern.                         | `prb tracker-pattern view <id>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/tracker-pattern/view/view.go#L92)       |
+| [`prb tracker-pattern view`](#prb-tracker-pattern-view)     | View a tracker pattern.                         | `prb tracker-pattern view <id>`   | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/tracker-pattern/view/view.go#L102)      |
 
 ## prb tracker-pattern
 
@@ -157,9 +157,10 @@ Requires 1 positional argument.
 
 ### Flags
 
-| Flag             | Type    | Default | Required | Description                          |
-| ---------------- | ------- | ------- | -------- | ------------------------------------ |
-| `--json`         | boolean | `false` | —        | Output JSON (same as --output json)  |
-| `--output`, `-o` | string  | `""`    | —        | Output format: json, table (default) |
+| Flag             | Type    | Default | Required | Description                                             |
+| ---------------- | ------- | ------- | -------- | ------------------------------------------------------- |
+| `--days`         | integer | `7`     | —        | Number of UTC days of hits, today included (at most 90) |
+| `--json`         | boolean | `false` | —        | Output JSON (same as --output json)                     |
+| `--output`, `-o` | string  | `""`    | —        | Output format: json, table (default)                    |
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/tracker-pattern/view/view.go#L92).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/tracker-pattern/view/view.go#L102).
