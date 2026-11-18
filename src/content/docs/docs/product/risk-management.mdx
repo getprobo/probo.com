@@ -80,7 +80,11 @@ Set **Impact** and **Likelihood** for both **Inherent risk** and **Residual risk
 | Inherent: before the proposed controls      | 4 — Probable | 4 — Significant | 16    |
 | Residual: target after the controls operate | 2 — Remote   | 4 — Significant | 8     |
 
-Probo calculates each score as likelihood × impact and labels it by its share of the matrix's maximum score (25 on a 5×5 matrix, 16 on 4×4, 9 on 3×3):
+Probo calculates each score as likelihood × impact. The maximum score is 25 on a 5×5 matrix, 16 on 4×4, and 9 on 3×3.
+
+Each analysis then labels the score with its own **score levels**. A level has a minimum score and covers every score from that minimum up to the next level's minimum. Set them under **Levels** when you create or edit the analysis, so they match your risk policy. You can define Medium, or leave out Critical, as long as the analysis keeps at least two levels, the first one starts at 1, and each minimum is higher than the one before.
+
+If you don't set levels, Probo uses default bands based on each score's share of the matrix maximum:
 
 | Label    | Share of the maximum | 5×5 scores |
 | -------- | -------------------- | ---------- |
@@ -89,7 +93,9 @@ Probo calculates each score as likelihood × impact and labels it by its share o
 | High     | 40% to below 60%     | 10–14      |
 | Critical | 60% and above        | 15–25      |
 
-Because the bands are ratios, a score means the same level on any matrix size. Here the inherent score of 16 is **Critical** and the residual score of 8 is **Medium**.
+With these defaults, the inherent score of 16 is **Critical** and the residual score of 8 is **Medium**.
+
+The matrix legend, the score colors, the treatment-plan score tags, and the published risk analysis document all follow the analysis's levels. The legend shows each level's range, such as Low (1-12). In the published document, each score is labeled with its severity, such as `1 — Low`, instead of only a number.
 
 In this example, stronger authentication reduces the chance of compromise, while a successful breach could still have a significant impact. Explain that reasoning in the analysis description or the risk's note.
 

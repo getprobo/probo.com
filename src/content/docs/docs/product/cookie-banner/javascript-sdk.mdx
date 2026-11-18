@@ -25,12 +25,12 @@ The simplest option. Add a single `<script>` tag to your HTML — no build tools
 
 This automatically renders a fully styled consent dialog. Place `<probo-settings-link>` in your header or footer so visitors can reopen preferences — see [Settings link](#settings-link).
 
-| Attribute            | Required | Description                                                                                                                                          |
-| -------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data-banner-id`     | Yes      | Your banner ID from the Probo console                                                                                                                |
-| `data-base-url`      | Yes      | The Probo cookie banner API base URL                                                                                                                 |
-| `data-position`      | No       | Banner card position: `bottom-left` (default), `bottom-right`, `bottom-center`, `top-left`, `top-right`, or `top-center`                              |
-| `data-lang`          | No       | Force a specific language (e.g. `"fr"`). When omitted, the SDK auto-detects from the page or browser. See [Language Detection](#language-detection). |
+| Attribute        | Required | Description                                                                                                                                          |
+| ---------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-banner-id` | Yes      | Your banner ID from the Probo console                                                                                                                |
+| `data-base-url`  | Yes      | The Probo cookie banner API base URL                                                                                                                 |
+| `data-position`  | No       | Banner card position: `bottom-left` (default), `bottom-right`, `bottom-center`, `top-left`, `top-right`, or `top-center`                             |
+| `data-lang`      | No       | Force a specific language (e.g. `"fr"`). When omitted, the SDK auto-detects from the page or browser. See [Language Detection](#language-detection). |
 
 ## Themed Banner (ES Module)
 
@@ -39,6 +39,10 @@ For bundled applications (React, Vue, Svelte, Next.js, etc.), import the themed 
 ```bash
 npm install @probo/cookie-banner
 ```
+
+:::caution
+Use `@probo/cookie-banner` 0.23.0 or later with probod v0.351.0 and later. Older versions of the package report no page loads, so the page-load and hit-rate figures in the console stay incomplete until you upgrade.
+:::
 
 Register the component and place it in your HTML or template:
 
@@ -59,12 +63,12 @@ registerCookieBanner();
 <probo-settings-link>Cookie settings</probo-settings-link>
 ```
 
-| Attribute       | Required | Description                                                                                                                                          |
-| --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `banner-id`     | Yes      | Your banner ID from the Probo console                                                                                                                |
-| `base-url`      | Yes      | The Probo cookie banner API base URL                                                                                                                 |
-| `position`      | No       | Banner card position: `bottom-left` (default), `bottom-right`, `bottom-center`, `top-left`, `top-right`, or `top-center`                              |
-| `lang`          | No       | Force a specific language (e.g. `"fr"`). When omitted, the SDK auto-detects from the page or browser. See [Language Detection](#language-detection). |
+| Attribute   | Required | Description                                                                                                                                          |
+| ----------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `banner-id` | Yes      | Your banner ID from the Probo console                                                                                                                |
+| `base-url`  | Yes      | The Probo cookie banner API base URL                                                                                                                 |
+| `position`  | No       | Banner card position: `bottom-left` (default), `bottom-right`, `bottom-center`, `top-left`, `top-right`, or `top-center`                             |
+| `lang`      | No       | Force a specific language (e.g. `"fr"`). When omitted, the SDK auto-detects from the page or browser. See [Language Detection](#language-detection). |
 
 Since this is a Web Component, it works in any framework. In React, JSX treats it as a custom element. In Vue or Svelte, use it directly in your template. See the [React Integration](/docs/product/cookie-banner/react) guide for a complete walkthrough with a `useConsent` hook, Next.js setup, and TypeScript declarations.
 
@@ -88,7 +92,9 @@ Then build your own layout:
 <probo-cookie-banner-root banner-id="YOUR_BANNER_ID" base-url="BASE_URL">
   <probo-banner>
     <div class="my-banner">
-      <p data-text="banner_description">We use cookies to improve your experience.</p>
+      <p data-text="banner_description">
+        We use cookies to improve your experience.
+      </p>
       <!-- Opt-in / opt-out primary actions -->
       <probo-accept-button>
         <button>Accept all</button>
@@ -152,31 +158,28 @@ Use [`resolveLayout`](#layout-api) / [`resolveBannerText`](#layout-api) to show 
 
 ### Component Reference
 
-| Component                    | Description                                                                                                                                                                                                    |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<probo-cookie-banner-root>` | Root element. Requires `banner-id` and `base-url`. Optional `lang` attribute to force a language. Manages client lifecycle and state. |
-| `<probo-banner>`             | Container for the first-layer banner card. Visibility follows `layout.initial_state` (closed in every opt-out jurisdiction — see [Settings link](#settings-link)).                                             |
-| `<probo-accept-button>`      | Wraps a button that records `ACCEPT_ALL` consent.                                                                                                                                                              |
-| `<probo-reject-button>`      | Wraps a button that records `REJECT_ALL` consent (opt-out / Do Not Sell).                                                                                                                                      |
-| `<probo-customize-button>`   | Wraps a button that opens the preference panel.                                                                                                                                                                |
-| `<probo-acknowledge-button>` | Wraps a button that records `ACKNOWLEDGE` for **NOTICE** presentations (informational dismiss, currently Mexico only). Do not reuse accept-all for this.                                                       |
-| `<probo-preference-panel>`   | Container for per-category consent toggles.                                                                                                                                                                    |
-| `<probo-privacy-choices>`    | CCPA Privacy Choices surface (sale/sharing opt-out + sensitive PI rights statement). Shown when state is `privacy_choices`.                                                                                    |
-| `<probo-category-list>`      | Renders a `<template>` once per cookie category. Fills `data-slot="name"` and `data-slot="description"`.                                                                                                       |
-| `<probo-category-toggle>`    | Binds the checkbox inside it to the category's consent state.                                                                                                                                                  |
-| `<probo-cookie-list>`        | Renders a `<template>` once per cookie in the category. Fills `data-slot="name"`, `data-slot="type"`, and `data-slot="duration"`.                                                                               |
-| `<probo-save-button>`        | Wraps a button that saves the current preference draft.                                                                                                                                                        |
-| `<probo-settings-link>`      | **Required** header/footer reopen control. Click target comes from `layout.reopen_state`. See [Settings link](#settings-link).                                                                                 |
+| Component                    | Description                                                                                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `<probo-cookie-banner-root>` | Root element. Requires `banner-id` and `base-url`. Optional `lang` attribute to force a language. Manages client lifecycle and state.                              |
+| `<probo-banner>`             | Container for the first-layer banner card. Visibility follows `layout.initial_state` (closed in every opt-out jurisdiction — see [Settings link](#settings-link)). |
+| `<probo-accept-button>`      | Wraps a button that records `ACCEPT_ALL` consent.                                                                                                                  |
+| `<probo-reject-button>`      | Wraps a button that records `REJECT_ALL` consent (opt-out / Do Not Sell).                                                                                          |
+| `<probo-customize-button>`   | Wraps a button that opens the preference panel.                                                                                                                    |
+| `<probo-acknowledge-button>` | Wraps a button that records `ACKNOWLEDGE` for **NOTICE** presentations (informational dismiss, currently Mexico only). Do not reuse accept-all for this.           |
+| `<probo-preference-panel>`   | Container for per-category consent toggles.                                                                                                                        |
+| `<probo-privacy-choices>`    | CCPA Privacy Choices surface (sale/sharing opt-out + sensitive PI rights statement). Shown when state is `privacy_choices`.                                        |
+| `<probo-category-list>`      | Renders a `<template>` once per cookie category. Fills `data-slot="name"` and `data-slot="description"`.                                                           |
+| `<probo-category-toggle>`    | Binds the checkbox inside it to the category's consent state.                                                                                                      |
+| `<probo-cookie-list>`        | Renders a `<template>` once per cookie in the category. Fills `data-slot="name"`, `data-slot="type"`, and `data-slot="duration"`.                                  |
+| `<probo-save-button>`        | Wraps a button that saves the current preference draft.                                                                                                            |
+| `<probo-settings-link>`      | **Required** header/footer reopen control. Click target comes from `layout.reopen_state`. See [Settings link](#settings-link).                                     |
 
 ### Layout API
 
 From 0.12 onward the API returns a structured `layout` on the banner config. Headless integrators should read it instead of branching on `regulation` or `consent_mode`:
 
 ```js
-import {
-  resolveLayout,
-  resolveBannerText,
-} from "@probo/cookie-banner"; // or "@probo/cookie-banner/headless"
+import { resolveLayout, resolveBannerText } from "@probo/cookie-banner"; // or "@probo/cookie-banner/headless"
 
 document.addEventListener("probo-ready", (e) => {
   const { config } = e.detail;
@@ -214,12 +217,12 @@ If `layout` is missing, the SDK logs an error and falls back to strict opt-in �
 
 Behavior by presentation / regulation (driven by `layout`):
 
-| Presentation | Typical regulations | Label shown | Banner on first visit | Click opens |
-| ------------ | ------------------- | ----------- | --------------------- | ----------- |
-| **OPT_OUT** (CCPA) | CCPA / CPRA, and US visitors whose state cannot be resolved | Always replaced with the statutory **“Your Privacy Choices”** text and [official opt-out icon](https://www.law.cornell.edu/regulations/california/11-CCR-7015) (English; not translated) | Closed by default | **Privacy Choices** panel (`privacy_choices`) |
-| **OPT_OUT** (other) | Other US state laws, PIPEDA and provincial PIPA, APPI, and countries with no cookie-consent law | Your children (e.g. “Cookie settings”), or a localized fallback if empty | Closed by default | Compact opt-out banner |
-| **OPT_IN** | GDPR, UK GDPR, FADP, Law 25, LGPD, … | Your children, or a localized fallback if empty | Open until the visitor chooses | Preference panel |
-| **NOTICE** | LFPDPPP (Mexico) | Your children, or a localized fallback if empty | Open (informational dismiss) | Notice banner again |
+| Presentation        | Typical regulations                                                                             | Label shown                                                                                                                                                                              | Banner on first visit          | Click opens                                   |
+| ------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | --------------------------------------------- |
+| **OPT_OUT** (CCPA)  | CCPA / CPRA, and US visitors whose state cannot be resolved                                     | Always replaced with the statutory **“Your Privacy Choices”** text and [official opt-out icon](https://www.law.cornell.edu/regulations/california/11-CCR-7015) (English; not translated) | Closed by default              | **Privacy Choices** panel (`privacy_choices`) |
+| **OPT_OUT** (other) | Other US state laws, PIPEDA and provincial PIPA, APPI, and countries with no cookie-consent law | Your children (e.g. “Cookie settings”), or a localized fallback if empty                                                                                                                 | Closed by default              | Compact opt-out banner                        |
+| **OPT_IN**          | GDPR, UK GDPR, FADP, Law 25, LGPD, …                                                            | Your children, or a localized fallback if empty                                                                                                                                          | Open until the visitor chooses | Preference panel                              |
+| **NOTICE**          | LFPDPPP (Mexico)                                                                                | Your children, or a localized fallback if empty                                                                                                                                          | Open (informational dismiss)   | Notice banner again                           |
 
 Most visitors fall under `OPT_OUT`, where nothing opens on its own. In those jurisdictions the settings link is not a convenience — it is the visitor's only route to their choices, so it must be present on every page. See [Geolocation and regulations](/docs/product/cookie-banner/geolocation) for the full mapping.
 
@@ -244,16 +247,16 @@ The resolved language is sent to the API when fetching the banner configuration.
 
 New banners include translations for these languages out of the box:
 
-| Code | Language     | Code | Language   |
-| ---- | ------------ | ---- | ---------- |
-| `en` | English      | `nl` | Dutch      |
-| `de` | German       | `pl` | Polish     |
-| `es` | Spanish      | `pt` | Portuguese |
-| `fr` | French       | `tr` | Turkish    |
-| `id` | Indonesian   | `uk` | Ukrainian  |
-| `it` | Italian      | `zh` | Chinese    |
-| `ja` | Japanese     |      |            |
-| `ko` | Korean       |      |            |
+| Code | Language   | Code | Language   |
+| ---- | ---------- | ---- | ---------- |
+| `en` | English    | `nl` | Dutch      |
+| `de` | German     | `pl` | Polish     |
+| `es` | Spanish    | `pt` | Portuguese |
+| `fr` | French     | `tr` | Turkish    |
+| `id` | Indonesian | `uk` | Ukrainian  |
+| `it` | Italian    | `zh` | Chinese    |
+| `ja` | Japanese   |      |            |
+| `ko` | Korean     |      |            |
 
 You can customize these translations and add new languages from the Probo console. All banner text is translatable, including:
 
@@ -317,12 +320,12 @@ This is the recommended approach for multilingual sites that already set the `la
 
 The SDK emits custom events that bubble through the DOM. Listen on the root element or any ancestor:
 
-| Event                 | Detail                                          | Description                                                                                                                                                                                                                          |
-| --------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `probo-ready`         | `{ config, gpcApplied, regulation }`            | Fired when the banner configuration has been loaded. `config` includes `language`, `default_language`, `texts`, `layout`, `consent_mode`, `regulation`, `cookie_policy_url`, and categories. `gpcApplied` is `true` if a GPC opt-out was applied. |
-| `probo-state`         | `{ state, prev }`                               | Fired when the banner UI state changes. States: `loading`, `banner`, `panel`, `privacy_choices`, `hidden`.                                                                                                                            |
-| `probo-consent`       | `{ action, consent_data }`                      | Fired after consent is recorded. Actions: `ACCEPT_ALL`, `REJECT_ALL`, `CUSTOMIZE`, `GPC`, `ACKNOWLEDGE`.                                                                                                                              |
-| `probo-validation`    | `{ missing }`                                   | Soft composition warning (e.g. missing `<probo-settings-link>`). Does not block load.                                                                                                                                                |
+| Event              | Detail                               | Description                                                                                                                                                                                                                                       |
+| ------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `probo-ready`      | `{ config, gpcApplied, regulation }` | Fired when the banner configuration has been loaded. `config` includes `language`, `default_language`, `texts`, `layout`, `consent_mode`, `regulation`, `cookie_policy_url`, and categories. `gpcApplied` is `true` if a GPC opt-out was applied. |
+| `probo-state`      | `{ state, prev }`                    | Fired when the banner UI state changes. States: `loading`, `banner`, `panel`, `privacy_choices`, `hidden`.                                                                                                                                        |
+| `probo-consent`    | `{ action, consent_data }`           | Fired after consent is recorded. Actions: `ACCEPT_ALL`, `REJECT_ALL`, `CUSTOMIZE`, `GPC`, `ACKNOWLEDGE`.                                                                                                                                          |
+| `probo-validation` | `{ missing }`                        | Soft composition warning (e.g. missing `<probo-settings-link>`). Does not block load.                                                                                                                                                             |
 
 ```js
 document.addEventListener("probo-consent", (e) => {

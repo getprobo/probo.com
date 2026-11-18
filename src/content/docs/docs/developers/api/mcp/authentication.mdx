@@ -142,6 +142,14 @@ authorization server discovery. Public clients use
 `token_endpoint_auth_method: "none"` and PKCE. Confidential clients can use
 `client_secret_basic` or `client_secret_post`.
 
+Dynamic registration only creates **private** clients, which belong to one
+organization. Only active members of that organization can authorize a
+private client, through the consent screen or the device flow. A request for
+`visibility: "public"` is rejected. Since probod v0.351.0, existing
+dynamically registered public clients have been switched to private and their
+tokens revoked, so their users must authorize them again. The Probo CLI and
+CIMD clients are not affected.
+
 ### Client ID Metadata Documents (CIMD)
 
 Probo supports URL-based client identifiers. With CIMD, the OAuth `client_id`
