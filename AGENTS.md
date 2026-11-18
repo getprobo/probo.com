@@ -99,6 +99,8 @@ Blog and stories use MDX with Zod schemas for validation. Stories require:
 
 ### Styling
 
+Read [DESIGN.md](DESIGN.md) before any visual change: it documents the colours, type scale, components and guardrails of the site. Theme tokens live in `src/styles/theme.css`.
+
 Use Tailwind utilities. For complex variants, use `tailwind-variants`:
 
 ```typescript
