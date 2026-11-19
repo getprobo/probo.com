@@ -2,9 +2,11 @@
 
 ## Included illustrations
 
-The page fills all thirteen illustration placements: one hero, four workflows, seven capability cards, and one shared Product Discovery card. Eleven illustrations use native Figma exports in `public/document-management/figma/`. The signing workflow and Versions card reuse the existing Employee Portal assets. The testimonial reuses the Blaxel team photograph, Paul Sinai quote, and author portrait already used on other product pages.
+The page fills all fifteen illustration placements: one hero, four workflows, nine capability cards, and one shared Product Discovery card. Eleven illustrations use native Figma exports in `public/document-management/figma/`. The signing workflow and Versions card reuse the existing Employee Portal assets. The testimonial reuses the Blaxel team photograph, Paul Sinai quote, and author portrait already used on other product pages.
 
-Only the native web assets are needed for this implementation. Earlier illustration explorations and local export working files are not runtime dependencies.
+The Live editing and Edit history cards use 1x/2x/3x WebP illustrations in `public/document-management/`. They show a fictional access review policy in the shared draft and the same edit in the history panel. The product reference is the [real-time document collaboration changelog](/changelog/2026-10-22-real-time-document-collaboration).
+
+Only the web assets are needed for this implementation. Earlier illustration explorations and local export working files are not runtime dependencies.
 
 ## Figma sources
 
@@ -19,8 +21,8 @@ The signing workflow uses `/employee-portal/workflow-signatures-approvals-ui.svg
 
 ## Validation
 
-- All thirteen illustration placements are filled; no active illustration uses an earlier ImageGen set.
-- The page includes seven capability cards and thirteen FAQ entries with matching structured data.
+- All fifteen illustration placements are filled; no active illustration uses an earlier ImageGen set.
+- The page includes nine capability cards and thirteen FAQ entries with matching structured data.
 - Desktop, tablet, and mobile checks covered widths of 1440, 768, 390, and 320 pixels without horizontal overflow.
 - FAQ click/keyboard controls, mobile navigation, product discovery controls, the documentation link, and reduced-motion behavior were checked in the browser.
 - The thirteen unique internal destinations in the main content exist in the production build.
