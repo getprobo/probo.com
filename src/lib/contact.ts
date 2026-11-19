@@ -166,6 +166,7 @@ export type ContactEmailPayload = {
   email: string;
   pageUrl?: string;
   referrer?: string;
+  language?: "fr" | "en";
   utm?: Record<string, string>;
   fax?: string;
 };
@@ -179,6 +180,7 @@ export type ContactSlackPayload = {
   website?: string;
   pageUrl?: string;
   referrer?: string;
+  language?: "fr" | "en";
   utm?: Record<string, string>;
 };
 
@@ -195,6 +197,7 @@ export type ContactPayload = {
   source?: string;
   pageUrl?: string;
   referrer?: string;
+  language?: "fr" | "en";
   utm?: Record<string, string>;
   // Ticked "Also open a shared Slack channel with our team".
   slack?: boolean;

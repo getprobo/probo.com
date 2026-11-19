@@ -117,6 +117,7 @@ export async function onRequestPost(context: {
       if (value) utm[key] = value;
     }
 
+    const language = input.language === "fr" ? "fr" : "en";
     const pageContext = {
       pageUrl: text(input.pageUrl, 500),
       referrer: text(input.referrer, 500),
@@ -129,7 +130,7 @@ export async function onRequestPost(context: {
       return forward(env, {
         eventType: "CONTACT_EMAIL",
         createdAt: new Date().toISOString(),
-        data: { email, website: emailDomain(email) },
+        data: { email, website: emailDomain(email), language },
         context: pageContext,
       });
     }
@@ -146,7 +147,7 @@ export async function onRequestPost(context: {
       return forward(env, {
         eventType: "SLACK_CONNECT_REQUEST",
         createdAt: new Date().toISOString(),
-        data: { email, firstName, lastName, website },
+        data: { email, firstName, lastName, website, language },
         context: pageContext,
       });
     }
@@ -192,6 +193,7 @@ export async function onRequestPost(context: {
         formName: "probo.com contact form",
         // Ticked "Also open a shared Slack channel with our team".
         slackConnect: input.slack === true,
+        language,
         intent: input.intent === "slack" ? "slack" : "call",
         createdAt: now,
         fields: [

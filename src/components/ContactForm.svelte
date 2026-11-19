@@ -119,6 +119,10 @@
       pageUrl: location.origin + location.pathname,
       referrer: document.referrer,
       utm: utmParams(),
+      // Probo works in French and English; anything else gets English.
+      language: navigator.language?.toLowerCase().startsWith("fr")
+        ? "fr"
+        : "en",
     };
   }
 
