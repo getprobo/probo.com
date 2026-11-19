@@ -130,7 +130,20 @@ const publishCards = [
     illustration: "capability-versions",
     title: "Versions",
     description:
-      "Track every draft, minor, and major version, each with its own changelog.",
+      "Publishing or requesting approval creates a snapshot with its own link and changelog. The link opens that exact version even after the draft changes.",
+  },
+  {
+    id: "real-time-collaboration",
+    illustration: "capability-live-editing",
+    title: "Live editing",
+    description:
+      "Edit the same draft together. Avatars show who’s there, and live cursors show where each person is writing.",
+  },
+  {
+    illustration: "capability-edit-history",
+    title: "Edit history",
+    description:
+      "See what each author added or removed during an editing session. Restore an earlier session to bring its text back into the draft.",
   },
   {
     illustration: "capability-approval-quorums",
@@ -615,7 +628,8 @@ const serviceSchema = {
         {
           publishCards.map((card, index) => (
             <article
-              class="mx-auto flex w-full max-w-[508px] flex-col gap-6"
+              id={card.id}
+              class="mx-auto flex w-full max-w-[508px] scroll-mt-24 flex-col gap-6"
               data-trust-reveal
               style={`--trust-reveal-delay: ${index * 70}ms`}
             >
