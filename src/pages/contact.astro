@@ -1,65 +1,186 @@
 ---
+import { getImage } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import Icon, { type IconName } from "../components/Icon.astro";
+import Logos from "../components/block/Logos.astro";
+import ContactForm from "../components/ContactForm.svelte";
+import ContactTestimonials from "../components/ContactTestimonials.svelte";
+import RohanVasishth from "../assets/testimonial/rohan-vasishth.jpg";
+import EfimMirochnik from "../assets/testimonial/efim-mirochnik.jpg";
+import BaptisteArnaud from "../assets/testimonial/baptiste-arnaud.jpg";
+import FabienDevos from "../assets/testimonial/fabien-devos.jpg";
+import CamilleEpitalon from "../assets/testimonial/Camille Epitalon.png";
+import AntoinePortrait from "../assets/about/antoine-bourchardy.png";
+import ArthurPortrait from "../assets/about/arthur-mayoux.jpeg";
+import LinaPortrait from "../assets/about/lina-sobhy.png";
+import RamiPortrait from "../assets/about/rami-delassan.png";
+import EdwinPortrait from "../assets/about/edwin-remery.png";
+
+const points: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: "chats-circle",
+    title: "15 minutes, no slides",
+    text: "Tell us who is asking for compliance and by when.",
+  },
+  {
+    icon: "compass",
+    title: "The right framework for you",
+    text: "SOC 2, ISO 27001, HIPAA, GDPR: we tell you what you need and what you can skip.",
+  },
+  {
+    icon: "list-checks",
+    title: "A clear plan",
+    text: "You leave with a scope, a timeline and a price.",
+  },
+];
+
+const quotes = [
+  {
+    quote:
+      "We had real enterprise pressure: tight timelines, high expectations. Probo helped us move fast on SOC 2 and HIPAA while making sure everything was done properly.",
+    author: "Rohan Vasishth",
+    role: "Co-founder at Bluejay",
+    photo: RohanVasishth,
+  },
+  {
+    quote:
+      "Probo has been a true partner. They adapted compliance and security to our daily jobs, took the heavy lifting and enabled us to move faster than expected.",
+    author: "Efim Mirochnik",
+    role: "CISO at Ahrefs",
+    photo: EfimMirochnik,
+  },
+  {
+    quote:
+      "Probo made getting ISO 27001 certified simple, fast, and human. Their open-source approach, direct Slack support, and ability to adapt to a one-person company made all the difference.",
+    author: "Baptiste Arnaud",
+    role: "Founder at Typebot",
+    photo: BaptisteArnaud,
+  },
+  {
+    quote:
+      "Probo made the SOC2 process seamless, their support went way beyond what I expected. It's the first time I actually enjoyed compliance.",
+    author: "Fabien Devos",
+    role: "Co-founder & CTO at Vybe",
+    photo: FabienDevos,
+  },
+  {
+    quote:
+      "Compliance that works where we already do. In Slack, async, with almost no back-and-forth.",
+    author: "Camille Epitalon",
+    role: "Co-founder & CTO at Verso",
+    photo: CamilleEpitalon,
+  },
+];
+
+// The people who take these calls, shown in the form and above the calendar.
+const team = await Promise.all(
+  [
+    { name: "Antoine", photo: AntoinePortrait },
+    { name: "Arthur", photo: ArthurPortrait },
+    { name: "Lina", photo: LinaPortrait },
+    { name: "Rami", photo: RamiPortrait },
+    { name: "Edwin", photo: EdwinPortrait },
+  ].map(async ({ name, photo }) => ({
+    name,
+    image: (await getImage({ src: photo, width: 112, height: 112 })).src,
+  })),
+);
+
+const testimonials = await Promise.all(
+  quotes.map(async ({ photo, ...quote }) => ({
+    ...quote,
+    image: (await getImage({ src: photo, width: 88, height: 88 })).src,
+  })),
+);
 ---
 
 <Layout
   title="Contact us"
   description="Get in touch with Probo's compliance experts for a demo, pricing questions, or help scoping SOC 2, ISO 27001, or GDPR compliance."
 >
-  <main>
-    <animated-hero class="relative block overflow-hidden py-10 sm:py-20">
-      <section class="container">
-        <h1 class="text-h2 animate-slide-in mb-10 text-center font-medium">
+  <main class="overflow-x-clip">
+    <section
+      class="contact-grid container grid gap-10 py-10 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:grid-rows-[auto_1fr] lg:gap-x-20"
+    >
+      <div class="pitch lg:pt-6">
+        <h1 class="text-h3 sm:text-h2 animate-slide-in max-w-120 font-medium">
           Talk to a compliance expert
         </h1>
-        <iframe
-          id="tally-form"
-          data-tally-src="https://tally.so/embed/nrxk9v?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1&hideBranding=1"
-          loading="lazy"
-          width="100%"
-          height="729"
-          frameborder="0"
-          marginheight="0"
-          marginwidth="0"
-          title="Probo can handle compliance for you"></iframe>
-      </section>
-    </animated-hero>
+      </div>
+
+      <div
+        class="form-shell relative z-10 self-start lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center"
+      >
+        <div
+          class="form-card bg-level-1 border-border-low shadow-mid animate-slide-in animation-delay-100 relative rounded-3xl border p-5 sm:p-8"
+        >
+          <ContactForm {team} client:load />
+        </div>
+      </div>
+      <div
+        class="pitch flex max-w-120 flex-col gap-10 lg:col-start-1 lg:row-start-2"
+      >
+        <div class="animate-slide-in animation-delay-150">
+          <ul class="divide-border-low border-border-low divide-y border-y">
+            {
+              points.map((point) => (
+                <li class="flex items-start gap-4 py-4">
+                  <span class="bg-highlight flex size-9 flex-none items-center justify-center rounded-lg">
+                    <Icon name={point.icon} size={18} />
+                  </span>
+                  <div>
+                    <p class="font-medium">{point.title}</p>
+                    <p class="text-muted-foreground">{point.text}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="animate-slide-in animation-delay-200">
+          <ContactTestimonials items={testimonials} client:visible />
+        </div>
+      </div>
+    </section>
+
+    <section class="container pb-10 sm:pb-20">
+      <h2 class="text-tertiary-foreground text-center">
+        Trusted by leading teams
+      </h2>
+      <Logos class="my-6" constrained />
+    </section>
   </main>
 </Layout>
 
-<script>
-  import { AnimatedHero } from "../lib/elements/hero";
-  import { customElementDefine } from "../lib/dom";
-
-  customElementDefine("animated-hero", () => AnimatedHero);
-
-  // Load Tally form on page load (including client-side navigation)
-  function loadTallyForm() {
-    const iframe = document.getElementById("tally-form") as HTMLIFrameElement;
-    if (!iframe || iframe.src) return;
-
-    const tallySrc = iframe.dataset.tallySrc;
-    if (!tallySrc) return;
-
-    const w = "https://tally.so/widgets/embed.js";
-
-    if (typeof (window as any).Tally !== "undefined") {
-      iframe.src = tallySrc;
-      (window as any).Tally.loadEmbeds();
-    } else if (!document.querySelector(`script[src="${w}"]`)) {
-      const s = document.createElement("script");
-      s.src = w;
-      s.onload = () => {
-        iframe.src = tallySrc;
-        if (typeof (window as any).Tally !== "undefined") {
-          (window as any).Tally.loadEmbeds();
-        }
-      };
-      document.body.appendChild(s);
-    } else {
-      iframe.src = tallySrc;
+<style>
+  /* Once the calendar shows, the card is centred on its own. It stays narrow
+     on purpose: below about 650px Calendly drops its own card frame, so the
+     calendar sits flush inside ours instead of as a box in a box. */
+  .contact-grid:has(:global(.contact-schedule)) {
+    display: block;
+  }
+  .contact-grid:has(:global(.contact-schedule)) .pitch {
+    display: none;
+  }
+  .contact-grid:has(:global(.contact-schedule)) .form-shell {
+    max-width: 560px;
+    margin-inline: auto;
+  }
+  /* The short email step is centred against the pitch; once the full form
+     opens it runs from the top like the left column. */
+  @media (min-width: 64rem) {
+    .form-shell:has(:global(#contact-first-name)) {
+      align-self: start;
     }
   }
-
-  document.addEventListener("astro:page-load", loadTallyForm);
-</script>
+  .form-shell::before {
+    content: "";
+    position: absolute;
+    /* Sized from the card, so the glow hugs it whether it shows one field
+       or the whole form. */
+    inset: calc(-10% - 60px) calc(-16% - 40px);
+    background: url("/trust-center/ellipse.svg") center / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+</style>

@@ -4,3 +4,6 @@ N8N_YC_DEAL_WEBHOOK_URL=https://your-n8n.com/webhook/yc-deal
 # Basic auth credentials for webhook calls
 WEBHOOK_AUTH_USERNAME=your-username
 WEBHOOK_AUTH_PASSWORD=your-password
+
+# n8n webhook URL for contact form submissions (/api/contact)
+N8N_CONTACT_WEBHOOK_URL=https://your-n8n.com/webhook/contact
