@@ -902,6 +902,7 @@ function categoryForTool(name) {
     ["Business functions", /BusinessFunction/],
     ["Obligations", /Obligation/],
     ["Organizations", /Organization/],
+    ["Product feedback", /^submit_feedback$/],
   ];
   const category = categories.find(([, pattern]) => pattern.test(name))?.[0];
   if (!category) {
@@ -1079,6 +1080,15 @@ function expandConfigStruct(structs, typeName, prefix = "") {
 
 function nestedConfigType(type, structs) {
   const value = type.replace(/^\*/, "");
+  // Structs whose custom JSON (un)marshalling exposes them as a map of another
+  // struct. GraphQLRateLimitConfig reads `rate-limit.{name}` budgets, where
+  // `default` is one of the names.
+  const customMap = {
+    GraphQLRateLimitConfig: "GraphQLRateLimitBudget",
+  }[value];
+  if (customMap && structs.has(customMap)) {
+    return { typeName: customMap, pathSuffix: ".{name}" };
+  }
   if (structs.has(value)) return { typeName: value, pathSuffix: "" };
 
   const slice = value.match(/^\[\]\*?([A-Za-z0-9_]+)$/);

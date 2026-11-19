@@ -257,6 +257,10 @@ export const mcpCategoryItems = [
     slug: "docs/developers/api/mcp/tools/catalog/privacy",
   },
   {
+    label: "Product feedback",
+    slug: "docs/developers/api/mcp/tools/catalog/product-feedback",
+  },
+  {
     label: "Risk assessments",
     slug: "docs/developers/api/mcp/tools/catalog/risk-assessments",
   },
