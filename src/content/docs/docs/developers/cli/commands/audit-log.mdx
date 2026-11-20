@@ -17,8 +17,8 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | ----------------------------------------------- | ------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------- |
 | [`prb audit-log`](#prb-audit-log)               | Manage audit log entries. | `prb audit-log <command>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/audit_log.go#L32)     |
 | [`prb audit-log export`](#prb-audit-log-export) | Export audit log entries. | `prb audit-log export`    | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/export/export.go#L47) |
-| [`prb audit-log list`](#prb-audit-log-list)     | List audit log entries.   | `prb audit-log list`      | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/list/list.go#L83)     |
-| [`prb audit-log view`](#prb-audit-log-view)     | View an audit log entry.  | `prb audit-log view <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/view/view.go#L66)     |
+| [`prb audit-log list`](#prb-audit-log-list)     | List audit log entries.   | `prb audit-log list`      | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/list/list.go#L96)     |
+| [`prb audit-log view`](#prb-audit-log-view)     | View an audit log entry.  | `prb audit-log view <id>` | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/view/view.go#L80)     |
 
 ## prb audit-log
 
@@ -75,19 +75,24 @@ Accepts no positional arguments.
 
 ### Flags
 
-| Flag                | Type    | Default  | Required | Description                                          |
-| ------------------- | ------- | -------- | -------- | ---------------------------------------------------- |
-| `--action`          | string  | `""`     | —        | Filter by action (e.g. core:thirdParty:create)       |
-| `--actor-id`        | string  | `""`     | —        | Filter by actor ID                                   |
-| `--after`           | string  | `""`     | —        | Cursor from the previous page (the Next cursor line) |
-| `--json`            | boolean | `false`  | —        | Output JSON (same as --output json)                  |
-| `--limit`, `-L`     | integer | `30`     | —        | Maximum number of entries to list                    |
-| `--order-by`        | string  | `""`     | —        | Order by field (CREATED_AT)                          |
-| `--order-direction` | string  | `"DESC"` | —        | Sort direction (ASC, DESC)                           |
-| `--org`             | string  | `""`     | —        | Organization ID                                      |
-| `--output`, `-o`    | string  | `""`     | —        | Output format: json, table (default)                 |
-| `--resource-id`     | string  | `""`     | —        | Filter by resource ID                                |
-| `--resource-type`   | string  | `""`     | —        | Filter by resource type (e.g. ThirdParty)            |
+| Flag                | Type    | Default  | Required | Description                                               |
+| ------------------- | ------- | -------- | -------- | --------------------------------------------------------- |
+| `--action`          | string  | `""`     | —        | Filter by action. A trailing _ matches the prefix (iam:_) |
+| `--actor-id`        | string  | `""`     | —        | Filter by actor ID                                        |
+| `--actor-type`      | string  | `""`     | —        | Filter by actor type (USER, API_KEY, SYSTEM)              |
+| `--after`           | string  | `""`     | —        | Cursor from the previous page (the Next cursor line)      |
+| `--from`            | string  | `""`     | —        | Include entries on or after this local date (YYYY-MM-DD)  |
+| `--json`            | boolean | `false`  | —        | Output JSON (same as --output json)                       |
+| `--limit`, `-L`     | integer | `30`     | —        | Maximum number of entries to list                         |
+| `--order-by`        | string  | `""`     | —        | Order by field (CREATED_AT)                               |
+| `--order-direction` | string  | `"DESC"` | —        | Sort direction (ASC, DESC)                                |
+| `--org`             | string  | `""`     | —        | Organization ID                                           |
+| `--outcome`         | string  | `""`     | —        | Filter by outcome (ALLOWED, DENIED)                       |
+| `--output`, `-o`    | string  | `""`     | —        | Output format: json, table (default)                      |
+| `--request-id`      | string  | `""`     | —        | Filter by request ID                                      |
+| `--resource-id`     | string  | `""`     | —        | Filter by resource ID                                     |
+| `--resource-type`   | string  | `""`     | —        | Filter by resource type (e.g. ThirdParty)                 |
+| `--to`              | string  | `""`     | —        | Include entries on or before this local date (YYYY-MM-DD) |
 
 ### Examples
 
@@ -97,7 +102,7 @@ prb audit-log list --action core:thirdParty:create
 prb audit-log list --resource-type ThirdParty --limit 50
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/list/list.go#L83).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/list/list.go#L96).
 
 ## prb audit-log view
 
@@ -124,4 +129,4 @@ Requires 1 positional argument.
 prb audit-log view <audit-log-entry-id>
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/view/view.go#L66).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/auditlog/view/view.go#L80).
