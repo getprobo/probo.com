@@ -30,6 +30,7 @@ const accessReviewConnectorItems = [
   { label: "Attio", slug: "docs/product/access-review/attio" },
   { label: "authentik", slug: "docs/product/access-review/authentik" },
   { label: "Better Stack", slug: "docs/product/access-review/better-stack" },
+  { label: "Bitwarden", slug: "docs/product/access-review/bitwarden" },
   { label: "Brevo", slug: "docs/product/access-review/brevo" },
   { label: "Brex", slug: "docs/product/access-review/brex" },
   { label: "Cal.com", slug: "docs/product/access-review/calcom" },
