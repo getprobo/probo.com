@@ -9,6 +9,7 @@
     captureToolbarPayloadFromHash,
     loadToolbarFromCache,
   } from "../lib/posthog";
+  import { recordContactClick, recordVisit } from "../lib/attribution";
 
   function getPageType(path: string) {
     if (path.startsWith("/blog")) return "blog";
@@ -29,8 +30,11 @@
     { once: true },
   );
 
+  recordVisit();
+
   // CTA click tracking: explicit data-ph-event attributes + auto-tracked contact/github links
   document.addEventListener("click", (e) => {
+    recordContactClick(e.target);
     const el = (e.target as Element).closest("[data-ph-event]");
     if (el) {
       const eventName = el.getAttribute("data-ph-event")!;
@@ -61,6 +65,7 @@
 
   // Capture pageview and re-inject the toolbar after each Astro view-transition body swap.
   document.addEventListener("astro:after-swap", () => {
+    recordVisit();
     capturePosthogEvent("$pageview", {
       page_type: getPageType(location.pathname),
     });

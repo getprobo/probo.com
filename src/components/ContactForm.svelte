@@ -4,6 +4,7 @@
   import Select from "./ui/Select.svelte";
   import FrameworkPicker from "./FrameworkPicker.svelte";
   import { capturePosthogEvent } from "../lib/posthog";
+  import { readAttribution } from "../lib/attribution";
   import {
     checkEmail,
     emailDomain,
@@ -105,20 +106,16 @@
     capturePosthogEvent("contact_form_started");
   }
 
-  function utmParams(): Record<string, string> {
-    const utm: Record<string, string> = {};
-    new URLSearchParams(location.search).forEach((value, key) => {
-      if (key.startsWith("utm_")) utm[key] = value;
-    });
-    return utm;
-  }
-
   function context() {
+    const { utm, cta, ctaPage, landingPage, entryReferrer } = readAttribution();
     return {
       fax,
       pageUrl: location.origin + location.pathname,
-      referrer: document.referrer,
-      utm: utmParams(),
+      referrer: entryReferrer ?? "",
+      utm,
+      cta,
+      ctaPage,
+      landingPage,
       // Probo works in French and English; anything else gets English.
       language: navigator.language?.toLowerCase().startsWith("fr")
         ? "fr"

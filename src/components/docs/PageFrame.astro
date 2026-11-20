@@ -54,7 +54,9 @@ const section = getDocsSection(getDocsSectionForPath(Astro.url.pathname));
     <Search class="docs-chrome-search" />
     <div class="docs-masthead-actions">
       <ThemeToggle />
-      <Button href="/contact" class="docs-compliant">Get compliant</Button>
+      <Button href="/contact" data-cta="docs-header" class="docs-compliant"
+        >Get compliant</Button
+      >
     </div>
   </header>
 </div>

@@ -120,8 +120,14 @@ export async function onRequestPost(context: {
     const language = input.language === "fr" ? "fr" : "en";
     const pageContext = {
       pageUrl: text(input.pageUrl, 500),
+      // Outside site the session started from (not the page before /contact).
       referrer: text(input.referrer, 500),
       utm,
+      // Which /contact button was clicked ("pricing-probo-cloud") and where.
+      cta: text(input.cta, 100),
+      ctaPage: text(input.ctaPage, 300),
+      // First page of the session.
+      landingPage: text(input.landingPage, 500),
     };
 
     // Step one of the form: the work email alone. The workflow creates the

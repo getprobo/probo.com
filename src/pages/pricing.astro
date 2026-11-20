@@ -27,6 +27,10 @@ const activeMotion =
   motionStudy ?? (!exploration ? productionPricingMotion : undefined);
 const productionMotion = activeMotion?.id === "production";
 
+// Label sent with contact-form leads: which plan's button was clicked.
+const planCta = (id: string, area: string) =>
+  `pricing-${area}${id === "cloud" ? "probo-cloud" : id}`;
+
 const planIcons = {
   "open-source": "code",
   cloud: "cloud",
@@ -262,6 +266,7 @@ const faqSchema = {
               </div>
               <Button
                 href={plan.href}
+                data-cta={planCta(plan.id, "")}
                 size="lg"
                 variant={plan.id === "open-source" ? "secondary" : "primary"}
                 class:list={[
@@ -548,6 +553,7 @@ const faqSchema = {
                         </span>
                         <Button
                           href={plan.href}
+                          data-cta={planCta(plan.id, "compare-")}
                           variant={
                             plan.id === "open-source" ? "secondary" : "primary"
                           }

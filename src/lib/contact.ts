@@ -168,6 +168,10 @@ export type ContactEmailPayload = {
   referrer?: string;
   language?: "fr" | "en";
   utm?: Record<string, string>;
+  // See src/lib/attribution.ts.
+  cta?: string;
+  ctaPage?: string;
+  landingPage?: string;
   fax?: string;
 };
 
@@ -182,6 +186,10 @@ export type ContactSlackPayload = {
   referrer?: string;
   language?: "fr" | "en";
   utm?: Record<string, string>;
+  // See src/lib/attribution.ts.
+  cta?: string;
+  ctaPage?: string;
+  landingPage?: string;
 };
 
 export type ContactPayload = {
@@ -199,6 +207,10 @@ export type ContactPayload = {
   referrer?: string;
   language?: "fr" | "en";
   utm?: Record<string, string>;
+  // See src/lib/attribution.ts.
+  cta?: string;
+  ctaPage?: string;
+  landingPage?: string;
   // Ticked "Also open a shared Slack channel with our team".
   slack?: boolean;
   // Which path the visitor chose: book a call, or a Slack invite only.
