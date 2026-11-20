@@ -1,0 +1,15 @@
+---
+title: "Set your own risk score levels"
+description: "Each risk analysis now stores its own score levels, each with a minimum score, so the bands match your risk policy. The matrix, score colors and published document follow them."
+date: 2026-11-17
+images: ["/changelog/2026-11-17-custom-risk-score-levels-1.png"]
+tags: ["Risk Management"]
+---
+
+Risk policies do not all cut scores the same way. One says Medium starts at 5, another has no Critical at all. A [risk analysis](/docs/product/risk-management) now stores its own score levels, each with a minimum score, so the labels in Probo match the policy.
+
+Set them in the Levels grid when you create or edit an analysis. Keep at least two, and the first one starts at 1. The matrix, the score colors, the treatment plan tags and the published document follow them, and the legend shows the range of each level, such as Low (1-12). Exported documents name the severity next to each score, such as `1 Low`, instead of only a number.
+
+Nothing changes if you leave them alone. An analysis without levels uses the default bands for its matrix size, and existing analyses were filled with those bands.
+
+Also on GraphQL, MCP and the n8n node. In the CLI, `prb risk-analysis create --score-levels LOW=1,MEDIUM=5,HIGH=10` sets them, and `update` takes the same flag.

@@ -1,0 +1,17 @@
+---
+title: "Daily cookie banner analytics"
+description: "Cookie banners now count page loads and tracker hits on every page view, grouped by UTC day. The console charts the last 30 days and daily counts are kept for 90 days."
+date: 2026-11-17
+images:
+  [
+    "/changelog/2026-11-17-daily-banner-analytics-1.png",
+    "/changelog/2026-11-17-daily-banner-analytics-2.png",
+  ]
+tags: ["Cookie Banner"]
+---
+
+Until now a [cookie banner](/docs/product/cookie-banner/overview) only measured traffic while a sample was open. You started one, waited, stopped it, and read the numbers. Samples are gone. Every page view is counted, by UTC day.
+
+Each banner opens on a new Overview page that charts page loads per browser for the last 30 days. The tracker list has a hits column for the same window, and each tracker pattern charts its own daily hits. Daily counts are kept for 90 days. Viewers can now read tracker patterns and tracker resources, hit counts included.
+
+The API, MCP, `prb` and the n8n node return the same daily counts, oldest day first, with a `days` input that defaults to 7 and goes up to 90. In the CLI that is `prb cookie-banner view --days` and `prb tracker-pattern view --days`.
