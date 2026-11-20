@@ -903,6 +903,10 @@ function categoryForTool(name) {
     ["Obligations", /Obligation/],
     ["Organizations", /Organization/],
     ["Product feedback", /^submit_feedback$/],
+    [
+      "Tags and search",
+      /^(create|update|delete|attach|detach)Tag$|^listTags(ForResource)?$|^search$/,
+    ],
   ];
   const category = categories.find(([, pattern]) => pattern.test(name))?.[0];
   if (!category) {

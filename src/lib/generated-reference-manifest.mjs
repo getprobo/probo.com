@@ -146,8 +146,16 @@ export const cliCommandItems = [
     slug: "docs/developers/cli/commands/scim",
   },
   {
+    label: "Search",
+    slug: "docs/developers/cli/commands/search",
+  },
+  {
     label: "SOA",
     slug: "docs/developers/cli/commands/soa",
+  },
+  {
+    label: "Tag",
+    slug: "docs/developers/cli/commands/tag",
   },
   {
     label: "Task",
@@ -271,6 +279,10 @@ export const mcpCategoryItems = [
   {
     label: "Statements of applicability",
     slug: "docs/developers/api/mcp/tools/catalog/statements-of-applicability",
+  },
+  {
+    label: "Tags and search",
+    slug: "docs/developers/api/mcp/tools/catalog/tags-and-search",
   },
   {
     label: "Third parties",
@@ -422,6 +434,10 @@ export const n8nResourceItems = [
   {
     label: "Statement of Applicability",
     slug: "docs/developers/api/n8n/resources/statement-of-applicability",
+  },
+  {
+    label: "Tag",
+    slug: "docs/developers/api/n8n/resources/tag",
   },
   {
     label: "Task",
