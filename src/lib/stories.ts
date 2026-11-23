@@ -1,7 +1,11 @@
 import type { CollectionEntry } from "astro:content";
 
 /** Pinned to the front of listing / homepage slider, in order. */
-const PINNED_STORY_IDS = ["ahrefs-iso", "blaxel-soc2"] as const;
+const PINNED_STORY_IDS = [
+  "ahrefs-iso",
+  "normal-computing-soc2",
+  "blaxel-soc2",
+] as const;
 
 function pinnedRank(id: string): number {
   const index = PINNED_STORY_IDS.indexOf(
