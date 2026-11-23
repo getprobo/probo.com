@@ -1,0 +1,15 @@
+---
+title: "Denied checks and request details in the audit log"
+description: "The audit log now records denied checks next to allowed ones, with the denial reason, client IP, user agent, and request id. New filters narrow the list by outcome, actor type, action prefix, request id, and date range."
+date: 2026-11-20
+images: ["/changelog/2026-11-20-richer-audit-log-1.png"]
+tags: ["Governance"]
+---
+
+The [audit log](/docs/product/audit-log) used to show what people were allowed to do. It now records denied checks too, so an attempt to reach a record someone has no access to leaves a trace, with the reason it failed.
+
+Each entry also keeps a snapshot of the actor's email and name, the client IP, the user agent, and the request id. The same request id is written to the server logs, which makes it easy to line up an entry with what happened on the server.
+
+The console page is rebuilt with filters for outcome, actor type, action prefix (`iam:*` style), request id, and a date range. Filters live in the URL, so a filtered view can be bookmarked or shared. Open an entry to see its origin, request id, and denial reason.
+
+The new fields are in the CSV export, the GraphQL APIs, the MCP `listAuditLogEntries` tool, and `prb audit-log list` and `view`.

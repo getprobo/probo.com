@@ -1,0 +1,15 @@
+---
+title: "Search every resource from Ctrl+K"
+description: "The console Ctrl+K spotlight now finds risks, documents, controls, and other resources by title, id, tag, or type, grouped next to pages. The same search is on GraphQL, MCP, the prb CLI, and n8n."
+date: 2026-11-20
+images: ["/changelog/2026-11-20-cross-resource-search-1.png"]
+tags: ["Console"]
+---
+
+Press Ctrl+K in the console and the spotlight now lists matching resources beside pages, grouped by type. Pick one to open it. Controls open on their framework, and DPIAs and TIAs open on their processing activity.
+
+[Search](/docs/product/getting-started/core-concepts#tags-and-search) only returns resources you are allowed to list. Bare words match the start of titles, and a resource id matches in full or by prefix. `tag:name` keeps resources carrying that tag, and every `tag:` in the query must match. `type:name` narrows to a resource type and can be repeated. A query that uses `tag:` or `type:` lists resources only.
+
+The spotlight also got a new command-palette layout, and closing it clears the query.
+
+Also available as `search` on the GraphQL API and MCP, `prb search`, and the n8n Tag `Search` operation.

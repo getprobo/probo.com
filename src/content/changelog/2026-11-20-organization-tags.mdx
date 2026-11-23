@@ -1,0 +1,12 @@
+---
+title: "Tag your compliance records"
+description: "Create organization tags with a name and an optional color, then attach several of them to a resource. Tags are managed from the GraphQL API, MCP, the prb CLI, and the n8n node."
+date: 2026-11-20
+tags: ["Governance"]
+---
+
+[Tags](/docs/product/getting-started/core-concepts#tags-and-search) are organization-wide labels. Each one has a name that is unique in the organization and an optional color, and a resource can carry several of them.
+
+Attaching a tag that is already on a resource keeps the existing assignment, so scripts and agents can safely run the same attach twice.
+
+Tags are managed from the GraphQL API (`createTag`, `updateTag`, `deleteTag`, `attachTag`, `detachTag`), MCP (the same tools plus `listTags` and `listTagsForResource`), `prb tag`, and the n8n Tag resource. They also work as a filter in the new [search](/docs/product/getting-started/core-concepts#tags-and-search): `tag:security` keeps only resources carrying that tag.
