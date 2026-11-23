@@ -111,6 +111,14 @@ and Asana sync (publish, link, and project mapping), assets, audits, findings,
 privacy, third parties, access reviews, the compliance portal, webhooks, cookie
 consent, and other compliance workflows.
 
+Two tool groups work across resource types:
+
+- **Tags**: `createTag`, `updateTag`, `deleteTag`, `attachTag`, `detachTag`,
+  `listTags`, and `listTagsForResource` label records and list them by label.
+- **Search**: `search` finds any resource the caller is allowed to list. Bare
+  words match titles as prefixes, a resource id matches in full or by prefix,
+  every `tag:name` must match, and `type:name` narrows the resource types.
+
 Each tool advertises:
 
 - A name and description used by the client to select it.

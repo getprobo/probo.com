@@ -76,6 +76,28 @@ List fields use GraphQL connections. Request only the fields the integration nee
 
 Confirm connection field names and arguments against the schema for your deployment. Nested lists under `organization(id:)` are organization-scoped; top-level list fields such as `organizations` return only records the token can access.
 
+## Tags and search
+
+Tags are organization-scoped labels with a unique name and an optional color. Manage them with the `createTag`, `updateTag`, and `deleteTag` mutations, and assign them with `attachTag` and `detachTag`. Attaching a tag that is already on the resource keeps the existing assignment. Read every tag through `Organization.tags`, and the tags on a record through the `tags` field of each taggable type, such as `Risk`, `Document`, `Control`, `ThirdParty`, or `Task`.
+
+The top-level `search(organizationId:, query:)` query returns a paginated connection of taggable resources the token is allowed to list. Each edge carries the resource `title` and the `node`. The query string supports:
+
+- Bare words, which match titles as prefixes.
+- A resource id, matched in full or by prefix.
+- `tag:name`, repeatable. Every tag must match. Quote names with spaces: `tag:"eu west"`.
+- `type:name`, optional and repeatable, to restrict the resource types.
+
+```graphql
+query {
+  search(organizationId: "ORGANIZATION_ID", query: "access tag:Production type:document", first: 20) {
+    edges { title node { __typename id } }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+```
+
+Confirm the result fields against the schema for your deployment.
+
 ## Mutations and errors
 
 Mutations validate authorization and current record state. A successful HTTP response can still contain GraphQL errors, so inspect both `data` and `errors`. Do not retry invalid, forbidden, or conflict errors without changing the request. Retry transient internal or transport failures only with bounded backoff and idempotency in mind.

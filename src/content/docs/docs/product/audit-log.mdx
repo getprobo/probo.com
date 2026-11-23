@@ -1,6 +1,6 @@
 ---
 title: Audit log
-description: Review immutable records of every action in your Probo organization, reads included, with who acted and which resource they touched.
+description: Review immutable records of every allowed and denied action in your Probo organization, reads included, with who acted, from where, and which resource they touched.
 ---
 
 The audit log is a chronological record of the actions taken in your organization, from reading a document to changing a role. Use it to investigate who viewed or changed people, roles, compliance records, and settings, and when.
@@ -15,14 +15,30 @@ Open **Settings** → **Audit Log**. Entries are immutable: Probo does not modif
 | **Actor** | Who performed it — a user, an API key, or the system — plus the actor identifier |
 | **Action** | The operation, typically as `resource:verb` (for example get, list, create, update, or delete) |
 | **Resource** | The type and identifier of the record the action applied to |
+| **Outcome** | Whether the check was allowed or denied |
+| **Denial reason** | Why the check failed, on denied entries only |
+| **Actor email and name** | A snapshot of the actor's email and name as it was at the time of the action |
+| **Origin** | The client IP address the request came from |
+| **User agent** | The browser or client that sent the request |
+| **Request ID** | The request identifier, also written to the server logs, to correlate entries from one request |
+| **Recorded at** | When Probo wrote the entry |
 
-Actions cover organization records such as memberships, invitations, documents, risks, third parties, and authentication configuration. Probo writes one entry for every action it authorizes, reads included. If a single page or request reads the same document or profile several times, each read gets its own entry, so expect many more entries than changes. The log is not a full session or login history.
+Actions cover organization records such as memberships, invitations, documents, risks, third parties, and authentication configuration. Probo writes an entry for every authorization check, whether it is allowed or denied, reads included. A denied entry shows why the check failed, which helps you spot attempts to reach records a person or API key has no access to. If a single page or request reads the same document or profile several times, each read gets its own entry, so expect many more entries than changes. The log is not a full session or login history.
 
 ## Who can view and export
 
-Owners and admins can open the audit log in **Settings**. Browse recent entries in the console, then load more as needed.
+Owners and admins can open the audit log in **Settings**. Browse recent entries in the console, then load more as needed. Open an entry to see its origin, request ID, and denial reason.
 
-For a dated trail outside the console, export entries for a time range. Exports are delivered as a CSV download link. You can also list and export through the [CLI](/docs/developers/cli/commands/audit-log), [MCP](/docs/developers/api/mcp/tools/catalog/audit-logs), or [n8n](/docs/developers/api/n8n/resources/audit-log).
+Narrow the list with filters:
+
+- A created-at date range, picked in one range control and read as local days
+- Action prefix, for example `document:` for every document action
+- Actor type and outcome (allowed or denied)
+- Request ID, actor, and resource, under **Filters**
+
+Filters are kept in the page URL, so you can bookmark or share a filtered view. The same filters are available on the console and Connect GraphQL APIs and the MCP `listAuditLogEntries` tool.
+
+For a dated trail outside the console, export entries for a time range. Exports are delivered as a CSV download link and include the outcome, denial reason, actor email and name snapshot, client IP, user agent, and request ID. You can also list and export through the [CLI](/docs/developers/cli/commands/audit-log), [MCP](/docs/developers/api/mcp/tools/catalog/audit-logs), or [n8n](/docs/developers/api/n8n/resources/audit-log).
 
 ## When to use it
 

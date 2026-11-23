@@ -108,6 +108,12 @@ A public-facing portal for selected certifications, commitments, references, fil
 
 Device records represent enrolled endpoints and their reported posture. Agent runs represent in-product agent work over authorized GRC data; they are distinct from Device Agent device enrollment.
 
+## Tags and Search
+
+Tags are organization-wide labels, each with a unique name and an optional color. One resource can carry several tags, and the same tag can sit on risks, documents, controls, third parties, tasks, assets, and most other compliance records. Tags are managed through the [GraphQL API](/docs/developers/graphql) and [MCP](/docs/developers/api/mcp/overview).
+
+Search finds any resource you are allowed to list. In the console, press Ctrl+K to open the spotlight: matching resources appear beside pages, grouped by type. Bare words match the start of titles, `tag:name` keeps only resources carrying that tag, and `type:name` narrows to a resource type.
+
 ## How Concepts Relate
 
 The core workflow in Probo follows this chain:
@@ -120,6 +126,7 @@ The core workflow in Probo follows this chain:
 - **Audits** verify that everything is in place and operating as expected
 - **Findings** preserve the issues identified during review
 - **Documents** formalize approved policies, procedures, and reports
+- **Tags** group related records across all of these types, and **search** finds them by title, id, tag, or type
 
 See [Compliance program](/docs/product/compliance-program) for how this chain is operated day to day.
 
