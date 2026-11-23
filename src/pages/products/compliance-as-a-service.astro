@@ -52,6 +52,7 @@ type ReviewStep = {
   lottie: string;
   foreground?: {
     src: string;
+    srcset?: string;
     x: number;
     y: number;
     width: number;
@@ -121,14 +122,16 @@ const reviewSteps: ReviewStep[] = [
     title: "We take you through the audit",
     lottie: "/lottie/access-review/4.json",
     foreground: {
-      src: "/compliance-service/workflow-audit-slack-ui.svg",
-      x: 44,
-      y: 56,
-      width: 440,
-      height: 572,
+      src: "/compliance-service/workflow-audit-slack-ui.webp",
+      srcset:
+        "/compliance-service/workflow-audit-slack-ui.webp 1x, /compliance-service/workflow-audit-slack-ui-2x.webp 2x, /compliance-service/workflow-audit-slack-ui-3x.webp 3x",
+      x: 0,
+      y: 0,
+      width: 508,
+      height: 664,
     },
     reverse: true,
-    alt: "A shared Slack channel where Probot asks the customer to sign the auditor's engagement letter and the compliance officer shares the agenda for the audit walkthrough",
+    alt: "A Probo SOC 2 Type II audit status card paired with a shared Slack Connect thread where the compliance officer handles an auditor evidence request",
     bullets: [
       "We tell you when you are ready and book the audit with you.",
       "During the audit intro, your officer sits with you as your internal compliance officer.",
@@ -164,7 +167,7 @@ const publishCards = [
       "Employees enroll their device in the portal. We alert you on Slack.",
   },
   {
-    illustration: "/compliance-service/capability-slack-question.svg",
+    illustration: "/compliance-service/capability-slack-question",
     title: "Slack, not tickets",
     description:
       "Ping us on Slack or book a call for any question or prospect request.",
@@ -176,18 +179,18 @@ const publishCards = [
       "Your officer knows what the auditor will ask for and collects it before they do.",
   },
   {
-    illustration: "/compliance-service/capability-security-questionnaire.svg",
+    illustration: "/compliance-service/capability-security-questionnaire",
     title: "Security questionnaires answered",
     description: "We answer your customers' security questionnaires for you.",
   },
   {
-    illustration: "/compliance-service/capability-third-parties.svg",
+    illustration: "/compliance-service/capability-third-parties",
     title: "Third parties reviewed",
     description:
       "We review your vendors and keep their assessments up to date.",
   },
   {
-    illustration: "/compliance-service/capability-security-training.svg",
+    illustration: "/compliance-service/capability-security-training",
     title: "Security training provided",
     description: "We provide security awareness training for your team.",
   },
@@ -353,7 +356,9 @@ const serviceSchema = {
       <section class="relative z-10 container pb-0">
         <div class="access-review-browser">
           <img
-            src="/compliance-service/hero-compliance-service.svg"
+            src="/compliance-service/hero-compliance-service.webp"
+            srcset="/compliance-service/hero-compliance-service.webp 1528w, /compliance-service/hero-compliance-service-2x.webp 3180w"
+            sizes="(min-width: 1280px) 1240px, calc(100vw - 40px)"
             alt="A shared Slack channel where a Probo compliance officer shares ready policies, an access review, an answer to a customer question and the booked audit date"
             width="1146"
             height="786"
@@ -461,6 +466,7 @@ const serviceSchema = {
                   >
                     <img
                       src={feature.foreground.src}
+                      srcset={feature.foreground.srcset}
                       alt=""
                       width={feature.foreground.width}
                       height={feature.foreground.height}
@@ -542,7 +548,7 @@ const serviceSchema = {
                       ? undefined
                       : `${card.illustration}.webp 344w, ${card.illustration}-2x.webp 688w, ${card.illustration}-3x.webp 1032w`
                   }
-                  sizes="(min-width: 1120px) 344px, (min-width: 1024px) calc((100vw - 88px) / 3), (min-width: 640px) calc((100vw - 64px) / 2), (min-width: 548px) 508px, calc(100vw - 40px)"
+                  sizes="(min-width: 1280px) 400px, (min-width: 1024px) calc((100vw - 88px) / 3), (min-width: 640px) calc((100vw - 64px) / 2), (min-width: 548px) 508px, calc(100vw - 40px)"
                   alt=""
                   aria-hidden="true"
                   width="344"
