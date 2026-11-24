@@ -44,7 +44,7 @@ Review cards sit in the margin next to the passage they refer to and stay in syn
 
 Members with read-only access open the same live document as editors, so they see other people's edits as they happen. Probo rejects any content change sent from a read-only session. To propose a change, a reviewer leaves a comment or switches on **Suggesting**.
 
-The document stays editable while suggestions are open. A direct edit outside a suggestion is applied; an edit that lands on an open suggestion is refused. You cannot publish the document, or restore an earlier version, until every suggestion is accepted or rejected.
+The document stays editable while suggestions are open. A direct edit outside a suggestion is applied; an edit that lands on an open suggestion is refused. Open suggestions do not block publishing the document or restoring an earlier version.
 
 Comments and suggestions are also available through the GraphQL API, the [MCP server](/docs/developers/api/mcp/tools/catalog/documents-and-approvals), and the [n8n node](/docs/developers/api/n8n/resources/document-suggestion). An automation can start a suggestion from a quoted passage and its replacement, then add text, format, or table redlines to it. The `changeDocumentText`, `changeDocumentFormat`, `changeDocumentTable`, and `changeDocumentBlock` tools either apply a change directly (`APPLY`) or record it on an open suggestion (`SUGGEST`), without sending editor JSON.
 

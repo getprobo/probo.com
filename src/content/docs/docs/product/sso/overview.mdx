@@ -24,6 +24,8 @@ You can keep Probo roles under [People](/docs/product/roles-and-permissions), or
 
 Set **Role Attribute** on the SAML configuration to the assertion attribute that carries the Probo role. Accepted values are `OWNER`, `ADMIN`, `EMPLOYEE`, and `VIEWER`. Leave the field empty when owners and admins should assign roles only in Probo. Provider setup pages show where to declare the attribute and map it in Probo.
 
+SAML sign-in authenticates the member and can map their role, but it does not overwrite the name of an existing identity. Manage names in the member profile or through [SCIM provisioning](/docs/product/scim/overview).
+
 ## Security boundary
 
 - Require signed assertions and verify them against the current identity-provider certificate.

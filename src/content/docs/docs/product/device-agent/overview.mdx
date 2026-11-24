@@ -41,17 +41,19 @@ One machine can be enrolled in more than one organization, for example a contrac
 
 The agent evaluates this check set on each collection cycle:
 
-| Check key            | What it verifies                                        |
-| -------------------- | ------------------------------------------------------- |
-| `DISK_ENCRYPTION`    | Full-disk encryption is enabled                         |
-| `SCREEN_LOCK`        | Screen lock / idle lock is configured                   |
-| `FIREWALL_ENABLED`   | Host firewall is enabled                                |
-| `TIME_SYNC`          | System clock synchronization is active                  |
-| `OS_VERSION`         | Operating system meets the expected version policy      |
-| `AUTO_UPDATE`        | Automatic updates are enabled                           |
-| `PASSWORD_POLICY`    | Local password policy is present                        |
-| `REMOTE_LOGIN`       | Remote login exposure is assessed                       |
-| `MALWARE_PROTECTION` | Built-in malware protection is enabled where applicable |
+| Check key            | What it verifies                                       |
+| -------------------- | ------------------------------------------------------ |
+| `DISK_ENCRYPTION`    | Full-disk encryption is enabled                        |
+| `SCREEN_LOCK`        | Screen lock / idle lock is configured                  |
+| `FIREWALL_ENABLED`   | Host firewall is enabled                               |
+| `TIME_SYNC`          | System clock synchronization is active                 |
+| `OS_VERSION`         | Operating system meets the expected version policy     |
+| `AUTO_UPDATE`        | Automatic updates or supported managed patching are on |
+| `PASSWORD_POLICY`    | Local password policy is present                       |
+| `REMOTE_LOGIN`       | Remote login exposure is assessed                      |
+| `MALWARE_PROTECTION` | Malware protection is enabled where applicable         |
+
+On Windows, probo-agent 0.10.0 and later recognizes Defender and running SentinelOne, Bitdefender, CrowdStrike, and Webroot agents for `MALWARE_PROTECTION`, and treats NinjaOne-managed patching as automatic updates. See [Windows posture checks](/docs/product/device-agent/windows#windows-posture-checks).
 
 Use `probo-agent collect` to run the checks locally without pushing results.
 

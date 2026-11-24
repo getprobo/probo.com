@@ -111,6 +111,10 @@ and Asana sync (publish, link, and project mapping), assets, audits, findings,
 privacy, third parties, access reviews, the compliance portal, webhooks, cookie
 consent, and other compliance workflows.
 
+To attach a link as evidence, `addInternalControlLinkEvidence` takes an HTTP or
+HTTPS URL and uploads it to an internal control as a `.uri` file, the same
+evidence the console link form creates.
+
 Two tool groups work across resource types:
 
 - **Tags**: `createTag`, `updateTag`, `deleteTag`, `attachTag`, `detachTag`,

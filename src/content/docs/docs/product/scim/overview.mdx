@@ -13,13 +13,13 @@ Probo supports SCIM 2.0 for automating user lifecycle changes. SCIM provisioning
 
 Probo offers two ways to keep organization people in sync with your directory. Both end at the same SCIM Users resource; they differ in **who initiates** the change.
 
-| Aspect | **Native** | **SCIM Bridge** |
-| ------ | ---------- | --------------- |
-| When to use | Provider has solid SCIM push support | Provider does not support SCIM, or supports it poorly |
-| Direction | Push — the identity provider calls Probo | Pull — Probo reads the directory |
-| Timing | Near real time on assignment changes | Periodic reconciliation on a schedule |
-| Typical providers | [Okta](/docs/product/scim/okta) | [Google Workspace](/docs/product/scim/google-workspace), [Microsoft 365 / Entra ID](/docs/product/scim/microsoft-365) |
-| Who is synced | Whoever you assign to the Probo app in the IdP | Directory users, minus Bridge exclusions (for example service accounts or shared mailboxes) |
+| Aspect            | **Native**                                     | **SCIM Bridge**                                                                                                       |
+| ----------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| When to use       | Provider has solid SCIM push support           | Provider does not support SCIM, or supports it poorly                                                                 |
+| Direction         | Push — the identity provider calls Probo       | Pull — Probo reads the directory                                                                                      |
+| Timing            | Near real time on assignment changes           | Periodic reconciliation on a schedule                                                                                 |
+| Typical providers | [Okta](/docs/product/scim/okta)                | [Google Workspace](/docs/product/scim/google-workspace), [Microsoft 365 / Entra ID](/docs/product/scim/microsoft-365) |
+| Who is synced     | Whoever you assign to the Probo app in the IdP | Directory users, minus Bridge exclusions (for example service accounts or shared mailboxes)                           |
 
 ### Native
 
@@ -46,6 +46,8 @@ Choose one authoritative mode for a population. Running overlapping push and pul
 ## Endpoint and credentials
 
 SCIM requests use the `/api/connect/v1/scim/2.0` endpoint and a bearer token created for a SCIM configuration. The Users resource supports standard create, read, list, replace, patch, and delete operations implemented by the deployment.
+
+SCIM create and update operations maintain the member's profile, including the full name. When the linked identity has exactly one membership profile, a SCIM name change also renames the identity.
 
 The token is a provisioning credential, not a personal API key. Store it in the identity provider’s secret storage, do not log it, and regenerate it when access changes or disclosure is suspected.
 

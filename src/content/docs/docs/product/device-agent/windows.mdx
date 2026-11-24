@@ -89,6 +89,13 @@ probo-agent status
 
 `status` prints the server URL, device ID, heartbeat/posture/update intervals, and whether auto-update is enabled. In most cases, confirming the device page in the Probo console is enough.
 
+## Windows posture checks
+
+These Windows behaviors apply to probo-agent 0.10.0 and later:
+
+- **Malware protection** passes when a supported protection service is running: SentinelOne, Bitdefender, CrowdStrike, or Webroot. A supported product that is installed but stopped fails the check, even if Defender is present in passive mode. When none of these products is installed, the check reads Windows Defender.
+- **Automatic updates** passes when Windows Update is set to install updates automatically, or when the NinjaRMMAgent service is running. NinjaOne turns Windows Update off and patches the machine itself, so a running NinjaOne agent counts as updates on.
+
 ## Uninstall
 
 ```powershell

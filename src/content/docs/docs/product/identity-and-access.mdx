@@ -36,6 +36,8 @@ Probo separates authentication from user provisioning. Invite and role-manage me
 
 SSO verifies a member's identity when they sign in, but it does not create or remove organization memberships. SCIM manages those memberships and user records, but it does not authenticate users. Organizations commonly configure both against the same identity provider so that assignment controls access and SSO protects authentication.
 
+A person's name comes from their membership profile. When an identity has exactly one membership profile, Probo uses that profile's full name as the identity name, and renaming the profile, in People or through SCIM, renames the identity. Identities with several membership profiles are not renamed this way. SAML sign-in does not overwrite an existing identity name.
+
 <MermaidDiagram
   chart={identityResponsibilities}
   caption="SSO authenticates, SCIM provisions, and the membership role decides what is permitted."

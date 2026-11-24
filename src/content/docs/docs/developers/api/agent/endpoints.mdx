@@ -197,17 +197,20 @@ An empty `results` array is accepted as a no-op. A successful request returns
 Use the official keys when your check has the same meaning. This allows Probo
 to interpret and display the evidence consistently.
 
-| Check key            | What it evaluates                  |
-| -------------------- | ---------------------------------- |
-| `DISK_ENCRYPTION`    | Full-disk encryption               |
-| `SCREEN_LOCK`        | Screen or idle-lock configuration  |
-| `FIREWALL_ENABLED`   | Host firewall                      |
-| `TIME_SYNC`          | System clock synchronization       |
-| `OS_VERSION`         | Operating-system version           |
-| `AUTO_UPDATE`        | Automatic operating-system updates |
-| `PASSWORD_POLICY`    | Local password policy              |
-| `REMOTE_LOGIN`       | Remote-login exposure              |
-| `MALWARE_PROTECTION` | Built-in malware protection        |
+| Check key            | What it evaluates                     |
+| -------------------- | ------------------------------------- |
+| `DISK_ENCRYPTION`    | Full-disk encryption                  |
+| `SCREEN_LOCK`        | Screen or idle-lock configuration     |
+| `FIREWALL_ENABLED`   | Host firewall                         |
+| `TIME_SYNC`          | System clock synchronization          |
+| `OS_VERSION`         | Operating-system version              |
+| `AUTO_UPDATE`        | Automatic updates or managed patching |
+| `PASSWORD_POLICY`    | Local password policy                 |
+| `REMOTE_LOGIN`       | Remote-login exposure                 |
+| `MALWARE_PROTECTION` | Enabled malware protection            |
+
+On Windows, the official agent reports supported third-party antivirus agents
+under `MALWARE_PROTECTION` and NinjaOne-managed patching under `AUTO_UPDATE`.
 
 The API accepts other non-empty check keys, but Probo might display their
 evidence as unknown. Use a stable uppercase identifier and keep its semantics
@@ -249,12 +252,12 @@ request succeeds during uninstall.
 
 ## Errors
 
-| Status | Meaning                                                                                      |
-| ------ | -------------------------------------------------------------------------------------------- |
-| `400`  | Invalid JSON, missing fields, invalid enum, or oversized batch                               |
+| Status | Meaning                                                                                     |
+| ------ | ------------------------------------------------------------------------------------------- |
+| `400`  | Invalid JSON, missing fields, invalid enum, or oversized batch                              |
 | `401`  | Invalid enrollment token, missing/invalid API key, revocation, or posture before activation |
-| `405`  | The route was called with a method other than `POST`                                         |
-| `500`  | Unexpected server error                                                                      |
+| `405`  | The route was called with a method other than `POST`                                        |
+| `500`  | Unexpected server error                                                                     |
 
 Do not depend on the exact error message. Log the status and safe request
 context without logging credentials or posture evidence. Retry temporary
