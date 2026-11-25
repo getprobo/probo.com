@@ -34,7 +34,7 @@ Every command also inherits the [global flags](/docs/developers/cli/commands#glo
 | [`prb document create`](#prb-document-create)                                   | Create a new document.                                                       | `prb document create`                                            | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/create/create.go#L66)                                   |
 | [`prb document delete`](#prb-document-delete)                                   | Delete a document.                                                           | `prb document delete <id>`                                       | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/delete/delete.go#L43)                                   |
 | [`prb document list`](#prb-document-list)                                       | List documents in an organization.                                           | `prb document list`                                              | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list/list.go#L81)                                       |
-| [`prb document list-approval-decisions`](#prb-document-list-approval-decisions) | List approval decisions for a quorum.                                        | `prb document list-approval-decisions <quorum-id>`               | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list-approval-decisions/list_approval_decisions.go#L78) |
+| [`prb document list-approval-decisions`](#prb-document-list-approval-decisions) | List approval decisions for a quorum.                                        | `prb document list-approval-decisions <quorum-id>`               | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list-approval-decisions/list_approval_decisions.go#L80) |
 | [`prb document list-approval-quorums`](#prb-document-list-approval-quorums)     | List approval quorums for a document version.                                | `prb document list-approval-quorums <document-version-id>`       | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list-approval-quorums/list_approval_quorums.go#L70)     |
 | [`prb document list-history`](#prb-document-list-history)                       | List revisions for a document.                                               | `prb document list-history <document-id>`                        | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list-history/list_history.go#L77)                       |
 | [`prb document list-versions`](#prb-document-list-versions)                     | List versions of a document.                                                 | `prb document list-versions <document-id>`                       | [View implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list-versions/list_versions.go#L83)                     |
@@ -531,15 +531,19 @@ Requires 1 positional argument.
 | `--order-by`        | string  | `""`     | —        | Order by field (CREATED_AT)                          |
 | `--order-direction` | string  | `"DESC"` | —        | Sort direction (ASC, DESC)                           |
 | `--output`, `-o`    | string  | `""`     | —        | Output format: json, table (default)                 |
+| `--query`           | string  | `""`     | —        | Search by approver name                              |
 
 ### Examples
 
 ```bash
 # List approval decisions for a quorum
 prb document list-approval-decisions <quorum-id>
+
+# List the decisions of approvers whose name contains "jane"
+prb document list-approval-decisions <quorum-id> --query jane
 ```
 
-[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list-approval-decisions/list_approval_decisions.go#L78).
+[View command implementation](https://github.com/getprobo/probo/blob/main/pkg/cmd/document/list-approval-decisions/list_approval_decisions.go#L80).
 
 ## prb document list-approval-quorums
 
