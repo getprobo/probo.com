@@ -14,15 +14,30 @@ Probo documents are controlled records for policies, procedures, reports, and ot
   caption="Lifecycle of a single document version. Archiving applies to the document, not to one version."
 />
 
+## The document page
+
+Each document opens on a single page. Properties, linked controls, approvers, and signatories sit in a side column you can collapse. The text is laid out on A4 pages, like the PDF export, under a fixed formatting toolbar with an insert menu and a mode switch: **Viewing**, **Editing**, or **Suggesting**.
+
+The toolbar shows who else has the document open, and each collaborator's caret has its own color. Archive, unarchive, delete, and **Download PDF** are in the page menu. Generated documents open in view mode only, and the page says why.
+
 ## Versions and publication
 
-Edit work in a draft version. Publishing creates the version intended for use or review. Archived documents remain part of the record but are removed from active use. Avoid editing a document merely to change its approval history; create a new version when the controlled content changes.
+Edit work in a draft version. Click **Publish** to create the version intended for use or review:
+
+- **Changelog:** describe what changed in this version. It is required.
+- **Approvers:** a major version waits for these people to approve it before it is published. A minor version publishes right away.
+
+Open suggestions do not block publishing. The publish dialog warns about open comments and suggestions, and open suggestions are left out of the published version. They stay open in the draft, so you can still accept or reject them later.
+
+In **Viewing** mode, open **Versions** to list every published version beside the document. Opening one shows it read only and adds a `version` parameter to the URL, so you can share a link to that exact version. Click **Show latest** to go back to the current version.
+
+Archived documents remain part of the record but are removed from active use. Avoid editing a document merely to change its approval history; create a new version when the controlled content changes.
 
 To share selected documents outside your workspace, configure their portal visibility separately. See [Publishing content in the Compliance Portal](/docs/product/compliance-portal/publishing-content).
 
 ## Review with comments and suggestions
 
-Members can review a draft in place, from the **Description** tab of the document:
+Members can review a draft in place, on the document page:
 
 - **Comments:** select a passage, click **Comment**, and write a note. Comments support rich text and member mentions. Anyone who can comment can reply, **Resolve** a thread, or **Reopen** it later. Only the author of a comment can edit or delete it.
 - **Suggestions:** switch on **Suggesting** to record your edits as redlines instead of changing the document. A reviewer with the right permission accepts or rejects each suggestion in place.
@@ -40,13 +55,17 @@ Accepting a suggestion keeps the new text, style, or block. Rejecting it restore
 
 Row suggestions are refused on tables with merged cells. Any other table structure edit made while suggesting is dropped with a message, rather than saved without a redline.
 
-Review cards sit in the margin next to the passage they refer to and stay in sync across open tabs. Viewers and auditors can comment and suggest without being able to edit the document. Only owners and admins can accept or reject suggestions; see [Roles and permissions](/docs/product/roles-and-permissions).
+Comments and suggestions show as cards beside the text they refer to, and stay in sync across open tabs. A suggestion card lists each change it makes. From a card you can resolve, edit, accept, or reject, and open the thread to reply. The comments view switches between **Open** threads and **All comments**, which also lists resolved threads.
+
+Each suggestion has its own comment thread, so reviewers can discuss a change before it is decided. Once a suggestion is accepted or rejected, the history keeps the changes it made. If the author undoes all the edits in a suggestion, Probo rejects it automatically; it reopens if those edits come back.
+
+Viewers and auditors can comment and suggest without being able to edit the document. Only owners and admins can accept or reject suggestions; see [Roles and permissions](/docs/product/roles-and-permissions).
 
 Members with read-only access open the same live document as editors, so they see other people's edits as they happen. Probo rejects any content change sent from a read-only session. To propose a change, a reviewer leaves a comment or switches on **Suggesting**.
 
-The document stays editable while suggestions are open. A direct edit outside a suggestion is applied; an edit that lands on an open suggestion is refused. Open suggestions do not block publishing the document or restoring an earlier version.
+The document stays editable while suggestions are open. A direct edit outside a suggestion is applied; an edit that lands on an open suggestion is refused. Open suggestions do not block [publishing](#versions-and-publication) the document or restoring an earlier version.
 
-Comments and suggestions are also available through the GraphQL API, the [MCP server](/docs/developers/api/mcp/tools/catalog/documents-and-approvals), and the [n8n node](/docs/developers/api/n8n/resources/document-suggestion). An automation can start a suggestion from a quoted passage and its replacement, then add text, format, or table redlines to it. The `changeDocumentText`, `changeDocumentFormat`, `changeDocumentTable`, and `changeDocumentBlock` tools either apply a change directly (`APPLY`) or record it on an open suggestion (`SUGGEST`), without sending editor JSON.
+Comments and suggestions are also available through the GraphQL API (including each suggestion's thread and the changes a decision made), the [MCP server](/docs/developers/api/mcp/tools/catalog/documents-and-approvals), and the [n8n node](/docs/developers/api/n8n/resources/document-suggestion). An automation can start a suggestion from a quoted passage and its replacement, then add text, format, or table redlines to it. The `changeDocumentText`, `changeDocumentFormat`, `changeDocumentTable`, and `changeDocumentBlock` tools either apply a change directly (`APPLY`) or record it on an open suggestion (`SUGGEST`), without sending editor JSON.
 
 ## Approval quorums
 
@@ -58,7 +77,7 @@ Signature requests also belong to a document version. A request can be completed
 
 ## Export and evidence
 
-Documents can be exported as PDF and linked to controls and internal controls. A controlled document explains what the organization intends to do; evidence demonstrates that an internal control operated. Keeping those roles distinct makes audit review clearer.
+Documents can be exported as PDF, one at a time from **Download PDF** or in bulk from the document list, and linked to controls and internal controls. A controlled document explains what the organization intends to do; evidence demonstrates that an internal control operated. Keeping those roles distinct makes audit review clearer.
 
 Access to drafts, approvals, and signatures follows organization authorization. Portal visitors use a separate access workflow for restricted published documents; see [Visitor access and NDA](/docs/product/compliance-portal/visitor-access-and-nda). Use the audit log when investigating changes to controlled records. See [Roles and permissions](/docs/product/roles-and-permissions).
 
