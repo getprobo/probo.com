@@ -1,0 +1,15 @@
+---
+title: "A thread for every suggestion"
+description: "Each document suggestion now has its own comment thread, and its card lists the changes it makes. Documents can be published with suggestions still open, which stay out of the published version."
+date: 2026-11-24
+images: ["/changelog/2026-11-24-document-suggestion-threads-1.png"]
+tags: ["Documents"]
+---
+
+[Comments and suggestions](/docs/product/document-management#review-with-comments-and-suggestions) now show as cards beside the text. A suggestion card lists each change it makes, and from the card you resolve, edit, accept or reject it, or open its thread to reply. Every suggestion has its own thread, so a reviewer can ask about a change before deciding. The All comments view lists every thread, resolved ones included.
+
+Once a suggestion is accepted or rejected, the history keeps the changes it made. If the author undoes every edit in a suggestion, it is rejected automatically, and it reopens if the edits come back.
+
+Open suggestions no longer block publishing. They are left out of the published version and stay open in the draft, and the publish dialog warns about them.
+
+Also on GraphQL, MCP, `prb document suggestion view` and the n8n node, with a filter for automatically rejected suggestions. Heads up for n8n users: the Document `Update Version` operation is removed, since the mutation behind it no longer exists.
