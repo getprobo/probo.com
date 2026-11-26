@@ -1,6 +1,6 @@
 ---
 title: Third-party management
-description: Learn how to record vendor relationships in Probo, including contacts, services, DPAs, subprocessor hierarchies, and third-party risk assessments.
+description: Learn how to record vendor relationships in Probo, including contacts, services, agreements, subprocessor hierarchies, and third-party risk assessments.
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
@@ -14,11 +14,27 @@ Keep the vendor record focused on the relationship, not only the company name:
 - business and security contacts;
 - services used by your organization;
 - data and operational dependencies;
-- DPA, BAA, and compliance-report status;
+- agreements and compliance reports;
 - parent, child, and subprocessor relationships;
 - risk assessments and their expiry dates.
 
 The hierarchy distinguishes a direct vendor from downstream parties. This makes it possible to review concentration and subprocessor risk without flattening every provider into one list.
+
+## Agreements
+
+A third party can hold any number of agreements. Each agreement has a title, a type, optional validity dates, and one PDF file. The types are:
+
+- amendment;
+- annex;
+- business associate agreement (BAA);
+- data privacy agreement (DPA);
+- master service agreement;
+- terms;
+- other.
+
+The **Agreements** page of a third party lists every agreement with a type badge. You can preview, download, edit, and delete each one. The add dialog previews the PDF before you upload it. Uploads accept PDF files only, up to 30 MB.
+
+Business associate and data privacy agreements recorded before probod v0.359.0 were moved to this list automatically.
 
 ## Assessment lifecycle
 

@@ -29,6 +29,8 @@ This guide walks you through creating a cookie banner in the Probo console and a
    | **Consent Expiry** | Number of days before consent expires and the banner reappears (default: 365) |
    | **Default Language** | The fallback language for the banner (default: `en`). The SDK uses this when the visitor's language is not available. |
 
+   Creating the banner publishes version 1 right away, so its configuration endpoint answers as soon as the banner exists. No cookie policy is generated at this point.
+
    Consent mode and presentation are **not** chosen at create time — they are resolved automatically from the visitor's location. See [Geolocation and Regulations](/docs/product/cookie-banner/geolocation).
 
 2. **Configure cookie categories**
@@ -63,7 +65,9 @@ This guide walks you through creating a cookie banner in the Probo console and a
 
 5. **Publish the banner**
 
-   Click **Publish Changes** in the banner header. This creates a published version of your configuration that the SDK will serve to visitors.
+   Click **Publish changes** in the banner header. This creates a new published version of your configuration that the SDK serves to visitors.
+
+   If you can update the cookie policy (owners and admins), the dialog asks whether to update it from the trackers in this version. Choose **Publish and update policy**, or **Publish only** to leave the policy as it is. When there is nothing left to publish, **Update cookie policy** in the banner header updates the policy from the current published version.
 
 6. **Add the snippet to your website**
 

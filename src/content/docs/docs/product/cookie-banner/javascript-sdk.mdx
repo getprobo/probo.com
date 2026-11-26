@@ -44,6 +44,10 @@ npm install @probo/cookie-banner
 Use `@probo/cookie-banner` 0.23.0 or later with probod v0.351.0 and later. Older versions of the package report no page loads, so the page-load and hit-rate figures in the console stay incomplete until you upgrade.
 :::
 
+:::caution
+From `@probo/cookie-banner` 0.24.0, the banner stays unloaded until its configuration loads. If the configuration request fails, for example with a 404 because the banner was never published, the SDK no longer runs in discovery mode: it does not report trackers or grant Google Consent Mode, and only counts the page view. Banners created on probod v0.360.0 or later publish version 1 immediately. An older banner that was never published keeps returning 404 until you publish it, so publish it before upgrading the package.
+:::
+
 Register the component and place it in your HTML or template:
 
 ```js

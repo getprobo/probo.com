@@ -20,6 +20,8 @@ Each document opens on a single page. Properties, linked controls, approvers, an
 
 The toolbar shows who else has the document open, and each collaborator's caret has its own color. Archive, unarchive, delete, and **Download PDF** are in the page menu. Generated documents open in view mode only, and the page says why.
 
+The page keeps its mode and side column (open comments, comment history, or versions) in the URL, so a reload or a shared link opens the same view. Once the approvers, signatories, or linked controls card holds more than one page of entries, it shows a search field.
+
 ## Versions and publication
 
 Edit work in a draft version. Click **Publish** to create the version intended for use or review:
@@ -30,6 +32,8 @@ Edit work in a draft version. Click **Publish** to create the version intended f
 Open suggestions do not block publishing. The publish dialog warns about open comments and suggestions, and open suggestions are left out of the published version. They stay open in the draft, so you can still accept or reject them later.
 
 In **Viewing** mode, open **Versions** to list every published version beside the document. Opening one shows it read only and adds a `version` parameter to the URL, so you can share a link to that exact version. Click **Show latest** to go back to the current version.
+
+The side column follows the version on screen. A previous version shows its own approval decisions, read only, and its own signatures, so you can see who approved and signed that exact version.
 
 Archived documents remain part of the record but are removed from active use. Avoid editing a document merely to change its approval history; create a new version when the controlled content changes.
 
@@ -55,7 +59,7 @@ Accepting a suggestion keeps the new text, style, or block. Rejecting it restore
 
 Row suggestions are refused on tables with merged cells. Any other table structure edit made while suggesting is dropped with a message, rather than saved without a redline.
 
-Comments and suggestions show as cards beside the text they refer to, and stay in sync across open tabs. A suggestion card lists each change it makes. From a card you can resolve, edit, accept, or reject, and open the thread to reply. The comments view switches between **Open** threads and **All comments**, which also lists resolved threads.
+Comments and suggestions show as cards beside the text they refer to, and stay in sync across open tabs. A suggestion card appears as soon as you make the change, without waiting for the server, and lists each change it makes. From a card you can resolve, edit, accept, or reject, and open the thread to reply. The comments view switches between **Open** threads and **All comments**, which also lists resolved threads.
 
 Each suggestion has its own comment thread, so reviewers can discuss a change before it is decided. Once a suggestion is accepted or rejected, the history keeps the changes it made. If the author undoes all the edits in a suggestion, Probo rejects it automatically; it reopens if those edits come back.
 
@@ -82,6 +86,8 @@ Documents can be exported as PDF, one at a time from **Download PDF** or in bulk
 Access to drafts, approvals, and signatures follows organization authorization. Portal visitors use a separate access workflow for restricted published documents; see [Visitor access and NDA](/docs/product/compliance-portal/visitor-access-and-nda). Use the audit log when investigating changes to controlled records. See [Roles and permissions](/docs/product/roles-and-permissions).
 
 ## Automation
+
+Approval decision and signature lists take a name search (`query`) on the approver or signatory, in GraphQL, MCP, and the n8n **Get Many Approval Decisions** and **Get Many Signatures** operations.
 
 <CardGrid>
   <LinkCard

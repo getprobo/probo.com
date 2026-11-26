@@ -126,4 +126,6 @@ See [`prb api`](/docs/developers/cli/commands/api) and [CLI configuration](/docs
 
 GraphQL is a versioned endpoint, but its schema evolves with Probo releases. Generate client types from the deployment you target and review schema changes during upgrades. MCP, CLI, and n8n operations are maintained alongside GraphQL, but transport-specific capabilities and release timing can differ.
 
+probod v0.359.0 removed the third-party business associate and data privacy agreement fields and mutations. Use the `agreements` connection on a third party and the `uploadThirdPartyAgreement`, `updateThirdPartyAgreement`, and `deleteThirdPartyAgreement` mutations instead. Clients that still query the old fields fail schema validation after the upgrade.
+
 When a higher-level interface already covers the workflow, prefer the [CLI](/docs/developers/cli/overview), [MCP](/docs/developers/api/mcp/overview), or [n8n](/docs/developers/api/n8n/overview) references for day-to-day automation, and use GraphQL when you need a custom client or query shape.

@@ -21,7 +21,7 @@ Draft changes do not alter the configuration already shown to visitors. Publish 
 
 Banners whose origins share a registrable domain, such as `www.example.com` and `app.example.com`, are grouped. When a scan finds that a cookie is written by a sibling banner in the group, Probo can promote that banner as the tracker's source instead of treating each origin on its own. The tracker shows the sibling banner beside its source badge, and the icon there opens that banner's tracker list.
 
-The published version also drives the generated cookie policy's vendor list. It includes the vendors of trackers that sit in a consent category in that snapshot. Later draft category changes do not alter the list until you publish a new version.
+The generated cookie policy is updated separately from publishing. Creating a banner publishes version 1 without generating a policy, and publishing a later version does not update the policy on its own. When you publish, the console asks whether to also update the policy from the trackers in that version; you can also click **Update cookie policy** on the published version. The policy's vendor list includes the vendors of trackers that sit in a consent category in the published version. Only owners and admins can update the policy.
 
 ## Browser behavior
 
