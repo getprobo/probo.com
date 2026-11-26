@@ -1,0 +1,15 @@
+---
+title: "Publish a banner without rewriting the cookie policy"
+description: "New cookie banners are published as version 1 when you create them, and publishing no longer regenerates the cookie policy. The console asks whether to update it, and the SDK drops discovery mode."
+date: 2026-11-25
+images: ["/changelog/2026-11-25-cookie-policy-on-publish-1.png"]
+tags: ["Cookie Banner"]
+---
+
+Creating a [cookie banner](/docs/product/cookie-banner/quickstart) now publishes version 1 right away, so its configuration endpoint answers before you publish anything yourself. No cookie policy is generated at that point.
+
+Publishing used to regenerate the cookie policy every time. It no longer does. The publish dialog offers **Publish only** or **Publish and update policy**, and a published banner has an **Update cookie policy** button for later. Only owners and admins see the policy actions.
+
+Banners created before this release that were never published stay unpublished. Their configuration endpoint returns 404 until you publish them.
+
+Heads up: `@probo/cookie-banner` 0.24.0 drops discovery mode. When the configuration can't load, the banner stays unloaded, Google Consent Mode is not granted and no trackers are reported. The page view still counts. Upgrade the SDK together with probod 0.360.0 or later, and publish any banner that never was.

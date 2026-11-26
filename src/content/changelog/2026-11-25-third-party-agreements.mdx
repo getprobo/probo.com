@@ -1,0 +1,17 @@
+---
+title: "Store every agreement with a third party"
+description: "A third party can now hold any number of agreements, from an MSA to amendments and annexes, each with a type, a title, validity dates and a PDF. Existing BAAs and DPAs moved over automatically."
+date: 2026-11-25
+images: ["/changelog/2026-11-25-third-party-agreements-1.png"]
+tags: ["TPRM"]
+---
+
+A vendor contract rarely stops at a DPA. There is usually an MSA, the terms of service, and an amendment or two. Until now a third party had one slot for a business associate agreement and one for a data privacy agreement.
+
+The [Agreements](/docs/product/third-party-management#agreements) page of a third party now holds as many as you need. Each agreement has a type (master service, terms, data privacy, business associate, amendment, annex or other), a title, optional validity dates and one PDF up to 30 MB. Every row can be previewed, downloaded, edited and deleted, and the add dialog shows the PDF before you upload it.
+
+Existing BAAs and DPAs were moved to the new list automatically. The published third-party list still fills its BAA and DPA columns, from the newest agreement of each type.
+
+Also available from MCP, `prb third-party agreement` and n8n. MCP can't set the amendment or annex types yet.
+
+Heads up: the GraphQL API replaces the business associate and data privacy agreement fields and mutations with `agreements`, `uploadThirdPartyAgreement`, `updateThirdPartyAgreement` and `deleteThirdPartyAgreement`. The old n8n agreement operations are removed, so update workflows that use them.
