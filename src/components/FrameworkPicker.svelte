@@ -2,7 +2,8 @@
   import { slide } from "svelte/transition";
   import {
     frameworks,
-    primaryFrameworkCount,
+    primaryFrameworkIds,
+    unsureFrameworkId,
     type Framework,
   } from "../lib/contact";
 
@@ -31,6 +32,9 @@
   };
 
   let open = $state(false);
+  let otherOpen = $state(custom.length > 0);
+  let otherText = $state("");
+  let otherInput = $state<HTMLInputElement>();
   let query = $state("");
   let search = $state<HTMLInputElement>();
   let toggleButton = $state<HTMLButtonElement>();
@@ -50,18 +54,33 @@
     return () => window.removeEventListener("pointerdown", onPointer);
   });
 
+  const byLabel = (a: Framework, b: Framework) =>
+    a.label.localeCompare(b.label, "en", { numeric: true });
+  const unsure = frameworks.find((f) => f.id === unsureFrameworkId)!;
+  const primary = primaryFrameworkIds.flatMap(
+    (id) => frameworks.find((f) => f.id === id) ?? [],
+  );
+  // Alphabetical, with "Not sure yet" always last.
+  const sorted = [
+    ...frameworks.filter((f) => f.id !== unsureFrameworkId).sort(byLabel),
+    unsure,
+  ];
+
   // The common frameworks always show as chips; anything picked from the
   // full list joins them so the visitor sees everything they chose.
-  const chips = $derived(
-    frameworks.filter(
-      (f, i) => i < primaryFrameworkCount || selected.includes(f.id),
+  const extras = $derived(
+    sorted.filter(
+      (f) =>
+        selected.includes(f.id) &&
+        f.id !== unsureFrameworkId &&
+        !primaryFrameworkIds.includes(f.id),
     ),
   );
   const needle = $derived(query.trim().toLowerCase());
   const results = $derived(
     needle
-      ? frameworks.filter((f) => f.label.toLowerCase().includes(needle))
-      : frameworks,
+      ? sorted.filter((f) => f.label.toLowerCase().includes(needle))
+      : sorted,
   );
   const canAdd = $derived(
     needle.length > 1 &&
@@ -78,12 +97,53 @@
       : [...selected, id];
   }
 
+  // "TISAX, ISO 9001" adds two; names already there are skipped.
+  function pushCustom(text: string) {
+    const known = new Set(
+      [...custom, ...frameworks.map((f) => f.label)].map((c) =>
+        c.toLowerCase(),
+      ),
+    );
+    const names: string[] = [];
+    for (const raw of text.split(/[,;\n]/)) {
+      const name = raw.trim();
+      if (!name || known.has(name.toLowerCase())) continue;
+      known.add(name.toLowerCase());
+      names.push(name);
+    }
+    if (names.length) custom = [...custom, ...names];
+  }
+
   function addCustom() {
-    const name = query.trim();
-    if (!name) return;
-    custom = [...custom, name];
+    pushCustom(query);
     query = "";
     search?.focus();
+  }
+
+  function toggleOther() {
+    if (otherOpen) {
+      pushCustom(otherText);
+      otherText = "";
+      otherOpen = false;
+    } else {
+      otherOpen = true;
+      queueMicrotask(() => otherInput?.focus());
+    }
+  }
+
+  function addOther() {
+    pushCustom(otherText);
+    otherText = "";
+  }
+
+  function onOtherKey(e: KeyboardEvent) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addOther();
+    } else if (e.key === "Escape" && !otherText) {
+      e.preventDefault();
+      otherOpen = false;
+    }
   }
 
   function removeCustom(name: string) {
@@ -149,18 +209,22 @@
   </span>
 {/snippet}
 
+{#snippet chip(framework: Framework)}
+  <button
+    type="button"
+    class={chipClass}
+    class:border-error={invalid}
+    aria-pressed={selected.includes(framework.id)}
+    onclick={() => toggle(framework.id)}
+  >
+    {@render logo(framework, "size-7")}
+    {framework.label}
+  </button>
+{/snippet}
+
 <div class="flex flex-wrap gap-2">
-  {#each chips as framework (framework.id)}
-    <button
-      type="button"
-      class={chipClass}
-      class:border-error={invalid}
-      aria-pressed={selected.includes(framework.id)}
-      onclick={() => toggle(framework.id)}
-    >
-      {@render logo(framework, "size-7")}
-      {framework.label}
-    </button>
+  {#each [...primary, ...extras] as framework (framework.id)}
+    {@render chip(framework)}
   {/each}
   {#each custom as name (name)}
     <button
@@ -176,6 +240,18 @@
   {/each}
   <button
     type="button"
+    class={chipClass}
+    class:border-error={invalid}
+    aria-pressed={otherOpen}
+    aria-controls="contact-framework-other"
+    onclick={toggleOther}
+  >
+    {@render logo(null, "size-7")}
+    Other
+  </button>
+  {@render chip(unsure)}
+  <button
+    type="button"
     class="text-muted-foreground hover:text-foreground h-10 px-2 text-sm font-medium underline"
     aria-expanded={open}
     aria-controls="contact-framework-list"
@@ -185,6 +261,35 @@
     {open ? "Hide the list" : "More frameworks"}
   </button>
 </div>
+
+{#if otherOpen}
+  <div
+    id="contact-framework-other"
+    class="flex gap-2"
+    transition:slide={{ duration: 200 }}
+  >
+    <input
+      type="text"
+      class="border-border-mid placeholder:text-quaternary/70 bg-level-1 focus-visible:outline-primary h-11 min-w-0 flex-1 rounded-xl border px-3 text-sm focus-visible:outline-2 focus-visible:-outline-offset-1"
+      placeholder="Which framework? For example TISAX"
+      aria-label="Other framework"
+      autocomplete="off"
+      maxlength="100"
+      bind:this={otherInput}
+      bind:value={otherText}
+      onkeydown={onOtherKey}
+      onblur={addOther}
+    />
+    <button
+      type="button"
+      class="border-border-mid bg-level-1 hover:bg-highlight focus-visible:outline-primary h-11 rounded-xl border px-4 text-sm font-medium transition-colors focus-visible:outline-2 disabled:opacity-50"
+      disabled={!otherText.trim()}
+      onclick={addOther}
+    >
+      Add
+    </button>
+  </div>
+{/if}
 
 {#if open}
   <div

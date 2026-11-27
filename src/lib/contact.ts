@@ -20,7 +20,6 @@ export const frameworks: Framework[] = [
   { id: "gdpr", label: "GDPR", value: "GDPR", logo: "GDPR" },
   { id: "hipaa", label: "HIPAA", value: "HIPAA", logo: "HIPAA" },
   { id: "iso42001", label: "ISO 42001", value: "ISO 42001", logo: "ISO42001" },
-  { id: "unsure", label: "Not sure yet", value: "I don't know" },
   { id: "iso27701", label: "ISO 27701", value: "ISO 27701", logo: "ISO27701" },
   { id: "dora", label: "DORA", value: "DORA", logo: "DORA" },
   { id: "nis2", label: "NIS2", value: "Other", logo: "NIS2" },
@@ -36,9 +35,20 @@ export const frameworks: Framework[] = [
   { id: "cmmc", label: "CMMC", value: "Other" },
   { id: "nist-csf", label: "NIST CSF", value: "Other" },
   { id: "21-cfr-11", label: "21 CFR Part 11", value: "21 CFR Part 11" },
+  { id: "unsure", label: "Not sure yet", value: "I don't know" },
 ];
 
-export const primaryFrameworkCount = 6;
+// Always shown as chips, in this order. "Other" and "Not sure yet" follow
+// them; the full list is sorted alphabetically with "Not sure yet" last.
+export const primaryFrameworkIds = [
+  "soc2",
+  "iso27001",
+  "gdpr",
+  "hipaa",
+  "iso42001",
+];
+
+export const unsureFrameworkId = "unsure";
 
 export const exploringTiming = "Just curious!";
 
